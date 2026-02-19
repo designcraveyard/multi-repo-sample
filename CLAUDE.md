@@ -123,19 +123,21 @@ supabase migration new <name>     # Create a new migration file
 | Rule | Web | iOS |
 |------|-----|-----|
 | Package | `@phosphor-icons/react` | PhosphorSwift (SPM) |
-| Wrapper | `<Icon name="House" />` | `PhosphorIcon(.house)` |
+| Usage | `<Icon name="House" />` | `Ph.house.regular.iconSize(.md)` |
 | Import | `from "@/app/components/icons"` | `import PhosphorSwift` |
 | Default weight | `regular` | `.regular` |
-| Default size | `md` (20px) | `.md` (20pt) |
-| Color | `var(--icon-primary)` | `Color.appIconPrimary` |
-| Never do | Import from `@phosphor-icons/react` directly | Use raw `Ph.*` in views |
+| Default size | `md` (20px) | `.md` (20pt) via `.iconSize(.md)` |
+| Color | `var(--icon-primary)` | `.iconColor(.appIconPrimary)` |
+| Never do | Import from `@phosphor-icons/react` directly | Hardcode `.frame(width:height:)` without token |
+
+**iOS pattern:** `Ph.<name>.<weight>.iconSize(.<token>)` — icons are static members of `Ph`, not instantiated. Size/color/accessibility helpers are in `PhosphorIconHelper.swift`.
 
 **Size mapping** (identical on both platforms):
 `xs`=12 · `sm`=16 · `md`=20 · `lg`=24 · `xl`=32
 
 **Weights:** `thin` · `light` · `regular` _(default)_ · `bold` · `fill` · `duotone`
 
-**From Figma:** icon name (PascalCase in sidebar) → `name` prop (web) or `.iconName` (iOS). Weight layer → `weight` prop. Size from Dimensions → nearest token.
+**From Figma:** icon name (PascalCase in sidebar) → `name` prop on web, `Ph.<camelCase>` on iOS. Weight layer → `weight` prop / weight member. Size from Dimensions → nearest token.
 
 See `docs/design-tokens.md#icon-system` for full reference.
 

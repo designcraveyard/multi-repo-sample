@@ -302,25 +302,28 @@ Accepted color values: CSS custom properties (`var(--icon-primary)`), hex, or an
 
 ### iOS Usage
 
-Use the `PhosphorIcon` view wrapper — it mirrors the web `<Icon />` API:
+Icons are accessed as `Ph.<name>.<weight>` — each returns a SwiftUI `View`. Chain the token helpers from `PhosphorIconHelper.swift`:
 
 ```swift
 import PhosphorSwift
 
-// Basic — defaults: weight=.regular, size=.md (20pt), color=.primary
-PhosphorIcon(.house)
+// Basic — regular weight, md size (20pt), inherits foreground color
+Ph.house.regular.iconSize(.md)
 
-// With tokens
-PhosphorIcon(.heart, weight: .fill, size: .lg, color: .appError)
+// With size and color tokens
+Ph.heart.fill.iconSize(.lg).iconColor(.appError)
 
-// Accessible icon
-PhosphorIcon(.bell, label: "Notifications")
+// Bold weight, small size
+Ph.arrowRight.bold.iconSize(.sm)
 
-// Raw px size (use sparingly)
-PhosphorIcon(.arrowRight, rawSize: 18)
+// Accessible (adds VoiceOver label; decorative when nil)
+Ph.bell.regular.iconSize(.md).iconAccessibility(label: "Notifications")
 
-// Advanced — raw Phosphor API (for special cases only)
-Ph.house.regular.color(.appPrimary).frame(width: 24, height: 24)
+// Raw pt size (use sparingly)
+Ph.star.regular.iconSize(18)
+
+// Raw Phosphor API (advanced — when token helpers don't fit)
+Ph.house.regular.color(.appIconPrimary).frame(width: 24, height: 24)
 ```
 
 **Overline + icon letter-spacing:** SwiftUI `Font` cannot bake in tracking. Apply `.tracking(1)` or `.tracking(2)` on adjacent `Text` nodes when pairing overline type with icons.
