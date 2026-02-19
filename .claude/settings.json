@@ -22,6 +22,16 @@
         ]
       }
     ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"\nimport subprocess, sys\n\n# Check which repos have unpushed commits\nrepos = {\n    'workspace (multi-repo-sample)': '/Users/abhishekverma/Documents/GitHub/multi-repo-sample',\n    'multi-repo-nextjs': '/Users/abhishekverma/Documents/GitHub/multi-repo-sample/multi-repo-nextjs',\n    'multi-repo-ios': '/Users/abhishekverma/Documents/GitHub/multi-repo-sample/multi-repo-ios',\n}\n\ndirty = []\nfor name, path in repos.items():\n    try:\n        # Check for uncommitted changes\n        status = subprocess.run(['git', 'status', '--porcelain'], cwd=path, capture_output=True, text=True)\n        # Check for commits ahead of remote\n        ahead = subprocess.run(['git', 'log', '--oneline', '@{u}..HEAD'], cwd=path, capture_output=True, text=True)\n        if status.stdout.strip() or ahead.stdout.strip():\n            dirty.append(name)\n    except Exception:\n        pass\n\nif dirty:\n    print('')\n    print('\\u250c' + '\\u2500' * 58 + '\\u2510')\n    print('\\u2502  \\U0001f4e4  Unpushed changes detected                           \\u2502')\n    print('\\u251c' + '\\u2500' * 58 + '\\u2524')\n    for r in dirty:\n        label = f'  \\u2022 {r}'\n        print(f'\\u2502{label:<58}\\u2502')\n    print('\\u251c' + '\\u2500' * 58 + '\\u2524')\n    print('\\u2502  Run /git-push to commit and push all repos.          \\u2502')\n    print('\\u2514' + '\\u2500' * 58 + '\\u2518')\n    print('')\n\""
+          }
+        ]
+      }
+    ],
     "Notification": [
       {
         "matcher": "idle_prompt",
