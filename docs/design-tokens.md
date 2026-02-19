@@ -336,9 +336,11 @@ Use icon color tokens from `DesignTokens.swift` / `globals.css`:
 |---------------|------------|-----------|
 | Default icon  | `var(--icon-primary)` | `Color.appIconPrimary` |
 | Secondary     | `var(--icon-secondary)` | `Color.appIconSecondary` |
-| Disabled      | `var(--icon-disabled)` | `Color.appIconDisabled` |
-| Error         | `var(--icon-error)` | `Color.appIconError` (or `.appError`) |
-| On-brand      | `var(--icon-on-primary)` | `Color.appIconOnPrimary` |
+| Muted         | `var(--icon-muted)` | `Color.appIconMuted` |
+| Error         | `var(--icon-error)` | `Color.appIconError` |
+| Success       | `var(--icon-success)` | `Color.appIconSuccess` |
+| Warning       | `var(--icon-warning)` | `Color.appIconWarning` |
+| On-brand      | `var(--icon-on-brand-primary)` | `Color.appIconOnBrandPrimary` |
 
 ### Figma → Code Mapping
 
