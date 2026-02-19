@@ -52,7 +52,7 @@ Open `multi-repo-ios/multi-repo-ios.xcodeproj` in Xcode. No external dependencie
 
 ```bash
 cd multi-repo-ios
-xcodebuild -project multi-repo-ios.xcodeproj -scheme multi-repo-ios -destination 'platform=iOS Simulator,name=iPhone 16' build
+xcodebuild -project multi-repo-ios.xcodeproj -scheme multi-repo-ios -destination 'platform=iOS Simulator,name=iPhone 17' build
 ```
 
 ### Architecture
@@ -74,6 +74,7 @@ Invoke these in any Claude session opened at the workspace root:
 |-------|-----------|---------|
 | Cross-Platform Feature | `/cross-platform-feature <name>` | Scaffold a feature on both platforms + Supabase migration stub + PRD |
 | Design Token Sync | `/design-token-sync` | Push CSS custom properties from `globals.css` → `DesignTokens.swift` |
+| Figma Component Sync | `/figma-component-sync [component]` | Sync Figma design system → `docs/components.md` registry; generate implementation brief for a component |
 | Supabase Setup | `/supabase-setup [project-ref]` | Wire Supabase client to both Next.js and iOS |
 | New Screen | `/new-screen <description>` | UI-only screen scaffold on both platforms |
 | PRD Update | `/prd-update [feature\|all]` | Update PRDs and all CLAUDE.md files to match current codebase |
@@ -85,13 +86,15 @@ These run automatically when Claude needs them, or invoke explicitly:
 | Agent | Purpose |
 |-------|---------|
 | `cross-platform-reviewer` | Side-by-side parity report: what's missing on web vs iOS |
-| `design-consistency-checker` | Flags hardcoded values and token mismatches across both codebases |
+| `design-consistency-checker` | Flags hardcoded values, token mismatches, and two-layer architecture violations |
+| `design-system-sync` | Fetches Figma components/tokens via MCP, validates code parity, generates implementation briefs |
 | `supabase-schema-validator` | Validates Swift models and TS types match the live Supabase schema |
 
 ## Shared Documentation
 
 | File | Purpose |
 |------|---------|
+| `docs/components.md` | Component registry: Figma ↔ code mapping, variant specs, implementation status |
 | `docs/design-tokens.md` | Canonical token reference (CSS var name ↔ Swift name, light/dark values) |
 | `docs/api-contracts.md` | Supabase table shapes, type mapping rules, RLS conventions |
 | `docs/PRDs/` | Per-feature product requirement documents |
@@ -112,9 +115,57 @@ supabase migration new <name>     # Create a new migration file
 
 - **Feature naming**: use the same **PascalCase** name on both platforms (e.g. `UserProfile`)
 - **Routes**: kebab-case on web (`/user-profile`) maps to PascalCase on iOS (`UserProfileView.swift`)
-- **Design tokens**: CSS `--token-name` → Swift `Color.appTokenName` (camelCase, `app` prefix)
 - **All screens exist on both platforms** unless explicitly marked web-only or iOS-only in the feature's PRD
 - After completing a feature, run `/prd-update` to keep docs current
+
+## Design Token Architecture (Two-Layer)
+
+Tokens follow a **Primitive → Semantic** architecture matching the Figma variable collections:
+
+| Layer | Web (CSS) | iOS (Swift) | Used In |
+|-------|-----------|-------------|---------|
+| **Primitive** | `--color-zinc-950` | `Color.colorZinc950` | `globals.css` and `DesignTokens.swift` ONLY |
+| **Semantic** | `--surfaces-brand-interactive` | `Color.surfacesBrandInteractive` | All component files |
+
+**Rules:**
+- **Never use Primitive tokens in component files** — the `design-token-guard` hook blocks this
+- **Never hardcode hex values** in `.tsx`/`.ts`/`.swift` component files
+- Semantic tokens reference Primitives via `var(--color-*)` (CSS) or `colorZinc*` (Swift)
+- Legacy aliases (`--surface-brand` / `Color.appSurfaceBrand`) still work but new code must use Semantic names
+
+**Naming convention:** Figma `Surfaces/BrandInteractive` → CSS `--surfaces-brand-interactive` → Swift `Color.surfacesBrandInteractive`
+
+See `docs/design-tokens.md` for the full mapping table.
+
+## Component System
+
+**Figma file:** bubbles-kit (`ZtcCQT96M2dJZjU35X8uMQ`) — fetched via `figma-console` MCP server.
+
+**Registry:** `docs/components.md` — the single source of truth mapping Figma components to code.
+
+### Component File Structure
+
+```
+# Web
+app/components/<ComponentName>/<ComponentName>.tsx
+app/components/<ComponentName>/index.ts
+
+# iOS
+Components/<ComponentName>/App<ComponentName>.swift
+```
+
+- iOS components are prefixed `App` to avoid SwiftUI naming conflicts
+- Figma variant axes map to component props (`Type` → `variant`, `Size` → `size`, `State` → built-in hover/active/disabled)
+- Disabled state = **0.5 opacity** on container (no separate tokens)
+- Run `/figma-component-sync <name>` before implementing a component to get the Figma spec
+
+### Implemented Components
+
+| Component | Web | iOS |
+|-----------|-----|-----|
+| Button | `app/components/Button/Button.tsx` | `Components/Button/AppButton.swift` |
+
+See `docs/components.md` for the full list with Figma node IDs and variant details.
 
 ## Icon System (Phosphor Icons)
 
@@ -144,8 +195,9 @@ See `docs/design-tokens.md#icon-system` for full reference.
 ## Hook Reminders
 
 `.claude/settings.json` hooks fire automatically in every session:
+- **design-token-guard** (PreToolUse): **BLOCKS** writes that use Primitive tokens (`var(--color-*)` or `Color.colorZinc*`) in component files — enforces Semantic-only usage
+- Editing `package-lock.json` directly is **blocked** — use `npm install` instead
 - After editing a `.swift` file → reminded to check the web counterpart
 - After editing `.tsx`/`.ts` files → reminded to check the iOS counterpart
 - After editing `globals.css` or Swift Color files → prompted to run `/design-token-sync`
-- Editing `package-lock.json` directly is **blocked** — use `npm install` instead
 - After each successful session → evaluate if `docs/`, `.claude/agents/`, or `.claude/skills/` need updating
