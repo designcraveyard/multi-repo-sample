@@ -100,28 +100,122 @@ These CSS variables are kept for backwards compatibility. They resolve to the se
 
 ---
 
+## Radius Tokens
+
+Sourced from Figma **Simantic-Dimensions** collection. Mobile values are the CSS default; Desktop values apply at `min-width: 768px`. iOS always uses the Mobile tier.
+
+| CSS Variable | Swift Name | Mobile | Desktop |
+|-------------|-----------|--------|---------|
+| `--radius-none` | `CGFloat.radiusNone` | `0px`    | `0px`    |
+| `--radius-xs`   | `CGFloat.radiusXS`   | `4px`    | `8px`    |
+| `--radius-sm`   | `CGFloat.radiusSM`   | `8px`    | `12px`   |
+| `--radius-md`   | `CGFloat.radiusMD`   | `12px`   | `16px`   |
+| `--radius-lg`   | `CGFloat.radiusLG`   | `16px`   | `24px`   |
+| `--radius-xl`   | `CGFloat.radiusXL`   | `24px`   | `32px`   |
+| `--radius-2xl`  | `CGFloat.radius2XL`  | `32px`   | `48px`   |
+| `--radius-full` | `.clipShape(Capsule())` | `9999px` | `9999px` |
+
+**Web:** `rounded-md` (Tailwind `@theme`) or `rounded-[var(--radius-md)]`
+**iOS:** `.cornerRadius(CGFloat.radiusMD)` or `.clipShape(RoundedRectangle(cornerRadius: .radiusLG))`
+
+---
+
 ## Spacing Tokens
 
-| Token Name | Tailwind Equivalent | Swift Name | Value |
-|-----------|-------------------|-----------|-------|
-| XS | `gap-1` / `p-1` | `CGFloat.spaceXS` | 4pt |
-| SM | `gap-2` / `p-2` | `CGFloat.spaceSM` | 8pt |
-| MD | `gap-4` / `p-4` | `CGFloat.spaceMD` | 16pt |
-| LG | `gap-6` / `p-6` | `CGFloat.spaceLG` | 24pt |
-| XL | `gap-8` / `p-8` | `CGFloat.spaceXL` | 32pt |
-| 2XL | `gap-12` / `p-12` | `CGFloat.space2XL` | 48pt |
+Sourced from Figma **Primitives/Dimensions** 4px grid. Naming mirrors Tailwind's numeric scale: `--space-N = N × 4px`.
+
+| CSS Variable | Tailwind Utility | iOS `CGFloat` | Value |
+|-------------|-----------------|--------------|-------|
+| `--space-1`  | `p-1`, `gap-1`   | `CGFloat.space1`  | 4px  |
+| `--space-2`  | `p-2`, `gap-2`   | `CGFloat.space2`  | 8px  |
+| `--space-3`  | `p-3`, `gap-3`   | `CGFloat.space3`  | 12px |
+| `--space-4`  | `p-4`, `gap-4`   | `CGFloat.space4`  | 16px |
+| `--space-5`  | `p-5`, `gap-5`   | `CGFloat.space5`  | 20px |
+| `--space-6`  | `p-6`, `gap-6`   | `CGFloat.space6`  | 24px |
+| `--space-8`  | `p-8`, `gap-8`   | `CGFloat.space8`  | 32px |
+| `--space-10` | `p-10`, `gap-10` | `CGFloat.space10` | 40px |
+| `--space-12` | `p-12`, `gap-12` | `CGFloat.space12` | 48px |
+| `--space-16` | `p-16`, `gap-16` | `CGFloat.space16` | 64px |
+| `--space-20` | `p-20`, `gap-20` | `CGFloat.space20` | 80px |
+| `--space-24` | `p-24`, `gap-24` | `CGFloat.space24` | 96px |
+
+**Legacy aliases** (still valid): `spaceXS`=4 · `spaceSM`=8 · `spaceMD`=16 · `spaceLG`=24 · `spaceXL`=32 · `space2XL`=48
+
+**Web:** Prefer Tailwind utilities (`p-4`, `gap-6`). Use `var(--space-4)` in custom CSS when explicit token reference is needed.
+**iOS:** `.padding(CGFloat.space4)`, `VStack(spacing: CGFloat.space3)`, `.frame(width: CGFloat.space16)`
 
 ---
 
 ## Typography Tokens
 
-| Role | Web Class | iOS (Swift) | Specs |
-|------|-----------|-------------|-------|
-| Display / Heading | `text-3xl font-semibold` | `Font.appTitle` | 28pt semibold |
-| Body | `text-base` | `Font.appBody` | 16pt regular |
-| Caption | `text-sm` | `Font.appCaption` | 12pt regular |
+Sourced from Figma **"🎨 Tokens & Styles"** page (node `18:577`). Font family: **Inter** (Figma) → **Geist Sans** on web → **System font** on iOS.
+
+Each role exposes three CSS vars: `--typography-{role}-size`, `--typography-{role}-leading`, `--typography-{role}-weight`. Overline roles also expose `--typography-{role}-tracking`.
+
+**Web:** Use Tailwind size utilities via `@theme` (e.g. `text-title-lg`) or compose from individual vars.
+**iOS:** `.font(.appTitleLarge)`. Overline needs `.tracking(1)` or `.tracking(2)` modifier.
+
+### Display
+
+| Role | Size | Line-height | Weight | CSS Var Suffix | Swift Name |
+|------|------|-------------|--------|---------------|-----------|
+| DisplayText/Large  | 96px | 128px | 400 | `display-lg` | `Font.appDisplayLarge` |
+| DisplayText/Medium | 80px | 96px  | 400 | `display-md` | `Font.appDisplayMedium` |
+| DisplayText/Small  | 64px | 96px  | 400 | `display-sm` | `Font.appDisplaySmall` |
+
+### Heading
+
+| Role | Size | Line-height | Weight | CSS Var Suffix | Swift Name |
+|------|------|-------------|--------|---------------|-----------|
+| Heading/Large  | 56px | 64px | 700 Bold | `heading-lg` | `Font.appHeadingLarge` |
+| Heading/Medium | 48px | 56px | 700 Bold | `heading-md` | `Font.appHeadingMedium` |
+| Heading/Small  | 40px | 44px | 700 Bold | `heading-sm` | `Font.appHeadingSmall` |
+
+### Title
+
+| Role | Size | Line-height | Weight | CSS Var Suffix | Swift Name |
+|------|------|-------------|--------|---------------|-----------|
+| Title/Large  | 28px | 32px | 700 Bold | `title-lg` | `Font.appTitleLarge` |
+| Title/Medium | 24px | 28px | 700 Bold | `title-md` | `Font.appTitleMedium` |
+| Title/Small  | 20px | 24px | 700 Bold | `title-sm` | `Font.appTitleSmall` |
+
+### Body
+
+| Role | Size | Line-height | Weight | CSS Var Suffix | Swift Name |
+|------|------|-------------|--------|---------------|-----------|
+| Body/Large            | 16px | 24px | 400 Regular | `body-lg`    | `Font.appBodyLarge` |
+| Body/Medium           | 14px | 20px | 400 Regular | `body-md`    | `Font.appBodyMedium` |
+| Body/Small            | 12px | 16px | 400 Regular | `body-sm`    | `Font.appBodySmall` |
+| Body/LargeEmphasized  | 16px | 24px | 500 Medium  | `body-lg-em` | `Font.appBodyLargeEm` |
+| Body/MediumEmphasized | 14px | 20px | 500 Medium  | `body-md-em` | `Font.appBodyMediumEm` |
+| Body/SmallEmphasized  | 12px | 16px | 500 Medium  | `body-sm-em` | `Font.appBodySmallEm` |
+
+### CTA / Link
+
+| Role | Size | Line-height | Weight | CSS Var Suffix | Swift Name |
+|------|------|-------------|--------|---------------|-----------|
+| CTA/Large   | 16px | 24px | 600 SemiBold | `cta-lg`  | `Font.appCTALarge` |
+| CTA/Medium  | 14px | 20px | 600 SemiBold | `cta-md`  | `Font.appCTAMedium` |
+| CTA/Small   | 12px | 16px | 600 SemiBold | `cta-sm`  | `Font.appCTASmall` |
+| Link/Large  | 16px | 24px | 500 Medium   | `link-lg` | `Font.appLinkLarge` |
+| Link/Medium | 14px | 20px | 500 Medium   | `link-md` | `Font.appLinkMedium` |
+| Link/Small  | 12px | 16px | 500 Medium   | `link-sm` | `Font.appLinkSmall` |
+
+### Caption / Badge / Overline
+
+| Role | Size | Line-height | Weight | Tracking | CSS Var Suffix | Swift Name |
+|------|------|-------------|--------|---------|---------------|-----------|
+| Caption/Medium  | 12px | 16px | 400 Regular  | —    | `caption-md`   | `Font.appCaptionMedium` |
+| Caption/Small   | 10px | 12px | 400 Regular  | —    | `caption-sm`   | `Font.appCaptionSmall` |
+| Badge/Medium    | 10px | 12px | 600 SemiBold | —    | `badge-md`     | `Font.appBadgeMedium` |
+| Badge/Small     |  8px | 10px | 600 SemiBold | —    | `badge-sm`     | `Font.appBadgeSmall` |
+| Overline/Small  |  8px | 12px | 700 Bold     | 1px  | `overline-sm`  | `Font.appOverlineSmall` |
+| Overline/Medium | 10px | 12px | 700 Bold     | 1px  | `overline-md`  | `Font.appOverlineMedium` |
+| Overline/Large  | 12px | 16px | 700 Bold     | 2px  | `overline-lg`  | `Font.appOverlineLarge` |
 
 _Web uses Geist Sans (loaded via `next/font`). iOS uses system default — closest visual match._
+
+**Legacy Font aliases:** `Font.appTitle` → `appTitleLarge` · `Font.appBody` → `appBodyLarge` · `Font.appCaption` → `appCaptionMedium`
 
 ---
 
@@ -137,3 +231,6 @@ _Web uses Geist Sans (loaded via `next/font`). iOS uses system default — close
 | `--icon-primary` | `Color.appIconPrimary` | Default icons |
 | `--border-default` | `Color.appBorderDefault` | Cards, dividers |
 | `--border-error` | `Color.appBorderError` | Error states |
+| `--radius-md` | `CGFloat.radiusMD` | Card corner radius |
+| `--space-4` | `CGFloat.space4` | Standard component padding |
+| `--typography-title-lg-size` | `Font.appTitleLarge` | Page title |
