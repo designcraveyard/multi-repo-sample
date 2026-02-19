@@ -234,3 +234,113 @@ _Web uses Geist Sans (loaded via `next/font`). iOS uses system default — close
 | `--radius-md` | `CGFloat.radiusMD` | Card corner radius |
 | `--space-4` | `CGFloat.space4` | Standard component padding |
 | `--typography-title-lg-size` | `Font.appTitleLarge` | Page title |
+
+---
+
+## Icon System
+
+**Library:** [Phosphor Icons](https://phosphoricons.com/) — open-source, 6 weights, 1000+ icons. Same icon set used in Figma, web, and iOS.
+
+### Icon Size Tokens
+
+Both platforms use the same 5 named sizes:
+
+| Token | px / pt | Web (`IconSize`) | iOS (`PhosphorIconSize`) |
+|-------|---------|-----------------|--------------------------|
+| `xs`  | 12      | `"xs"`          | `.xs`                    |
+| `sm`  | 16      | `"sm"`          | `.sm`                    |
+| `md`  | 20 _(default)_ | `"md"` | `.md`              |
+| `lg`  | 24      | `"lg"`          | `.lg`                    |
+| `xl`  | 32      | `"xl"`          | `.xl`                    |
+
+### Icon Weight Tokens
+
+| Weight     | Web (`IconWeight`)  | iOS (`Ph.IconWeight`) | Notes              |
+|------------|--------------------|-----------------------|--------------------|
+| `thin`     | `"thin"`           | `.thin`               | Lightest stroke    |
+| `light`    | `"light"`          | `.light`              |                    |
+| `regular`  | `"regular"` _(default)_ | `.regular` _(default)_ | Use for most UI |
+| `bold`     | `"bold"`           | `.bold`               | Emphasis           |
+| `fill`     | `"fill"`           | `.fill`               | Active/selected state |
+| `duotone`  | `"duotone"`        | `.duotone`            | Two-tone (accent + base) |
+
+### Package Setup
+
+**Web** (`multi-repo-nextjs`):
+```bash
+npm install @phosphor-icons/react
+```
+```typescript
+// next.config.ts — prevents compiling all ~9000 icons in dev
+experimental: { optimizePackageImports: ["@phosphor-icons/react"] }
+```
+
+**iOS** (`multi-repo-ios`):
+SPM: `https://github.com/phosphor-icons/swift` · upToNextMajorVersion `2.0.0`
+
+### Web Usage
+
+Always use the typed `<Icon />` wrapper — **never** import Phosphor icons directly:
+
+```tsx
+import { Icon } from "@/app/components/icons";
+
+// Basic — defaults: weight="regular", size="md" (20px), color="currentColor"
+<Icon name="House" />
+
+// With tokens
+<Icon name="Heart" weight="fill" size="lg" color="var(--icon-error)" />
+
+// Accessible icon (adds aria-label; icon is visible to screen readers)
+<Icon name="Bell" label="Notifications" />
+
+// Raw px size (use sparingly)
+<Icon name="ArrowRight" size={18} />
+```
+
+Accepted color values: CSS custom properties (`var(--icon-primary)`), hex, or any CSS color string.
+
+### iOS Usage
+
+Use the `PhosphorIcon` view wrapper — it mirrors the web `<Icon />` API:
+
+```swift
+import PhosphorSwift
+
+// Basic — defaults: weight=.regular, size=.md (20pt), color=.primary
+PhosphorIcon(.house)
+
+// With tokens
+PhosphorIcon(.heart, weight: .fill, size: .lg, color: .appError)
+
+// Accessible icon
+PhosphorIcon(.bell, label: "Notifications")
+
+// Raw px size (use sparingly)
+PhosphorIcon(.arrowRight, rawSize: 18)
+
+// Advanced — raw Phosphor API (for special cases only)
+Ph.house.regular.color(.appPrimary).frame(width: 24, height: 24)
+```
+
+**Overline + icon letter-spacing:** SwiftUI `Font` cannot bake in tracking. Apply `.tracking(1)` or `.tracking(2)` on adjacent `Text` nodes when pairing overline type with icons.
+
+### Color Token Integration
+
+Use icon color tokens from `DesignTokens.swift` / `globals.css`:
+
+| Semantic role | Web CSS var | iOS Swift |
+|---------------|------------|-----------|
+| Default icon  | `var(--icon-primary)` | `Color.appIconPrimary` |
+| Secondary     | `var(--icon-secondary)` | `Color.appIconSecondary` |
+| Disabled      | `var(--icon-disabled)` | `Color.appIconDisabled` |
+| Error         | `var(--icon-error)` | `Color.appIconError` (or `.appError`) |
+| On-brand      | `var(--icon-on-primary)` | `Color.appIconOnPrimary` |
+
+### Figma → Code Mapping
+
+When implementing icons from Figma:
+1. Note the **icon name** (PascalCase in Figma sidebar, e.g. `House`, `ArrowRight`)
+2. Note the **weight** layer in Figma (Regular / Fill / Bold etc.)
+3. Note the **size** from Figma Dimensions — map to nearest token (`xs`/`sm`/`md`/`lg`/`xl`)
+4. Use the color variable from the Figma token, not a hardcoded hex

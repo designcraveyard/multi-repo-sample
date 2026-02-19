@@ -116,6 +116,29 @@ supabase migration new <name>     # Create a new migration file
 - **All screens exist on both platforms** unless explicitly marked web-only or iOS-only in the feature's PRD
 - After completing a feature, run `/prd-update` to keep docs current
 
+## Icon System (Phosphor Icons)
+
+**Library:** [Phosphor Icons](https://phosphoricons.com/) — same set in Figma, web, and iOS.
+
+| Rule | Web | iOS |
+|------|-----|-----|
+| Package | `@phosphor-icons/react` | PhosphorSwift (SPM) |
+| Wrapper | `<Icon name="House" />` | `PhosphorIcon(.house)` |
+| Import | `from "@/app/components/icons"` | `import PhosphorSwift` |
+| Default weight | `regular` | `.regular` |
+| Default size | `md` (20px) | `.md` (20pt) |
+| Color | `var(--icon-primary)` | `Color.appIconPrimary` |
+| Never do | Import from `@phosphor-icons/react` directly | Use raw `Ph.*` in views |
+
+**Size mapping** (identical on both platforms):
+`xs`=12 · `sm`=16 · `md`=20 · `lg`=24 · `xl`=32
+
+**Weights:** `thin` · `light` · `regular` _(default)_ · `bold` · `fill` · `duotone`
+
+**From Figma:** icon name (PascalCase in sidebar) → `name` prop (web) or `.iconName` (iOS). Weight layer → `weight` prop. Size from Dimensions → nearest token.
+
+See `docs/design-tokens.md#icon-system` for full reference.
+
 ## Hook Reminders
 
 `.claude/settings.json` hooks fire automatically in every session:
@@ -123,3 +146,4 @@ supabase migration new <name>     # Create a new migration file
 - After editing `.tsx`/`.ts` files → reminded to check the iOS counterpart
 - After editing `globals.css` or Swift Color files → prompted to run `/design-token-sync`
 - Editing `package-lock.json` directly is **blocked** — use `npm install` instead
+- After each successful session → evaluate if `docs/`, `.claude/agents/`, or `.claude/skills/` need updating
