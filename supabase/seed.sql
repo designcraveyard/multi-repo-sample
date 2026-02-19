@@ -1,0 +1,6 @@
+-- Development seed data
+-- Applied by: supabase db reset (runs all migrations, then this file)
+--
+-- Example (uncomment and modify as tables are added):
+-- INSERT INTO public.profiles (id, display_name, created_at) VALUES
+--   ('00000000-0000-0000-0000-000000000001', 'Dev User', now());

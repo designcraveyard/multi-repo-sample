@@ -1,0 +1,26 @@
+// {{FeaturePascal}} — Next.js App Router page
+// Route: /{{feature-kebab}}
+// Created: {{date}}
+
+import { {{FeaturePascal}}View } from './components/{{FeaturePascal}}View'
+
+export const metadata = {
+  title: '{{FeatureTitle}}',
+}
+
+export default function {{FeaturePascal}}Page() {
+  // TODO: wire Supabase — fetch data here (server component or client hook)
+  return (
+    <main
+      className="min-h-screen p-8 font-sans"
+      style={{ background: 'var(--background)', color: 'var(--foreground)' }}
+    >
+      <div className="mx-auto max-w-4xl">
+        <h1 className="text-3xl font-semibold tracking-tight mb-6">
+          {{FeatureTitle}}
+        </h1>
+        <{{FeaturePascal}}View />
+      </div>
+    </main>
+  )
+}

@@ -1,0 +1,24 @@
+//  SupabaseManager.swift
+//  Singleton Supabase client for the iOS app.
+//
+//  SETUP: Add supabase-swift via Xcode → File → Add Package Dependencies
+//  URL: https://github.com/supabase/supabase-swift
+//  Then uncomment the import and client init below.
+
+import Foundation
+// import Supabase  // ← Uncomment after adding SPM package
+
+@MainActor
+final class SupabaseManager {
+    static let shared = SupabaseManager()
+
+    // Uncomment after adding supabase-swift via SPM:
+    // let client: SupabaseClient
+
+    private init() {
+        // client = SupabaseClient(
+        //     supabaseURL: SupabaseConfig.url,
+        //     supabaseKey: SupabaseConfig.anonKey
+        // )
+    }
+}

@@ -1,0 +1,43 @@
+//  {{FeaturePascal}}View.swift
+//  multi-repo-ios
+//  Feature: {{feature-kebab}}
+//  Created: {{date}}
+
+import SwiftUI
+
+struct {{FeaturePascal}}View: View {
+    @StateObject private var viewModel = {{FeaturePascal}}ViewModel()
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if viewModel.isLoading {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: CGFloat.spaceMD) {
+                            // TODO: implement {{FeaturePascal}} UI
+                            Text("{{FeatureTitle}} content goes here")
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(CGFloat.spaceMD)
+                    }
+                }
+            }
+            .navigationTitle("{{FeatureTitle}}")
+            .task {
+                await viewModel.load()
+            }
+            .alert("Error", isPresented: .constant(viewModel.errorMessage != nil)) {
+                Button("OK") { viewModel.errorMessage = nil }
+            } message: {
+                Text(viewModel.errorMessage ?? "")
+            }
+        }
+    }
+}
+
+#Preview {
+    {{FeaturePascal}}View()
+}

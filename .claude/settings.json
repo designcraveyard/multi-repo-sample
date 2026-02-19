@@ -1,0 +1,37 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"\nimport sys, json, os\ntry:\n    inp = json.load(sys.stdin)\nexcept Exception:\n    sys.exit(0)\ntool = inp.get('tool_name', '')\npath = inp.get('tool_input', {}).get('file_path', '')\nif 'package-lock.json' in path:\n    print('BLOCKED: Do not edit package-lock.json directly. Run npm install to update it.', file=sys.stderr)\n    sys.exit(1)\n\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"\nimport sys, json, os\ntry:\n    inp = json.load(sys.stdin)\nexcept Exception:\n    sys.exit(0)\npath = inp.get('tool_input', {}).get('file_path', '')\nif not path:\n    sys.exit(0)\nbasename = os.path.basename(path)\nif path.endswith('.swift'):\n    print(f'[cross-platform] Edited {basename}')\n    print('[cross-platform] Reminder: check if a web counterpart exists in multi-repo-nextjs/ for this feature.')\nelif path.endswith(('.tsx', '.ts')) and 'multi-repo-nextjs' in path:\n    print(f'[cross-platform] Edited {basename}')\n    print('[cross-platform] Reminder: check if an iOS counterpart exists in multi-repo-ios/ for this feature.')\nelif 'globals.css' in path or ('Color' in basename and path.endswith('.swift')):\n    print('[design-token-sync] Design token file changed.')\n    print('[design-token-sync] Run /design-token-sync to keep CSS variables and Swift Color extensions in sync.')\n\""
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "idle_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Claude is waiting for input\" with title \"Claude Code\" sound name \"Ping\"' 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}
