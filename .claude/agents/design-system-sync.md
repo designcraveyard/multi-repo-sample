@@ -117,6 +117,8 @@ Compare the entire Figma design system against code:
 - **Always check both platforms** — a component is only "Done" when web AND iOS are implemented
 - **Use `docs/components.md`** as the registry — update it when component status changes
 - **Semantic tokens only** in component code — the `design-token-guard` hook enforces this
-- **Figma is the source of truth** for visual design; code follows Figma, not the other way around
+- **Figma role depends on component type:**
+  - **Atomic components** — Figma is structural truth; variant axes, spacing, and token usage all come from Figma
+  - **Complex components** (composing 2+ atoms) — Figma is **visual reference only**; do not derive component tree, state ownership, or interaction model from Figma layers. Use Figma for colors, spacing values, and overall visual appearance only. Component structure is designed via `/complex-component` clarification with the user.
 - **Internal components** (prefixed `_`) don't need standalone implementations — they're composed into parents
 - **`App` prefix** on iOS to avoid SwiftUI naming conflicts (e.g. `AppButton`, not `Button`)
