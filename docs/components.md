@@ -17,12 +17,12 @@ This is the single source of truth mapping Figma design system components to the
 | 1 | **Button** | `66:1818` | Type(Primary/Secondary/Tertiary/Success/Danger) × State(Default/Hover/Pressed/Disabled) = 20 | `app/components/Button/Button.tsx` | `Components/Button/AppButton.swift` | Done |
 | 2 | **IconButton** | `76:208` | Type(Primary/Secondary/Tertiary/Quarternary/Success/Danger) × State(Default/Hover/Pressed/Disabled) × Size(Small/Medium/Large) = 72 | `app/components/IconButton/IconButton.tsx` | `Components/IconButton/AppIconButton.swift` | Done |
 | 3 | **Badge** | `87:1071` | Size(Small/Number/Tiny/Medium) × Subtle(Off/On) × Type(Brand/Success/Error/Accent) = 32 | `app/components/Badge/Badge.tsx` | `Components/Badge/AppBadge.swift` | Done |
-| 4 | **Label** | `82:1401` | Size(Small/Medium/Large) × Type(SecondaryAction/Information/PrimaryAction/BrandInteractive) = 12 | — | — | Not started |
+| 4 | **Label** | `82:1401` | Size(Small/Medium/Large) × Type(SecondaryAction/Information/PrimaryAction/BrandInteractive) = 12 | `app/components/Label/Label.tsx` | `Components/Label/AppLabel.swift` | Done |
 | 5 | **Chips** | `76:460` | Type(ChipTabs/Filters/SegmentControl) × State(Default/Hover/Pressed/Disabled) × Active(Off/On) = 24 | `app/components/Chip/Chip.tsx` | `Components/Chip/AppChip.swift` | Done |
 | 6 | **Tabs** | `78:284` | Size(Small/Medium/Large) × Active(Off/On) = 6 | `app/components/Tabs/Tabs.tsx` | `Components/Tabs/AppTabs.swift` | Done |
 | 7 | **SegmentControlBar** | `81:637` | Size(Small/Medium/Large) × Type(SegmentControl/Chips/Filters) = 9 | `app/components/SegmentControlBar/SegmentControlBar.tsx` | `Components/SegmentControlBar/AppSegmentControlBar.swift` | Done |
 | 8 | **Thumbnail** | `82:1235` | Sizes(xs/sm/md/lg/xl/xxl) × Rounded(Off/On) = 12 | `app/components/Thumbnail/Thumbnail.tsx` | `Components/Thumbnail/AppThumbnail.swift` | Done |
-| 9 | **Input Field** | `90:3753` | State(Default/Disabled/Focus/Filled/Success/Warning/Error) × Type(Default/TextField) = 11 | `app/components/InputField/InputField.tsx` | `Components/InputField/AppInputField.swift` | Done |
+| 9 | **Input Field** | `90:3753` | State(Default/Disabled/Focus/Filled/Success/Warning/Error) × Type(Default/TextField) = 11; slots: leadingLabel · leadingSeparator · leadingIcon \| input \| trailingIcon · trailingSeparator · trailingLabel | `app/components/InputField/InputField.tsx` | `Components/InputField/AppInputField.swift` | Done |
 | 10 | **Toast Message** | `108:4229` | Type(Default/Success/Warning/Error/Info) × has-action × has-dismiss | `app/components/Toast/Toast.tsx` | `Components/Toast/AppToast.swift` | Done |
 | 11 | **Date Component** | `93:4399` | Toggle(Off/On) = 2 | — | — | Not started |
 | 12 | **StreakChecks** | `94:1795` | Property1(CheckCircle/Circle/CircleNotch/ArrowCircleRight/XCircle) = 5 | — | — | Not started |
@@ -39,6 +39,7 @@ Components prefixed with `_` are internal building blocks used by higher-level c
 | _Button | `53:321` | Button (3 variants — likely internal base) |
 | _Chip | (see Figma) | Chips, SegmentControlBar |
 | _Tabs | `76:660` | SegmentControlBar (tab item building block) |
+| _InputField | `90:3525` | InputField — base primitive with 6 boolean slot props (leadingLabel, leadingSeparator, leadingCursor, trailingCursor, trailingSeparator, trailingLabel) |
 
 ---
 
@@ -57,6 +58,12 @@ Maps each Figma component key to its code location for instant lookup.
   // "75482a7cb1cd41ce95e98329e37b701f26dacf59": { "web": null, "ios": null }
 }
 ```
+
+### Demo Pages
+
+| Route | File | What it covers |
+|-------|------|---------------|
+| `/input-demo` | `app/input-demo/page.tsx` | Label (all sizes/types/icon combos) + InputField (all states, all slot combos) + TextField (all states) |
 
 ---
 
