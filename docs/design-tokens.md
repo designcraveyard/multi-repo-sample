@@ -25,7 +25,7 @@ _Run `/design-token-sync` after any change to `globals.css` to regenerate the Sw
 | `--surface-brand-low-contrast` | `Color.appSurfaceBrandLowContrast` | `#E4E4E7` | `#27272A` |
 | `--surface-brand-high-contrast` | `Color.appSurfaceBrandHighContrast` | `#D4D4D8` | `#3F3F46` |
 | `--surface-brand-hover` | `Color.appSurfaceBrandHover` | `#27272A` | `#E4E4E7` |
-| `--surface-brand-pressed` | `Color.appSurfaceBrandPressed` | `#09090B` | `#A1A1AA` |
+| `--surface-brand-pressed` | `Color.appSurfaceBrandPressed` | `#3F3F46` | `#A1A1AA` |
 | `--surface-accent-primary` | `Color.appSurfaceAccentPrimary` | `#4F46E5` | `#818CF8` |
 | `--surface-accent-low-contrast` | `Color.appSurfaceAccentLowContrast` | `#C7D2FE` | `#3730A3` |
 | `--surface-accent-high-contrast` | `Color.appSurfaceAccentHighContrast` | `#A5B4FC` | `#4338CA` |
