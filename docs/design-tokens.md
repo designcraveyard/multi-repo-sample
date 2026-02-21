@@ -13,11 +13,11 @@ _Run `/design-token-sync` after any change to `globals.css` to regenerate the Sw
 
 ## Surfaces
 
-| CSS Variable | Swift Name | Light Value | Dark Value |
-|-------------|-----------|-------------|------------|
-| `--surface-base-primary` | `Color.appSurfaceBasePrimary` | `#FFFFFF` | `#000000` |
-| `--surface-base-low-contrast` | `Color.appSurfaceBaseLowContrast` | `#F5F5F5` | `#171717` |
-| `--surface-base-high-contrast` | `Color.appSurfaceBaseHighContrast` | `#E5E5E5` | `#262626` |
+| CSS Variable | Swift Name | Light Value | Dark Value | Semantic Meaning |
+|-------------|-----------|-------------|------------|------------------|
+| `--surface-base-primary` | `Color.appSurfaceBasePrimary` | `#FFFFFF` | `#000000` | Primary background |
+| `--surface-base-low-contrast` | `Color.appSurfaceBaseLowContrast` | `#F5F5F5` | `#171717` | Subtle background (slightly different from primary) |
+| `--surface-base-high-contrast` | `Color.appSurfaceBaseHighContrast` | `#E5E5E5` | `#262626` | **DEPRECATED: Use border tokens instead.** Higher contrast surface (see note below) |
 | `--surface-inverse-primary` | `Color.appSurfaceInversePrimary` | `#000000` | `#FFFFFF` |
 | `--surface-inverse-low-contrast` | `Color.appSurfaceInverseLowContrast` | `#171717` | `#F5F5F5` |
 | `--surface-inverse-high-contrast` | `Color.appSurfaceInverseHighContrast` | `#262626` | `#E5E5E5` |
@@ -35,6 +35,17 @@ _Run `/design-token-sync` after any change to `globals.css` to regenerate the Sw
 | `--surface-warning-subtle` | `Color.appSurfaceWarningSubtle` | `#FEF3C7` | `#431407` |
 | `--surface-error-solid` | `Color.appSurfaceErrorSolid` | `#DC2626` | `#FCA5A5` |
 | `--surface-error-subtle` | `Color.appSurfaceErrorSubtle` | `#FEE2E2` | `#450A0A` |
+
+### Important: Semantic Token Guidelines
+
+**DO NOT** use `Surfaces/BaseHighContrast` and `Surfaces/BaseLowContrastPressed` interchangeably, even if they share the same hex value. They have distinct semantic meanings:
+
+| Token | Semantic Meaning | Use Cases | Do NOT Use For |
+|-------|-----------------|-----------|----------------|
+| `BaseLowContrastPressed` | State after user interaction; indicates a "pressed" or activated state | Chip active state, button press feedback | Borders, dividers, structural lines |
+| `BaseHighContrast` | Higher visual prominence / more distinguishable from primary surface | ~~Borders~~ (use `Border/*` tokens instead) | Structural elements — use `Border/Default` or `Border/Muted` |
+
+**Rule:** For dividers, borders, and separators → always use `Border/Default` or `Border/Muted`, never `BaseHighContrast` or `BaseLowContrastPressed`.
 
 ---
 

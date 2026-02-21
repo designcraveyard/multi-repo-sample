@@ -77,6 +77,7 @@ Invoke these in any Claude session opened at the workspace root:
 | Figma Component Sync | `/figma-component-sync [component]` | Sync Figma design system → `docs/components.md` registry; generate implementation brief for an **atomic** component |
 | Complex Component | `/complex-component <name>` | Build a complex component (2+ atoms): runs clarification phase, designs props/state/tree, then implements on both platforms |
 | Component Audit | `/component-audit <name>` | Audit a component for token compliance, comment quality, cross-platform parity, and accessibility — run before marking Done |
+| Token Validation | `/validate-tokens [name\|--all]` | Audit components for semantic token misuse (BaseHighContrast/BaseLowContrastPressed in wrong contexts, primitive leakage, hardcoded values) |
 | Supabase Setup | `/supabase-setup [project-ref]` | Wire Supabase client to both Next.js and iOS |
 | New Screen | `/new-screen <description>` | UI-only screen scaffold on both platforms |
 | PRD Update | `/prd-update [feature\|all]` | Update PRDs and all CLAUDE.md files to match current codebase |
@@ -235,6 +236,10 @@ See `docs/design-tokens.md#icon-system` for full reference.
 
 `.claude/settings.json` hooks fire automatically in every session:
 - **design-token-guard** (PreToolUse): **BLOCKS** writes that use Primitive tokens (`var(--color-*)` or `Color.colorZinc*`) in component files — enforces Semantic-only usage
+- **design-token-semantics-guard** (PreToolUse): **BLOCKS** writes that misuse semantic surface tokens as borders/dividers. Enforces:
+  - `BaseLowContrastPressed` only in Chip (active state) and Button (pressed state)
+  - `BaseHighContrast` only as a higher-prominence surface, never for structural lines
+  - All dividers, separators, and borders must use `Border/Default` or `Border/Muted`
 - **complex-component-clarifier** (PreToolUse): when writing a file that imports 2+ atomic components, prints a reminder to confirm state ownership, keyboard interactions, Figma reference scope, and loading/empty/error states before proceeding
 - Editing `package-lock.json` directly is **blocked** — use `npm install` instead
 - After editing a `.swift` file → reminded to check the web counterpart
