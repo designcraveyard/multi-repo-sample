@@ -94,6 +94,24 @@ These run automatically when Claude needs them, or invoke explicitly:
 | `complex-component-reviewer` | Reviews complex components for composition correctness, comment quality, interaction completeness, and cross-platform parity |
 | `supabase-schema-validator` | Validates Swift models and TS types match the live Supabase schema |
 
+## OpenAI Agent Builder Plugin
+
+Plugin at `.claude/plugins/openai-agent-builder/` scaffolds OpenAI agent projects (Python & TypeScript).
+
+| Skill | Invocation | Purpose |
+|-------|-----------|---------|
+| Agent Help | `/agent-help` | Show all available agent builder skills and templates |
+| New Text Agent | `/new-text-agent` | Standard chat agent (Python or TypeScript) |
+| New Voice Agent | `/new-voice-agent` | Voice agent with VoicePipeline (Python) or RealtimeAgent (TS) |
+| New Multi-Agent | `/new-multi-agent` | Multi-agent orchestrator with triage handoffs |
+| New ChatKit Agent | `/new-chatkit-agent` | ChatKit embedded UI agent (basic/custom/full tiers) |
+
+**Hooks** (automatic): blocks hardcoded API keys, blocks Zod v3 in TS agent files, warns on missing error handling/tracing/guardrails.
+
+**Subagents**: `agent-code-reviewer` (SDK pattern review), `agent-security-checker` (credential & auth audit).
+
+**Reference docs** in `references/`: Python SDK, TypeScript SDK, voice patterns, ChatKit patterns, guardrails patterns.
+
 ## Shared Documentation
 
 | File | Purpose |
