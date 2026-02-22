@@ -1,0 +1,43 @@
+{
+  "name": "openai-agent-builder",
+  "version": "1.0.0",
+  "description": "Scaffold OpenAI agent projects (text, voice, multi-agent, ChatKit) with guard hooks and best practices",
+  "skills": "skills/",
+  "agents": "agents/",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/api-key-guard.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/agent-error-handling.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/zod-v4-check.py"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/tracing-reminder.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/guardrails-reminder.py"
+          }
+        ]
+      }
+    ]
+  }
+}
