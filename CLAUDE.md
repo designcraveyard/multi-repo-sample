@@ -95,6 +95,7 @@ These run automatically when Claude needs them, or invoke explicitly:
 | `design-system-sync` | Fetches Figma components/tokens via MCP, validates code parity, generates implementation briefs (atomic components only — for complex components Figma is visual reference only) |
 | `complex-component-reviewer` | Reviews complex components for composition correctness, comment quality, interaction completeness, and cross-platform parity |
 | `supabase-schema-validator` | Validates Swift models and TS types match the live Supabase schema |
+| `screen-reviewer` | Reviews a full screen for state handling, navigation wiring, component library usage, responsive layout, accessibility, and cross-platform parity |
 
 ## OpenAI Agent Builder Plugin
 
@@ -141,6 +142,135 @@ supabase migration new <name>     # Create a new migration file
 - **Routes**: kebab-case on web (`/user-profile`) maps to PascalCase on iOS (`UserProfileView.swift`)
 - **All screens exist on both platforms** unless explicitly marked web-only or iOS-only in the feature's PRD
 - After completing a feature, run `/prd-update` to keep docs current
+
+## Screen Conventions
+
+Screens are full pages/views built from components. Every screen must follow these patterns:
+
+### File Structure
+
+```
+# Web — App Router pages
+app/<kebab-route>/page.tsx         # Page component (required)
+app/<kebab-route>/loading.tsx      # Suspense loading UI (when data-fetching)
+app/<kebab-route>/error.tsx        # Error boundary UI (when data-fetching)
+app/<kebab-route>/layout.tsx       # Nested layout (if sub-navigation needed)
+
+# iOS — Views + ViewModels
+Views/<PascalName>View.swift               # View (UI layer)
+ViewModels/<PascalName>ViewModel.swift      # ViewModel (when data-fetching)
+```
+
+### Required States
+
+Every screen with data must handle all four states:
+
+| State | Web | iOS |
+|-------|-----|-----|
+| **Loading** | `loading.tsx` or inline `AppProgressLoader` | `AppProgressLoader` with `isLoading` |
+| **Empty** | Empty state illustration + message | Empty state text + optional action |
+| **Error** | `error.tsx` or inline error + retry | `.appAlert` or inline error + retry |
+| **Populated** | Normal content render | Normal content render |
+
+UI-only screens (no data fetching) are exempt from loading/error states.
+
+### Data Fetching Patterns
+
+**Web (Next.js):** Use React Server Components by default. Fetch data in `page.tsx` as an `async` component. Use `use client` only when interactivity is needed. Type data with `database.types.ts`.
+
+**iOS (SwiftUI):** Use `@Observable` ViewModels. Fetch data in the ViewModel's `load()` method called from `.task {}`. Type data with Swift model structs in `Models/`.
+
+### Navigation Wiring
+
+- **Web:** Ensure the route is linked from `AdaptiveNavShell` sidebar/bottom-nav or from another page
+- **iOS:** The screen is reachable through `AdaptiveNavShell` tabs or `AdaptiveSplitView` navigation
+- After creating a screen, verify navigation with the `screen-reviewer` agent
+
+### Responsive Layout Requirements
+
+Every screen must handle both compact and regular layouts:
+
+- **Web:** Use `md:` Tailwind prefix for desktop overrides. Default (no prefix) = mobile layout.
+- **iOS:** Read `@Environment(\.horizontalSizeClass)` when layout differs between phone and iPad.
+- Screens that don't need responsive branching (e.g. simple forms) must be marked `// mobile-only` or `// responsive: N/A` with justification.
+- The `adaptive-layout-guard` hook warns when a screen file has no responsive pattern.
+- Use `AdaptiveSplitView` for screens with list → detail navigation (opt-in, not default).
+- Use `AdaptiveSheet` instead of raw bottom sheets or modals.
+
+### Screen Component Usage Rules
+
+- **Always** use design system components (`Button`, `InputField`, `Badge`, etc.) — never raw `<button>`, `<input>`, or SwiftUI `TextField`/`Button`
+- **Always** use `App*` native wrappers for platform controls — never raw shadcn or SwiftUI APIs
+- **Always** use `Adaptive*` wrappers for navigation and presentation — never raw `NavigationStack`, `TabView`, `.sheet()`, or `<Drawer>`
+- **All styling** via semantic tokens — no hardcoded hex colors, pixel spacing, or font sizes
+- The `screen-structure-guard` hook warns if a new page file has zero component library imports
+
+## Adaptive Layout Architecture
+
+This project targets **5 form factors** with a mobile-first design approach:
+
+| Form Factor | iOS | Web | Layout Class |
+|-------------|-----|-----|-------------|
+| iPhone (portrait) | Primary target | — | Compact |
+| Mobile web (< 768px) | — | Primary target | Compact |
+| iPad (portrait) | Orientation-aware: compact layout | — | Compact |
+| iPad (landscape) | Orientation-aware: regular layout | — | Regular |
+| Desktop web (>= 768px) | — | `md:` breakpoint | Regular |
+| macOS | Designed for iPad (automatic) | — | Regular |
+
+### Breakpoint Strategy
+
+**2-tier** — mobile (< 768px) / desktop (>= 768px):
+
+| Platform | Detection | Compact | Regular |
+|----------|-----------|---------|---------|
+| Web | Tailwind `md:` prefix (CSS media queries) | Default styles | `md:` prefixed overrides |
+| iOS | `@Environment(\.horizontalSizeClass)` | `.compact` (iPhone, iPad portrait) | `.regular` (iPad landscape) |
+
+### Adaptive Wrappers
+
+Every screen-level layout decision goes through an **adaptive wrapper** — never use raw navigation or presentation primitives in screen files.
+
+| Wrapper | Compact (phone / mobile web) | Regular (iPad landscape / desktop) | When to Use |
+|---------|-----|--------|------|
+| `AdaptiveNavShell` | Bottom tab bar | Collapsible icon-rail sidebar | Root layout — wraps the entire app |
+| `AdaptiveSplitView` | Push navigation (list → detail) | Side-by-side split panels | Opt-in per screen with list → detail pattern |
+| `AdaptiveSheet` | Bottom sheet (drawer) | Centered modal dialog | Any overlay content (forms, confirmations) |
+
+**File locations:**
+```
+# iOS
+Components/Adaptive/AdaptiveNavShell.swift
+Components/Adaptive/AdaptiveSplitView.swift
+Components/Adaptive/AdaptiveSheet.swift
+
+# Web
+app/components/Adaptive/AdaptiveNavShell.tsx
+app/components/Adaptive/AdaptiveSplitView.tsx
+app/components/Adaptive/AdaptiveSheet.tsx
+```
+
+### Adaptive Rules
+
+- **Never** use raw `NavigationStack`, `TabView`, or `NavigationSplitView` in screen files — use `AdaptiveNavShell` or `AdaptiveSplitView`
+- **Never** use raw `.sheet()` or `<Drawer>` in screen files — use `AdaptiveSheet`
+- **Always** read `@Environment(\.horizontalSizeClass)` in iOS views that need layout branching
+- **Always** use `md:` Tailwind prefix for desktop-specific web layout
+- The `adaptive-layout-guard` hook warns when a screen file uses no adaptive pattern
+- Split-view is **opt-in per screen** — not every list screen needs it
+- iPad portrait uses compact layout; iPad landscape uses regular layout (orientation-aware)
+
+### Sidebar Spec (Regular Layout)
+
+The sidebar on desktop/iPad uses a **collapsible icon rail** pattern:
+
+| State | Width | Content |
+|-------|-------|---------|
+| Collapsed (default) | 60px / 60pt | Icon only, tooltip on hover |
+| Expanded | 240px / 240pt | Icon + label text |
+| Toggle | Click rail toggle button / swipe edge | Animated expand/collapse |
+
+Icons and labels match the bottom tab bar items. Active state uses the same filled icon convention as `AppBottomNavBar`.
 
 ## Design Token Architecture (Two-Layer)
 
@@ -322,5 +452,8 @@ See `docs/design-tokens.md#icon-system` for full reference.
 - After editing `.tsx`/`.ts` files → reminded to check the iOS counterpart
 - After editing `globals.css` or Swift Color files → prompted to run `/design-token-sync`
 - **comment-enforcer** (PostToolUse): reminds when a component file over 80 lines has fewer than 3 comment lines
-- **native-wrapper-guard** (PostToolUse): warns when raw SwiftUI APIs (`Picker(`, `DatePicker(`, `ProgressView(`, `ColorPicker(`, `.sheet(`, `.confirmationDialog(`, `.alert(`, `.contextMenu(`) are used in iOS screen/feature files OR when raw shadcn primitives (`<Select`, `<Drawer`, `<AlertDialog`, `<Carousel`, `<Slider`, `<ContextMenu`) are used directly in Next.js page/screen files — use the `App*` wrappers from `Components/Native/` instead
+- **native-wrapper-guard** (PostToolUse): warns when raw SwiftUI APIs (`Picker(`, `DatePicker(`, `ProgressView(`, `ColorPicker(`, `.sheet(`, `.confirmationDialog(`, `.alert(`, `.contextMenu(`) or raw navigation (`NavigationStack {`, `TabView(`, `NavigationSplitView(`) are used in iOS screen/feature files OR when raw shadcn primitives (`<Select`, `<Drawer`, `<AlertDialog`, `<Carousel`, `<Slider`, `<ContextMenu`) are used directly in Next.js page/screen files — use the `App*` or `Adaptive*` wrappers instead
+- **screen-structure-guard** (PostToolUse): warns when a new screen file (`page.tsx` or `*View.swift`) has no imports from the component library, and reminds to wire views into `AdaptiveNavShell` navigation
+- **adaptive-layout-guard** (PostToolUse): warns when a new screen file has no responsive pattern (`md:` prefix on web, `horizontalSizeClass` on iOS) and is not marked `// responsive: N/A`
+- **auto-lint** (PostToolUse): runs `npx eslint --fix` on `.tsx`/`.ts` files after each edit to catch issues early
 - After each successful session → evaluate if `docs/`, `.claude/agents/`, or `.claude/skills/` need updating

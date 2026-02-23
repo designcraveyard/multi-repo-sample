@@ -5,6 +5,7 @@ description: >
   Unlike atomic components, Figma is used for visual reference only — the implementation
   structure, state ownership, and interaction model must be designed and confirmed with the
   user before any code is written. Always runs an interactive clarification phase first.
+  Use --pattern flag for simpler display-only patterns with a shorter clarification flow.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
@@ -16,24 +17,48 @@ from the design system.
 > **Rule:** Do not write any code until the user approves the proposed design in Phase 2.
 > Figma is visual reference only — do not derive component tree or state ownership from Figma layers.
 
+## Mode Detection
+
+Check if `$ARGUMENTS` contains the `--pattern` flag:
+- **`--pattern`** → Pattern mode: shorter clarification, for display-only or minimally-interactive patterns (e.g. DateComponent, StreakChecks, Waveform). Strip the flag from the component name.
+- **No flag** → Full mode: complete 12-question clarification for interactive complex components.
+
+Also check if `docs/components/<name>.md` exists — if so, pre-populate answers from it and only ask what's missing.
+
 ## Workspace Paths
 
 - Atomic components (web): `multi-repo-nextjs/app/components/`
 - Atomic components (iOS): `multi-repo-ios/multi-repo-ios/Components/`
+- Pattern components (web): `multi-repo-nextjs/app/components/patterns/$ARGUMENTS/$ARGUMENTS.tsx`
+- Pattern components (iOS): `multi-repo-ios/multi-repo-ios/Components/Patterns/App$ARGUMENTS.swift`
 - Complex components (web): `multi-repo-nextjs/app/components/$ARGUMENTS/$ARGUMENTS.tsx`
 - Complex components (iOS): `multi-repo-ios/multi-repo-ios/Components/$ARGUMENTS/App$ARGUMENTS.swift`
 - Component registry: `docs/components.md`
+- Per-component briefs: `docs/components/<name>.md`
 
 ---
 
-## Phase 1: Clarification (ALWAYS run — never skip)
+## Phase 1: Clarification
 
-Before writing any code, read `docs/components.md` to understand what atomic components are available.
-Then ask the user **all** of the following questions in a **single message**, grouped clearly:
+Before writing any code, read `docs/components.md` and `docs/components/<name>.md` (if exists)
+to understand context and pre-fill answers.
 
----
+### Pattern Mode (`--pattern`)
 
-### Questions to ask
+Ask only these 5 questions (skip if already answered in the component brief):
+
+**Composition**
+1. Which atomic components does it compose? (or is it standalone with custom rendering?)
+2. Figma node ID for visual reference?
+3. What props does it expose?
+
+**Behavior**
+4. Is it display-only or does it have interaction? If interactive, what triggers what?
+5. Any platform differences between web and iOS?
+
+### Full Mode (default)
+
+Ask the user **all** of the following questions in a **single message**, grouped clearly:
 
 **Composition & Structure**
 1. Which atomic components does `$ARGUMENTS` compose? (e.g. Button, InputField, Badge, Thumbnail, Tabs — check `docs/components.md` for the full list)
@@ -107,9 +132,14 @@ Wait for explicit approval before proceeding to Phase 3.
 
 Only after the user approves the design in Phase 2.
 
+### File paths
+
+- **Pattern mode**: web → `app/components/patterns/$ARGUMENTS/$ARGUMENTS.tsx`, iOS → `Components/Patterns/App$ARGUMENTS.swift`
+- **Full mode**: web → `app/components/$ARGUMENTS/$ARGUMENTS.tsx`, iOS → `Components/$ARGUMENTS/App$ARGUMENTS.swift`
+
 ### Web (Next.js)
 
-Create `multi-repo-nextjs/app/components/$ARGUMENTS/$ARGUMENTS.tsx`:
+Create the web file at the appropriate path (pattern or full mode):
 
 ```tsx
 /**

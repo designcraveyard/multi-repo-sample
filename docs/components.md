@@ -147,6 +147,79 @@ Barrel import: `import { AppNativePicker, AppTooltip } from "@/app/components/Na
 
 ---
 
+## Adaptive Layout Wrappers
+
+Auto-switch between compact (phone / mobile web) and regular (iPad landscape / desktop web) layouts. Use these instead of raw `NavigationStack`, `TabView`, `.sheet`, `Drawer`, or `Dialog` in screen files.
+
+Barrel import (web): `import { AdaptiveNavShell, AdaptiveSheet } from "@/app/components/Adaptive";`
+
+| # | Wrapper | Compact (Phone/Mobile) | Regular (iPad/Desktop) | iOS File | Web File | Status |
+|---|---------|------------------------|------------------------|----------|----------|--------|
+| 1 | **AdaptiveNavShell** | Bottom tab bar (`TabView`) | Collapsible icon-rail sidebar (60px collapsed / 240px expanded) | `Components/Adaptive/AdaptiveNavShell.swift` | `app/components/Adaptive/AdaptiveNavShell.tsx` | Done |
+| 2 | **AdaptiveSheet** | Bottom sheet (`.sheet` / vaul `Drawer`) | Centered modal dialog (Radix `Dialog`) | `Components/Adaptive/AdaptiveSheet.swift` | `app/components/Adaptive/AdaptiveSheet.tsx` | Done |
+
+### Detection Mechanism
+
+| Platform | Compact | Regular |
+|----------|---------|---------|
+| **iOS** | `@Environment(\.horizontalSizeClass) == .compact` | `sizeClass == .regular` |
+| **Web** | Default (mobile-first) | `md:` Tailwind prefix / `useMediaQuery("(min-width: 768px)")` |
+
+### Usage
+
+**iOS — AdaptiveNavShell:**
+```swift
+@State private var tab = 0
+
+AdaptiveNavShell(
+    selectedTab: $tab,
+    tabs: [
+        AppNavTab(id: 0, label: "Home", icon: "house"),
+        AppNavTab(id: 1, label: "Search", icon: "magnifyingglass"),
+    ]
+) {
+    HomeView()
+    SearchView()
+}
+```
+
+**Web — AdaptiveNavShell:**
+```tsx
+const tabs = [
+  { id: 0, label: "Home", icon: "House" },
+  { id: 1, label: "Search", icon: "MagnifyingGlass" },
+];
+
+<AdaptiveNavShell tabs={tabs} selectedTab={tab} onTabChange={setTab}>
+  {tab === 0 && <HomePage />}
+  {tab === 1 && <SearchPage />}
+</AdaptiveNavShell>
+```
+
+**iOS — AdaptiveSheet:**
+```swift
+someView.adaptiveSheet(isPresented: $show, title: "Edit") {
+    EditContent()
+}
+```
+
+**Web — AdaptiveSheet:**
+```tsx
+<AdaptiveSheet isPresented={open} onClose={() => setOpen(false)} title="Edit">
+  <EditContent />
+</AdaptiveSheet>
+```
+
+### Architecture Notes
+
+- **AdaptiveNavShell** reuses `AppNavTab` metadata on iOS (shared with `AppBottomNavBar`)
+- **AdaptiveSheet** on iOS delegates to `AppBottomSheet` (`.appBottomSheet`) in compact mode
+- **AdaptiveSheet** on web delegates to vaul `Drawer` in mobile mode, Radix `Dialog` in desktop mode
+- Sidebar animation: CSS `transition` on web, SwiftUI `.spring` on iOS
+- `useMediaQuery` hook handles SSR gracefully (defaults to mobile/false)
+
+---
+
 ## Figma Code Connect Map
 
 Maps each Figma component key to its code location for instant lookup.
