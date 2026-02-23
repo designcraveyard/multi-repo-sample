@@ -251,11 +251,37 @@ Thin wrappers around SwiftUI system controls, styled via `NativeComponentStyling
 | `AppTooltip` | `.popover` | `Components/Native/AppTooltip.swift` | `isPresented`, `tipText` or custom `tipContent`, `arrowEdge` |
 | `AppRangeSlider` | dual `Slider` | `Components/Native/AppRangeSlider.swift` | `lowerValue`, `upperValue`, `range`, `step`, `showLabels`; haptics: impact on grab, selection tick on each step change |
 
-**Rules:**
+**iOS Rules:**
 - All styling tokens live in `NativeComponentStyling.swift` — never hardcode colors/spacing in wrappers
 - ViewModifier wrappers (BottomSheet, ActionSheet, Alert, PageHeader, ContextMenu) are applied via dot-syntax on any View
 - `AppBottomNavBar` requires `NativeBottomNavStyling.applyAppearance()` in `multi_repo_iosApp.init()` (already wired)
 - Centralized styling file: `multi-repo-ios/multi-repo-ios/Components/Native/NativeComponentStyling.swift`
+
+### Native Web Component Wrappers (Next.js)
+
+Thin wrappers backed by shadcn/ui primitives. Each file has a `const styling = { colors, layout, typography }` block at the top. **Always use these instead of raw shadcn primitives** in page/feature files.
+
+Barrel import: `import { AppNativePicker, AppTooltip } from "@/app/components/Native";`
+
+| Wrapper | Primitive | File | Key Props |
+|---------|-----------|------|-----------|
+| `AppNativePicker` | shadcn `Select` | `app/components/Native/AppNativePicker.tsx` | `value`, `options: PickerOption[]`, `onChange`, `label`, `showError`, `disabled` |
+| `AppDateTimePicker` | shadcn `Calendar` + `Popover` | `app/components/Native/AppDateTimePicker.tsx` | `value`, `onChange`, `mode: "date"\|"time"\|"dateAndTime"`, `displayStyle: "compact"\|"inline"`, `range`, `label` |
+| `AppProgressLoader` | shadcn `Progress` | `app/components/Native/AppProgressLoader.tsx` | `variant: "indefinite"\|"definite"`, `value`, `total`, `label` |
+| `AppColorPicker` | `<input type="color">` | `app/components/Native/AppColorPicker.tsx` | `value`, `onChange`, `label`, `showOpacity`, `disabled` |
+| `AppBottomSheet` | vaul `Drawer` | `app/components/Native/AppBottomSheet.tsx` | `isPresented`, `onClose`, `children`, `title`, `description`, `snapPoints` |
+| `AppCarousel` | shadcn `Carousel` (Embla) | `app/components/Native/AppCarousel.tsx` | `items: ReactNode[]`, `style: "paged"\|"scrollSnap"`, `showDots` |
+| `AppTooltip` | shadcn `Tooltip` | `app/components/Native/AppTooltip.tsx` | `children`, `content`, `side`, `disabled` |
+| `AppRangeSlider` | shadcn `Slider` | `app/components/Native/AppRangeSlider.tsx` | `lowerValue`, `upperValue`, `onChange`, `range`, `step`, `showLabels` |
+| `AppActionSheet` | shadcn `AlertDialog` | `app/components/Native/AppActionSheet.tsx` | `isPresented`, `onClose`, `actions: AppActionSheetAction[]`, `title`, `message` |
+| `AppAlertPopup` | shadcn `AlertDialog` | `app/components/Native/AppAlertPopup.tsx` | `isPresented`, `onClose`, `title`, `message`, `buttons: AlertButton[]` |
+| `AppContextMenu` | shadcn `ContextMenu`/`DropdownMenu` | `app/components/Native/AppContextMenu.tsx` | `items: AppContextMenuItem[]`, `mode: "context"\|"dropdown"`, `children` |
+
+**Web Rules:**
+- All styling tokens live in the `const styling` block at the top of each file — never hardcode colors/spacing
+- All values must reference semantic CSS custom properties (`var(--surfaces-*)`, `var(--typography-*)`, `var(--border-*)`, `var(--space-*)`)
+- `AppBottomNavBar` and `AppPageHeader` have no web equivalents — use Next.js App Router layouts instead
+- The **native-wrapper-guard** hook warns when raw shadcn primitives are used directly in Next.js page/screen files
 
 ## Icon System (Phosphor Icons)
 
@@ -296,5 +322,5 @@ See `docs/design-tokens.md#icon-system` for full reference.
 - After editing `.tsx`/`.ts` files → reminded to check the iOS counterpart
 - After editing `globals.css` or Swift Color files → prompted to run `/design-token-sync`
 - **comment-enforcer** (PostToolUse): reminds when a component file over 80 lines has fewer than 3 comment lines
-- **native-wrapper-guard** (PostToolUse): warns when raw SwiftUI APIs (`Picker(`, `DatePicker(`, `ProgressView(`, `ColorPicker(`, `.sheet(`, `.confirmationDialog(`, `.alert(`, `.contextMenu(`) are used in iOS screen/feature files — use the `App*` wrappers from `Components/Native/` instead
+- **native-wrapper-guard** (PostToolUse): warns when raw SwiftUI APIs (`Picker(`, `DatePicker(`, `ProgressView(`, `ColorPicker(`, `.sheet(`, `.confirmationDialog(`, `.alert(`, `.contextMenu(`) are used in iOS screen/feature files OR when raw shadcn primitives (`<Select`, `<Drawer`, `<AlertDialog`, `<Carousel`, `<Slider`, `<ContextMenu`) are used directly in Next.js page/screen files — use the `App*` wrappers from `Components/Native/` instead
 - After each successful session → evaluate if `docs/`, `.claude/agents/`, or `.claude/skills/` need updating

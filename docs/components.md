@@ -76,7 +76,7 @@ Components prefixed with `_` are internal building blocks used by higher-level c
 
 ## Native iOS Component Wrappers
 
-Thin wrappers around SwiftUI system controls, styled via `NativeComponentStyling.swift`. These are **iOS-only** — they have no Figma source and no web counterpart (web uses native HTML/browser equivalents). **Always use these instead of raw SwiftUI APIs** in iOS screen/feature files.
+Thin wrappers around SwiftUI system controls (iOS) and shadcn/ui primitives (web), each with an inline `const styling` config block using only semantic design tokens. **Always use these instead of raw SwiftUI APIs / raw shadcn primitives** in screen/feature files.
 
 The `native-wrapper-guard` hook will warn if raw SwiftUI APIs (`Picker(`, `DatePicker(`, `.sheet(`, etc.) are used in screen files instead of these wrappers.
 
@@ -105,7 +105,27 @@ Applied via dot-syntax on any `View` inside a `NavigationStack` or at the screen
 | 12 | **AppPageHeader** | `.navigationTitle` + `.toolbar` | `Components/Native/AppPageHeader.swift` | `.appPageHeader(title:displayMode:trailingActions:)` | Done |
 | 13 | **AppContextMenu** | `.contextMenu` | `Components/Native/AppContextMenu.swift` | `.appContextMenu(items:)` + `AppPopoverMenu(isPresented:items:label:)` | Done |
 
-### Architecture Notes
+### Web Equivalents (Next.js)
+
+Barrel import: `import { AppNativePicker, AppTooltip } from "@/app/components/Native";`
+
+| # | Web Wrapper | Primitive | File | Key Props |
+|---|-------------|-----------|------|-----------|
+| 1 | **AppNativePicker** | shadcn `Select` | `app/components/Native/AppNativePicker.tsx` | `value`, `options: PickerOption[]`, `onChange`, `label`, `showError`, `disabled` |
+| 2 | **AppDateTimePicker** | shadcn `Calendar` + `Popover` | `app/components/Native/AppDateTimePicker.tsx` | `value`, `onChange`, `mode`, `displayStyle`, `range`, `label`, `disabled` |
+| 3 | **AppProgressLoader** | shadcn `Progress` | `app/components/Native/AppProgressLoader.tsx` | `variant: "indefinite"\|"definite"`, `value`, `total`, `label` |
+| 4 | **AppColorPicker** | `<input type="color">` | `app/components/Native/AppColorPicker.tsx` | `value`, `onChange`, `label`, `showOpacity`, `disabled` |
+| 5 | **AppBottomSheet** | vaul `Drawer` | `app/components/Native/AppBottomSheet.tsx` | `isPresented`, `onClose`, `children`, `title`, `description`, `snapPoints` |
+| 6 | **AppCarousel** | shadcn `Carousel` (Embla) | `app/components/Native/AppCarousel.tsx` | `items: ReactNode[]`, `style: "paged"\|"scrollSnap"`, `showDots` |
+| 7 | **AppTooltip** | shadcn `Tooltip` | `app/components/Native/AppTooltip.tsx` | `children`, `content`, `side`, `disabled` |
+| 8 | **AppRangeSlider** | shadcn `Slider` | `app/components/Native/AppRangeSlider.tsx` | `lowerValue`, `upperValue`, `onChange`, `range`, `step`, `showLabels` |
+| 9 | **AppActionSheet** | shadcn `AlertDialog` | `app/components/Native/AppActionSheet.tsx` | `isPresented`, `onClose`, `actions: AppActionSheetAction[]`, `title`, `message` |
+| 10 | **AppAlertPopup** | shadcn `AlertDialog` | `app/components/Native/AppAlertPopup.tsx` | `isPresented`, `onClose`, `title`, `message`, `buttons: AlertButton[]` |
+| 11 | **AppContextMenu** | shadcn `ContextMenu`/`DropdownMenu` | `app/components/Native/AppContextMenu.tsx` | `items: AppContextMenuItem[]`, `mode: "context"\|"dropdown"`, `children` |
+
+> **AppBottomNavBar** and **AppPageHeader** have no web equivalents — web navigation is handled by Next.js App Router layouts.
+
+### iOS Architecture Notes
 
 - **Centralized styling:** All tokens live in `NativeComponentStyling.swift` — namespaced structs per component (e.g. `NativePickerStyling`, `NativeCarouselStyling`)
 - **No hardcoded values:** Wrappers reference `NativeComponentStyling` structs for colors, spacing, typography, and layout constants
@@ -116,6 +136,14 @@ Applied via dot-syntax on any `View` inside a `NavigationStack` or at the screen
 - **AppRangeSlider** fires haptics automatically: `UIImpactFeedbackGenerator(.light)` on thumb grab, `UISelectionFeedbackGenerator` on each discrete step change (step mode only — no haptics in continuous mode)
 - **AppNativePicker** has no default border; the error border (red stroke) only appears when `showError: true`
 - **AppDateTimePicker** `.wheel` style renders the label as a `Text` above the drum columns (`.labelsHidden()` on the `DatePicker`) so the full width is available to the wheel and the label never wraps
+
+### Web Architecture Notes
+
+- **Per-file styling block:** Each wrapper owns `const styling = { colors, layout, typography }` at the top — change tokens there to restyle globally
+- **No hardcoded values:** All colors/spacing must reference semantic CSS custom properties (`var(--surfaces-*)`, `var(--typography-*)`, etc.)
+- **AppCarousel** dot indicators use `CarouselApi` via `setApi` prop — no secondary `useEmblaCarousel` instance
+- **AppContextMenu** `mode="context"` = right-click/long-press; `mode="dropdown"` = click-triggered popover
+- **AppBottomSheet** snap points are fractions of screen height (e.g. `[0.5, 1]` = half + full)
 
 ---
 
