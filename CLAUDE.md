@@ -4,10 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Structure
 
-This is a **multi-repo workspace** containing two independent projects, each with its own git repository:
+This is a **multi-repo workspace** containing three independent projects, each with its own git repository:
 
 - `multi-repo-nextjs/` — Next.js web application
 - `multi-repo-ios/` — SwiftUI iOS application
+- `multi-repo-android/` — Jetpack Compose Android application
 
 There is no root-level git repo, package manager, or shared build system. Each project is developed independently.
 
@@ -63,6 +64,33 @@ xcodebuild -project multi-repo-ios.xcodeproj -scheme multi-repo-ios -destination
 - Automatic code signing (Team: L6KKWH5M53)
 - Modern Swift concurrency enabled (`SWIFT_APPROACHABLE_CONCURRENCY`, `MainActor` default isolation)
 - No tests, networking, or state management configured yet
+
+## multi-repo-android
+
+**Stack:** Kotlin 2.1, Jetpack Compose, Material Design 3, Hilt 2.53.1, supabase-kt 3.2.5
+
+### Commands
+
+```bash
+cd multi-repo-android
+./gradlew assembleDebug   # Debug build
+./gradlew assembleRelease  # Release build
+./gradlew clean            # Clean build outputs
+```
+
+### Architecture
+
+- Kotlin 2.1, compileSdk 36, minSdk 26, targetSdk 35
+- Gradle version catalog (`gradle/libs.versions.toml`) for all dependency versions
+- Compose BOM 2025.01.01 for Compose dependency management
+- Hilt DI with KSP annotation processing
+- Type-safe navigation via `@Serializable sealed interface Screen`
+- 4-state screen pattern: `sealed interface State { Loading, Empty, Error, Populated }`
+- `@HiltViewModel` with `StateFlow<State>` for reactive UI
+- Two-layer design token system matching iOS/web (`PrimitiveColors` internal, `SemanticColors` public)
+- `WindowWidthSizeClass` for adaptive layouts (Compact vs Medium/Expanded)
+
+See `multi-repo-android/CLAUDE.md` for full platform details.
 
 ---
 
@@ -138,9 +166,9 @@ supabase migration new <name>     # Create a new migration file
 
 ## Cross-Platform Conventions
 
-- **Feature naming**: use the same **PascalCase** name on both platforms (e.g. `UserProfile`)
-- **Routes**: kebab-case on web (`/user-profile`) maps to PascalCase on iOS (`UserProfileView.swift`)
-- **All screens exist on both platforms** unless explicitly marked web-only or iOS-only in the feature's PRD
+- **Feature naming**: use the same **PascalCase** name on all three platforms (e.g. `UserProfile`)
+- **Routes**: kebab-case on web (`/user-profile`) maps to PascalCase on iOS (`UserProfileView.swift`) and Android (`UserProfileScreen.kt`)
+- **All screens exist on all three platforms** unless explicitly marked platform-specific in the feature's PRD
 - After completing a feature, run `/prd-update` to keep docs current
 
 ## Screen Conventions
@@ -159,18 +187,23 @@ app/<kebab-route>/layout.tsx       # Nested layout (if sub-navigation needed)
 # iOS — Views + ViewModels
 Views/<PascalName>View.swift               # View (UI layer)
 ViewModels/<PascalName>ViewModel.swift      # ViewModel (when data-fetching)
+
+# Android — Screens + ViewModels
+feature/<name>/<PascalName>Screen.kt       # Screen composable (UI layer)
+feature/<name>/<PascalName>ViewModel.kt    # HiltViewModel (when data-fetching)
+feature/<name>/<PascalName>ScreenState.kt  # Sealed state interface
 ```
 
 ### Required States
 
 Every screen with data must handle all four states:
 
-| State | Web | iOS |
-|-------|-----|-----|
-| **Loading** | `loading.tsx` or inline `AppProgressLoader` | `AppProgressLoader` with `isLoading` |
-| **Empty** | Empty state illustration + message | Empty state text + optional action |
-| **Error** | `error.tsx` or inline error + retry | `.appAlert` or inline error + retry |
-| **Populated** | Normal content render | Normal content render |
+| State | Web | iOS | Android |
+|-------|-----|-----|---------|
+| **Loading** | `loading.tsx` or inline `AppProgressLoader` | `AppProgressLoader` with `isLoading` | `AppProgressLoader` in `Loading` state branch |
+| **Empty** | Empty state illustration + message | Empty state text + optional action | Empty state text + optional `AppButton` |
+| **Error** | `error.tsx` or inline error + retry | `.appAlert` or inline error + retry | Error text + `AppButton` retry in `Error` state branch |
+| **Populated** | Normal content render | Normal content render | Normal content render in `Populated` state branch |
 
 UI-only screens (no data fetching) are exempt from loading/error states.
 
@@ -180,10 +213,13 @@ UI-only screens (no data fetching) are exempt from loading/error states.
 
 **iOS (SwiftUI):** Use `@Observable` ViewModels. Fetch data in the ViewModel's `load()` method called from `.task {}`. Type data with Swift model structs in `Models/`.
 
+**Android (Compose):** Use `@HiltViewModel` with `StateFlow<ScreenState>`. Collect state via `collectAsStateWithLifecycle()`. The sealed `ScreenState` interface enforces Loading/Empty/Error/Populated branches.
+
 ### Navigation Wiring
 
 - **Web:** Ensure the route is linked from `AdaptiveNavShell` sidebar/bottom-nav or from another page
 - **iOS:** The screen is reachable through `AdaptiveNavShell` tabs or `AdaptiveSplitView` navigation
+- **Android:** Add a `@Serializable data object` to `Screen` sealed interface and wire into `AdaptiveNavShell` in `MainActivity`
 - After creating a screen, verify navigation with the `screen-reviewer` agent
 
 ### Responsive Layout Requirements
@@ -192,6 +228,7 @@ Every screen must handle both compact and regular layouts:
 
 - **Web:** Use `md:` Tailwind prefix for desktop overrides. Default (no prefix) = mobile layout.
 - **iOS:** Read `@Environment(\.horizontalSizeClass)` when layout differs between phone and iPad.
+- **Android:** Use `WindowWidthSizeClass` from `calculateWindowSizeClass()` — `Compact` for phones, `Medium`/`Expanded` for tablets.
 - Screens that don't need responsive branching (e.g. simple forms) must be marked `// mobile-only` or `// responsive: N/A` with justification.
 - The `adaptive-layout-guard` hook warns when a screen file has no responsive pattern.
 - Use `AdaptiveSplitView` for screens with list → detail navigation (opt-in, not default).
@@ -226,6 +263,7 @@ This project targets **5 form factors** with a mobile-first design approach:
 |----------|-----------|---------|---------|
 | Web | Tailwind `md:` prefix (CSS media queries) | Default styles | `md:` prefixed overrides |
 | iOS | `@Environment(\.horizontalSizeClass)` | `.compact` (iPhone, iPad portrait) | `.regular` (iPad landscape) |
+| Android | `WindowWidthSizeClass` from `calculateWindowSizeClass()` | `Compact` (phones) | `Medium` / `Expanded` (tablets, foldables) |
 
 ### Adaptive Wrappers
 
@@ -248,6 +286,11 @@ Components/Adaptive/AdaptiveSheet.swift
 app/components/Adaptive/AdaptiveNavShell.tsx
 app/components/Adaptive/AdaptiveSplitView.tsx
 app/components/Adaptive/AdaptiveSheet.tsx
+
+# Android
+ui/adaptive/AdaptiveNavShell.kt
+ui/adaptive/AdaptiveSplitView.kt
+ui/adaptive/AdaptiveSheet.kt
 ```
 
 ### Adaptive Rules
@@ -276,18 +319,18 @@ Icons and labels match the bottom tab bar items. Active state uses the same fill
 
 Tokens follow a **Primitive → Semantic** architecture matching the Figma variable collections:
 
-| Layer | Web (CSS) | iOS (Swift) | Used In |
-|-------|-----------|-------------|---------|
-| **Primitive** | `--color-zinc-950` | `Color.colorZinc950` | `globals.css` and `DesignTokens.swift` ONLY |
-| **Semantic** | `--surfaces-brand-interactive` | `Color.surfacesBrandInteractive` | All component files |
+| Layer | Web (CSS) | iOS (Swift) | Android (Kotlin) | Used In |
+|-------|-----------|-------------|------------------|---------|
+| **Primitive** | `--color-zinc-950` | `Color.colorZinc950` | `PrimitiveColors.zinc950` | Token definition files ONLY |
+| **Semantic** | `--surfaces-brand-interactive` | `Color.surfacesBrandInteractive` | `SemanticColors.surfacesBrandInteractive` | All component files |
 
 **Rules:**
 - **Never use Primitive tokens in component files** — the `design-token-guard` hook blocks this
-- **Never hardcode hex values** in `.tsx`/`.ts`/`.swift` component files
-- Semantic tokens reference Primitives via `var(--color-*)` (CSS) or `colorZinc*` (Swift)
+- **Never hardcode hex values** in `.tsx`/`.ts`/`.swift`/`.kt` component files
+- Semantic tokens reference Primitives via `var(--color-*)` (CSS), `colorZinc*` (Swift), or `PrimitiveColors.*` (Kotlin)
 - Legacy aliases (`--surface-brand` / `Color.appSurfaceBrand`) still work but new code must use Semantic names
 
-**Naming convention:** Figma `Surfaces/BrandInteractive` → CSS `--surfaces-brand-interactive` → Swift `Color.surfacesBrandInteractive`
+**Naming convention:** Figma `Surfaces/BrandInteractive` → CSS `--surfaces-brand-interactive` → Swift `Color.surfacesBrandInteractive` → Kotlin `SemanticColors.surfacesBrandInteractive`
 
 See `docs/design-tokens.md` for the full mapping table.
 
@@ -306,9 +349,15 @@ app/components/<ComponentName>/index.ts
 
 # iOS
 Components/<ComponentName>/App<ComponentName>.swift
+
+# Android
+ui/components/App<ComponentName>.kt    # Atomic components
+ui/patterns/App<PatternName>.kt        # Pattern components
+ui/native/App<WrapperName>.kt          # Native wrappers
+ui/adaptive/Adaptive<WrapperName>.kt   # Adaptive wrappers
 ```
 
-- iOS components are prefixed `App` to avoid SwiftUI naming conflicts
+- iOS and Android components are prefixed `App` to avoid platform naming conflicts
 - Figma variant axes map to component props (`Type` → `variant`, `Size` → `size`, `State` → built-in hover/active/disabled)
 - Disabled state = **0.5 opacity** on container (no separate tokens)
 
@@ -341,23 +390,23 @@ The `comment-enforcer` hook reminds when a file over 80 lines has fewer than 3 c
 
 ### Implemented Components
 
-| Component | Web | iOS |
-|-----------|-----|-----|
-| Button | `app/components/Button/Button.tsx` | `Components/Button/AppButton.swift` |
-| IconButton | `app/components/IconButton/IconButton.tsx` | `Components/IconButton/AppIconButton.swift` |
-| Badge | `app/components/Badge/Badge.tsx` | `Components/Badge/AppBadge.swift` |
-| Label | `app/components/Label/Label.tsx` | `Components/Label/AppLabel.swift` |
-| Chips | `app/components/Chip/Chip.tsx` | `Components/Chip/AppChip.swift` |
-| Tabs | `app/components/Tabs/Tabs.tsx` | `Components/Tabs/AppTabs.swift` |
-| SegmentControlBar | `app/components/SegmentControlBar/SegmentControlBar.tsx` | `Components/SegmentControlBar/AppSegmentControlBar.swift` |
-| Thumbnail | `app/components/Thumbnail/Thumbnail.tsx` | `Components/Thumbnail/AppThumbnail.swift` |
-| InputField | `app/components/InputField/InputField.tsx` | `Components/InputField/AppInputField.swift` |
-| Toast | `app/components/Toast/Toast.tsx` | `Components/Toast/AppToast.swift` |
-| Divider | `app/components/Divider/Divider.tsx` | `Components/Divider/AppDivider.swift` |
-| TextBlock _(pattern)_ | `app/components/patterns/TextBlock/TextBlock.tsx` | `Components/Patterns/AppTextBlock.swift` |
-| StepIndicator _(pattern)_ | `app/components/patterns/StepIndicator/StepIndicator.tsx` | `Components/Patterns/AppStepIndicator.swift` |
-| Stepper _(pattern)_ | `app/components/patterns/Stepper/Stepper.tsx` | `Components/Patterns/AppStepper.swift` |
-| ListItem _(pattern)_ | `app/components/patterns/ListItem/ListItem.tsx` | `Components/Patterns/AppListItem.swift` |
+| Component | Web | iOS | Android |
+|-----------|-----|-----|---------|
+| Button | `app/components/Button/Button.tsx` | `Components/Button/AppButton.swift` | `ui/components/AppButton.kt` |
+| IconButton | `app/components/IconButton/IconButton.tsx` | `Components/IconButton/AppIconButton.swift` | `ui/components/AppIconButton.kt` |
+| Badge | `app/components/Badge/Badge.tsx` | `Components/Badge/AppBadge.swift` | `ui/components/AppBadge.kt` |
+| Label | `app/components/Label/Label.tsx` | `Components/Label/AppLabel.swift` | `ui/components/AppLabel.kt` |
+| Chips | `app/components/Chip/Chip.tsx` | `Components/Chip/AppChip.swift` | `ui/components/AppChip.kt` |
+| Tabs | `app/components/Tabs/Tabs.tsx` | `Components/Tabs/AppTabs.swift` | `ui/components/AppTabs.kt` |
+| SegmentControlBar | `app/components/SegmentControlBar/SegmentControlBar.tsx` | `Components/SegmentControlBar/AppSegmentControlBar.swift` | `ui/components/AppSegmentControlBar.kt` |
+| Thumbnail | `app/components/Thumbnail/Thumbnail.tsx` | `Components/Thumbnail/AppThumbnail.swift` | `ui/components/AppThumbnail.kt` |
+| InputField | `app/components/InputField/InputField.tsx` | `Components/InputField/AppInputField.swift` | `ui/components/AppInputField.kt` |
+| Toast | `app/components/Toast/Toast.tsx` | `Components/Toast/AppToast.swift` | `ui/components/AppToast.kt` |
+| Divider | `app/components/Divider/Divider.tsx` | `Components/Divider/AppDivider.swift` | `ui/components/AppDivider.kt` |
+| TextBlock _(pattern)_ | `app/components/patterns/TextBlock/TextBlock.tsx` | `Components/Patterns/AppTextBlock.swift` | `ui/patterns/AppTextBlock.kt` |
+| StepIndicator _(pattern)_ | `app/components/patterns/StepIndicator/StepIndicator.tsx` | `Components/Patterns/AppStepIndicator.swift` | `ui/patterns/AppStepIndicator.kt` |
+| Stepper _(pattern)_ | `app/components/patterns/Stepper/Stepper.tsx` | `Components/Patterns/AppStepper.swift` | `ui/patterns/AppStepper.kt` |
+| ListItem _(pattern)_ | `app/components/patterns/ListItem/ListItem.tsx` | `Components/Patterns/AppListItem.swift` | `ui/patterns/AppListItem.kt` |
 
 See `docs/components.md` for the full list with Figma node IDs, variant details, and complex component registry.
 
@@ -415,19 +464,21 @@ Barrel import: `import { AppNativePicker, AppTooltip } from "@/app/components/Na
 
 ## Icon System (Phosphor Icons)
 
-**Library:** [Phosphor Icons](https://phosphoricons.com/) — same set in Figma, web, and iOS.
+**Library:** [Phosphor Icons](https://phosphoricons.com/) — same set in Figma, web, iOS, and Android.
 
-| Rule | Web | iOS |
-|------|-----|-----|
-| Package | `@phosphor-icons/react` | PhosphorSwift (SPM) |
-| Usage | `<Icon name="House" />` | `Ph.house.regular.iconSize(.md)` |
-| Import | `from "@/app/components/icons"` | `import PhosphorSwift` |
-| Default weight | `regular` | `.regular` |
-| Default size | `md` (20px) | `.md` (20pt) via `.iconSize(.md)` |
-| Color | `var(--icon-primary)` | `.iconColor(.appIconPrimary)` |
-| Never do | Import from `@phosphor-icons/react` directly | Hardcode `.frame(width:height:)` without token |
+| Rule | Web | iOS | Android |
+|------|-----|-----|---------|
+| Package | `@phosphor-icons/react` | PhosphorSwift (SPM) | Material Icons (placeholder) |
+| Usage | `<Icon name="House" />` | `Ph.house.regular.iconSize(.md)` | `AppIcon(Icons.Filled.Home, size = IconSize.Md)` |
+| Import | `from "@/app/components/icons"` | `import PhosphorSwift` | `import com.abhishekverma.multirepo.ui.icons.*` |
+| Default weight | `regular` | `.regular` | Material `Filled` |
+| Default size | `md` (20px) | `.md` (20pt) via `.iconSize(.md)` | `IconSize.Md` (20dp) |
+| Color | `var(--icon-primary)` | `.iconColor(.appIconPrimary)` | `SemanticColors.iconsPrimary` |
+| Never do | Import from `@phosphor-icons/react` directly | Hardcode `.frame(width:height:)` without token | Hardcode `Modifier.size()` without `IconSize.*` |
 
 **iOS pattern:** `Ph.<name>.<weight>.iconSize(.<token>)` — icons are static members of `Ph`, not instantiated. Size/color/accessibility helpers are in `PhosphorIconHelper.swift`.
+
+**Android pattern:** `AppIcon(imageVector, size, tint, contentDescription)` — wrapper in `PhosphorIconHelper.kt`. Currently uses Material Icons as placeholder; designed for future Phosphor Compose swap.
 
 **Size mapping** (identical on both platforms):
 `xs`=12 · `sm`=16 · `md`=20 · `lg`=24 · `xl`=32
