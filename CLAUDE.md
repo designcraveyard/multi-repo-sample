@@ -81,6 +81,8 @@ Invoke these in any Claude session opened at the workspace root:
 | Supabase Setup | `/supabase-setup [project-ref]` | Wire Supabase client to both Next.js and iOS |
 | New Screen | `/new-screen <description>` | UI-only screen scaffold on both platforms |
 | PRD Update | `/prd-update [feature\|all]` | Update PRDs and all CLAUDE.md files to match current codebase |
+| Git Push | `/git-push` | Commit and push all repos from the workspace root |
+| Post-Session Review | `/post-session-review` | Guided checklist to update docs, skills, agents, and CLAUDE.md after a session |
 
 ## Subagents
 
@@ -222,8 +224,38 @@ The `comment-enforcer` hook reminds when a file over 80 lines has fewer than 3 c
 | InputField | `app/components/InputField/InputField.tsx` | `Components/InputField/AppInputField.swift` |
 | Toast | `app/components/Toast/Toast.tsx` | `Components/Toast/AppToast.swift` |
 | Divider | `app/components/Divider/Divider.tsx` | `Components/Divider/AppDivider.swift` |
+| TextBlock _(pattern)_ | `app/components/patterns/TextBlock/TextBlock.tsx` | `Components/Patterns/AppTextBlock.swift` |
+| StepIndicator _(pattern)_ | `app/components/patterns/StepIndicator/StepIndicator.tsx` | `Components/Patterns/AppStepIndicator.swift` |
+| Stepper _(pattern)_ | `app/components/patterns/Stepper/Stepper.tsx` | `Components/Patterns/AppStepper.swift` |
+| ListItem _(pattern)_ | `app/components/patterns/ListItem/ListItem.tsx` | `Components/Patterns/AppListItem.swift` |
 
 See `docs/components.md` for the full list with Figma node IDs, variant details, and complex component registry.
+
+### Native iOS Component Wrappers
+
+Thin wrappers around SwiftUI system controls, styled via `NativeComponentStyling.swift`. **Always use these instead of raw SwiftUI APIs** in screen/feature files.
+
+| Wrapper | Raw SwiftUI | File | Key Props |
+|---------|-------------|------|-----------|
+| `AppNativePicker` | `Picker` | `Components/Native/AppNativePicker.swift` | `selection`, `options: [PickerOption]`, `style: .menu/.segmented/.wheel`; no default border — error border only when `showError: true` |
+| `AppDateTimePicker` | `DatePicker` | `Components/Native/AppDateTimePicker.swift` | `selection: Date`, `mode: .date/.time/.dateAndTime`, `displayStyle: .compact/.graphical/.wheel`, `range`; `.wheel` style places label above drums |
+| `AppProgressLoader` | `ProgressView` | `Components/Native/AppProgressLoader.swift` | `variant: .indefinite/.definite(value:total:)`, `label` |
+| `AppColorPicker` | `ColorPicker` | `Components/Native/AppColorPicker.swift` | `selection: Color`, `supportsOpacity` |
+| `AppBottomSheet` | `.sheet` | `Components/Native/AppBottomSheet.swift` | ViewModifier: `.appBottomSheet(isPresented:detents:content:)` |
+| `AppActionSheet` | `.confirmationDialog` | `Components/Native/AppActionSheet.swift` | ViewModifier: `.appActionSheet(isPresented:title:actions:message:)` |
+| `AppAlertPopup` | `.alert` | `Components/Native/AppAlertPopup.swift` | ViewModifier: `.appAlert(isPresented:title:message:buttons:)` |
+| `AppPageHeader` | `NavigationStack` + `.toolbar` | `Components/Native/AppPageHeader.swift` | ViewModifier: `.appPageHeader(title:displayMode:trailingActions:)` |
+| `AppContextMenu` | `.contextMenu` | `Components/Native/AppContextMenu.swift` | ViewModifier: `.appContextMenu(items:)` |
+| `AppBottomNavBar` | `TabView` | `Components/Native/AppBottomNavBar.swift` | `selectedTab: Binding<Int>`, `@ViewBuilder content` |
+| `AppCarousel` | `TabView(.page)` / `ScrollView` | `Components/Native/AppCarousel.swift` | `items`, `style: .paged/.scrollSnap`, `showDots` |
+| `AppTooltip` | `.popover` | `Components/Native/AppTooltip.swift` | `isPresented`, `tipText` or custom `tipContent`, `arrowEdge` |
+| `AppRangeSlider` | dual `Slider` | `Components/Native/AppRangeSlider.swift` | `lowerValue`, `upperValue`, `range`, `step`, `showLabels`; haptics: impact on grab, selection tick on each step change |
+
+**Rules:**
+- All styling tokens live in `NativeComponentStyling.swift` — never hardcode colors/spacing in wrappers
+- ViewModifier wrappers (BottomSheet, ActionSheet, Alert, PageHeader, ContextMenu) are applied via dot-syntax on any View
+- `AppBottomNavBar` requires `NativeBottomNavStyling.applyAppearance()` in `multi_repo_iosApp.init()` (already wired)
+- Centralized styling file: `multi-repo-ios/multi-repo-ios/Components/Native/NativeComponentStyling.swift`
 
 ## Icon System (Phosphor Icons)
 
@@ -264,4 +296,5 @@ See `docs/design-tokens.md#icon-system` for full reference.
 - After editing `.tsx`/`.ts` files → reminded to check the iOS counterpart
 - After editing `globals.css` or Swift Color files → prompted to run `/design-token-sync`
 - **comment-enforcer** (PostToolUse): reminds when a component file over 80 lines has fewer than 3 comment lines
+- **native-wrapper-guard** (PostToolUse): warns when raw SwiftUI APIs (`Picker(`, `DatePicker(`, `ProgressView(`, `ColorPicker(`, `.sheet(`, `.confirmationDialog(`, `.alert(`, `.contextMenu(`) are used in iOS screen/feature files — use the `App*` wrappers from `Components/Native/` instead
 - After each successful session → evaluate if `docs/`, `.claude/agents/`, or `.claude/skills/` need updating

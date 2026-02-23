@@ -74,6 +74,51 @@ Components prefixed with `_` are internal building blocks used by higher-level c
 
 ---
 
+## Native iOS Component Wrappers
+
+Thin wrappers around SwiftUI system controls, styled via `NativeComponentStyling.swift`. These are **iOS-only** — they have no Figma source and no web counterpart (web uses native HTML/browser equivalents). **Always use these instead of raw SwiftUI APIs** in iOS screen/feature files.
+
+The `native-wrapper-guard` hook will warn if raw SwiftUI APIs (`Picker(`, `DatePicker(`, `.sheet(`, etc.) are used in screen files instead of these wrappers.
+
+### Standalone Views
+
+| # | Wrapper | Wraps | File | Key Props | Status |
+|---|---------|-------|------|-----------|--------|
+| 1 | **AppNativePicker** | `Picker` | `Components/Native/AppNativePicker.swift` | `selection`, `options: [PickerOption]`, `style: .menu/.segmented/.wheel`, `isDisabled`, `showError` | Done |
+| 2 | **AppDateTimePicker** | `DatePicker` | `Components/Native/AppDateTimePicker.swift` | `selection: Date`, `mode: .date/.time/.dateAndTime`, `displayStyle: .compact/.graphical/.wheel`, `range` | Done |
+| 3 | **AppProgressLoader** | `ProgressView` | `Components/Native/AppProgressLoader.swift` | `variant: .indefinite/.definite(value:total:)`, `label` | Done |
+| 4 | **AppColorPicker** | `ColorPicker` | `Components/Native/AppColorPicker.swift` | `label`, `selection: Color`, `supportsOpacity` | Done |
+| 5 | **AppBottomNavBar** | `TabView` | `Components/Native/AppBottomNavBar.swift` | `selectedTab: Binding<Int>`, `@ViewBuilder content` | Done |
+| 6 | **AppCarousel** | `TabView(.page)` / `ScrollView` | `Components/Native/AppCarousel.swift` | `items`, `style: .paged/.scrollSnap`, `showDots`, `@ViewBuilder content` | Done |
+| 7 | **AppTooltip** | `.popover` | `Components/Native/AppTooltip.swift` | `isPresented`, `tipText` or custom `tipContent`, `arrowEdge` | Done |
+| 8 | **AppRangeSlider** | dual `Slider` | `Components/Native/AppRangeSlider.swift` | `lowerValue`, `upperValue`, `range`, `step`, `showLabels` | Done |
+
+### ViewModifier Wrappers
+
+Applied via dot-syntax on any `View` inside a `NavigationStack` or at the screen level.
+
+| # | Wrapper | Wraps | File | Usage | Status |
+|---|---------|-------|------|-------|--------|
+| 9 | **AppBottomSheet** | `.sheet` | `Components/Native/AppBottomSheet.swift` | `.appBottomSheet(isPresented:detents:content:)` | Done |
+| 10 | **AppActionSheet** | `.confirmationDialog` | `Components/Native/AppActionSheet.swift` | `.appActionSheet(isPresented:title:message:actions:)` | Done |
+| 11 | **AppAlertPopup** | `.alert` | `Components/Native/AppAlertPopup.swift` | `.appAlert(isPresented:title:message:buttons:)` | Done |
+| 12 | **AppPageHeader** | `.navigationTitle` + `.toolbar` | `Components/Native/AppPageHeader.swift` | `.appPageHeader(title:displayMode:trailingActions:)` | Done |
+| 13 | **AppContextMenu** | `.contextMenu` | `Components/Native/AppContextMenu.swift` | `.appContextMenu(items:)` + `AppPopoverMenu(isPresented:items:label:)` | Done |
+
+### Architecture Notes
+
+- **Centralized styling:** All tokens live in `NativeComponentStyling.swift` — namespaced structs per component (e.g. `NativePickerStyling`, `NativeCarouselStyling`)
+- **No hardcoded values:** Wrappers reference `NativeComponentStyling` structs for colors, spacing, typography, and layout constants
+- **AppBottomNavBar** requires `NativeBottomNavStyling.applyAppearance()` in `multi_repo_iosApp.init()` (already wired)
+- **AppBottomSheet** supports detent combinations: `[.medium, .large]` (default), `[.fraction(0.3)]` (compact), or any `Set<PresentationDetent>`
+- **AppContextMenu** provides both a long-press context menu (`.appContextMenu(items:)`) and a tappable popover variant (`AppPopoverMenu`)
+- **AppCarousel** has companion `AppCarouselDots` for animated pill-style page indicators
+- **AppRangeSlider** fires haptics automatically: `UIImpactFeedbackGenerator(.light)` on thumb grab, `UISelectionFeedbackGenerator` on each discrete step change (step mode only — no haptics in continuous mode)
+- **AppNativePicker** has no default border; the error border (red stroke) only appears when `showError: true`
+- **AppDateTimePicker** `.wheel` style renders the label as a `Text` above the drum columns (`.labelsHidden()` on the `DatePicker`) so the full width is available to the wheel and the label never wraps
+
+---
+
 ## Figma Code Connect Map
 
 Maps each Figma component key to its code location for instant lookup.
@@ -92,10 +137,11 @@ Maps each Figma component key to its code location for instant lookup.
 
 ### Demo Pages
 
-| Route | File | What it covers |
-|-------|------|---------------|
-| `/input-demo` | `app/input-demo/page.tsx` | Label (all sizes/types/icon combos) + InputField (all states, all slot combos) + TextField (all states) |
-| `/patterns-demo` | `app/patterns-demo/page.tsx` | TextBlock (all slots) + StepIndicator (on/off) + Stepper (all/mixed/single) + ListItem (all trailing variants) |
+| Platform | Route / Entry | File | What it covers |
+|----------|--------------|------|---------------|
+| Web | `/input-demo` | `app/input-demo/page.tsx` | Label (all sizes/types/icon combos) + InputField (all states, all slot combos) + TextField (all states) |
+| Web | `/patterns-demo` | `app/patterns-demo/page.tsx` | TextBlock (all slots) + StepIndicator (on/off) + Stepper (all/mixed/single) + ListItem (all trailing variants) |
+| iOS | Main tab (ContentView) | `multi-repo-ios/multi-repo-ios/ContentView.swift` | **All** atomic components (Button, IconButton, Badge, Chip, Tabs, SegmentControlBar, Thumbnail, InputField, Toast, Divider) + **All** complex patterns (TextBlock, StepIndicator, Stepper, ListItem) + **All 13 native wrappers** (Picker, DateTimePicker, ProgressLoader, ColorPicker, BottomSheet ×4 variants, ActionSheet, AlertPopup, ContextMenu ×2 variants, Carousel ×2 styles, Tooltip, RangeSlider ×2 modes, BottomNavBar live, PageHeader live) |
 
 ---
 
