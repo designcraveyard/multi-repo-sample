@@ -29,8 +29,9 @@ One paragraph describing what this feature does and why it exists.
 |----------|---------|--------|
 | Next.js (Web) | `app/[route]/page.tsx` | [ ] |
 | iOS (SwiftUI) | `[FeatureName]View.swift` | [ ] |
+| Android (Compose) | `[FeatureName]Screen.kt` | [ ] |
 
-_Mark as web-only or iOS-only here if intentional._
+_Mark as single-platform if intentional (e.g. web-only, iOS-only, Android-only)._
 
 ---
 
@@ -44,6 +45,7 @@ Supabase table(s) involved:
 
 TypeScript type: `multi-repo-nextjs/lib/database.types.ts` → `Database['public']['Tables']['table_name']`
 Swift model: `multi-repo-ios/multi-repo-ios/Models/[FeatureName]Model.swift`
+Kotlin model: `multi-repo-android/app/src/main/java/.../data/model/[FeatureName]Model.kt`
 
 ---
 
