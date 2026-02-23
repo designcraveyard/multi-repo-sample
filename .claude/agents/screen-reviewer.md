@@ -13,8 +13,12 @@ You are a specialized reviewer that audits full screen/page implementations acro
 - Web pages: `multi-repo-nextjs/app/<route>/page.tsx` (and optional `loading.tsx`, `error.tsx`, `layout.tsx`)
 - iOS views: `multi-repo-ios/multi-repo-ios/<Name>View.swift`
 - iOS view models: `multi-repo-ios/multi-repo-ios/<Name>ViewModel.swift` (if data layer exists)
+- Android screens: `multi-repo-android/app/src/main/java/.../feature/<name>/<Name>Screen.kt`
+- Android view models: `multi-repo-android/app/src/main/java/.../feature/<name>/<Name>ViewModel.kt` (if data layer exists)
+- Android screen states: `multi-repo-android/app/src/main/java/.../feature/<name>/<Name>ScreenState.kt`
 - Component library (web): `multi-repo-nextjs/app/components/`
 - Component library (iOS): `multi-repo-ios/multi-repo-ios/Components/`
+- Component library (Android): `multi-repo-android/app/src/main/java/.../ui/components/`
 - Native wrappers (web): `multi-repo-nextjs/app/components/Native/`
 - Native wrappers (iOS): `multi-repo-ios/multi-repo-ios/Components/Native/`
 - Token reference: `docs/design-tokens.md`
@@ -28,19 +32,22 @@ From the arguments or context, determine:
 - **PascalCase name** (e.g. `Settings`, `UserProfile`)
 - **Web route** (e.g. `app/settings/page.tsx`)
 - **iOS view** (e.g. `SettingsView.swift`)
+- **Android screen** (e.g. `feature/settings/SettingsScreen.kt`)
 
-Read both files. If either is missing, flag it immediately.
+Read all available files. Flag any that are missing (check PRDs for intentional platform-only designations before flagging as errors).
 
 ### Step 2: State Handling Audit
 
 Check that all four required states are handled:
 
-| State | Web Pattern | iOS Pattern |
-|-------|-------------|-------------|
-| **Loading** | `loading.tsx` file OR inline skeleton/spinner | `ProgressView` or `AppProgressLoader` with `isLoading` flag |
-| **Empty** | Empty state message/illustration when data array is empty | Conditional on empty data with descriptive text |
-| **Error** | `error.tsx` file OR inline error boundary/message | `.alert` or inline error message with retry action |
-| **Populated** | Normal render with data | Normal render with data |
+| State | Web Pattern | iOS Pattern | Android Pattern |
+|-------|-------------|-------------|-----------------|
+| **Loading** | `loading.tsx` file OR inline skeleton/spinner | `ProgressView` or `AppProgressLoader` with `isLoading` flag | `<Name>ScreenState.Loading` branch with `AppProgressLoader()` composable |
+| **Empty** | Empty state message/illustration when data array is empty | Conditional on empty data with descriptive text | `<Name>ScreenState.Empty` branch with descriptive `Text` |
+| **Error** | `error.tsx` file OR inline error boundary/message | `.alert` or inline error message with retry action | `<Name>ScreenState.Error` branch with error message and retry button |
+| **Populated** | Normal render with data | Normal render with data | `<Name>ScreenState.Populated` branch with full UI |
+
+**Android-specific:** State must be modelled as a sealed interface (`<Name>ScreenState`) exposed via `StateFlow` from a `@HiltViewModel`. The composable collects state with `collectAsState()` and switches on the sealed type.
 
 For UI-only screens (no data fetching), loading and error states may be absent — note this as acceptable.
 
@@ -56,24 +63,32 @@ For UI-only screens (no data fetching), loading and error states may be absent �
 - Check that the view is wrapped in `NavigationStack` if it has sub-navigation
 - Check for `.appPageHeader()` modifier usage for consistent headers
 
+**Android:**
+- Check that a `composable(Screen.<Name>.route) { <Name>Screen() }` entry exists in the NavGraph
+- Check that `Screen.<Name>` is declared in `Screen.kt` (or equivalent navigation sealed class)
+- Check that the screen is reachable from `AdaptiveNavShell` if it is a top-level destination
+- Verify no raw `Scaffold`, `BottomNavigation`, or `ModalBottomSheet` is used inside the screen file — use `AdaptiveNavShell` / `AdaptiveSheet` wrappers instead
+
 ### Step 4: Component Library Usage
 
-Scan both files for:
+Scan all platform files for:
 
 **Must use library components:**
-- All buttons should use `Button` / `AppButton`, not raw `<button>` or SwiftUI `Button`
-- All inputs should use `InputField` / `AppInputField`, not raw `<input>` or SwiftUI `TextField`
+- All buttons should use `Button` / `AppButton` (web/iOS) / `AppButton` (Android), not raw `<button>`, SwiftUI `Button`, or Compose `Button(`
+- All inputs should use `InputField` / `AppInputField`, not raw `<input>`, SwiftUI `TextField`, or Compose `TextField(`
 - All text blocks should use `TextBlock` / `AppTextBlock` for multi-line formatted text
-- Native controls should use `App*` wrappers, not raw SwiftUI/shadcn primitives
+- Native controls should use `App*` wrappers, not raw SwiftUI/shadcn/Compose primitives
+- Android progress indicators must use `AppProgressLoader()`, not raw `CircularProgressIndicator(` or `LinearProgressIndicator(`
 
 **Token compliance:**
-- No hardcoded hex colors, spacing pixels, or font sizes
-- All colors via semantic tokens (`var(--surfaces-*)` / `Color.surfaces*`)
-- All spacing via space tokens (`var(--space-*)` / `CGFloat.space*`)
+- No hardcoded hex colors, spacing pixels, or font sizes on any platform
+- Web: all colors via semantic tokens (`var(--surfaces-*)`)
+- iOS: all colors via `Color.surfaces*` / `CGFloat.space*`
+- Android: all colors via `SemanticColors.*`, all spacing via `Spacing.*`, all typography via `AppTypography.*`; no `Color(0xFF...)` literals or raw `N.dp` values outside `DesignTokens.kt`
 
-### Step 5: Adaptive Layout (Both Platforms)
+### Step 5: Adaptive Layout (All Platforms)
 
-Check responsive/adaptive patterns on **both** platforms:
+Check responsive/adaptive patterns on **all** platforms:
 
 **Web:**
 - `md:` Tailwind breakpoint classes present (2-tier: mobile-first, `md:` for desktop)
@@ -91,7 +106,14 @@ Check responsive/adaptive patterns on **both** platforms:
 - If list→detail screen: uses `AdaptiveSplitView` (or marked as mobile-only)
 - Portrait vs landscape handled (orientation-aware where applicable)
 
-**Both platforms may be exempt** if marked `// responsive: N/A` (e.g., simple info-only screens).
+**Android:**
+- `LocalWindowSizeClass.current` used for compact/medium/expanded layout branching
+- Compact = phone portrait; Medium/Expanded = tablet or foldable landscape — different layouts where applicable
+- No raw `Scaffold` / `BottomNavigation` in screen composable files — should use `AdaptiveNavShell` wrapper
+- If list→detail screen: uses `AdaptiveSplitView` composable (or marked as compact-only)
+- Screen must be marked `// responsive: N/A` with justification if no WindowSizeClass branching is present
+
+**All platforms may be exempt** if marked `// responsive: N/A` (e.g., simple info-only screens).
 
 ### Step 6: Accessibility
 
@@ -124,47 +146,59 @@ Compare the two implementations:
 ### Files Reviewed
 | Platform | File | Lines |
 |----------|------|-------|
-| Web | `app/<route>/page.tsx` | ... |
-| iOS | `<Name>View.swift` | ... |
+| Web      | `app/<route>/page.tsx` | ... |
+| iOS      | `<Name>View.swift` | ... |
+| Android  | `feature/<name>/<Name>Screen.kt` | ... [or: not found] |
 
 ### State Handling
-| State | Web | iOS | Status |
-|-------|-----|-----|--------|
-| Loading | ... | ... | ... |
-| Empty | ... | ... | ... |
-| Error | ... | ... | ... |
-| Populated | ... | ... | ... |
+| State     | Web | iOS | Android | Status |
+|-----------|-----|-----|---------|--------|
+| Loading   | ... | ... | ...     | ...    |
+| Empty     | ... | ... | ...     | ...    |
+| Error     | ... | ... | ...     | ...    |
+| Populated | ... | ... | ...     | ...    |
 
 ### Navigation
 - Web: [wired/not wired — details]
 - iOS: [wired/not wired — details]
+- Android: [NavGraph entry / AdaptiveNavShell tab / not wired — details]
 
 ### Component Library Usage
-- [list any raw HTML/SwiftUI used instead of library components]
-- [list any token violations]
+- [list any raw HTML/SwiftUI/Compose used instead of library components]
+- [list any token violations by platform]
 
 ### Adaptive Layout
-| Check | Web | iOS |
-|-------|-----|-----|
-| Responsive breakpoints (`md:` / `horizontalSizeClass`) | ... | ... |
-| Container width adapts | ... | ... |
-| Uses Adaptive* wrappers (not raw nav) | ... | ... |
-| Split-view (if applicable) | ... | ... |
+| Check | Web | iOS | Android |
+|-------|-----|-----|---------|
+| Responsive breakpoints (`md:` / `horizontalSizeClass` / `WindowSizeClass`) | ... | ... | ... |
+| Container width adapts | ... | ... | ... |
+| Uses Adaptive* wrappers (not raw nav) | ... | ... | ... |
+| Split-view (if applicable) | ... | ... | ... |
+
+### Android-Specific Checks
+| Check | Result |
+|-------|--------|
+| @HiltViewModel used | ... |
+| StateFlow + collectAsState() | ... |
+| Sealed ScreenState interface | ... |
+| No PrimitiveColors.* in screen file | ... |
+| No raw Color(0xFF...) literals | ... |
+| No hardcoded N.dp values | ... |
 
 ### Accessibility
-| Check | Web | iOS |
-|-------|-----|-----|
-| Heading hierarchy | ... | ... |
-| Focus management | ... | ... |
-| Screen reader labels | ... | ... |
+| Check | Web | iOS | Android |
+|-------|-----|-----|---------|
+| Heading hierarchy / content description | ... | ... | ... |
+| Focus management | ... | ... | ... |
+| Screen reader labels | ... | ... | ... |
 
 ### Cross-Platform Parity
-| Aspect | Web | iOS | Match? |
-|--------|-----|-----|--------|
-| Data fields | ... | ... | ... |
-| User actions | ... | ... | ... |
-| Empty state | ... | ... | ... |
-| Error handling | ... | ... | ... |
+| Aspect | Web | iOS | Android | Match? |
+|--------|-----|-----|---------|--------|
+| Data fields | ... | ... | ... | ... |
+| User actions | ... | ... | ... | ... |
+| Empty state | ... | ... | ... | ... |
+| Error handling | ... | ... | ... | ... |
 
 ### Issues Found
 
@@ -185,11 +219,14 @@ Compare the two implementations:
 ## Review Principles
 
 - UI-only screens (no data) don't need loading/error states — note as "N/A (UI-only)"
-- Platform-specific navigation patterns are acceptable (tabs on iOS, sidebar on web)
-- Platform-specific gestures are acceptable (swipe-to-dismiss on iOS)
-- Token compliance is always P0 — hardcoded values block approval
-- Missing adaptive layout (no `md:` or `horizontalSizeClass`) is P0 — every screen must be responsive
-- Raw `NavigationStack` / `TabView` in screen files is P1 — use `AdaptiveNavShell` wrapper
+- Platform-specific navigation patterns are acceptable (tabs on iOS, sidebar on web, back gesture on Android)
+- Platform-specific gestures are acceptable (swipe-to-dismiss on iOS, predictive back on Android)
+- Token compliance is always P0 — hardcoded values block approval on all platforms
+- Missing adaptive layout (no `md:` / `horizontalSizeClass` / `WindowSizeClass`) is P0 — every screen must be responsive
+- Raw `NavigationStack` / `TabView` in iOS screen files is P1 — use `AdaptiveNavShell` wrapper
+- Raw `Scaffold` / `BottomNavigation` in Android screen files is P1 — use `AdaptiveNavShell` wrapper
+- Missing `@HiltViewModel` on a data-fetching Android screen is P0 — required for Hilt DI
+- Android state not modelled as sealed `ScreenState` interface is P1 — required for 4-state pattern
 - Missing navigation wiring is P1 — screen exists but isn't reachable
 - Accessibility issues are P1 — should be fixed before shipping
 - Minor responsive polish gaps (spacing tweaks, alignment) are P2 for initial builds

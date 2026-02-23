@@ -1,6 +1,6 @@
 ---
 name: new-screen
-description: Create a new screen or page on both platforms (Next.js + SwiftUI) from a plain-English description. UI scaffold only — no data layer. Use when user says "add a screen for X", "create a page for X", or "I need a new view for X". For full features with data, use /cross-platform-feature instead.
+description: Create a new screen or page on all platforms (Next.js + SwiftUI + Android Compose) from a plain-English description. UI scaffold only — no data layer. Use when user says "add a screen for X", "create a page for X", or "I need a new view for X". For full features with data, use /cross-platform-feature instead.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
@@ -266,7 +266,74 @@ struct <Pascal>View: View {
 
 > **Note:** Do NOT wrap in `NavigationStack` — the parent `AdaptiveNavShell` provides navigation context.
 
-### Step 6: Update Navigation
+### Step 6: Create Android Compose Screen
+
+Check if the Android project exists:
+```bash
+find multi-repo-android/app/src/main/java -name "*.kt" | head -3 2>/dev/null || echo "Android not found"
+```
+
+If the Android project exists, create
+`multi-repo-android/app/src/main/java/<base-package>/feature/<kebab>/<Pascal>Screen.kt`:
+
+**UI-only mode:**
+```kotlin
+// <Pascal>Screen.kt
+package <base.package>.feature.<kebab>
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import <base.package>.ui.components.adaptive.AdaptiveNavShell
+import <base.package>.ui.theme.SemanticColors
+import <base.package>.ui.theme.Spacing
+import <base.package>.ui.theme.AppTypography
+
+// responsive: WindowSizeClass via LocalWindowSizeClass.current
+// Compact = phone portrait; Medium/Expanded = tablet/foldable landscape
+
+// --- Screen
+
+@Composable
+fun <Pascal>Screen(
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(Spacing.MD),
+    ) {
+        Text(
+            text = "<Title>",
+            style = AppTypography.titleLarge,
+            color = SemanticColors.typographyPrimary,
+        )
+        Spacer(modifier = Modifier.height(Spacing.MD))
+        // TODO: implement <Pascal> UI
+        // Use LocalWindowSizeClass.current for compact vs. expanded layout branching
+    }
+}
+```
+
+**Data mode** — add a `<Pascal>ViewModel.kt` and wire the four states (see `/cross-platform-feature` for the full HiltViewModel + ScreenState template).
+
+Wire the new screen into the navigation graph at
+`multi-repo-android/app/src/main/java/<base-package>/navigation/Screen.kt`:
+- Add `Screen.<Pascal>` object with route = `"<kebab>"`
+- Add `composable(Screen.<Pascal>.route) { <Pascal>Screen() }` in the NavGraph builder
+- Add a tab/rail entry in `AdaptiveNavShell` if the screen is a top-level destination
+
+**Android rules:**
+- All colors via `SemanticColors.*` — never hardcode hex
+- All spacing via `Spacing.*` (XS=4dp, SM=8dp, MD=16dp, LG=24dp, XL=32dp)
+- All typography via `AppTypography.*` — never hardcode font sizes
+- Use `AdaptiveNavShell` / `AdaptiveSheet` wrappers — never raw `Scaffold`, `BottomNavigation`, or `ModalBottomSheet` in screen files
+- Use `LocalWindowSizeClass.current` for compact/expanded layout branching
+
+If the Android project does not exist, skip and note it in the report.
+
+### Step 7: Update Navigation
 
 **iOS:** Read `multi-repo-ios/multi-repo-ios/Components/Adaptive/AdaptiveNavShell.swift` (or `ContentView.swift` if AdaptiveNavShell doesn't exist yet).
 Add a tab or navigation entry for the new screen. If using AdaptiveNavShell, add a `NavDestination` entry.
@@ -274,12 +341,15 @@ If not wired yet, add: `// TODO: add navigation entry for <Pascal>View`
 
 **Web:** Ensure the route is linked from the sidebar/bottom navigation in `AdaptiveNavShell` (or `layout.tsx` if the shell doesn't exist yet).
 
-### Step 7: Update CLAUDE.md Files
+**Android:** Wire into the NavGraph and `AdaptiveNavShell` as described in Step 6.
+
+### Step 8: Update CLAUDE.md Files
 
 Add the new route to `multi-repo-nextjs/CLAUDE.md` under **Screens / Routes**.
 Add the new view to `multi-repo-ios/CLAUDE.md` under **Screens / Views**.
+Add the new screen to `multi-repo-android/CLAUDE.md` under **Screens** if the Android project exists.
 
-### Step 8: Report
+### Step 9: Report
 
 ```
 ## Screen Created: <Pascal>
@@ -291,15 +361,16 @@ Add the new view to `multi-repo-ios/CLAUDE.md` under **Screens / Views**.
 | Next.js  | app/<kebab>/error.tsx | [created / N/A] |
 | iOS      | Views/<Pascal>View.swift | [UI-only / Data] |
 | iOS      | ViewModels/<Pascal>ViewModel.swift | [created / N/A] |
+| Android  | feature/<kebab>/<Pascal>Screen.kt | [UI-only / Data] |
 
-Navigation: [updated AdaptiveNavShell / TODO noted]
-Responsive: [horizontalSizeClass on iOS / md: classes on web]
+Navigation: [updated AdaptiveNavShell on all platforms / TODO noted]
+Responsive: [horizontalSizeClass on iOS / md: classes on web / WindowSizeClass on Android]
 
 ### Next Steps
 - Implement UI using components from `docs/components.md`
-- [If data mode] Wire data fetching to Supabase
+- [If data mode] Wire data fetching to Supabase/repository layer
 - [If split-view] Wrap in `AdaptiveSplitView` for list→detail layout
-- Test both compact and regular size classes
+- Test both compact and regular size classes on all platforms
 - Run `screen-reviewer` agent before marking complete
 - Run `/prd-update` to keep docs current
 ```

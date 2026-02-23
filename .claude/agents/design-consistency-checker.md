@@ -33,18 +33,20 @@ The design system uses a **mandatory two-layer architecture** matching Figma:
 
 - Web tokens: `multi-repo-nextjs/app/globals.css` (CSS custom properties — source of truth)
 - iOS tokens: `multi-repo-ios/multi-repo-ios/DesignTokens.swift`
+- Android tokens: `multi-repo-android/app/src/main/java/.../ui/theme/DesignTokens.kt` (SemanticColors, PrimitiveColors, Spacing, AppTypography objects)
 - Shared spec: `docs/design-tokens.md`
 
 ## Review Process
 
 ### Step 1: Load Token Spec
 
-Read the three token files to understand the current state:
+Read the token files to understand the current state:
 
 ```bash
 cat docs/design-tokens.md
 cat multi-repo-nextjs/app/globals.css
 cat multi-repo-ios/multi-repo-ios/DesignTokens.swift 2>/dev/null || echo "DesignTokens.swift not found — run /design-token-sync"
+find multi-repo-android/app/src/main/java -name "DesignTokens.kt" 2>/dev/null | xargs cat 2>/dev/null || echo "Android DesignTokens.kt not found — run /design-token-sync"
 ```
 
 ### Step 2: Scan Web Code for Hardcoded Values
@@ -96,15 +98,40 @@ grep -rn "\.appSurface\|\.appText\|\.appIcon\|\.appBorder" \
   multi-repo-ios/multi-repo-ios/ --include="*.swift" 2>/dev/null | grep -v "DesignTokens.swift"
 ```
 
-### Step 6: Compare Token Values Across Platforms
+### Step 6: Scan Android Code for Hardcoded Values
+
+```bash
+# Hardcoded hex colors in Kotlin files (excluding DesignTokens.kt)
+grep -rn "Color(0x\|Color(red =\|Color(red=" multi-repo-android/ --include="*.kt" 2>/dev/null | grep -v "DesignTokens.kt"
+
+# Hardcoded dp or sp values used as literals in component/screen files
+grep -rn "\b[0-9]\+\.dp\b\|\b[0-9]\+\.sp\b" multi-repo-android/ --include="*.kt" 2>/dev/null | grep -v "DesignTokens.kt"
+```
+
+### Step 7: Scan for Wrong-Layer Usage in Android Code
+
+```bash
+# Primitive tokens used directly in UI files (should ONLY appear in DesignTokens.kt)
+grep -rn "PrimitiveColors\." multi-repo-android/ --include="*.kt" 2>/dev/null | grep -v "DesignTokens.kt"
+
+# Hardcoded Color() calls with hex literals in component/screen files
+grep -rn "Color(0xFF" multi-repo-android/ --include="*.kt" 2>/dev/null | grep -v "DesignTokens.kt"
+
+# Raw MaterialTheme colors used instead of SemanticColors (flag as advisory)
+grep -rn "MaterialTheme\.colorScheme\." multi-repo-android/ --include="*.kt" 2>/dev/null | grep -v "Theme.kt\|DesignTokens.kt"
+```
+
+### Step 8: Compare Token Values Across Platforms
 
 For each token in the spec, verify:
 - Web Semantic token references a Primitive token (not hardcoded hex)
 - iOS Semantic token references a Primitive token (not hardcoded hex)
-- Web and iOS Semantic tokens resolve to the same primitive for both light and dark mode
+- Android `SemanticColors.*` property references a `PrimitiveColors.*` value (not hardcoded Color literal)
+- Web, iOS, and Android Semantic tokens resolve to the same hex values for both light and dark mode
 - If DesignTokens.swift is missing or out of date, flag and recommend running `/design-token-sync`
+- If DesignTokens.kt is missing or out of date, flag and recommend running `/design-token-sync`
 
-### Step 7: Output Consistency Report
+### Step 9: Output Consistency Report
 
 ```
 ## Design Consistency Report
@@ -123,17 +150,28 @@ For each token in the spec, verify:
 - Semantic tokens correctly referencing primitives: X / X ✓
 - Semantic tokens with hardcoded hex (violation): X
 
+#### Android (DesignTokens.kt)
+- Primitive layer (`PrimitiveColors.*`): X tokens defined
+- Semantic layer (`SemanticColors.*`): X tokens defined
+- Semantic tokens correctly referencing PrimitiveColors: X / X ✓
+- Semantic tokens with hardcoded Color() literal (violation): X
+- DesignTokens.kt found: [yes / no — run /design-token-sync]
+
 ### Token Sync Status
 
-| Figma Token | CSS Var | Swift Name | Web Light | Web Dark | iOS Light | iOS Dark | Match |
-|-------------|---------|------------|-----------|----------|-----------|----------|-------|
-| Surfaces/BrandInteractive | --surfaces-brand-interactive | .surfacesBrandInteractive | #09090B | #FAFAFA | #09090B | #FAFAFA | ✓ |
+| Figma Token | CSS Var | Swift Name | Kotlin Name | Web Light | iOS Light | Android Light | Match |
+|-------------|---------|------------|-------------|-----------|-----------|---------------|-------|
+| Surfaces/BrandInteractive | --surfaces-brand-interactive | .surfacesBrandInteractive | SemanticColors.surfacesBrandInteractive | #09090B | #09090B | #09090B | ✓ |
 
 ### Wrong-Layer Usage Violations
 
 #### Primitives used directly in UI code (must use semantic token instead)
 | Platform | File | Line | Value | Required Semantic Token |
 |----------|------|------|-------|------------------------|
+
+#### Android: PrimitiveColors.* used outside DesignTokens.kt
+| File | Line | Value | Required SemanticColors replacement |
+|------|------|-------|-------------------------------------|
 
 #### Legacy aliases used in new component code (recommend migrating to semantic names)
 | Platform | File | Line | Legacy Token | Semantic Replacement |
@@ -149,17 +187,21 @@ For each token in the spec, verify:
 | File | Line | Value | Suggested Token |
 |------|------|-------|----------------|
 
+#### Android (should use SemanticColors.* or Spacing.*)
+| File | Line | Value | Suggested Token |
+|------|------|-------|----------------|
+
 ### Platform Inconsistencies
-| Token | Web Value | iOS Value | Difference |
-|-------|-----------|-----------|------------|
+| Token | Web Value | iOS Value | Android Value | Difference |
+|-------|-----------|-----------|---------------|------------|
 
 ### Summary
-- Primitive tokens defined: X (web) / X (iOS)
-- Semantic tokens defined: X (web) / X (iOS)
+- Primitive tokens defined: X (web) / X (iOS) / X (Android)
+- Semantic tokens defined: X (web) / X (iOS) / X (Android)
 - Tokens synced across platforms: X / X
-- Two-layer violations (primitive used in UI): X (web: X, iOS: X)
+- Two-layer violations (primitive used in UI): X (web: X, iOS: X, Android: X)
 - Legacy alias usage in new code: X (web: X, iOS: X)
-- Hardcoded values found: X (web: X, iOS: X)
+- Hardcoded values found: X (web: X, iOS: X, Android: X)
 - Platform value mismatches: X
 - Recommendation: [run /design-token-sync / fix listed violations]
 ```
@@ -177,9 +219,13 @@ For each token in the spec, verify:
 ### Violations — Always flag
 - `var(--color-zinc-950)` in `.tsx`/`.ts` component files — primitive used directly in UI (must use semantic token)
 - `Color.colorZinc950` in `.swift` files other than `DesignTokens.swift` — primitive used directly in UI
+- `PrimitiveColors.*` in `.kt` files other than `DesignTokens.kt` — primitive used directly in UI (must use `SemanticColors.*`)
 - `#09090B` or any raw hex in `.tsx`/`.ts`/`.swift` component files — hardcoded value
+- `Color(0xFF09090B)` or any raw `Color()` literal in `.kt` component/screen files — hardcoded value (must use `SemanticColors.*`)
+- Hardcoded dp/sp literals (e.g. `16.dp`) directly in `.kt` component/screen files — must use `Spacing.*` values
 - Semantic tokens in `globals.css` with hardcoded hex values (e.g. `--surfaces-brand-interactive: #09090B`) — must reference primitive
 - Semantic tokens in `DesignTokens.swift` using `Color(hex:)` directly instead of a `colorPrimitive*` — must reference primitive
+- `SemanticColors.*` properties in `DesignTokens.kt` using `Color(0xFF...)` directly instead of `PrimitiveColors.*` — must reference primitive
 
 ### Warn (recommend migrating) — flag as advisory
 - `var(--surface-brand)` or `var(--text-brand)` in component files — legacy alias, still works but new code should use `var(--surfaces-brand-interactive)` / `var(--typography-brand)`

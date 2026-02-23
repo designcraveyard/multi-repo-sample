@@ -11,6 +11,7 @@ Scaffold a feature across BOTH platforms in one coordinated workflow.
 ## Workspace Paths
 - Next.js app: `multi-repo-nextjs/`
 - iOS app: `multi-repo-ios/multi-repo-ios/`
+- Android app: `multi-repo-android/app/src/main/java/`
 - Shared docs: `docs/`
 - Supabase migrations: `supabase/migrations/`
 - Design token spec: `docs/design-tokens.md`
@@ -32,6 +33,7 @@ From `$ARGUMENTS`, derive:
 cat docs/design-tokens.md 2>/dev/null || echo "No token spec yet"
 ls multi-repo-nextjs/app/ 2>/dev/null
 ls multi-repo-ios/multi-repo-ios/ 2>/dev/null
+ls multi-repo-android/app/src/main/java/ 2>/dev/null
 ls supabase/migrations/ 2>/dev/null
 ```
 
@@ -97,7 +99,183 @@ final class <Pascal>ViewModel: ObservableObject {
 - Use `CGFloat.space*` for padding/spacing
 - iOS 26.2 — modern SwiftUI APIs are available
 
-### Phase 4: Supabase Migration Stub
+### Phase 4: Scaffold Android (Jetpack Compose)
+
+Determine the base package by reading:
+```bash
+find multi-repo-android/app/src/main/java -name "*.kt" | head -5 2>/dev/null || echo "Android not found"
+```
+
+If the Android project exists, create the following files under
+`multi-repo-android/app/src/main/java/<base-package>/feature/<kebab>/`:
+
+**`<Pascal>ScreenState.kt`** — sealed state interface:
+```kotlin
+// <Pascal>ScreenState.kt
+package <base.package>.feature.<kebab>
+
+sealed interface <Pascal>ScreenState {
+    data object Loading : <Pascal>ScreenState
+    data object Empty : <Pascal>ScreenState
+    data class Error(val message: String) : <Pascal>ScreenState
+    data class Populated(
+        // TODO: add feature-specific data fields
+    ) : <Pascal>ScreenState
+}
+```
+
+**`<Pascal>ViewModel.kt`** — HiltViewModel:
+```kotlin
+// <Pascal>ViewModel.kt
+package <base.package>.feature.<kebab>
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class <Pascal>ViewModel @Inject constructor(
+    // TODO: inject repositories
+) : ViewModel() {
+
+    private val _state = MutableStateFlow<<Pascal>ScreenState>(<Pascal>ScreenState.Loading)
+    val state: StateFlow<<Pascal>ScreenState> = _state.asStateFlow()
+
+    init {
+        load()
+    }
+
+    fun load() {
+        viewModelScope.launch {
+            _state.value = <Pascal>ScreenState.Loading
+            try {
+                // TODO: fetch data from repository
+                _state.value = <Pascal>ScreenState.Empty
+            } catch (e: Exception) {
+                _state.value = <Pascal>ScreenState.Error(e.message ?: "Unknown error")
+            }
+        }
+    }
+}
+```
+
+**`<Pascal>Screen.kt`** — screen composable:
+```kotlin
+// <Pascal>Screen.kt
+package <base.package>.feature.<kebab>
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import <base.package>.ui.components.AppProgressLoader
+import <base.package>.ui.theme.SemanticColors
+import <base.package>.ui.theme.Spacing
+import <base.package>.ui.theme.AppTypography
+
+// --- Screen
+
+@Composable
+fun <Pascal>Screen(
+    modifier: Modifier = Modifier,
+    viewModel: <Pascal>ViewModel = hiltViewModel(),
+) {
+    val state by viewModel.state.collectAsState()
+
+    <Pascal>Content(
+        state = state,
+        onRetry = viewModel::load,
+        modifier = modifier,
+    )
+}
+
+// --- Content
+
+@Composable
+private fun <Pascal>Content(
+    state: <Pascal>ScreenState,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    when (state) {
+        is <Pascal>ScreenState.Loading -> {
+            Box(
+                modifier = modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                AppProgressLoader()
+            }
+        }
+        is <Pascal>ScreenState.Empty -> {
+            Box(
+                modifier = modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = "No data available yet.",
+                    style = AppTypography.bodyMedium,
+                    color = SemanticColors.typographySecondary,
+                )
+            }
+        }
+        is <Pascal>ScreenState.Error -> {
+            Column(
+                modifier = modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = state.message,
+                    style = AppTypography.bodyMedium,
+                    color = SemanticColors.typographyError,
+                )
+                Spacer(modifier = Modifier.height(Spacing.MD))
+                // TODO: Add retry using AppButton
+            }
+        }
+        is <Pascal>ScreenState.Populated -> {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(Spacing.MD),
+            ) {
+                // TODO: implement <Pascal> UI with data
+            }
+        }
+    }
+}
+```
+
+Wire the new screen into the navigation graph at
+`multi-repo-android/app/src/main/java/<base-package>/navigation/Screen.kt`:
+
+```kotlin
+// Add to the Screen sealed class / NavGraph:
+// composable(Screen.<Pascal>.route) { <Pascal>Screen() }
+// TODO: add Screen.<Pascal> object with route = "<kebab>"
+```
+
+**Android rules:**
+- All colors via `SemanticColors.*` — never hardcode hex
+- All spacing via `Spacing.*` (XS=4, SM=8, MD=16, LG=24, XL=32) — never hardcode dp values
+- All typography via `AppTypography.*` — never hardcode font sizes
+- HiltViewModel required for all data screens — inject via `hiltViewModel()`
+- StateFlow for all UI state — `MutableStateFlow` in ViewModel, `collectAsState()` in composable
+- WindowSizeClass for adaptive layouts: `LocalWindowSizeClass.current` for compact/medium/expanded breakpoints
+
+If the Android project does not exist yet, skip this phase and note:
+> Android project not found at `multi-repo-android/` — skipping Android phase.
+
+### Phase 5: Supabase Migration Stub — also create Android model stub
 
 If the feature needs data persistence, create:
 `supabase/migrations/<timestamp>_create_<snake>.sql`
@@ -149,19 +327,40 @@ struct <Pascal>Model: Codable, Identifiable {
 }
 ```
 
+If the Android project exists and the feature needs data, also create the Kotlin model at
+`multi-repo-android/app/src/main/java/<base-package>/data/model/<Pascal>Model.kt`:
+
+```kotlin
+// <Pascal>Model.kt — matches Supabase public.<snake> table
+package <base.package>.data.model
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class <Pascal>Model(
+    val id: String,
+    @SerialName("user_id") val userId: String,
+    @SerialName("created_at") val createdAt: String,
+    @SerialName("updated_at") val updatedAt: String,
+    // TODO: add feature-specific fields
+)
+```
+
 If no data is needed, skip this phase and note it in the summary.
 
-### Phase 5: PRD Entry
+### Phase 6: PRD Entry
 
 Create `docs/PRDs/<kebab>.md` from the template at `docs/PRDs/prd-template.md`.
 Fill in the feature name, today's date, the route/view paths, and the table name.
 
-### Phase 6: Update CLAUDE.md Files
+### Phase 7: Update CLAUDE.md Files
 
 Add the new route to `multi-repo-nextjs/CLAUDE.md` under **Screens / Routes**.
 Add the new view to `multi-repo-ios/CLAUDE.md` under **Screens / Views**.
+Add the new screen to `multi-repo-android/CLAUDE.md` under **Screens** if the Android project exists.
 
-### Phase 7: Summary
+### Phase 8: Summary
 
 ```
 ## Feature Scaffolded: <Pascal>
@@ -170,12 +369,15 @@ Add the new view to `multi-repo-ios/CLAUDE.md` under **Screens / Views**.
 |----------|--------------|
 | Next.js  | app/<kebab>/page.tsx, app/<kebab>/components/<Pascal>View.tsx |
 | iOS      | <Pascal>View.swift, <Pascal>ViewModel.swift, Models/<Pascal>Model.swift |
+| Android  | feature/<kebab>/<Pascal>Screen.kt, <Pascal>ViewModel.kt, <Pascal>ScreenState.kt |
 | Supabase | migrations/<timestamp>_create_<snake>.sql |
 | Docs     | docs/PRDs/<kebab>.md |
 
 TODOs remaining:
 - [ ] Web: implement <Pascal>View.tsx UI
 - [ ] iOS: implement <Pascal>View body
-- [ ] Both: wire Supabase client (run /supabase-setup if not done)
+- [ ] Android: implement <Pascal>Screen populated state UI
+- [ ] Android: wire Screen.<Pascal> into NavGraph in Screen.kt
+- [ ] All: wire Supabase/repository client (run /supabase-setup if not done)
 - [ ] Run: supabase gen types typescript --linked > multi-repo-nextjs/lib/database.types.ts
 ```
