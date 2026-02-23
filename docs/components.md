@@ -15,23 +15,23 @@ This is the single source of truth mapping Figma design system components to the
 
 Self-contained components with no child component dependencies. Figma is **structural truth** for these.
 
-| # | Figma Component | Figma Node | Variants | Web Implementation | iOS Implementation | Status |
-|---|----------------|-----------|----------|-------------------|-------------------|--------|
-| 1 | **Button** | `66:1818` | Type(Primary/Secondary/Tertiary/Success/Danger) × State(Default/Hover/Pressed/Disabled) = 20 | `app/components/Button/Button.tsx` | `Components/Button/AppButton.swift` | Done |
-| 2 | **IconButton** | `76:208` | Type(Primary/Secondary/Tertiary/Quarternary/Success/Danger) × State(Default/Hover/Pressed/Disabled) × Size(Small/Medium/Large) = 72 | `app/components/IconButton/IconButton.tsx` | `Components/IconButton/AppIconButton.swift` | Done |
-| 3 | **Badge** | `87:1071` | Size(Small/Number/Tiny/Medium) × Subtle(Off/On) × Type(Brand/Success/Error/Accent) = 32 | `app/components/Badge/Badge.tsx` | `Components/Badge/AppBadge.swift` | Done |
-| 4 | **Label** | `82:1401` | Size(Small/Medium/Large) × Type(SecondaryAction/Information/PrimaryAction/BrandInteractive) = 12 | `app/components/Label/Label.tsx` | `Components/Label/AppLabel.swift` | Done |
-| 5 | **Chips** | `76:460` | Type(ChipTabs/Filters/SegmentControl) × State(Default/Hover/Pressed/Disabled) × Active(Off/On) = 24 | `app/components/Chip/Chip.tsx` | `Components/Chip/AppChip.swift` | Done |
-| 6 | **Tabs** | `78:284` | Size(Small/Medium/Large) × Active(Off/On) = 6 | `app/components/Tabs/Tabs.tsx` | `Components/Tabs/AppTabs.swift` | Done |
-| 7 | **SegmentControlBar** | `81:637` | Size(Small/Medium/Large) × Type(SegmentControl/Chips/Filters) = 9 | `app/components/SegmentControlBar/SegmentControlBar.tsx` | `Components/SegmentControlBar/AppSegmentControlBar.swift` | Done |
-| 8 | **Thumbnail** | `82:1235` | Sizes(xs/sm/md/lg/xl/xxl) × Rounded(Off/On) = 12 | `app/components/Thumbnail/Thumbnail.tsx` | `Components/Thumbnail/AppThumbnail.swift` | Done |
-| 9 | **Input Field** | `90:3753` | State(Default/Disabled/Focus/Filled/Success/Warning/Error) × Type(Default/TextField) = 11; slots: leadingLabel · leadingSeparator · leadingIcon \| input \| trailingIcon · trailingSeparator · trailingLabel | `app/components/InputField/InputField.tsx` | `Components/InputField/AppInputField.swift` | Done |
-| 10 | **Toast Message** | `108:4229` | Type(Default/Success/Warning/Error/Info) × has-action × has-dismiss | `app/components/Toast/Toast.tsx` | `Components/Toast/AppToast.swift` | Done |
-| 11 | **Date Component** | `93:4399` | Toggle(Off/On) = 2 | — | — | Not started |
-| 12 | **StreakChecks** | `94:1795` | Property1(CheckCircle/Circle/CircleNotch/ArrowCircleRight/XCircle) = 5 | — | — | Not started |
-| 13 | **Divider** | `95:2092` | Type(SectionDivider/RowDivider) = 2 | `app/components/Divider/Divider.tsx` | `Components/Divider/AppDivider.swift` | Done |
-| 14 | **StepIndicator** | `108:9891` | Completed(Off/On) = 2 | `app/components/patterns/StepIndicator/StepIndicator.tsx` | `Components/Patterns/AppStepIndicator.swift` | Done |
-| 15 | **Waveform** | (see Figma) | 1 component set | — | — | Not started |
+| # | Figma Component | Figma Node | Variants | Web Implementation | iOS Implementation | Android Implementation | Status |
+|---|----------------|-----------|----------|-------------------|-------------------|----------------------|--------|
+| 1 | **Button** | `66:1818` | Type(Primary/Secondary/Tertiary/Success/Danger) × State(Default/Hover/Pressed/Disabled) = 20 | `app/components/Button/Button.tsx` | `Components/Button/AppButton.swift` | `ui/components/AppButton.kt` | Done |
+| 2 | **IconButton** | `76:208` | Type(Primary/Secondary/Tertiary/Quarternary/Success/Danger) × State(Default/Hover/Pressed/Disabled) × Size(Small/Medium/Large) = 72 | `app/components/IconButton/IconButton.tsx` | `Components/IconButton/AppIconButton.swift` | `ui/components/AppIconButton.kt` | Done |
+| 3 | **Badge** | `87:1071` | Size(Small/Number/Tiny/Medium) × Subtle(Off/On) × Type(Brand/Success/Error/Accent) = 32 | `app/components/Badge/Badge.tsx` | `Components/Badge/AppBadge.swift` | `ui/components/AppBadge.kt` | Done |
+| 4 | **Label** | `82:1401` | Size(Small/Medium/Large) × Type(SecondaryAction/Information/PrimaryAction/BrandInteractive) = 12 | `app/components/Label/Label.tsx` | `Components/Label/AppLabel.swift` | `ui/components/AppLabel.kt` | Done |
+| 5 | **Chips** | `76:460` | Type(ChipTabs/Filters/SegmentControl) × State(Default/Hover/Pressed/Disabled) × Active(Off/On) = 24 | `app/components/Chip/Chip.tsx` | `Components/Chip/AppChip.swift` | `ui/components/AppChip.kt` | Done |
+| 6 | **Tabs** | `78:284` | Size(Small/Medium/Large) × Active(Off/On) = 6 | `app/components/Tabs/Tabs.tsx` | `Components/Tabs/AppTabs.swift` | `ui/components/AppTabs.kt` | Done |
+| 7 | **SegmentControlBar** | `81:637` | Size(Small/Medium/Large) × Type(SegmentControl/Chips/Filters) = 9 | `app/components/SegmentControlBar/SegmentControlBar.tsx` | `Components/SegmentControlBar/AppSegmentControlBar.swift` | `ui/components/AppSegmentControlBar.kt` | Done |
+| 8 | **Thumbnail** | `82:1235` | Sizes(xs/sm/md/lg/xl/xxl) × Rounded(Off/On) = 12 | `app/components/Thumbnail/Thumbnail.tsx` | `Components/Thumbnail/AppThumbnail.swift` | `ui/components/AppThumbnail.kt` | Done |
+| 9 | **Input Field** | `90:3753` | State(Default/Disabled/Focus/Filled/Success/Warning/Error) × Type(Default/TextField) = 11; slots: leadingLabel · leadingSeparator · leadingIcon \| input \| trailingIcon · trailingSeparator · trailingLabel | `app/components/InputField/InputField.tsx` | `Components/InputField/AppInputField.swift` | `ui/components/AppInputField.kt` | Done |
+| 10 | **Toast Message** | `108:4229` | Type(Default/Success/Warning/Error/Info) × has-action × has-dismiss | `app/components/Toast/Toast.tsx` | `Components/Toast/AppToast.swift` | `ui/components/AppToast.kt` | Done |
+| 11 | **Date Component** | `93:4399` | Toggle(Off/On) = 2 | — | — | — | Not started |
+| 12 | **StreakChecks** | `94:1795` | Property1(CheckCircle/Circle/CircleNotch/ArrowCircleRight/XCircle) = 5 | — | — | — | Not started |
+| 13 | **Divider** | `95:2092` | Type(SectionDivider/RowDivider) = 2 | `app/components/Divider/Divider.tsx` | `Components/Divider/AppDivider.swift` | `ui/components/AppDivider.kt` | Done |
+| 14 | **StepIndicator** | `108:9891` | Completed(Off/On) = 2 | `app/components/patterns/StepIndicator/StepIndicator.tsx` | `Components/Patterns/AppStepIndicator.swift` | `ui/patterns/AppStepIndicator.kt` | Done |
+| 15 | **Waveform** | (see Figma) | 1 component set | — | — | — | Not started |
 
 ---
 
@@ -45,12 +45,12 @@ Patterns live in a dedicated `patterns/` subdirectory on both platforms:
 
 > Start with `/complex-component <name>` · Validate with `/component-audit <name>` · Use `complex-component-reviewer` agent for final check
 
-| # | Component | Figma Reference | Composes | Web Implementation | iOS Implementation | Status |
-|---|-----------|----------------|----------|-------------------|-------------------|--------|
-| 1 | **TextBlock** | `84:789` | — (typography-only pattern) | `app/components/patterns/TextBlock/TextBlock.tsx` | `Components/Patterns/AppTextBlock.swift` | Done |
-| 2 | **StepIndicator** | `108:9891` | — (atomic, also in Atomic table) | `app/components/patterns/StepIndicator/StepIndicator.tsx` | `Components/Patterns/AppStepIndicator.swift` | Done |
-| 3 | **Stepper** | `108:4357` (TimelineStepper) | TextBlock + StepIndicator | `app/components/patterns/Stepper/Stepper.tsx` | `Components/Patterns/AppStepper.swift` | Done |
-| 4 | **ListItem** | (bubbles-kit ListItem) | TextBlock + Thumbnail + Button + IconButton + Badge + Divider | `app/components/patterns/ListItem/ListItem.tsx` | `Components/Patterns/AppListItem.swift` | Done |
+| # | Component | Figma Reference | Composes | Web Implementation | iOS Implementation | Android Implementation | Status |
+|---|-----------|----------------|----------|-------------------|-------------------|----------------------|--------|
+| 1 | **TextBlock** | `84:789` | — (typography-only pattern) | `app/components/patterns/TextBlock/TextBlock.tsx` | `Components/Patterns/AppTextBlock.swift` | `ui/patterns/AppTextBlock.kt` | Done |
+| 2 | **StepIndicator** | `108:9891` | — (atomic, also in Atomic table) | `app/components/patterns/StepIndicator/StepIndicator.tsx` | `Components/Patterns/AppStepIndicator.swift` | `ui/patterns/AppStepIndicator.kt` | Done |
+| 3 | **Stepper** | `108:4357` (TimelineStepper) | TextBlock + StepIndicator | `app/components/patterns/Stepper/Stepper.tsx` | `Components/Patterns/AppStepper.swift` | `ui/patterns/AppStepper.kt` | Done |
+| 4 | **ListItem** | (bubbles-kit ListItem) | TextBlock + Thumbnail + Button + IconButton + Badge + Divider | `app/components/patterns/ListItem/ListItem.tsx` | `Components/Patterns/AppListItem.swift` | `ui/patterns/AppListItem.kt` | Done |
 
 ### Complex Component Status Legend
 
@@ -125,6 +125,26 @@ Barrel import: `import { AppNativePicker, AppTooltip } from "@/app/components/Na
 
 > **AppBottomNavBar** and **AppPageHeader** have no web equivalents — web navigation is handled by Next.js App Router layouts.
 
+### Android Native Wrappers
+
+Thin wrappers around Material 3 / Compose APIs, styled via `NativeComponentStyling.kt`. **Always use these instead of raw Material 3 APIs** in screen files.
+
+| # | Wrapper | Wraps | File | Key Props | Status |
+|---|---------|-------|------|-----------|--------|
+| 1 | **AppNativePicker** | `ExposedDropdownMenuBox` | `ui/native/AppNativePicker.kt` | `value`, `options`, `onSelect`, `label`, `showError` | Done |
+| 2 | **AppDateTimePicker** | `DatePickerDialog` / `TimePickerDialog` | `ui/native/AppDateTimePicker.kt` | `selectedDateMillis`, `onDateSelected`, `mode` | Done |
+| 3 | **AppProgressLoader** | `CircularProgressIndicator` / `LinearProgressIndicator` | `ui/native/AppProgressLoader.kt` | `variant: ProgressVariant`, `label` | Done |
+| 4 | **AppColorPicker** | Custom swatch grid | `ui/native/AppColorPicker.kt` | `selectedColor`, `onColorSelected`, `label` | Done |
+| 5 | **AppBottomSheet** | `ModalBottomSheet` | `ui/native/AppBottomSheet.kt` | `isPresented`, `onDismiss`, `content` | Done |
+| 6 | **AppActionSheet** | `AlertDialog` + action list | `ui/native/AppActionSheet.kt` | `isPresented`, `onDismiss`, `title`, `actions` | Done |
+| 7 | **AppAlertPopup** | `AlertDialog` | `ui/native/AppAlertPopup.kt` | `isPresented`, `onDismiss`, `title`, `message`, `buttons` | Done |
+| 8 | **AppPageHeader** | `TopAppBar` | `ui/native/AppPageHeader.kt` | `title`, `navigationIcon`, `actions` | Done |
+| 9 | **AppContextMenu** | `DropdownMenu` | `ui/native/AppContextMenu.kt` | `isExpanded`, `onDismiss`, `items` | Done |
+| 10 | **AppBottomNavBar** | `NavigationBar` | `ui/native/AppBottomNavBar.kt` | `selectedTab`, `onTabSelect`, `tabs` | Done |
+| 11 | **AppCarousel** | `HorizontalPager` | `ui/native/AppCarousel.kt` | `items`, `style`, `showDots` | Done |
+| 12 | **AppTooltip** | `PlainTooltip` | `ui/native/AppTooltip.kt` | `isVisible`, `text` | Done |
+| 13 | **AppRangeSlider** | `RangeSlider` | `ui/native/AppRangeSlider.kt` | `lowerValue`, `upperValue`, `range`, `step` | Done |
+
 ### iOS Architecture Notes
 
 - **Centralized styling:** All tokens live in `NativeComponentStyling.swift` — namespaced structs per component (e.g. `NativePickerStyling`, `NativeCarouselStyling`)
@@ -153,17 +173,19 @@ Auto-switch between compact (phone / mobile web) and regular (iPad landscape / d
 
 Barrel import (web): `import { AdaptiveNavShell, AdaptiveSheet } from "@/app/components/Adaptive";`
 
-| # | Wrapper | Compact (Phone/Mobile) | Regular (iPad/Desktop) | iOS File | Web File | Status |
-|---|---------|------------------------|------------------------|----------|----------|--------|
-| 1 | **AdaptiveNavShell** | Bottom tab bar (`TabView`) | Collapsible icon-rail sidebar (60px collapsed / 240px expanded) | `Components/Adaptive/AdaptiveNavShell.swift` | `app/components/Adaptive/AdaptiveNavShell.tsx` | Done |
-| 2 | **AdaptiveSheet** | Bottom sheet (`.sheet` / vaul `Drawer`) | Centered modal dialog (Radix `Dialog`) | `Components/Adaptive/AdaptiveSheet.swift` | `app/components/Adaptive/AdaptiveSheet.tsx` | Done |
+| # | Wrapper | Compact (Phone/Mobile) | Regular (iPad/Desktop) | iOS File | Web File | Android File | Status |
+|---|---------|------------------------|------------------------|----------|----------|-------------|--------|
+| 1 | **AdaptiveNavShell** | Bottom tab bar (`TabView`) | Collapsible icon-rail sidebar (60px collapsed / 240px expanded) | `Components/Adaptive/AdaptiveNavShell.swift` | `app/components/Adaptive/AdaptiveNavShell.tsx` | `ui/adaptive/AdaptiveNavShell.kt` | Done |
+| 2 | **AdaptiveSheet** | Bottom sheet (`.sheet` / vaul `Drawer`) | Centered modal dialog (Radix `Dialog`) | `Components/Adaptive/AdaptiveSheet.swift` | `app/components/Adaptive/AdaptiveSheet.tsx` | `ui/adaptive/AdaptiveSheet.kt` | Done |
+| 3 | **AdaptiveSplitView** | Push navigation (list → detail) | Side-by-side split panels | `Components/Adaptive/AdaptiveSplitView.swift` | — | `ui/adaptive/AdaptiveSplitView.kt` | In Progress |
 
 ### Detection Mechanism
 
-| Platform | Compact | Regular |
-|----------|---------|---------|
-| **iOS** | `@Environment(\.horizontalSizeClass) == .compact` | `sizeClass == .regular` |
-| **Web** | Default (mobile-first) | `md:` Tailwind prefix / `useMediaQuery("(min-width: 768px)")` |
+| Platform | Detection | Compact | Regular |
+|----------|-----------|---------|---------|
+| **iOS** | `@Environment(\.horizontalSizeClass)` | `sizeClass == .compact` (iPhone, iPad portrait) | `sizeClass == .regular` (iPad landscape) |
+| **Web** | CSS media query / JS hook | Default (mobile-first) | `md:` Tailwind prefix / `useMediaQuery("(min-width: 768px)")` |
+| **Android** | `WindowWidthSizeClass` from `calculateWindowSizeClass()` | `Compact` (phones) | `Medium` / `Expanded` (tablets) |
 
 ### Usage
 
@@ -243,6 +265,7 @@ Maps each Figma component key to its code location for instant lookup.
 | Web | `/input-demo` | `app/input-demo/page.tsx` | Label (all sizes/types/icon combos) + InputField (all states, all slot combos) + TextField (all states) |
 | Web | `/patterns-demo` | `app/patterns-demo/page.tsx` | TextBlock (all slots) + StepIndicator (on/off) + Stepper (all/mixed/single) + ListItem (all trailing variants) |
 | iOS | Main tab (ContentView) | `multi-repo-ios/multi-repo-ios/ContentView.swift` | **All** atomic components (Button, IconButton, Badge, Chip, Tabs, SegmentControlBar, Thumbnail, InputField, Toast, Divider) + **All** complex patterns (TextBlock, StepIndicator, Stepper, ListItem) + **All 13 native wrappers** (Picker, DateTimePicker, ProgressLoader, ColorPicker, BottomSheet ×4 variants, ActionSheet, AlertPopup, ContextMenu ×2 variants, Carousel ×2 styles, Tooltip, RangeSlider ×2 modes, BottomNavBar live, PageHeader live) |
+| Android | `ShowcaseScreen` | `multi-repo-android/app/src/main/java/.../ui/showcase/ShowcaseScreen.kt` | **All** atomic components + **All** complex patterns + **All 13 native wrappers** |
 
 ---
 
@@ -268,6 +291,14 @@ multi-repo-ios/multi-repo-ios/Components/<ComponentName>/
 # iOS (SwiftUI) — patterns (complex, 2+ atoms)
 multi-repo-ios/multi-repo-ios/Components/Patterns/
   └── App<PatternName>.swift
+
+# Android (Jetpack Compose) — atomic
+multi-repo-android/app/src/main/java/.../ui/components/
+  └── App<ComponentName>.kt       # Composable (prefixed App to signal design-system ownership)
+
+# Android (Jetpack Compose) — patterns (complex, 2+ atoms)
+multi-repo-android/app/src/main/java/.../ui/patterns/
+  └── App<PatternName>.kt
 ```
 
 ### Naming Rules
@@ -298,15 +329,15 @@ Figma variant axes become component props:
 
 All visual properties MUST use **Semantic layer** tokens (never primitives, never hardcoded values):
 
-| Property | Web | iOS |
-|----------|-----|-----|
-| Background | `bg-[var(--surfaces-*)]` | `Color.surfaces*` |
-| Text color | `text-[var(--typography-*)]` | `Color.typography*` |
-| Border | `border-[var(--border-*)]` | `Color.border*` |
-| Icon color | `text-[var(--icons-*)]` | `Color.icons*` |
-| Spacing | Tailwind utilities (`gap-2`, `px-4`) | `CGFloat.space*` tokens |
-| Font | Tailwind or `var(--font-*)` | `Font.app*` tokens |
-| Corner radius | `rounded-full` for pill, `rounded-*` | `.clipShape(Capsule())` for pill |
+| Property | Web | iOS | Android |
+|----------|-----|-----|---------|
+| Background | `bg-[var(--surfaces-*)]` | `Color.surfaces*` | `AppTheme.colors.surfaces*` |
+| Text color | `text-[var(--typography-*)]` | `Color.typography*` | `AppTheme.colors.typography*` |
+| Border | `border-[var(--border-*)]` | `Color.border*` | `AppTheme.colors.border*` |
+| Icon color | `text-[var(--icons-*)]` | `Color.icons*` | `AppTheme.colors.icons*` |
+| Spacing | Tailwind utilities (`gap-2`, `px-4`) | `CGFloat.space*` tokens | `AppTheme.spacing.*` tokens |
+| Font | Tailwind or `var(--font-*)` | `Font.app*` tokens | `AppTheme.typography.*` styles |
+| Corner radius | `rounded-full` for pill, `rounded-*` | `.clipShape(Capsule())` for pill | `CircleShape` for pill, `RoundedCornerShape(AppTheme.radius.*)` |
 
 ### Disabled State
 
