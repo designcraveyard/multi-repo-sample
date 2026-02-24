@@ -15,7 +15,8 @@ You are a specialized validator ensuring type safety across the Supabase schema,
 1. **Ground truth**: Supabase MCP — query `information_schema.columns` for actual live schema
 2. **TypeScript types**: `multi-repo-nextjs/lib/database.types.ts`
 3. **Swift models**: `multi-repo-ios/multi-repo-ios/Models/*.swift`
-4. **Migrations (fallback)**: `supabase/migrations/*.sql`
+4. **Kotlin models**: `multi-repo-android/app/src/main/java/.../data/model/*.kt`
+5. **Migrations (fallback)**: `supabase/migrations/*.sql`
 
 ## Validation Process
 
@@ -52,22 +53,31 @@ find multi-repo-ios/multi-repo-ios/Models -name "*.swift" 2>/dev/null || echo "M
 
 Read each Swift model file and extract struct fields and their types.
 
+### Step 3.5: Read Kotlin Models
+
+```bash
+find multi-repo-android/app/src/main/java -path "*/data/model/*Model.kt" 2>/dev/null || echo "Kotlin models not found"
+```
+
+Read each Kotlin model file and extract `@Serializable data class` fields and their types.
+Note `@SerialName` annotations for column name mapping (snake_case → camelCase).
+
 ### Step 4: Apply Type Mapping Rules
 
-| PostgreSQL | TypeScript | Swift |
-|-----------|------------|-------|
-| `uuid` | `string` | `String` or `UUID` |
-| `text` | `string` | `String` |
-| `varchar` | `string` | `String` |
-| `integer` / `int4` | `number` | `Int` |
-| `bigint` / `int8` | `number` | `Int` |
-| `numeric` / `decimal` | `number` | `Double` |
-| `boolean` | `boolean` | `Bool` |
-| `timestamp with time zone` | `string` | `Date` |
-| `jsonb` | `Json` | `Codable` struct |
-| `text[]` | `string[]` | `[String]` |
+| PostgreSQL | TypeScript | Swift | Kotlin |
+|-----------|------------|-------|--------|
+| `uuid` | `string` | `String` or `UUID` | `String` |
+| `text` | `string` | `String` | `String` |
+| `varchar` | `string` | `String` | `String` |
+| `integer` / `int4` | `number` | `Int` | `Int` |
+| `bigint` / `int8` | `number` | `Int` | `Long` |
+| `numeric` / `decimal` | `number` | `Double` | `Double` |
+| `boolean` | `boolean` | `Bool` | `Boolean` |
+| `timestamp with time zone` | `string` | `Date` | `String` (with `@SerialName`) |
+| `jsonb` | `Json` | `Codable` struct | `@Serializable` data class |
+| `text[]` | `string[]` | `[String]` | `List<String>` |
 
-Nullable column (`is_nullable = YES`) → TypeScript `T | null`, Swift `T?`.
+Nullable column (`is_nullable = YES`) → TypeScript `T | null`, Swift `T?`, Kotlin `T?`.
 
 ### Step 5: Output Validation Report
 
@@ -90,6 +100,13 @@ Nullable column (`is_nullable = YES`) → TypeScript `T | null`, Swift `T?`.
 | <table> | <Model>.swift | — | — | — |
 | <table> | MISSING ⚠️ | — | — | — |
 
+### Kotlin Model Coverage
+
+| Table | Kotlin Model | Missing Fields | Extra Fields | Type Mismatches |
+|-------|-------------|---------------|--------------|-----------------|
+| <table> | <Model>Model.kt | — | — | — |
+| <table> | MISSING ⚠️ | — | — | — |
+
 ### Type Mismatches Detail
 
 | Table | Column | DB Type | TS Type | Swift Type | Issue |
@@ -99,19 +116,23 @@ Nullable column (`is_nullable = YES`) → TypeScript `T | null`, Swift `T?`.
 - Schema tables: X
 - TypeScript coverage: X/X (X%)
 - Swift model coverage: X/X (X%)
+- Kotlin model coverage: X/X (X%)
 - Type mismatches: X
 - Missing Swift models: [list — may be intentional for web-only data]
+- Missing Kotlin models: [list — may be intentional for web/iOS-only data]
 - Missing TS types: [list — always flag these]
 
 ### Recommendations
 - Run: supabase gen types typescript --linked > multi-repo-nextjs/lib/database.types.ts
-- Create missing Swift models with /cross-platform-feature or /supabase-setup
+- Create missing Swift/Kotlin models with /cross-platform-feature or /supabase-setup
 ```
 
 ## Validator Principles
 
 - Missing Swift model for a table is a **warning** — may be intentional for web-only tables
+- Missing Kotlin model for a table is a **warning** — may be intentional for web/iOS-only tables
 - Missing TypeScript type for a table in migrations is always an **error**
-- Nullable columns without `?` in Swift is a **warning** (potential crash)
+- Nullable columns without `?` in Swift or Kotlin is a **warning** (potential crash/NPE)
 - `timestamp with time zone` typed as `string` in Swift is a **warning** (should be `Date` with decoder)
-- `jsonb` without a typed `Codable` struct in Swift is a **warning**
+- `jsonb` without a typed `Codable` struct in Swift or `@Serializable` data class in Kotlin is a **warning**
+- Missing `@SerialName` annotation in Kotlin for snake_case columns is a **warning**

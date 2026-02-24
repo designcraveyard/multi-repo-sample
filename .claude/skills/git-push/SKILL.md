@@ -1,21 +1,22 @@
 ---
 name: git-push
-description: Commit and push all pending changes across all three repos in the workspace (multi-repo-sample root, multi-repo-nextjs, multi-repo-ios). Use when the user says "push to GitHub", "commit and push", "save to GitHub", or when the Stop hook reports unpushed changes. Stages all tracked + untracked files in each repo, writes a commit message, and pushes to origin/main.
+description: Commit and push all pending changes across all four repos in the workspace (multi-repo-sample root, multi-repo-nextjs, multi-repo-ios, multi-repo-android). Use when the user says "push to GitHub", "commit and push", "save to GitHub", or when the Stop hook reports unpushed changes. Stages all tracked + untracked files in each repo, writes a commit message, and pushes to origin/main.
 disable-model-invocation: true
 allowed-tools: Bash, Read
 ---
 
 # Git Push — All Repos
 
-Commit and push any pending changes across all three workspace repos.
+Commit and push any pending changes across all four workspace repos.
 
 ## Repos to Check
 
 | Repo | Path |
 |------|------|
-| workspace root | `/Users/abhishekverma/Documents/GitHub/multi-repo-sample` |
-| Next.js | `/Users/abhishekverma/Documents/GitHub/multi-repo-sample/multi-repo-nextjs` |
-| iOS | `/Users/abhishekverma/Documents/GitHub/multi-repo-sample/multi-repo-ios` |
+| workspace root | `/Users/abhishekverma/Documents/multi-repo-sample` |
+| Next.js | `/Users/abhishekverma/Documents/multi-repo-sample/multi-repo-nextjs` |
+| iOS | `/Users/abhishekverma/Documents/multi-repo-sample/multi-repo-ios` |
+| Android | `/Users/abhishekverma/Documents/multi-repo-sample/multi-repo-android` |
 
 ## Workflow
 
@@ -29,6 +30,7 @@ Summarise findings in a table before doing anything:
 | workspace | ... | ... |
 | Next.js | ... | ... |
 | iOS | ... | ... |
+| Android | ... | ... |
 
 If nothing is pending anywhere, report "All repos are clean and up to date" and stop.
 
@@ -53,6 +55,7 @@ Output a final table:
 | workspace | ✅ Pushed | `chore: update skills` | github.com/designcraveyard/multi-repo-sample |
 | Next.js | ✅ Pushed | `feat: add user profile page` | github.com/designcraveyard/multi-repo-nextjs |
 | iOS | ⏭️ Nothing to push | — | — |
+| Android | ✅ Pushed | `feat: add user profile screen` | github.com/designcraveyard/multi-repo-android |
 
 ## Rules
 

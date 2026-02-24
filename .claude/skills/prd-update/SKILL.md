@@ -13,6 +13,7 @@ Keep workspace documentation in sync with the actual codebase.
 - Root: `CLAUDE.md`
 - Next.js: `multi-repo-nextjs/CLAUDE.md`
 - iOS: `multi-repo-ios/CLAUDE.md`
+- Android: `multi-repo-android/CLAUDE.md`
 - PRDs: `docs/PRDs/`
 - API contracts: `docs/api-contracts.md`
 - Design tokens: `docs/design-tokens.md`
@@ -31,6 +32,9 @@ find multi-repo-nextjs/app -name "page.tsx" 2>/dev/null | sort | sed 's|multi-re
 
 # iOS screens
 find multi-repo-ios/multi-repo-ios -name "*View.swift" 2>/dev/null | sort | sed 's|.*multi-repo-ios/||' | sed 's|View.swift||'
+
+# Android screens
+find multi-repo-android -name "*Screen.kt" 2>/dev/null | sort | sed 's|.*feature/||' | sed 's|/.*||'
 
 # Existing PRDs
 ls docs/PRDs/ 2>/dev/null
@@ -58,6 +62,7 @@ If `$ARGUMENTS` is a feature name:
 If `$ARGUMENTS` is `all`:
 - For each web route: check if a PRD exists; create a stub if missing
 - For each iOS view: cross-reference with PRDs; flag any view without a matching PRD
+- For each Android screen: cross-reference with PRDs; flag any screen without a matching PRD
 - Update `docs/PRDs/README.md` (create if missing) with a table of all PRDs and their status
 
 ### Phase 4: Update API Contracts
@@ -70,9 +75,10 @@ If any migration files were added since the last update, append their table desc
 ## Documentation Update Summary
 
 CLAUDE.md updates:
-  multi-repo-nextjs/CLAUDE.md — [changes made or "up to date"]
-  multi-repo-ios/CLAUDE.md    — [changes made or "up to date"]
-  CLAUDE.md (root)            — [changes made or "up to date"]
+  multi-repo-nextjs/CLAUDE.md  — [changes made or "up to date"]
+  multi-repo-ios/CLAUDE.md     — [changes made or "up to date"]
+  multi-repo-android/CLAUDE.md — [changes made or "up to date"]
+  CLAUDE.md (root)             — [changes made or "up to date"]
 
 PRDs:
   Created: [list]

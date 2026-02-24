@@ -9,6 +9,13 @@
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp@latest"],
       "env": {}
+    },
+    "supabase-bubbleskit": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=kqxiugkmkvymoegzxoye",
+      "headers": {
+        "Authorization": "Bearer sbp_fa60b01744188b6cc406b0b4ac7f3ef2015cd4f7"
+      }
     }
   }
 }

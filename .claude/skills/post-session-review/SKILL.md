@@ -45,6 +45,12 @@ updating based on what was built or changed:
 - Were new view helpers, extensions, or SwiftUI patterns introduced?
 - → **Action:** Update `multi-repo-ios/CLAUDE.md`
 
+### 6.5. `multi-repo-android/CLAUDE.md`
+- Was the Android stack changed (new Gradle dependencies, new patterns)?
+- Were new Compose patterns, navigation routes, or Hilt DI modules introduced?
+- Were new native wrapper components added?
+- → **Action:** Update `multi-repo-android/CLAUDE.md`
+
 ### 7. `.claude/skills/`
 - Was a new repeatable workflow used that should become a skill?
 - Were new skill parameters or steps discovered?
@@ -84,6 +90,7 @@ Produce a brief report:
 ### CLAUDE.md files to update
 - [ ] Root CLAUDE.md — [reason]
 - [ ] multi-repo-nextjs/CLAUDE.md — [reason]
+- [ ] multi-repo-android/CLAUDE.md — [reason]
 
 ### Skills/Agents to create or update
 - [ ] .claude/skills/X — [reason]

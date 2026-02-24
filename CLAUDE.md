@@ -30,11 +30,14 @@ npm run lint     # ESLint (runs `eslint` directly, flat config)
 
 - **App Router** (`app/` directory) — no Pages Router
 - `app/layout.tsx` — Root layout with Geist font family (Sans + Mono via CSS variables)
-- `app/page.tsx` — Home page
+- `app/(auth)/login/page.tsx` — Login screen (public)
+- `app/(authenticated)/page.tsx` — Home page (requires auth)
 - `app/globals.css` — Tailwind v4 via `@import "tailwindcss"` with CSS custom properties for theming
+- `middleware.ts` — Session refresh + auth gate (redirects to `/login` if unauthenticated)
+- `lib/auth/` — Auth context, server actions, profile helper
+- `lib/supabase/` — Browser and server Supabase clients
 - Path alias: `@/*` maps to project root
 - Dark mode via `prefers-color-scheme` media query and CSS variables
-- No API routes, middleware, auth, or database integration currently exists
 
 ### Key Config Details
 
@@ -107,6 +110,7 @@ Invoke these in any Claude session opened at the workspace root:
 | Component Audit | `/component-audit <name>` | Audit a component for token compliance, comment quality, cross-platform parity, and accessibility — run before marking Done |
 | Token Validation | `/validate-tokens [name\|--all]` | Audit components for semantic token misuse (BaseHighContrast/BaseLowContrastPressed in wrong contexts, primitive leakage, hardcoded values) |
 | Supabase Setup | `/supabase-setup [project-ref]` | Wire Supabase client to both Next.js and iOS |
+| Supabase Auth Setup | `/supabase-auth-setup` | Interactive wizard: configure Google/Apple/Email auth providers, dashboard setup, env files |
 | New Screen | `/new-screen <description>` | UI-only screen scaffold on both platforms |
 | PRD Update | `/prd-update [feature\|all]` | Update PRDs and all CLAUDE.md files to match current codebase |
 | Git Push | `/git-push` | Commit and push all repos from the workspace root |
@@ -163,6 +167,39 @@ supabase db push                  # Apply pending migrations to linked project
 supabase gen types typescript --linked > multi-repo-nextjs/lib/database.types.ts
 supabase migration new <name>     # Create a new migration file
 ```
+
+## Authentication
+
+All three platforms use Supabase Auth with an **auth gate** pattern — unauthenticated users see only the login screen.
+
+**Providers:** Google (native SDK on mobile, OAuth redirect on web), Apple (native on iOS, OAuth on web), Email/Password
+
+**Auth gate entry points:**
+- Web: `middleware.ts` redirects unauthenticated requests to `/login`
+- iOS: `multi_repo_iosApp.swift` shows `LoginView` or `ContentView` based on `AuthManager.currentUser`
+- Android: `MainActivity.kt` switches on `SessionStatus` (LoadingFromStorage / Authenticated / else → LoginScreen)
+
+**Key auth files per platform:**
+
+| File | Platform | Purpose |
+|------|----------|---------|
+| `lib/auth/actions.ts` | Web | Server actions for all auth methods |
+| `lib/auth/auth-context.tsx` | Web | `AuthProvider` + `useAuth()` hook |
+| `middleware.ts` | Web | Session refresh + route protection |
+| `app/auth/callback/route.ts` | Web | OAuth code → session exchange |
+| `Auth/AuthManager.swift` | iOS | `@Observable` auth state, sign-in methods |
+| `Views/Auth/LoginView.swift` | iOS | Login screen |
+| `data/auth/AuthRepository.kt` | Android | Session Flow, sign-in/out, profile fetch |
+| `feature/auth/LoginScreen.kt` | Android | Login screen |
+
+**Profile:** Auto-created via DB trigger on signup. Model files: `lib/auth/profile.ts` (web), `Models/ProfileModel.swift` (iOS), `data/model/ProfileModel.kt` (Android).
+
+**Credential storage:**
+- Web: `.env.local` (gitignored)
+- iOS: Xcode scheme environment variables
+- Android: `local.properties` → `BuildConfig` fields (gitignored)
+
+Run `/supabase-auth-setup` to configure providers in Supabase Dashboard, Google Cloud Console, and Apple Developer Portal.
 
 ## Cross-Platform Conventions
 
@@ -492,6 +529,7 @@ See `docs/design-tokens.md#icon-system` for full reference.
 ## Hook Reminders
 
 `.claude/settings.json` hooks fire automatically in every session:
+- **credential-guard** (PreToolUse): **BLOCKS** writes containing Supabase project URLs (`*.supabase.co`) or JWT/API keys (`eyJhbGciOi...`) in source files — use env vars or BuildConfig instead
 - **design-token-guard** (PreToolUse): **BLOCKS** writes that use Primitive tokens (`var(--color-*)` or `Color.colorZinc*`) in component files — enforces Semantic-only usage
 - **design-token-semantics-guard** (PreToolUse): **BLOCKS** writes that misuse semantic surface tokens as borders/dividers. Enforces:
   - `BaseLowContrastPressed` only in Chip (active state) and Button (pressed state)

@@ -29,10 +29,13 @@ Also check if `docs/components/<name>.md` exists — if so, pre-populate answers
 
 - Atomic components (web): `multi-repo-nextjs/app/components/`
 - Atomic components (iOS): `multi-repo-ios/multi-repo-ios/Components/`
+- Atomic components (Android): `multi-repo-android/app/src/main/java/.../ui/components/`
 - Pattern components (web): `multi-repo-nextjs/app/components/patterns/$ARGUMENTS/$ARGUMENTS.tsx`
 - Pattern components (iOS): `multi-repo-ios/multi-repo-ios/Components/Patterns/App$ARGUMENTS.swift`
+- Pattern components (Android): `multi-repo-android/app/src/main/java/.../ui/patterns/App$ARGUMENTS.kt`
 - Complex components (web): `multi-repo-nextjs/app/components/$ARGUMENTS/$ARGUMENTS.tsx`
 - Complex components (iOS): `multi-repo-ios/multi-repo-ios/Components/$ARGUMENTS/App$ARGUMENTS.swift`
+- Complex components (Android): `multi-repo-android/app/src/main/java/.../ui/components/App$ARGUMENTS.kt`
 - Component registry: `docs/components.md`
 - Per-component briefs: `docs/components/<name>.md`
 
@@ -54,7 +57,7 @@ Ask only these 5 questions (skip if already answered in the component brief):
 
 **Behavior**
 4. Is it display-only or does it have interaction? If interactive, what triggers what?
-5. Any platform differences between web and iOS?
+5. Any platform differences between web, iOS, and Android?
 
 ### Full Mode (default)
 
@@ -73,8 +76,8 @@ Ask the user **all** of the following questions in a **single message**, grouped
 8. What **keyboard interactions** are required? (Tab order, Enter/Space to activate, Escape to close, arrow keys, etc.)
 
 **Cross-Platform**
-9. Does this component behave **differently on iOS vs web**? If yes, describe the differences.
-10. Are there **iOS-specific gestures** needed? (swipe to dismiss, long-press, drag, etc.)
+9. Does this component behave **differently on iOS, Android, or web**? If yes, describe the differences.
+10. Are there **platform-specific gestures** needed? (iOS: swipe to dismiss, long-press; Android: predictive back, ripple effects, etc.)
 
 **Accessibility**
 11. What is the **accessible role** of this component? (button, dialog, list, listitem, etc.)
@@ -120,6 +123,7 @@ $ARGUMENTS
 ### Platform Differences
 - Web: [any web-specific behavior]
 - iOS: [any iOS-specific behavior]
+- Android: [any Android-specific behavior — ripple effects, predictive back, etc.]
 ```
 
 Then ask: **"Does this design look right before I write the code?"**
@@ -134,8 +138,8 @@ Only after the user approves the design in Phase 2.
 
 ### File paths
 
-- **Pattern mode**: web → `app/components/patterns/$ARGUMENTS/$ARGUMENTS.tsx`, iOS → `Components/Patterns/App$ARGUMENTS.swift`
-- **Full mode**: web → `app/components/$ARGUMENTS/$ARGUMENTS.tsx`, iOS → `Components/$ARGUMENTS/App$ARGUMENTS.swift`
+- **Pattern mode**: web → `app/components/patterns/$ARGUMENTS/$ARGUMENTS.tsx`, iOS → `Components/Patterns/App$ARGUMENTS.swift`, Android → `ui/patterns/App$ARGUMENTS.kt`
+- **Full mode**: web → `app/components/$ARGUMENTS/$ARGUMENTS.tsx`, iOS → `Components/$ARGUMENTS/App$ARGUMENTS.swift`, Android → `ui/components/App$ARGUMENTS.kt`
 
 ### Web (Next.js)
 
@@ -195,15 +199,60 @@ Rules:
 - Disabled: `.opacity(isDisabled ? 0.5 : 1.0)` + `.allowsHitTesting(!isDisabled)`
 - Add `// MARK: -` section headers for all major sections
 
+### Android (Jetpack Compose)
+
+Determine the base package by reading existing `.kt` files:
+```bash
+find multi-repo-android/app/src/main/java -name "App*.kt" -path "*/ui/components/*" | head -3 2>/dev/null
+```
+
+Create the Android file at the appropriate path (pattern or full mode):
+
+```kotlin
+/**
+ * App$ARGUMENTS — [one-line description from the approved design].
+ *
+ * [Key parameters and their purpose]
+ * [State ownership note if applicable]
+ */
+package <base.package>.ui.components  // or ui.patterns for pattern mode
+
+// --- Props (parameters)
+
+// --- State (omit if fully controlled)
+
+// --- Helpers / Derived values (omit if none)
+
+// --- Render
+
+@Composable
+fun App$ARGUMENTS(
+    // parameters matching the approved Props Interface
+    modifier: Modifier = Modifier,
+) {
+    // implementation
+}
+```
+
+Rules:
+- Prefix with `App` to avoid Compose naming conflicts
+- Import atomic components from `<base.package>.ui.components.*`
+- All colors via `SemanticColors.*` — never hardcode hex or use `PrimitiveColors.*`
+- All spacing via `Spacing.*` (XS=4dp, SM=8dp, MD=16dp, LG=24dp, XL=32dp) — never hardcode `N.dp`
+- All typography via `AppTypography.*` — never hardcode font sizes
+- Disabled: `Modifier.alpha(0.5f)` + `enabled = false` / `clickable(enabled = false)`
+- Add `// --- Section` headers for all major sections
+- The `design-token-guard` hook will block `PrimitiveColors.*` at write time
+
 ---
 
 ## Phase 4: Registry & Documentation
 
-After writing both platform implementations:
+After writing all three platform implementations:
 
 1. **Update `docs/components.md`** — add a row in the Complex Components table:
    ```
-   | N | $ARGUMENTS | [figma node if any] | [atoms used] | `app/components/$ARGUMENTS/$ARGUMENTS.tsx` | `Components/$ARGUMENTS/App$ARGUMENTS.swift` | In Progress |
+   | N | $ARGUMENTS | [figma node if any] | [atoms used] | `app/components/$ARGUMENTS/$ARGUMENTS.tsx` | `Components/$ARGUMENTS/App$ARGUMENTS.swift` | `ui/components/App$ARGUMENTS.kt` | In Progress |
    ```
 
 2. **Check for new patterns** — if this component introduced a new interaction pattern (e.g. a new dismiss mechanism, a new focus management approach), add a note to CLAUDE.md under "Component System".

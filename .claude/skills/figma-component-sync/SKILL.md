@@ -14,8 +14,11 @@ Synchronize the Figma design system with the codebase component registry and val
 - Design tokens: `docs/design-tokens.md`
 - Web components: `multi-repo-nextjs/app/components/`
 - iOS components: `multi-repo-ios/multi-repo-ios/Components/`
+- Android components: `multi-repo-android/app/src/main/java/.../ui/components/`
+- Android patterns: `multi-repo-android/app/src/main/java/.../ui/patterns/`
 - Web tokens: `multi-repo-nextjs/app/globals.css`
 - iOS tokens: `multi-repo-ios/multi-repo-ios/DesignTokens.swift`
+- Android tokens: `multi-repo-android/app/src/main/java/.../ui/theme/DesignTokens.kt`
 
 ## Arguments
 
@@ -29,11 +32,13 @@ Synchronize the Figma design system with the codebase component registry and val
 cat docs/components.md
 ```
 
-List existing web and iOS component directories:
+List existing web, iOS, and Android component directories:
 
 ```bash
 ls -d multi-repo-nextjs/app/components/*/ 2>/dev/null
 ls -d multi-repo-ios/multi-repo-ios/Components/*/ 2>/dev/null
+find multi-repo-android/app/src/main/java -path "*/ui/components/App*.kt" 2>/dev/null
+find multi-repo-android/app/src/main/java -path "*/ui/patterns/App*.kt" 2>/dev/null
 ```
 
 ### Phase 2: Fetch Figma Components
@@ -55,7 +60,7 @@ For each Figma UI component found:
 2. If **new component found in Figma** — add it to the registry with Status "Not started"
 3. If **component removed from Figma** — mark it as "Deprecated" in the registry
 4. If **variant count changed** — update the variant count
-5. Verify listed implementation files actually exist on disk
+5. Verify listed implementation files actually exist on disk (all three platforms)
 
 Update `docs/components.md` with any changes found.
 
@@ -65,8 +70,9 @@ For each component marked "Done":
 
 1. Verify the web file exists and exports the expected component
 2. Verify the iOS file exists and declares the expected type
-3. Grep for any hardcoded hex values or primitive tokens in the component files
-4. Check that variant axes from Figma are represented as props/enums
+3. Verify the Android file exists and exports the expected composable
+4. Grep for any hardcoded hex values or primitive tokens in the component files (all platforms)
+5. Check that variant axes from Figma are represented as props/enums on all platforms
 
 ### Phase 5: Generate Implementation Brief (if $ARGUMENTS specifies a component)
 
@@ -74,7 +80,7 @@ If a specific component name was provided:
 
 1. Fetch `figma_get_component_for_development(nodeId: "<nodeId>")` for the rendered spec
 2. Identify which semantic tokens the component uses by examining its fills, text colors, borders
-3. Verify those tokens exist in `globals.css` and `DesignTokens.swift`
+3. Verify those tokens exist in `globals.css`, `DesignTokens.swift`, and `DesignTokens.kt`
 4. Output a structured implementation brief:
 
 ```
@@ -93,18 +99,21 @@ If a specific component name was provided:
 | Size | Small, Medium, Large |
 
 ### Required Semantic Tokens
-| Property | Token | CSS Var | Swift | In Code? |
-|----------|-------|---------|-------|----------|
+| Property | Token | CSS Var | Swift | Kotlin | In Code? |
+|----------|-------|---------|-------|--------|----------|
 
 ### Files to Create
 - `multi-repo-nextjs/app/components/<Name>/<Name>.tsx`
 - `multi-repo-nextjs/app/components/<Name>/index.ts`
 - `multi-repo-ios/multi-repo-ios/Components/<Name>/App<Name>.swift`
+- `multi-repo-android/app/src/main/java/.../ui/components/App<Name>.kt`
 
 ### Implementation Notes
 - Disabled state: opacity 0.5 (no separate tokens)
 - iOS: prefix with `App` to avoid SwiftUI conflicts
 - iOS: add haptic feedback via UIImpactFeedbackGenerator
+- Android: prefix with `App` to avoid Compose naming conflicts
+- Android: all colors via SemanticColors.*, spacing via Spacing.*, typography via AppTypography.*
 - All colors via Semantic tokens (design-token-guard enforces this)
 ```
 
@@ -121,10 +130,10 @@ If a specific component name was provided:
 | Verified| ...      | Implementation confirmed |
 
 ### Implementation Status
-| Component | Figma Variants | Web | iOS | Status |
-|-----------|---------------|-----|-----|--------|
-| Button    | 20            | ✓   | ✓   | Done   |
-| IconButton| 72            | ✗   | ✗   | Not started |
+| Component | Figma Variants | Web | iOS | Android | Status |
+|-----------|---------------|-----|-----|---------|--------|
+| Button    | 20            | ✓   | ✓   | ✓       | Done   |
+| IconButton| 72            | ✗   | ✗   | ✗       | Not started |
 
 ### Token Gaps
 (Tokens needed by unimplemented components that don't exist in code yet)
@@ -142,4 +151,4 @@ If a specific component name was provided:
 - **Phosphor icon component sets** (5 variants with weight axes like thin/light/regular/bold/fill/duotone) are NOT UI components — skip them
 - **Internal components** (prefixed `_`) are documented but don't need standalone implementations
 - **Always update `docs/components.md`** when changes are detected
-- **Token validation** uses Semantic layer names only (e.g. `--surfaces-*`, `Color.surfaces*`)
+- **Token validation** uses Semantic layer names only (e.g. `--surfaces-*`, `Color.surfaces*`, `SemanticColors.*`)

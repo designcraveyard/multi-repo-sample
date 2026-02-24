@@ -7,7 +7,39 @@ Updated by `/prd-update` and `/supabase-schema-validator` after schema changes.
 
 ## Supabase Tables
 
-*Tables will be documented here as migrations are added.*
+### `profiles`
+
+Auto-created for each `auth.users` row via a database trigger.
+
+| Column | Type | Nullable | Default | Notes |
+|--------|------|----------|---------|-------|
+| `id` | `uuid` | No | — | PK, FK → `auth.users(id)` ON DELETE CASCADE |
+| `display_name` | `text` | Yes | `''` | Populated from OAuth `full_name` / `name` metadata |
+| `avatar_url` | `text` | Yes | `''` | Populated from OAuth `avatar_url` / `picture` metadata |
+| `created_at` | `timestamptz` | No | `now()` | |
+| `updated_at` | `timestamptz` | No | `now()` | |
+
+**RLS Policies:**
+- `profiles_select_own` — `SELECT` where `auth.uid() = id`
+- `profiles_update_own` — `UPDATE` where `auth.uid() = id`
+- `profiles_insert_own` — `INSERT` with check `auth.uid() = id`
+
+**Trigger:** `on_auth_user_created` — calls `handle_new_user()` to auto-insert a profile row on `auth.users` INSERT.
+
+**Type mappings:**
+
+| Column | TypeScript | Swift | Kotlin |
+|--------|-----------|-------|--------|
+| `id` | `string` | `String` | `String` |
+| `display_name` | `string \| null` | `String?` | `String?` |
+| `avatar_url` | `string \| null` | `String?` | `String?` |
+| `created_at` | `string` | `Date` | `String` |
+| `updated_at` | `string` | `Date` | `String` |
+
+**Model files:**
+- Web: `lib/auth/profile.ts` (`Profile` interface)
+- iOS: `Models/ProfileModel.swift` (`ProfileModel` struct)
+- Android: `data/model/ProfileModel.kt` (`ProfileModel` data class)
 
 ---
 

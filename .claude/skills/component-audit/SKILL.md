@@ -10,7 +10,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 
 # Component Audit: $ARGUMENTS
 
-Audit the component `$ARGUMENTS` across both platforms. Read all relevant files first,
+Audit the component `$ARGUMENTS` across all three platforms. Read all relevant files first,
 run every check, fix issues found, then produce a final report.
 
 ## Files to Read
@@ -19,7 +19,15 @@ run every check, fix issues found, then produce a final report.
 multi-repo-nextjs/app/components/$ARGUMENTS/$ARGUMENTS.tsx
 multi-repo-nextjs/app/components/$ARGUMENTS/index.ts
 multi-repo-ios/multi-repo-ios/Components/$ARGUMENTS/App$ARGUMENTS.swift
+multi-repo-android/app/src/main/java/.../ui/components/App$ARGUMENTS.kt
 docs/components.md  (check the registry entry)
+```
+
+For patterns, also check:
+```
+multi-repo-nextjs/app/components/patterns/$ARGUMENTS/$ARGUMENTS.tsx
+multi-repo-ios/multi-repo-ios/Components/Patterns/App$ARGUMENTS.swift
+multi-repo-android/app/src/main/java/.../ui/patterns/App$ARGUMENTS.kt
 ```
 
 If any file does not exist, flag it as a critical issue immediately.
@@ -40,6 +48,12 @@ If any file does not exist, flag it as a critical issue immediately.
 - [ ] No hardcoded hex values in `.swift` files
 - [ ] No raw SwiftUI color names like `.black`, `.white`, `.gray` (use semantic tokens)
 
+**Android:**
+- [ ] No `PrimitiveColors.*` in component `.kt` files — only `SemanticColors.*`
+- [ ] No hardcoded `Color(0xFF...)` literals
+- [ ] No raw hardcoded `N.dp` or `N.sp` values — use `Spacing.*` and `AppTypography.*`
+- [ ] No raw Material color names like `Color.Black`, `Color.White`, `Color.Red`
+
 > If violations found: fix them before continuing the audit.
 
 ### 2. Comment Quality
@@ -49,6 +63,7 @@ Determine component type: **atomic** (<80 lines, no child component imports) or 
 **Atomic — minimum required:**
 - [ ] Web: Exported component has a JSDoc comment (at least one line describing purpose)
 - [ ] iOS: Component has a header comment (`// MARK: - ComponentName` + purpose line)
+- [ ] Android: Exported composable has a KDoc comment (`/** ... */`) describing purpose
 
 **Complex — full section headers required:**
 - [ ] Web: Has `// --- Props` section header
@@ -57,16 +72,19 @@ Determine component type: **atomic** (<80 lines, no child component imports) or 
 - [ ] iOS: Has `// MARK: - Properties` section header
 - [ ] iOS: Has `// MARK: - Body` section header
 - [ ] iOS: Has `// MARK: - Subviews` if subview helpers exist
-- [ ] Complex logic (non-obvious conditionals, transforms, calculations) has inline explanation comments
+- [ ] Android: Has `// --- Props` (or `// --- Parameters`) section header
+- [ ] Android: Has `// --- Render` (or `// --- Content`) section header
+- [ ] Android: Has `// --- State` if stateful, `// --- Helpers` if helper functions exist
+- [ ] Complex logic (non-obvious conditionals, transforms, calculations) has inline explanation comments on all platforms
 
 > If comment gaps found: add the missing comments before continuing.
 
 ### 3. Cross-Platform Parity
 
-- [ ] Both platforms expose **equivalent props** (same names where feasible, same semantics)
-- [ ] All **interactive states** (loading, error, empty, disabled, selected) present on both platforms
-- [ ] Disabled state implementation is consistent: `opacity-50` web / `.opacity(0.5)` iOS — never separate disabled tokens
-- [ ] If component has an `onAction`/callback — both platforms emit equivalent events
+- [ ] All three platforms expose **equivalent props** (same names where feasible, same semantics)
+- [ ] All **interactive states** (loading, error, empty, disabled, selected) present on all three platforms
+- [ ] Disabled state implementation is consistent: `opacity-50` web / `.opacity(0.5)` iOS / `alpha(0.5f)` Android — never separate disabled tokens
+- [ ] If component has an `onAction`/callback — all three platforms emit equivalent events
 - [ ] Platform-specific differences (gestures, navigation patterns) are intentional and documented in a comment
 
 ### 4. Accessibility
@@ -84,11 +102,17 @@ Determine component type: **atomic** (<80 lines, no child component imports) or 
 - [ ] `.accessibilityElement(children: .combine)` used where appropriate to avoid reading inner elements separately
 - [ ] If interactive: `.accessibilityAddTraits(.isButton)` or equivalent
 
+**Android:**
+- [ ] `Modifier.semantics { contentDescription = ... }` set on icon-only or image elements
+- [ ] `Modifier.semantics { role = Role.Button }` (or appropriate role) on custom interactive elements
+- [ ] `Modifier.semantics { disabled() }` on disabled composables
+- [ ] `Modifier.clearAndSetSemantics { }` used where internal structure would be noisy to TalkBack
+
 ### 5. Registry Entry in docs/components.md
 
 - [ ] Row exists for `$ARGUMENTS` in the correct table (Atomic or Complex)
 - [ ] Figma node ID is listed (or noted as "no Figma node" for complex patterns)
-- [ ] Both web and iOS file paths are listed and accurate
+- [ ] All three platform file paths (web, iOS, Android) are listed and accurate
 - [ ] Status reflects current reality (not "Done" if issues remain)
 
 ---
@@ -101,15 +125,15 @@ After running all checks and fixing any issues found, produce this report:
 ## Audit Report: $ARGUMENTS
 
 ### Type
-[Atomic | Complex] — [line count] lines (web), [line count] lines (iOS)
+[Atomic | Complex] — [line count] lines (web), [line count] lines (iOS), [line count] lines (Android)
 
-### ✅ Checks Passed
+### Checks Passed
 - [list every passing check concisely]
 
-### 🔧 Issues Fixed
+### Issues Fixed
 - [issue]: [what was fixed and where]
 
-### ❌ Remaining Issues (require user input or design decision)
+### Remaining Issues (require user input or design decision)
 - [issue]: [why it can't be auto-fixed, what decision is needed]
 
 ### Registry Status
