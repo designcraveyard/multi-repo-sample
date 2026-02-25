@@ -117,6 +117,7 @@ Invoke these in any Claude session opened at the workspace root:
 | New Screen | `/new-screen <description>` | UI-only screen scaffold on both platforms |
 | PRD Update | `/prd-update [feature\|all]` | Update PRDs and all CLAUDE.md files to match current codebase |
 | Git Push | `/git-push` | Commit and push all repos from the workspace root |
+| New AI Agent | `/new-ai-agent <description>` | Scaffold a new AI agent config + tool handlers + UI on all platforms using the OpenAI Transform/Transcribe layer |
 | Post-Session Review | `/post-session-review` | Guided checklist to update docs, skills, agents, and CLAUDE.md after a session |
 
 ## Subagents
