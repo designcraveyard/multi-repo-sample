@@ -226,6 +226,36 @@ All three platforms use Supabase Auth with an **auth gate** pattern — unauthen
 
 Run `/supabase-auth-setup` to configure providers in Supabase Dashboard, Google Cloud Console, and Apple Developer Portal.
 
+## ChatKit Integration (AI Assistant)
+
+All three platforms expose an AI assistant tab powered by OpenAI ChatKit:
+
+- **Web**: Native ChatKit React component at `/assistant` (cookie auth) and `/assistant-embed` (token auth for WebView)
+- **iOS/Android**: `AppWebView` wrapper loading the deployed ChatKit page
+
+**Config:** `chatkit.config.json` at workspace root — stores workflow ID, theme, and deployment URL.
+
+**Key files:**
+
+| File | Platform | Purpose |
+|------|----------|---------|
+| `app/api/chatkit/session/route.ts` | Web | API route — creates ChatKit sessions via `openai.beta.chatkit.sessions.create()` |
+| `app/(authenticated)/assistant/page.tsx` | Web | ChatKit page (cookie auth, inside nav shell) |
+| `app/assistant-embed/page.tsx` | Web | Embed ChatKit page (no auth chrome, for WebView) |
+| `Components/Native/AppWebView.swift` | iOS | Reusable WKWebView wrapper |
+| `Views/AssistantView.swift` | iOS | Assistant screen — loads WebView |
+| `ui/native/AppWebView.kt` | Android | Reusable Compose WebView wrapper |
+| `feature/assistant/AssistantScreen.kt` | Android | Assistant screen — loads WebView |
+| `chatkit.config.json` | Root | Shared config (workflow ID, theme, URLs) |
+
+**Middleware exclusions:** `/assistant-embed` and `/api/chatkit` are excluded from auth redirect in `middleware.ts`.
+
+**WebView URL:** Currently points to `https://lifegraph-agent.vercel.app/`. Update in `AssistantView.swift` (iOS) and `AssistantScreen.kt` (Android).
+
+**Dependencies:** `@openai/chatkit-react` (web), `WebKit` (iOS), `android.webkit.WebView` (Android)
+
+Run `/chatkit-setup` to configure workflow ID, theme, and deployment URL interactively.
+
 ## Cross-Platform Conventions
 
 - **Feature naming**: use the same **PascalCase** name on all three platforms (e.g. `UserProfile`)

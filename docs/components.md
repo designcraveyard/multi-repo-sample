@@ -92,6 +92,7 @@ The `native-wrapper-guard` hook will warn if raw SwiftUI APIs (`Picker(`, `DateP
 | 6 | **AppCarousel** | `TabView(.page)` / `ScrollView` | `Components/Native/AppCarousel.swift` | `items`, `style: .paged/.scrollSnap`, `showDots`, `@ViewBuilder content` | Done |
 | 7 | **AppTooltip** | `.popover` | `Components/Native/AppTooltip.swift` | `isPresented`, `tipText` or custom `tipContent`, `arrowEdge` | Done |
 | 8 | **AppRangeSlider** | dual `Slider` | `Components/Native/AppRangeSlider.swift` | `lowerValue`, `upperValue`, `range`, `step`, `showLabels` | Done |
+| 9 | **AppWebView** | `WKWebView` | `Components/Native/AppWebView.swift` | `url: URL`, `isLoading: Binding<Bool>`, `onError: ((Error) -> Void)?` | Done |
 
 ### ViewModifier Wrappers
 
@@ -144,6 +145,7 @@ Thin wrappers around Material 3 / Compose APIs, styled via `NativeComponentStyli
 | 11 | **AppCarousel** | `HorizontalPager` | `ui/native/AppCarousel.kt` | `items`, `style`, `showDots` | Done |
 | 12 | **AppTooltip** | `PlainTooltip` | `ui/native/AppTooltip.kt` | `isVisible`, `text` | Done |
 | 13 | **AppRangeSlider** | `RangeSlider` | `ui/native/AppRangeSlider.kt` | `lowerValue`, `upperValue`, `range`, `step` | Done |
+| 14 | **AppWebView** | `android.webkit.WebView` | `ui/native/AppWebView.kt` | `url: String`, `modifier: Modifier` | Done |
 
 ### iOS Architecture Notes
 

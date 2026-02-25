@@ -1,5 +1,5 @@
 {
-  "workflowId": "wf_696ba27651a48190a4dd4869247f1ae800bfaf78e6102cf5",
+  "workflowId": "wf_69157991bfd081909cc0815050b47abf0f93481201224b4b",
   "agent": {
     "model": "gpt-4.1",
     "instructions": "You are a helpful assistant."
