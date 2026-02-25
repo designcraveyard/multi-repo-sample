@@ -245,3 +245,193 @@ The model will see the result and incorporate it into its response.
 - Use `gpt-4o-mini` for text-only agents that don't need vision
 - The tool-call loop in TransformService handles multi-turn automatically — if the model needs to call multiple tools, it will
 - Test tool handlers independently (e.g. via curl) before wiring into the config
+
+## Known Gotchas & Debugging
+
+### 1. The Dual-ID Problem (Most Common Cause of Silent Tool Failure)
+
+**Symptom:** Function calling appears to work (model calls the tool, no crash visible), but the handler receives an empty string or `{}` as arguments, and results are wrong or empty.
+
+**Root cause:** The OpenAI Responses API uses **two different identifiers** for the same function call:
+- `item.call_id` = `"call_xxx"` — sent in `response.output_item.added`
+- `item.id` = `"fc_xxx"` — sent as `item_id` in `response.function_call_arguments.delta` and `.done`
+
+If you register the pending call under only `call_id`, the delta/done events arrive with `item_id` and the lookup fails silently — args never accumulate.
+
+**Fix (dual-key registration):** Register each call under **both** identifiers pointing to the same mutable object. Store the real `callId` in the value for output submission. Deduplicate by `callId` before executing handlers.
+
+```typescript
+// Web (TypeScript) — same object reference, both keys
+const entry = { name: item.name, callId: item.call_id, args: "" };
+pendingFunctionCalls.set(item.call_id, entry);
+if (item.id && item.id !== item.call_id) {
+  pendingFunctionCalls.set(item.id, entry); // same object — mutations visible via both keys
+}
+// Deduplication before executing:
+const seen = new Set<string>();
+for (const entry of pendingFunctionCalls.values()) {
+  if (seen.has(entry.callId)) continue;
+  seen.add(entry.callId);
+  // execute handler...
+}
+```
+
+```kotlin
+// Android (Kotlin) — same PendingCall instance, both keys
+data class PendingCall(val name: String, val callId: String, val args: StringBuilder = StringBuilder())
+val pending = PendingCall(name, callId)
+pendingCalls[callId] = pending
+if (itemId != null) pendingCalls[itemId] = pending  // same instance
+// Deduplication:
+val uniqueCalls = pendingCalls.values.distinctBy { it.callId }
+```
+
+```swift
+// iOS (Swift) — value type, must update all matching keys explicitly
+let entry = (name: name, callId: callId, args: "")
+pendingCalls[callId] = entry
+if let itemId = item["id"] as? String, itemId != callId {
+    pendingCalls[itemId] = entry  // copy, but same callId
+}
+// When updating args, iterate all keys with matching callId:
+for k in pendingCalls.keys where pendingCalls[k]?.callId == pending.callId {
+    pendingCalls[k] = updated
+}
+// Deduplication:
+var seenCallIds = Set<String>()
+for (_, call) in pendingCalls {
+    guard seenCallIds.insert(call.callId).inserted else { continue }
+}
+```
+
+This pattern is already implemented in `TransformService.swift`, `TransformRepository.kt`, and `transform-service.ts`. New configs do not need to worry about it — but if you're debugging tool call issues, check that the service layer has dual-key registration.
+
+---
+
+### 2. Always Use `strict: true` + `additionalProperties: false`
+
+Without strict mode, the model may generate arguments that don't match your JSON Schema, or skip required fields entirely.
+
+**Required in every function tool definition:**
+
+```typescript
+// Web
+{ type: "function", name: "...", description: "...", parameters: { ..., additionalProperties: false }, strict: true }
+```
+
+```swift
+// iOS — add "strict": true in OpenAITypes.swift toJSON() for .function case
+case .function(let name, let description, let parameters):
+    return ["type": "function", "name": name, "description": description,
+            "parameters": parameters, "strict": true]
+```
+
+```kotlin
+// Android — add put("strict", true) in buildToolsArray() for TransformTool.Function
+is TransformTool.Function -> add(buildJsonObject {
+    put("type", "function")
+    put("strict", true)
+    // ...
+})
+```
+
+Both `strict: true` on the tool AND `"additionalProperties": false` inside the parameters schema are required. These are already in the service layer for all new configs.
+
+---
+
+### 3. Guard Against Empty Args in Tool Handlers
+
+Even with strict mode, args can arrive as empty string `""` if delta events are lost. Always guard:
+
+```typescript
+// Web
+const parsed = entry.args ? JSON.parse(entry.args) : {};
+```
+
+```kotlin
+// Android
+val argsJson = pending.args.toString().ifBlank { "{}" }
+```
+
+```swift
+// iOS
+let argsToPass = call.args.isEmpty ? "{}" : call.args
+```
+
+In your handler implementation, also check for missing required args and return an error JSON rather than throwing:
+
+```typescript
+if (!query) return JSON.stringify({ error: "Missing required argument: query" });
+```
+
+---
+
+### 4. System Prompt Strength When Mixing Built-in and Custom Tools
+
+**Symptom:** Model calls `web_search_preview` instead of your custom function tool, even when your tool is more appropriate.
+
+**Root cause:** When `web_search_preview` is present alongside a custom function tool, the model may prefer the built-in tool. The system prompt must be explicit.
+
+**Fix:** Use strong, unambiguous language:
+
+```
+ALWAYS call the [tool_name] function tool when [condition].
+Do NOT use web search for this — only use [tool_name].
+```
+
+Weak prompts like "you can use the food_search tool" give the model too much latitude.
+
+---
+
+### 5. iOS `JSONSerialization` Crashes on `nil as Any`
+
+**Symptom:** iOS app crashes in the tool handler when building JSON with `JSONSerialization.data(withJSONObject:)`.
+
+**Root cause:** Swift `Optional.none` wrapped as `Any` is not JSON-serializable. `JSONSerialization` accepts `NSNull()` for null values but not Swift optionals.
+
+**Fix:** Return `NSNull()` for any field that might be nil:
+
+```swift
+// ❌ Crashes if nutrient not found
+"calories": nutrients.first { ... }?["value"]
+
+// ✅ Safe
+func nutrientValue(_ id: Int) -> Any {
+    nutrients.first { ($0["nutrientId"] as? Int) == id }?["value"] ?? NSNull()
+}
+
+// Also for optional top-level fields:
+"fdcId": food["fdcId"] ?? NSNull(),
+"brand": food["brandName"] ?? NSNull(),
+```
+
+---
+
+### 6. Android Design Token Names
+
+When building Android UI for your agent's screen, use the correct token names:
+
+| Wrong | Correct |
+|-------|---------|
+| `Spacing.sp2` | `Spacing.space2` |
+| `Spacing.sp4` | `Spacing.space4` |
+| `SemanticColors.surfacesDangerDefault` | `SemanticColors.surfacesErrorSubtle` |
+| `SemanticColors.surfacesBaseSecondary` | `SemanticColors.surfacesBaseLowContrast` |
+
+Always look up the actual token names in `DesignTokens.kt` rather than guessing.
+
+---
+
+### 7. Testing Tool Handlers with curl
+
+Before wiring a tool handler into a config, test the external API call directly:
+
+```bash
+# USDA FoodData Central example
+curl "https://api.nal.usda.gov/fdc/v1/foods/search?query=apple&api_key=YOUR_KEY&pageSize=5" | jq '.foods[0].foodNutrients[] | select(.nutrientId == 1008)'
+```
+
+This confirms:
+- The API endpoint URL and parameters are correct
+- The response shape matches what your handler expects
+- The field/nutrient IDs are correct before committing to the handler logic

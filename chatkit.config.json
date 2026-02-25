@@ -1,0 +1,13 @@
+{
+  "workflowId": "wf_696ba27651a48190a4dd4869247f1ae800bfaf78e6102cf5",
+  "agent": {
+    "model": "gpt-4.1",
+    "instructions": "You are a helpful assistant."
+  },
+  "theme": {
+    "colorScheme": "system"
+  },
+  "deployment": {
+    "localUrl": "http://192.168.1.6:3000"
+  }
+}
