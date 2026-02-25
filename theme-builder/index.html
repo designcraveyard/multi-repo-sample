@@ -1,0 +1,2197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Theme Builder</title>
+<style>
+/* ============================================================
+   THEME BUILDER — CSS
+   Single-file visual design system configurator.
+   CSS custom properties drive the preview; JS mutates :root vars.
+   ============================================================ */
+
+/* --- Typography imports (must be first in stylesheet) ------- */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap');
+
+/* --- Reset & Base ------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ui-bg: #0e0e11;
+  --ui-surface: #18181b;
+  --ui-surface-hover: #1f1f24;
+  --ui-border: #2a2a30;
+  --ui-border-subtle: #222228;
+  --ui-text: #e4e4e7;
+  --ui-text-muted: #8b8b94;
+  --ui-text-dim: #5a5a64;
+  --ui-accent: #6366f1;
+  --ui-accent-hover: #818cf8;
+  --ui-accent-subtle: rgba(99,102,241,0.12);
+  --ui-radius: 8px;
+  --ui-radius-sm: 5px;
+  --ui-radius-lg: 12px;
+  --ui-font: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --ui-font-mono: 'DM Mono', 'Fira Code', monospace;
+  --ui-transition: 150ms ease;
+}
+
+body {
+  font-family: var(--ui-font);
+  background: var(--ui-bg);
+  color: var(--ui-text);
+  line-height: 1.5;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Top Bar ------------------------------------------------ */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 52px;
+  background: var(--ui-surface);
+  border-bottom: 1px solid var(--ui-border);
+  flex-shrink: 0;
+  z-index: 100;
+}
+.top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.top-bar-logo {
+  width: 28px;
+  height: 28px;
+  background: var(--ui-accent);
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.top-bar h1 {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+/* Theme name input in top bar */
+.theme-name-input {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ui-text-muted);
+  font-family: var(--ui-font);
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: var(--ui-radius-sm);
+  outline: none;
+  width: 160px;
+  transition: border-color var(--ui-transition), color var(--ui-transition);
+}
+.theme-name-input:hover { border-color: var(--ui-border); color: var(--ui-text); }
+.theme-name-input:focus { border-color: var(--ui-accent); color: var(--ui-text); }
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* --- Buttons (UI chrome) ------------------------------------ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--ui-radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--ui-font);
+  border: 1px solid var(--ui-border);
+  background: var(--ui-surface);
+  color: var(--ui-text);
+  cursor: pointer;
+  transition: all var(--ui-transition);
+  white-space: nowrap;
+}
+.btn:hover { background: var(--ui-surface-hover); border-color: var(--ui-border); }
+.btn-primary {
+  background: var(--ui-accent);
+  border-color: var(--ui-accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--ui-accent-hover); border-color: var(--ui-accent-hover); }
+.btn-icon {
+  padding: 7px;
+  min-width: 34px;
+  justify-content: center;
+}
+.btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* --- Toggle Switch ------------------------------------------ */
+.toggle-group {
+  display: flex;
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  overflow: hidden;
+}
+.toggle-option {
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--ui-transition);
+  color: var(--ui-text-muted);
+  border: none;
+  background: transparent;
+  font-family: var(--ui-font);
+}
+.toggle-option:hover { color: var(--ui-text); }
+.toggle-option.active {
+  background: var(--ui-accent);
+  color: #fff;
+}
+
+/* --- Main Layout -------------------------------------------- */
+.main-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* --- Config Panel (Left) ------------------------------------ */
+.config-panel {
+  width: 340px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  border-right: 1px solid var(--ui-border);
+  background: var(--ui-bg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+/* Custom scrollbar */
+.config-panel::-webkit-scrollbar { width: 5px; }
+.config-panel::-webkit-scrollbar-track { background: transparent; }
+.config-panel::-webkit-scrollbar-thumb { background: var(--ui-border); border-radius: 3px; }
+
+/* --- Accordion Sections ------------------------------------- */
+.section {
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: var(--ui-radius);
+  overflow: hidden;
+  background: var(--ui-surface);
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--ui-transition);
+}
+.section-header:hover { background: var(--ui-surface-hover); }
+.section-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ui-text-muted);
+}
+.section-chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--ui-text-dim);
+  transition: transform 200ms ease;
+}
+.section.open .section-chevron { transform: rotate(180deg); }
+.section-body {
+  padding: 0 14px 14px;
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+}
+.section.open .section-body { display: flex; }
+
+/* --- Control Rows ------------------------------------------- */
+.control-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.control-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ui-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.control-sublabel {
+  font-size: 10px;
+  color: var(--ui-text-dim);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* --- Color Picker Controls ---------------------------------- */
+.color-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.color-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--ui-radius-sm);
+  border: 2px solid var(--ui-border);
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+/* Hidden native color input overlaid on swatch */
+.color-swatch input[type="color"] {
+  position: absolute;
+  inset: -4px;
+  width: calc(100% + 8px);
+  height: calc(100% + 8px);
+  cursor: pointer;
+  opacity: 0;
+}
+.hex-input {
+  flex: 1;
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-border-subtle);
+  color: var(--ui-text);
+  font-family: var(--ui-font-mono);
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: var(--ui-radius-sm);
+  outline: none;
+  transition: border-color var(--ui-transition);
+}
+.hex-input:focus { border-color: var(--ui-accent); }
+
+/* Color ramp display (collapsible advanced) */
+.color-ramp {
+  display: flex;
+  gap: 2px;
+  margin-top: 4px;
+}
+.color-ramp-stop {
+  flex: 1;
+  height: 24px;
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+  transition: transform 100ms ease;
+}
+.color-ramp-stop:hover { transform: scaleY(1.3); z-index: 1; }
+.color-ramp-stop .stop-label {
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8px;
+  color: var(--ui-text-dim);
+  white-space: nowrap;
+}
+/* Advanced toggle link */
+.advanced-toggle {
+  font-size: 11px;
+  color: var(--ui-accent);
+  cursor: pointer;
+  user-select: none;
+  margin-top: 2px;
+}
+.advanced-toggle:hover { color: var(--ui-accent-hover); }
+.advanced-body { display: none; flex-direction: column; gap: 6px; margin-top: 6px; }
+.advanced-body.open { display: flex; }
+.advanced-stop-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+.advanced-stop-row .stop-name {
+  width: 28px;
+  color: var(--ui-text-dim);
+  font-family: var(--ui-font-mono);
+  font-size: 10px;
+}
+.advanced-stop-row .mini-swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  border: 1px solid var(--ui-border);
+  flex-shrink: 0;
+}
+
+/* --- Font Picker -------------------------------------------- */
+.font-picker-wrap {
+  position: relative;
+}
+.font-picker-input {
+  width: 100%;
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-border-subtle);
+  color: var(--ui-text);
+  font-family: var(--ui-font);
+  font-size: 13px;
+  padding: 7px 10px;
+  border-radius: var(--ui-radius-sm);
+  outline: none;
+  transition: border-color var(--ui-transition);
+}
+.font-picker-input:focus { border-color: var(--ui-accent); }
+.font-picker-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  margin-top: 4px;
+  z-index: 200;
+  display: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.font-picker-dropdown.open { display: block; }
+.font-picker-dropdown::-webkit-scrollbar { width: 5px; }
+.font-picker-dropdown::-webkit-scrollbar-thumb { background: var(--ui-border); border-radius: 3px; }
+.font-option {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background var(--ui-transition);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.font-option:hover { background: var(--ui-accent-subtle); }
+.font-option.selected { background: var(--ui-accent-subtle); color: var(--ui-accent); }
+.font-option .font-category {
+  font-size: 9px;
+  color: var(--ui-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: var(--ui-font);
+}
+
+/* --- Slider Controls ---------------------------------------- */
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.slider-row input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 4px;
+  background: var(--ui-border);
+  border-radius: 2px;
+  outline: none;
+}
+.slider-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--ui-accent);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid var(--ui-bg);
+  transition: transform 100ms ease;
+}
+.slider-row input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+.slider-value {
+  font-family: var(--ui-font-mono);
+  font-size: 12px;
+  color: var(--ui-text-muted);
+  min-width: 36px;
+  text-align: right;
+}
+
+/* --- Select Dropdowns --------------------------------------- */
+.select-input {
+  width: 100%;
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-border-subtle);
+  color: var(--ui-text);
+  font-family: var(--ui-font);
+  font-size: 13px;
+  padding: 7px 10px;
+  border-radius: var(--ui-radius-sm);
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238b8b94' viewBox='0 0 256 256'%3E%3Cpath d='M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+  transition: border-color var(--ui-transition);
+}
+.select-input:focus { border-color: var(--ui-accent); }
+
+/* --- Weight Checkboxes -------------------------------------- */
+.weight-checkboxes {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.weight-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: var(--ui-radius-sm);
+  transition: all var(--ui-transition);
+  color: var(--ui-text-muted);
+}
+.weight-checkbox:hover { border-color: var(--ui-border); }
+.weight-checkbox.active {
+  border-color: var(--ui-accent);
+  background: var(--ui-accent-subtle);
+  color: var(--ui-accent);
+}
+.weight-checkbox input { display: none; }
+
+/* --- Spacing/Radius Scale Preview --------------------------- */
+.scale-preview {
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  padding: 8px 0;
+}
+.scale-bar {
+  flex: 1;
+  background: var(--ui-accent);
+  border-radius: 2px;
+  opacity: 0.6;
+  min-width: 4px;
+  transition: opacity var(--ui-transition);
+  position: relative;
+}
+.scale-bar:hover { opacity: 1; }
+
+/* --- Component Override Toggle ------------------------------ */
+.override-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--ui-text-muted);
+}
+.override-switch {
+  width: 32px;
+  height: 18px;
+  background: var(--ui-border);
+  border-radius: 9px;
+  position: relative;
+  cursor: pointer;
+  transition: background var(--ui-transition);
+  flex-shrink: 0;
+}
+.override-switch.active { background: var(--ui-accent); }
+.override-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform var(--ui-transition);
+}
+.override-switch.active::after { transform: translateX(14px); }
+.override-fields { display: none; flex-direction: column; gap: 8px; margin-top: 8px; }
+.override-fields.active { display: flex; }
+
+/* --- Preview Panel (Right) ---------------------------------- */
+.preview-panel {
+  flex: 1;
+  overflow-y: auto;
+  background: #f8f8fa;
+  position: relative;
+}
+.preview-panel::-webkit-scrollbar { width: 6px; }
+.preview-panel::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+/* Preview container gets themed via CSS vars */
+.preview-container {
+  /* These are the themeable CSS variables — JS mutates these on :root or here */
+  --brand-50: #fafafa; --brand-100: #f4f4f5; --brand-200: #e4e4e7;
+  --brand-300: #d4d4d8; --brand-400: #a1a1aa; --brand-500: #71717a;
+  --brand-600: #52525b; --brand-700: #3f3f46; --brand-800: #27272a;
+  --brand-900: #18181b; --brand-950: #09090b;
+  --accent-50: #eef2ff; --accent-100: #e0e7ff; --accent-200: #c7d2fe;
+  --accent-300: #a5b4fc; --accent-400: #818cf8; --accent-500: #6366f1;
+  --accent-600: #4f46e5; --accent-700: #4338ca; --accent-800: #3730a3;
+  --accent-900: #312e81; --accent-950: #1e1b4b;
+  --neutral-50: #fafafa; --neutral-100: #f5f5f5; --neutral-200: #e5e5e5;
+  --neutral-300: #d4d4d4; --neutral-400: #a3a3a3; --neutral-500: #737373;
+  --neutral-600: #525252; --neutral-700: #404040; --neutral-800: #262626;
+  --neutral-900: #171717; --neutral-950: #0a0a0a;
+  --success-500: #22c55e; --success-100: #dcfce7; --success-900: #14532d;
+  --warning-500: #f59e0b; --warning-100: #fef3c7; --warning-900: #78350f;
+  --error-500: #ef4444; --error-100: #fee2e2; --error-900: #7f1d1d;
+  --radius-none: 0px; --radius-xs: 2px; --radius-sm: 4px; --radius-md: 8px;
+  --radius-lg: 12px; --radius-xl: 16px; --radius-2xl: 24px; --radius-full: 9999px;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px;
+  --body-font: 'Inter', sans-serif;
+  --display-font: 'Inter', sans-serif;
+  --base-size: 16px;
+  /* Semantic light tokens (default) */
+  --surface-bg: var(--neutral-50);
+  --surface-card: #ffffff;
+  --surface-brand: var(--brand-950);
+  --surface-brand-hover: var(--brand-800);
+  --surface-accent: var(--accent-600);
+  --surface-accent-hover: var(--accent-500);
+  --surface-muted: var(--neutral-100);
+  --text-primary: var(--neutral-950);
+  --text-secondary: var(--neutral-600);
+  --text-muted: var(--neutral-400);
+  --text-on-brand: var(--brand-50);
+  --text-on-accent: #ffffff;
+  --border-default: var(--neutral-200);
+  --border-muted: var(--neutral-100);
+  min-height: 100%;
+  padding: 24px;
+  font-family: var(--body-font);
+  font-size: var(--base-size);
+  color: var(--text-primary);
+  background: var(--surface-bg);
+  transition: background 300ms ease, color 300ms ease;
+}
+/* Dark mode overrides on preview */
+.preview-container.dark {
+  --surface-bg: var(--neutral-950);
+  --surface-card: var(--neutral-900);
+  --surface-brand: var(--brand-50);
+  --surface-brand-hover: var(--brand-200);
+  --surface-accent: var(--accent-400);
+  --surface-accent-hover: var(--accent-300);
+  --surface-muted: var(--neutral-800);
+  --text-primary: var(--neutral-50);
+  --text-secondary: var(--neutral-400);
+  --text-muted: var(--neutral-600);
+  --text-on-brand: var(--brand-950);
+  --text-on-accent: var(--neutral-950);
+  --border-default: var(--neutral-800);
+  --border-muted: var(--neutral-900);
+}
+
+/* --- Preview Component Styles ------------------------------- */
+.p-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: var(--surface-brand);
+  color: var(--text-on-brand);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-6);
+}
+.p-navbar-title { font-family: var(--display-font); font-weight: 700; font-size: 1.1em; }
+.p-navbar-links { display: flex; gap: var(--space-4); font-size: 0.85em; opacity: 0.8; }
+
+.p-welcome {
+  font-family: var(--display-font);
+  font-weight: 700;
+  font-size: 2em;
+  line-height: 1.15;
+  margin-bottom: var(--space-6);
+  color: var(--text-primary);
+}
+
+.p-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+.p-stat-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+}
+.p-stat-label { font-size: 0.8em; color: var(--text-secondary); margin-bottom: var(--space-1); }
+.p-stat-value { font-size: 1.6em; font-weight: 700; font-family: var(--display-font); }
+.p-stat-change { font-size: 0.75em; margin-top: var(--space-1); }
+.p-stat-change.up { color: var(--success-500); }
+.p-stat-change.down { color: var(--error-500); }
+
+.p-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border-default);
+  margin-bottom: var(--space-6);
+}
+.p-tab {
+  padding: var(--space-3) var(--space-5);
+  font-size: 0.85em;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 150ms ease;
+}
+.p-tab:hover { color: var(--text-secondary); }
+.p-tab.active {
+  color: var(--surface-accent);
+  border-bottom-color: var(--surface-accent);
+}
+
+.p-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+.p-input-group { display: flex; flex-direction: column; gap: var(--space-1); }
+.p-input-label { font-size: 0.8em; font-weight: 500; color: var(--text-secondary); }
+.p-input {
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  font-family: var(--body-font);
+  font-size: 0.9em;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 150ms ease;
+}
+.p-input:focus { border-color: var(--surface-accent); }
+.p-select {
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  font-family: var(--body-font);
+  font-size: 0.9em;
+  color: var(--text-primary);
+}
+
+.p-badges {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+.p-badge {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: 0.75em;
+  font-weight: 600;
+}
+.p-badge-brand { background: var(--surface-brand); color: var(--text-on-brand); }
+.p-badge-accent { background: var(--surface-accent); color: var(--text-on-accent); }
+.p-badge-muted { background: var(--surface-muted); color: var(--text-secondary); }
+
+.p-button-group {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+.p-btn {
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-md);
+  font-size: 0.85em;
+  font-weight: 600;
+  font-family: var(--body-font);
+  cursor: pointer;
+  transition: all 150ms ease;
+  border: none;
+}
+.p-btn-primary {
+  background: var(--surface-accent);
+  color: var(--text-on-accent);
+}
+.p-btn-primary:hover { background: var(--surface-accent-hover); }
+.p-btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-default);
+}
+.p-btn-ghost:hover { background: var(--surface-muted); }
+.p-btn-brand {
+  background: var(--surface-brand);
+  color: var(--text-on-brand);
+}
+.p-btn-brand:hover { background: var(--surface-brand-hover); }
+
+.p-alerts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+.p-alert {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: 0.85em;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.p-alert-success { background: var(--success-100); color: var(--success-900); }
+.p-alert-warning { background: var(--warning-100); color: var(--warning-900); }
+.p-alert-error { background: var(--error-100); color: var(--error-900); }
+.preview-container.dark .p-alert-success { background: rgba(34,197,94,0.15); color: #86efac; }
+.preview-container.dark .p-alert-warning { background: rgba(245,158,11,0.15); color: #fcd34d; }
+.preview-container.dark .p-alert-error { background: rgba(239,68,68,0.15); color: #fca5a5; }
+
+.p-table-wrap {
+  overflow-x: auto;
+  margin-bottom: var(--space-6);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+}
+.p-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85em;
+}
+.p-table th {
+  background: var(--surface-brand);
+  color: var(--text-on-brand);
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  font-weight: 600;
+}
+.p-table th:first-child { border-radius: var(--radius-md) 0 0 0; }
+.p-table th:last-child { border-radius: 0 var(--radius-md) 0 0; }
+.p-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-muted);
+}
+.p-table tr:nth-child(even) { background: var(--surface-muted); }
+.p-table tr:last-child td { border-bottom: none; }
+.p-table .status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.8em;
+  font-weight: 600;
+}
+.status-active { background: var(--success-100); color: var(--success-900); }
+.status-pending { background: var(--warning-100); color: var(--warning-900); }
+.status-inactive { background: var(--error-100); color: var(--error-900); }
+.preview-container.dark .status-active { background: rgba(34,197,94,0.15); color: #86efac; }
+.preview-container.dark .status-pending { background: rgba(245,158,11,0.15); color: #fcd34d; }
+.preview-container.dark .status-inactive { background: rgba(239,68,68,0.15); color: #fca5a5; }
+
+.p-type-sampler {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.p-type-sampler .caption {
+  font-size: 0.75em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.p-type-sampler .body-text { font-size: 1em; color: var(--text-primary); }
+.p-type-sampler .link-text {
+  font-size: 0.9em;
+  color: var(--surface-accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.p-type-sampler .muted-text {
+  font-size: 0.85em;
+  color: var(--text-muted);
+}
+
+/* --- JSON Footer -------------------------------------------- */
+.json-footer {
+  border-top: 1px solid var(--ui-border);
+  background: var(--ui-surface);
+  flex-shrink: 0;
+  transition: height 200ms ease;
+}
+.json-footer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  cursor: pointer;
+  user-select: none;
+}
+.json-footer-header:hover { background: var(--ui-surface-hover); }
+.json-footer-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ui-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.json-footer-body {
+  display: none;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 0 16px 12px;
+}
+.json-footer.open .json-footer-body { display: block; }
+.json-footer pre {
+  font-family: var(--ui-font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--ui-text-muted);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     TOP BAR — Logo, theme name, light/dark toggle, export button
+     ============================================================ -->
+<div class="top-bar">
+  <div class="top-bar-left">
+    <div class="top-bar-logo">T</div>
+    <h1>Theme Builder</h1>
+    <input type="text" class="theme-name-input" id="themeName" value="My Theme" placeholder="Theme name..." />
+  </div>
+  <div class="top-bar-right">
+    <!-- Light / Dark toggle for preview -->
+    <div class="toggle-group" id="modeToggle">
+      <button class="toggle-option active" data-mode="light">Light</button>
+      <button class="toggle-option" data-mode="dark">Dark</button>
+    </div>
+    <!-- Import button -->
+    <button class="btn" id="importBtn" title="Import JSON">
+      <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><path d="M128 152V40"/><polyline points="80 104 128 152 176 104"/><path d="M216 152v56a8 8 0 0 1-8 8H48a8 8 0 0 1-8-8V152"/></svg>
+      Import
+    </button>
+    <input type="file" id="importFile" accept=".json" style="display:none" />
+    <!-- Export button -->
+    <button class="btn btn-primary" id="exportBtn">
+      <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><path d="M128 24v128"/><polyline points="80 104 128 152 176 104"/><path d="M216 152v56a8 8 0 0 1-8 8H48a8 8 0 0 1-8-8V152"/></svg>
+      Export JSON
+    </button>
+  </div>
+</div>
+
+<!-- ============================================================
+     MAIN LAYOUT — Config (left) + Preview (right)
+     ============================================================ -->
+<div class="main-layout">
+
+  <!-- CONFIG PANEL -------------------------------------------- -->
+  <div class="config-panel" id="configPanel">
+
+    <!-- COLORS SECTION -->
+    <div class="section open" data-section="colors">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-title">Colors</span>
+        <svg class="section-chevron" viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+      </div>
+      <div class="section-body" id="colorsSection">
+        <!-- Dynamically populated by JS -->
+      </div>
+    </div>
+
+    <!-- TYPOGRAPHY SECTION -->
+    <div class="section open" data-section="typography">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-title">Typography</span>
+        <svg class="section-chevron" viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+      </div>
+      <div class="section-body" id="typographySection">
+        <!-- Dynamically populated by JS -->
+      </div>
+    </div>
+
+    <!-- SPACING SECTION -->
+    <div class="section open" data-section="spacing">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-title">Spacing</span>
+        <svg class="section-chevron" viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+      </div>
+      <div class="section-body" id="spacingSection">
+        <!-- Dynamically populated by JS -->
+      </div>
+    </div>
+
+    <!-- RADIUS SECTION -->
+    <div class="section" data-section="radius">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-title">Border Radius</span>
+        <svg class="section-chevron" viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+      </div>
+      <div class="section-body" id="radiusSection">
+        <!-- Dynamically populated by JS -->
+      </div>
+    </div>
+
+    <!-- COMPONENT OVERRIDES SECTION -->
+    <div class="section" data-section="overrides">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-title">Component Overrides</span>
+        <svg class="section-chevron" viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+      </div>
+      <div class="section-body" id="overridesSection">
+        <!-- Dynamically populated by JS -->
+      </div>
+    </div>
+
+  </div><!-- /config-panel -->
+
+  <!-- PREVIEW PANEL ------------------------------------------- -->
+  <div class="preview-panel">
+    <div class="preview-container" id="previewContainer">
+
+      <!-- Navbar -->
+      <div class="p-navbar" id="pNavbar">
+        <span class="p-navbar-title">AppName</span>
+        <div class="p-navbar-links">
+          <span>Dashboard</span>
+          <span>Settings</span>
+          <span>Profile</span>
+        </div>
+      </div>
+
+      <!-- Welcome heading -->
+      <h1 class="p-welcome" id="pWelcome">Welcome back, Designer</h1>
+
+      <!-- Stat cards -->
+      <div class="p-stats">
+        <div class="p-stat-card">
+          <div class="p-stat-label">Total Users</div>
+          <div class="p-stat-value">12,847</div>
+          <div class="p-stat-change up">+14.2%</div>
+        </div>
+        <div class="p-stat-card">
+          <div class="p-stat-label">Revenue</div>
+          <div class="p-stat-value">$48.2K</div>
+          <div class="p-stat-change up">+8.1%</div>
+        </div>
+        <div class="p-stat-card">
+          <div class="p-stat-label">Bounce Rate</div>
+          <div class="p-stat-value">24.3%</div>
+          <div class="p-stat-change down">-2.4%</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="p-tabs">
+        <div class="p-tab active">Overview</div>
+        <div class="p-tab">Analytics</div>
+        <div class="p-tab">Reports</div>
+        <div class="p-tab">Notifications</div>
+      </div>
+
+      <!-- Form -->
+      <div class="p-form">
+        <div class="p-input-group">
+          <label class="p-input-label">Full Name</label>
+          <input class="p-input" type="text" value="Jane Cooper" />
+        </div>
+        <div class="p-input-group">
+          <label class="p-input-label">Email Address</label>
+          <input class="p-input" type="email" value="jane@example.com" />
+        </div>
+        <div class="p-input-group">
+          <label class="p-input-label">Department</label>
+          <select class="p-select">
+            <option>Engineering</option>
+            <option>Design</option>
+            <option>Marketing</option>
+          </select>
+        </div>
+        <div class="p-input-group">
+          <label class="p-input-label">Role</label>
+          <select class="p-select">
+            <option>Admin</option>
+            <option>Editor</option>
+            <option>Viewer</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Badges -->
+      <div class="p-badges">
+        <span class="p-badge p-badge-brand">Brand</span>
+        <span class="p-badge p-badge-accent">Accent</span>
+        <span class="p-badge p-badge-muted">Neutral</span>
+        <span class="p-badge p-badge-brand">Premium</span>
+        <span class="p-badge p-badge-accent">New</span>
+      </div>
+
+      <!-- Buttons -->
+      <div class="p-button-group">
+        <button class="p-btn p-btn-primary">Save Changes</button>
+        <button class="p-btn p-btn-brand">Publish</button>
+        <button class="p-btn p-btn-ghost">Cancel</button>
+      </div>
+
+      <!-- Alerts -->
+      <div class="p-alerts">
+        <div class="p-alert p-alert-success">
+          <strong>Success:</strong>&nbsp; Your changes have been saved successfully.
+        </div>
+        <div class="p-alert p-alert-warning">
+          <strong>Warning:</strong>&nbsp; Your trial expires in 3 days.
+        </div>
+        <div class="p-alert p-alert-error">
+          <strong>Error:</strong>&nbsp; Unable to connect to the server.
+        </div>
+      </div>
+
+      <!-- Data table -->
+      <div class="p-table-wrap">
+        <table class="p-table">
+          <thead>
+            <tr><th>Name</th><th>Role</th><th>Status</th><th>Last Active</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Alice Johnson</td><td>Engineer</td><td><span class="status-badge status-active">Active</span></td><td>2 min ago</td></tr>
+            <tr><td>Bob Smith</td><td>Designer</td><td><span class="status-badge status-pending">Pending</span></td><td>1 hour ago</td></tr>
+            <tr><td>Carol Williams</td><td>Manager</td><td><span class="status-badge status-active">Active</span></td><td>5 min ago</td></tr>
+            <tr><td>Dave Brown</td><td>Analyst</td><td><span class="status-badge status-inactive">Inactive</span></td><td>3 days ago</td></tr>
+            <tr><td>Eve Davis</td><td>Developer</td><td><span class="status-badge status-active">Active</span></td><td>Just now</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Typography sampler -->
+      <div class="p-type-sampler">
+        <div class="caption">Caption &middot; Overline Text</div>
+        <div class="body-text">Body text renders in the selected body font at the base size. Good typography makes everything feel polished.</div>
+        <div class="link-text">This is a linked text element using the accent color</div>
+        <div class="muted-text">Muted helper text for secondary information and descriptions.</div>
+      </div>
+
+    </div><!-- /preview-container -->
+  </div><!-- /preview-panel -->
+
+</div><!-- /main-layout -->
+
+<!-- ============================================================
+     JSON FOOTER — Collapsible live JSON preview
+     ============================================================ -->
+<div class="json-footer" id="jsonFooter">
+  <div class="json-footer-header" onclick="toggleJsonFooter()">
+    <span class="json-footer-title">
+      <svg width="14" height="14" viewBox="0 0 256 256" fill="currentColor"><path d="M43.18,128a29.78,29.78,0,0,1,8,10.26c4.8,9.9,4.8,22,4.8,33.74,0,24.31,1,36,24,36a8,8,0,0,1,0,16c-17.48,0-29.32-6.14-35.2-18.26-4.8-9.9-4.8-22-4.8-33.74,0-24.31-1-36-24-36a8,8,0,0,1,0-16c23,0,24-11.69,24-36,0-11.72,0-23.84,4.8-33.74C50.68,38.14,62.52,32,80,32a8,8,0,0,1,0,16C57,48,56,59.69,56,84c0,11.72,0,23.84-4.8,33.74A29.78,29.78,0,0,1,43.18,128ZM240,120c-23,0-24-11.69-24-36,0-11.72,0-23.84-4.8-33.74C205.32,38.14,193.48,32,176,32a8,8,0,0,0,0,16c23,0,24,11.69,24,36,0,11.72,0,23.84,4.8,33.74a29.78,29.78,0,0,0,8,10.26,29.78,29.78,0,0,0-8,10.26c-4.8,9.9-4.8,22-4.8,33.74,0,24.31-1,36-24,36a8,8,0,0,0,0,16c17.48,0,29.32-6.14,35.2-18.26,4.8-9.9,4.8-22,4.8-33.74,0-24.31,1-36,24-36a8,8,0,0,0,0-16Z"/></svg>
+      JSON Preview
+    </span>
+    <svg class="section-chevron" width="14" height="14" viewBox="0 0 256 256" fill="currentColor" style="transform:rotate(180deg)"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+  </div>
+  <div class="json-footer-body">
+    <pre id="jsonOutput">{ }</pre>
+  </div>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT — Theme engine, controls, export
+     Placeholder: will be populated in next edit pass
+     ============================================================ -->
+<script>
+/* ============================================================
+   THEME BUILDER — JavaScript Engine
+   Drives all configuration controls, live preview updates,
+   color ramp generation, font loading, and JSON export.
+   ============================================================ */
+
+// ------------------------------------------------------------
+// STATE — Central theme state object; all controls read/write here
+// ------------------------------------------------------------
+const state = {
+  themeName: 'My Theme',
+  colors: {
+    brand:   { hue: '#18181b', ramp: {} },
+    accent:  { hue: '#4f46e5', ramp: {} },
+    neutral: { hue: '#737373', ramp: {} },
+    success: { hue: '#16a34a', ramp: {} },
+    warning: { hue: '#d97706', ramp: {} },
+    error:   { hue: '#dc2626', ramp: {} }
+  },
+  typography: {
+    bodyFont:      'Inter',
+    displayFont:   'Inter',
+    baseSize:      16,
+    scaleRatio:    1.25,
+    bodyWeights:   [400, 500, 600, 700],
+    displayWeights:[400, 500, 600, 700]
+  },
+  spacing: { baseUnit: 4 },
+  radius:  { preset: 'rounded' },
+  mode:    'light',
+  componentOverrides: {
+    button:     { enabled: false, background: '', borderRadius: '', textColor: '' },
+    inputField: { enabled: false, borderColor: '', borderRadius: '', background: '' },
+    badge:      { enabled: false, background: '', textColor: '', borderRadius: '' },
+    tabs:       { enabled: false, activeColor: '', borderColor: '' },
+    card:       { enabled: false, background: '', borderColor: '', borderRadius: '' },
+    table:      { enabled: false, headerBg: '', headerText: '', stripedBg: '' }
+  }
+};
+
+// Color ramp stop names (11 stops: 50 through 950)
+const RAMP_STOPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+
+// Spacing multipliers (from design doc)
+const SPACING_MULTIPLIERS = [1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24];
+const SPACING_NAMES = ['space1','space2','space3','space4','space5','space6','space8','space10','space12','space16','space20','space24'];
+
+// Radius presets (from design doc)
+const RADIUS_PRESETS = {
+  sharp:   { none:0, xs:0, sm:0, md:0, lg:0, xl:0, '2xl':0, full:0 },
+  subtle:  { none:0, xs:2, sm:3, md:4, lg:6, xl:8, '2xl':10, full:9999 },
+  rounded: { none:0, xs:4, sm:8, md:12, lg:16, xl:24, '2xl':32, full:9999 },
+  pill:    { none:0, xs:8, sm:12, md:16, lg:24, xl:32, '2xl':48, full:9999 }
+};
+
+// Type scale names and their multiplier powers from base
+const TYPE_SCALE = [
+  { name: 'displayLarge',  power: 6, lineHeight: 1.1,  weight: 400, font: 'display' },
+  { name: 'displayMedium', power: 5, lineHeight: 1.15, weight: 400, font: 'display' },
+  { name: 'displaySmall',  power: 4, lineHeight: 1.2,  weight: 500, font: 'display' },
+  { name: 'headingLarge',  power: 3, lineHeight: 1.2,  weight: 700, font: 'display' },
+  { name: 'headingMedium', power: 2, lineHeight: 1.25, weight: 700, font: 'display' },
+  { name: 'headingSmall',  power: 1, lineHeight: 1.3,  weight: 600, font: 'display' },
+  { name: 'bodyLarge',     power: 0.5, lineHeight: 1.5, weight: 400, font: 'body' },
+  { name: 'bodyMedium',    power: 0, lineHeight: 1.5,  weight: 400, font: 'body' },
+  { name: 'bodySmall',     power: -1, lineHeight: 1.5, weight: 400, font: 'body' },
+  { name: 'caption',       power: -2, lineHeight: 1.4, weight: 500, font: 'body' }
+];
+
+// Scale ratio options
+const SCALE_RATIOS = [
+  { label: 'Minor Third (1.200)',   value: 1.2 },
+  { label: 'Major Third (1.250)',   value: 1.25 },
+  { label: 'Perfect Fourth (1.333)',value: 1.333 },
+  { label: 'Golden Ratio (1.618)',  value: 1.618 }
+];
+
+// ------------------------------------------------------------
+// CURATED FONT LIST — 50 popular Google Fonts; search fetches others
+// ------------------------------------------------------------
+const CURATED_FONTS = [
+  { family:'Inter', category:'sans-serif' },
+  { family:'Roboto', category:'sans-serif' },
+  { family:'Open Sans', category:'sans-serif' },
+  { family:'Lato', category:'sans-serif' },
+  { family:'Montserrat', category:'sans-serif' },
+  { family:'Poppins', category:'sans-serif' },
+  { family:'Nunito', category:'sans-serif' },
+  { family:'Raleway', category:'sans-serif' },
+  { family:'Work Sans', category:'sans-serif' },
+  { family:'DM Sans', category:'sans-serif' },
+  { family:'Plus Jakarta Sans', category:'sans-serif' },
+  { family:'Space Grotesk', category:'sans-serif' },
+  { family:'Outfit', category:'sans-serif' },
+  { family:'Sora', category:'sans-serif' },
+  { family:'Manrope', category:'sans-serif' },
+  { family:'Figtree', category:'sans-serif' },
+  { family:'Albert Sans', category:'sans-serif' },
+  { family:'Geist', category:'sans-serif' },
+  { family:'Urbanist', category:'sans-serif' },
+  { family:'Lexend', category:'sans-serif' },
+  { family:'Source Sans 3', category:'sans-serif' },
+  { family:'Noto Sans', category:'sans-serif' },
+  { family:'IBM Plex Sans', category:'sans-serif' },
+  { family:'Barlow', category:'sans-serif' },
+  { family:'Josefin Sans', category:'sans-serif' },
+  { family:'Playfair Display', category:'serif' },
+  { family:'Merriweather', category:'serif' },
+  { family:'Lora', category:'serif' },
+  { family:'Source Serif 4', category:'serif' },
+  { family:'DM Serif Display', category:'serif' },
+  { family:'Libre Baskerville', category:'serif' },
+  { family:'Crimson Text', category:'serif' },
+  { family:'EB Garamond', category:'serif' },
+  { family:'Cormorant Garamond', category:'serif' },
+  { family:'Bitter', category:'serif' },
+  { family:'Fraunces', category:'serif' },
+  { family:'Instrument Serif', category:'serif' },
+  { family:'Noto Serif', category:'serif' },
+  { family:'Vollkorn', category:'serif' },
+  { family:'Spectral', category:'serif' },
+  { family:'Fira Code', category:'monospace' },
+  { family:'JetBrains Mono', category:'monospace' },
+  { family:'Source Code Pro', category:'monospace' },
+  { family:'IBM Plex Mono', category:'monospace' },
+  { family:'DM Mono', category:'monospace' },
+  { family:'Space Mono', category:'monospace' },
+  { family:'Caveat', category:'handwriting' },
+  { family:'Dancing Script', category:'handwriting' },
+  { family:'Pacifico', category:'display' },
+  { family:'Bebas Neue', category:'display' }
+];
+
+// Track which fonts are already loaded via <link> tags
+const loadedFonts = new Set();
+
+// ------------------------------------------------------------
+// UTILITY — Color conversion helpers
+// ------------------------------------------------------------
+
+/** Parse a hex string (#RGB or #RRGGBB) into {r, g, b} 0-255 */
+function hexToRgb(hex) {
+  hex = hex.replace('#','');
+  if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  const n = parseInt(hex, 16);
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+}
+
+/** Convert RGB 0-255 to HSL {h:0-360, s:0-100, l:0-100} */
+function rgbToHsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r,g,b), min = Math.min(r,g,b);
+  let h, s, l = (max + min) / 2;
+  if (max === min) { h = s = 0; }
+  else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+      case g: h = ((b - r) / d + 2) / 6; break;
+      case b: h = ((r - g) / d + 4) / 6; break;
+    }
+  }
+  return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+}
+
+/** Convert HSL to hex string */
+function hslToHex(h, s, l) {
+  s /= 100; l /= 100;
+  const a = s * Math.min(l, 1 - l);
+  const f = n => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0');
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+/** Generate an 11-stop color ramp from a single hex color.
+ *  Strategy: preserve the hue, vary saturation and lightness
+ *  across the 50-950 range (lightest to darkest). */
+function generateRamp(hex) {
+  const rgb = hexToRgb(hex);
+  const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+  const ramp = {};
+  // Target lightness values for each stop (hand-tuned for pleasing ramps)
+  const lightTargets = {
+    50: 97, 100: 94, 200: 86, 300: 76, 400: 62,
+    500: 50, 600: 40, 700: 32, 800: 24, 900: 17, 950: 10
+  };
+  // Saturation adjusts slightly: lighter stops slightly less saturated
+  const satTargets = {
+    50: 0.3, 100: 0.5, 200: 0.7, 300: 0.8, 400: 0.9,
+    500: 1.0, 600: 1.0, 700: 0.95, 800: 0.9, 900: 0.85, 950: 0.8
+  };
+  RAMP_STOPS.forEach(stop => {
+    const sat = Math.min(100, Math.round(hsl.s * satTargets[stop]));
+    ramp[stop] = hslToHex(hsl.h, sat, lightTargets[stop]);
+  });
+  return ramp;
+}
+
+// ------------------------------------------------------------
+// FONT LOADING — Dynamically inject Google Fonts <link> tags
+// ------------------------------------------------------------
+
+/** Load a Google Font by family name. Injects a <link> if not already loaded. */
+function loadGoogleFont(family, weights) {
+  if (loadedFonts.has(family)) return;
+  loadedFonts.add(family);
+  const w = (weights || [400,500,600,700]).join(';');
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family)}:wght@${w}&display=swap`;
+  document.head.appendChild(link);
+}
+
+/** Search Google Fonts API for fonts not in the curated list.
+ *  Uses the CSS2 API endpoint (no key needed) — we test if the font exists
+ *  by attempting to load it. Returns a promise. */
+async function searchGoogleFont(query) {
+  // First check curated list
+  const curated = CURATED_FONTS.filter(f =>
+    f.family.toLowerCase().includes(query.toLowerCase())
+  );
+  if (curated.length > 0) return curated;
+  // Try to load from Google Fonts CSS API (no API key needed)
+  // We construct a speculative URL and check if it returns valid CSS
+  try {
+    const testFamily = query.trim();
+    const url = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(testFamily)}:wght@400;700&display=swap`;
+    const res = await fetch(url, { method: 'HEAD' });
+    if (res.ok) {
+      return [{ family: testFamily, category: 'fetched' }];
+    }
+  } catch (e) { /* ignore fetch errors */ }
+  return [];
+}
+
+// Debounce helper for font search
+function debounce(fn, ms) {
+  let timer;
+  return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), ms); };
+}
+
+// ------------------------------------------------------------
+// UI HELPERS — Section toggle, control builders
+// ------------------------------------------------------------
+
+/** Toggle an accordion section open/closed */
+function toggleSection(headerEl) {
+  headerEl.closest('.section').classList.toggle('open');
+}
+
+/** Toggle the JSON footer */
+function toggleJsonFooter() {
+  document.getElementById('jsonFooter').classList.toggle('open');
+}
+
+/** Create a color control (swatch + hex input + ramp preview + advanced) */
+function createColorControl(container, label, colorKey) {
+  const row = document.createElement('div');
+  row.className = 'control-row';
+  row.innerHTML = `
+    <div class="control-label">${label}</div>
+    <div class="color-input-row">
+      <div class="color-swatch" style="background:${state.colors[colorKey].hue}">
+        <input type="color" value="${state.colors[colorKey].hue}" data-color="${colorKey}" />
+      </div>
+      <input type="text" class="hex-input" value="${state.colors[colorKey].hue}" data-color="${colorKey}" maxlength="7" />
+    </div>
+    <div class="color-ramp" id="ramp-${colorKey}"></div>
+    <div class="advanced-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Advanced &darr;</div>
+    <div class="advanced-body" id="advanced-${colorKey}"></div>
+  `;
+  container.appendChild(row);
+
+  // Wire up color picker and hex input
+  const colorInput = row.querySelector('input[type="color"]');
+  const hexInput = row.querySelector('.hex-input');
+  const swatch = row.querySelector('.color-swatch');
+
+  const updateColor = (hex) => {
+    const clean = hex.startsWith('#') ? hex : '#' + hex;
+    if (!/^#[0-9a-fA-F]{6}$/.test(clean)) return;
+    state.colors[colorKey].hue = clean;
+    state.colors[colorKey].ramp = generateRamp(clean);
+    swatch.style.background = clean;
+    colorInput.value = clean;
+    hexInput.value = clean;
+    renderRamp(colorKey);
+    applyThemeToPreview();
+    updateJsonPreview();
+  };
+
+  colorInput.addEventListener('input', (e) => updateColor(e.target.value));
+  hexInput.addEventListener('change', (e) => updateColor(e.target.value));
+  hexInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') updateColor(e.target.value); });
+
+  // Generate initial ramp
+  state.colors[colorKey].ramp = generateRamp(state.colors[colorKey].hue);
+  renderRamp(colorKey);
+}
+
+/** Render the visual ramp bar + advanced stop overrides */
+function renderRamp(colorKey) {
+  const ramp = state.colors[colorKey].ramp;
+  const rampEl = document.getElementById(`ramp-${colorKey}`);
+  const advEl = document.getElementById(`advanced-${colorKey}`);
+  if (!rampEl || !advEl) return;
+
+  // Ramp bar
+  rampEl.innerHTML = RAMP_STOPS.map(stop =>
+    `<div class="color-ramp-stop" style="background:${ramp[stop]}" title="${stop}: ${ramp[stop]}">
+      <span class="stop-label">${stop}</span>
+    </div>`
+  ).join('');
+
+  // Advanced individual stops
+  advEl.innerHTML = RAMP_STOPS.map(stop =>
+    `<div class="advanced-stop-row">
+      <span class="stop-name">${stop}</span>
+      <div class="mini-swatch" style="background:${ramp[stop]}"></div>
+      <input type="text" class="hex-input" value="${ramp[stop]}" data-color="${colorKey}" data-stop="${stop}" maxlength="7" style="flex:1;padding:4px 6px;font-size:10px" />
+    </div>`
+  ).join('');
+
+  // Wire advanced stop overrides
+  advEl.querySelectorAll('.hex-input').forEach(input => {
+    input.addEventListener('change', (e) => {
+      const stop = parseInt(e.target.dataset.stop);
+      const hex = e.target.value.startsWith('#') ? e.target.value : '#' + e.target.value;
+      if (/^#[0-9a-fA-F]{6}$/.test(hex)) {
+        state.colors[colorKey].ramp[stop] = hex;
+        e.target.previousElementSibling.style.background = hex;
+        renderRamp(colorKey); // re-render visual bar
+        applyThemeToPreview();
+        updateJsonPreview();
+      }
+    });
+  });
+}
+
+/** Create a font picker with search dropdown */
+function createFontPicker(container, label, stateKey) {
+  const row = document.createElement('div');
+  row.className = 'control-row';
+  const currentFont = state.typography[stateKey];
+  row.innerHTML = `
+    <div class="control-label">${label}</div>
+    <div class="font-picker-wrap">
+      <input type="text" class="font-picker-input" value="${currentFont}" placeholder="Search fonts..." data-font-key="${stateKey}" />
+      <div class="font-picker-dropdown"></div>
+    </div>
+  `;
+  container.appendChild(row);
+
+  const input = row.querySelector('.font-picker-input');
+  const dropdown = row.querySelector('.font-picker-dropdown');
+  let selectedIndex = -1;
+
+  // Populate dropdown with filtered fonts
+  const populateDropdown = (fonts, query) => {
+    dropdown.innerHTML = '';
+    selectedIndex = -1;
+    if (fonts.length === 0 && query.length > 1) {
+      dropdown.innerHTML = '<div style="padding:10px 12px;font-size:12px;color:var(--ui-text-dim)">Searching Google Fonts...</div>';
+      dropdown.classList.add('open');
+      return;
+    }
+    fonts.slice(0, 20).forEach((f, i) => {
+      const opt = document.createElement('div');
+      opt.className = 'font-option' + (f.family === state.typography[stateKey] ? ' selected' : '');
+      opt.style.fontFamily = `"${f.family}", ${f.category || 'sans-serif'}`;
+      opt.innerHTML = `<span>${f.family}</span><span class="font-category">${f.category || ''}</span>`;
+      opt.addEventListener('mousedown', (e) => {
+        e.preventDefault(); // prevent blur
+        selectFont(f.family, stateKey, input, dropdown);
+      });
+      dropdown.appendChild(opt);
+      // Preload font for preview in dropdown
+      loadGoogleFont(f.family);
+    });
+    if (fonts.length > 0) dropdown.classList.add('open');
+    else dropdown.classList.remove('open');
+  };
+
+  // Select a font
+  const selectFont = (family, key, inputEl, ddEl) => {
+    state.typography[key] = family;
+    inputEl.value = family;
+    loadGoogleFont(family);
+    ddEl.classList.remove('open');
+    applyThemeToPreview();
+    updateJsonPreview();
+  };
+
+  // Filter and search on input
+  const debouncedSearch = debounce(async (query) => {
+    if (query.length < 1) { dropdown.classList.remove('open'); return; }
+    // Filter curated fonts first
+    let matches = CURATED_FONTS.filter(f =>
+      f.family.toLowerCase().includes(query.toLowerCase())
+    );
+    populateDropdown(matches, query);
+    // If no curated matches and query is long enough, try Google Fonts API
+    if (matches.length === 0 && query.length >= 3) {
+      const remote = await searchGoogleFont(query);
+      if (remote.length > 0) {
+        populateDropdown(remote, query);
+      } else {
+        dropdown.innerHTML = '<div style="padding:10px 12px;font-size:12px;color:var(--ui-text-dim)">No fonts found</div>';
+      }
+    }
+  }, 200);
+
+  input.addEventListener('input', (e) => debouncedSearch(e.target.value));
+  input.addEventListener('focus', () => {
+    populateDropdown(CURATED_FONTS, '');
+  });
+  input.addEventListener('blur', () => {
+    setTimeout(() => dropdown.classList.remove('open'), 150);
+  });
+  // Keyboard navigation
+  input.addEventListener('keydown', (e) => {
+    const items = dropdown.querySelectorAll('.font-option');
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+      items.forEach((it, i) => it.style.background = i === selectedIndex ? 'var(--ui-accent-subtle)' : '');
+      items[selectedIndex]?.scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      selectedIndex = Math.max(selectedIndex - 1, 0);
+      items.forEach((it, i) => it.style.background = i === selectedIndex ? 'var(--ui-accent-subtle)' : '');
+      items[selectedIndex]?.scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'Enter' && selectedIndex >= 0 && items[selectedIndex]) {
+      e.preventDefault();
+      const fontName = items[selectedIndex].querySelector('span').textContent;
+      selectFont(fontName, stateKey, input, dropdown);
+    } else if (e.key === 'Escape') {
+      dropdown.classList.remove('open');
+    }
+  });
+}
+
+/** Create a slider control */
+function createSlider(container, label, min, max, value, step, suffix, onChange) {
+  const row = document.createElement('div');
+  row.className = 'control-row';
+  row.innerHTML = `
+    <div class="control-label">${label}</div>
+    <div class="slider-row">
+      <input type="range" min="${min}" max="${max}" value="${value}" step="${step || 1}" />
+      <span class="slider-value">${value}${suffix || ''}</span>
+    </div>
+  `;
+  container.appendChild(row);
+
+  const slider = row.querySelector('input[type="range"]');
+  const display = row.querySelector('.slider-value');
+  slider.addEventListener('input', (e) => {
+    const v = parseFloat(e.target.value);
+    display.textContent = v + (suffix || '');
+    onChange(v);
+    applyThemeToPreview();
+    updateJsonPreview();
+  });
+  return slider;
+}
+
+/** Create a select dropdown */
+function createSelect(container, label, options, currentValue, onChange) {
+  const row = document.createElement('div');
+  row.className = 'control-row';
+  row.innerHTML = `
+    <div class="control-label">${label}</div>
+    <select class="select-input">
+      ${options.map(o => `<option value="${o.value}" ${o.value == currentValue ? 'selected' : ''}>${o.label}</option>`).join('')}
+    </select>
+  `;
+  container.appendChild(row);
+
+  row.querySelector('select').addEventListener('change', (e) => {
+    onChange(e.target.value);
+    applyThemeToPreview();
+    updateJsonPreview();
+  });
+}
+
+/** Create weight checkboxes */
+function createWeightPicker(container, label, stateKey) {
+  const weights = [300, 400, 500, 600, 700, 800];
+  const active = state.typography[stateKey];
+  const row = document.createElement('div');
+  row.className = 'control-row';
+  row.innerHTML = `
+    <div class="control-label">${label}</div>
+    <div class="weight-checkboxes">
+      ${weights.map(w => `
+        <label class="weight-checkbox ${active.includes(w) ? 'active' : ''}" data-weight="${w}">
+          <input type="checkbox" ${active.includes(w) ? 'checked' : ''} />
+          ${w}
+        </label>
+      `).join('')}
+    </div>
+  `;
+  container.appendChild(row);
+
+  row.querySelectorAll('.weight-checkbox').forEach(cb => {
+    cb.addEventListener('click', () => {
+      const w = parseInt(cb.dataset.weight);
+      const input = cb.querySelector('input');
+      input.checked = !input.checked;
+      cb.classList.toggle('active', input.checked);
+      if (input.checked) {
+        if (!state.typography[stateKey].includes(w)) state.typography[stateKey].push(w);
+      } else {
+        state.typography[stateKey] = state.typography[stateKey].filter(x => x !== w);
+      }
+      state.typography[stateKey].sort((a,b) => a - b);
+      updateJsonPreview();
+    });
+  });
+}
+
+// ------------------------------------------------------------
+// COMPONENT OVERRIDES — Build per-component override controls
+// ------------------------------------------------------------
+function buildOverridesSection() {
+  const container = document.getElementById('overridesSection');
+  const components = [
+    { key: 'button', label: 'Button', fields: [
+      { prop: 'background', label: 'Background', type: 'color' },
+      { prop: 'textColor', label: 'Text Color', type: 'color' },
+      { prop: 'borderRadius', label: 'Border Radius', type: 'select', options: Object.keys(RADIUS_PRESETS.rounded) }
+    ]},
+    { key: 'inputField', label: 'Input Field', fields: [
+      { prop: 'borderColor', label: 'Border Color', type: 'color' },
+      { prop: 'background', label: 'Background', type: 'color' },
+      { prop: 'borderRadius', label: 'Border Radius', type: 'select', options: Object.keys(RADIUS_PRESETS.rounded) }
+    ]},
+    { key: 'badge', label: 'Badge', fields: [
+      { prop: 'background', label: 'Background', type: 'color' },
+      { prop: 'textColor', label: 'Text Color', type: 'color' },
+      { prop: 'borderRadius', label: 'Border Radius', type: 'select', options: Object.keys(RADIUS_PRESETS.rounded) }
+    ]},
+    { key: 'tabs', label: 'Tabs', fields: [
+      { prop: 'activeColor', label: 'Active Color', type: 'color' },
+      { prop: 'borderColor', label: 'Border Color', type: 'color' }
+    ]},
+    { key: 'card', label: 'Card', fields: [
+      { prop: 'background', label: 'Background', type: 'color' },
+      { prop: 'borderColor', label: 'Border Color', type: 'color' },
+      { prop: 'borderRadius', label: 'Border Radius', type: 'select', options: Object.keys(RADIUS_PRESETS.rounded) }
+    ]},
+    { key: 'table', label: 'Table', fields: [
+      { prop: 'headerBg', label: 'Header Background', type: 'color' },
+      { prop: 'headerText', label: 'Header Text', type: 'color' },
+      { prop: 'stripedBg', label: 'Striped Row Background', type: 'color' }
+    ]}
+  ];
+
+  components.forEach(comp => {
+    const block = document.createElement('div');
+    block.className = 'control-row';
+    block.style.borderTop = '1px solid var(--ui-border-subtle)';
+    block.style.paddingTop = '10px';
+    block.innerHTML = `
+      <div class="override-toggle">
+        <div class="override-switch" id="switch-${comp.key}"></div>
+        <span style="font-weight:500">${comp.label}</span>
+        <span class="control-sublabel" style="margin-left:auto">Inherit global</span>
+      </div>
+      <div class="override-fields" id="fields-${comp.key}">
+        ${comp.fields.map(f => {
+          if (f.type === 'color') {
+            return `
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:11px;color:var(--ui-text-muted);width:100px">${f.label}</span>
+                <div class="color-swatch" style="background:${state.componentOverrides[comp.key][f.prop] || '#666'};width:24px;height:24px">
+                  <input type="color" value="${state.componentOverrides[comp.key][f.prop] || '#666666'}" data-comp="${comp.key}" data-prop="${f.prop}" />
+                </div>
+                <input type="text" class="hex-input" value="${state.componentOverrides[comp.key][f.prop] || ''}" data-comp="${comp.key}" data-prop="${f.prop}" placeholder="inherit" maxlength="7" style="flex:1;padding:4px 6px;font-size:11px" />
+              </div>`;
+          } else {
+            return `
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:11px;color:var(--ui-text-muted);width:100px">${f.label}</span>
+                <select class="select-input" data-comp="${comp.key}" data-prop="${f.prop}" style="flex:1;padding:4px 6px;font-size:11px">
+                  <option value="">Inherit</option>
+                  ${f.options.map(o => `<option value="${o}">${o}</option>`).join('')}
+                </select>
+              </div>`;
+          }
+        }).join('')}
+      </div>
+    `;
+    container.appendChild(block);
+
+    // Toggle switch
+    const switchEl = block.querySelector(`#switch-${comp.key}`);
+    const fieldsEl = block.querySelector(`#fields-${comp.key}`);
+    const statusLabel = block.querySelector('.control-sublabel');
+    switchEl.addEventListener('click', () => {
+      const enabled = !state.componentOverrides[comp.key].enabled;
+      state.componentOverrides[comp.key].enabled = enabled;
+      switchEl.classList.toggle('active', enabled);
+      fieldsEl.classList.toggle('active', enabled);
+      statusLabel.textContent = enabled ? 'Custom' : 'Inherit global';
+      applyThemeToPreview();
+      updateJsonPreview();
+    });
+
+    // Wire color and select inputs
+    block.querySelectorAll('input[type="color"]').forEach(input => {
+      input.addEventListener('input', (e) => {
+        const { comp: c, prop } = e.target.dataset;
+        state.componentOverrides[c][prop] = e.target.value;
+        e.target.closest('.color-swatch').style.background = e.target.value;
+        const hexSibling = e.target.closest('div').parentElement.querySelector(`.hex-input[data-prop="${prop}"]`);
+        if (hexSibling) hexSibling.value = e.target.value;
+        applyThemeToPreview();
+        updateJsonPreview();
+      });
+    });
+    block.querySelectorAll('.hex-input[data-comp]').forEach(input => {
+      input.addEventListener('change', (e) => {
+        const { comp: c, prop } = e.target.dataset;
+        const hex = e.target.value.startsWith('#') ? e.target.value : '#' + e.target.value;
+        if (/^#[0-9a-fA-F]{6}$/.test(hex)) {
+          state.componentOverrides[c][prop] = hex;
+          const swatchSibling = e.target.closest('div').querySelector('.color-swatch');
+          if (swatchSibling) swatchSibling.style.background = hex;
+          const colorSibling = e.target.closest('div').querySelector('input[type="color"]');
+          if (colorSibling) colorSibling.value = hex;
+          applyThemeToPreview();
+          updateJsonPreview();
+        }
+      });
+    });
+    block.querySelectorAll('select[data-comp]').forEach(sel => {
+      sel.addEventListener('change', (e) => {
+        const { comp: c, prop } = e.target.dataset;
+        state.componentOverrides[c][prop] = e.target.value;
+        applyThemeToPreview();
+        updateJsonPreview();
+      });
+    });
+  });
+}
+
+// ------------------------------------------------------------
+// APPLY THEME — Push state into CSS variables on preview container
+// ------------------------------------------------------------
+function applyThemeToPreview() {
+  const pc = document.getElementById('previewContainer');
+  if (!pc) return;
+
+  // Apply color ramps
+  Object.keys(state.colors).forEach(colorKey => {
+    const ramp = state.colors[colorKey].ramp;
+    RAMP_STOPS.forEach(stop => {
+      pc.style.setProperty(`--${colorKey}-${stop}`, ramp[stop]);
+    });
+  });
+
+  // Apply radius
+  const radiusScale = RADIUS_PRESETS[state.radius.preset] || RADIUS_PRESETS.rounded;
+  Object.entries(radiusScale).forEach(([key, val]) => {
+    pc.style.setProperty(`--radius-${key}`, val + 'px');
+  });
+
+  // Apply spacing
+  SPACING_MULTIPLIERS.forEach((mult, i) => {
+    pc.style.setProperty(`--space-${SPACING_NAMES[i].replace('space','')}`, (state.spacing.baseUnit * mult) + 'px');
+    pc.style.setProperty(`--${SPACING_NAMES[i].replace('space','space-')}`, (state.spacing.baseUnit * mult) + 'px');
+  });
+  // Also set named spacing vars
+  SPACING_MULTIPLIERS.forEach((mult, i) => {
+    pc.style.setProperty(`--${SPACING_NAMES[i]}`, (state.spacing.baseUnit * mult) + 'px');
+  });
+
+  // Apply fonts
+  loadGoogleFont(state.typography.bodyFont, state.typography.bodyWeights);
+  loadGoogleFont(state.typography.displayFont, state.typography.displayWeights);
+  pc.style.setProperty('--body-font', `"${state.typography.bodyFont}", sans-serif`);
+  pc.style.setProperty('--display-font', `"${state.typography.displayFont}", serif`);
+  pc.style.setProperty('--base-size', state.typography.baseSize + 'px');
+
+  // Apply component overrides via scoped CSS
+  applyComponentOverrides();
+}
+
+/** Inject scoped component override styles */
+function applyComponentOverrides() {
+  let overrideCSS = '';
+  const ov = state.componentOverrides;
+  const rs = RADIUS_PRESETS[state.radius.preset] || RADIUS_PRESETS.rounded;
+
+  if (ov.button.enabled) {
+    if (ov.button.background) overrideCSS += `.preview-container .p-btn-primary { background: ${ov.button.background} !important; }\n`;
+    if (ov.button.textColor) overrideCSS += `.preview-container .p-btn-primary { color: ${ov.button.textColor} !important; }\n`;
+    if (ov.button.borderRadius) overrideCSS += `.preview-container .p-btn { border-radius: ${rs[ov.button.borderRadius] ?? 8}px !important; }\n`;
+  }
+  if (ov.inputField.enabled) {
+    if (ov.inputField.borderColor) overrideCSS += `.preview-container .p-input { border-color: ${ov.inputField.borderColor} !important; }\n`;
+    if (ov.inputField.background) overrideCSS += `.preview-container .p-input, .preview-container .p-select { background: ${ov.inputField.background} !important; }\n`;
+    if (ov.inputField.borderRadius) overrideCSS += `.preview-container .p-input, .preview-container .p-select { border-radius: ${rs[ov.inputField.borderRadius] ?? 4}px !important; }\n`;
+  }
+  if (ov.badge.enabled) {
+    if (ov.badge.background) overrideCSS += `.preview-container .p-badge { background: ${ov.badge.background} !important; }\n`;
+    if (ov.badge.textColor) overrideCSS += `.preview-container .p-badge { color: ${ov.badge.textColor} !important; }\n`;
+    if (ov.badge.borderRadius) overrideCSS += `.preview-container .p-badge { border-radius: ${rs[ov.badge.borderRadius] ?? 9999}px !important; }\n`;
+  }
+  if (ov.tabs.enabled) {
+    if (ov.tabs.activeColor) overrideCSS += `.preview-container .p-tab.active { color: ${ov.tabs.activeColor} !important; border-bottom-color: ${ov.tabs.activeColor} !important; }\n`;
+    if (ov.tabs.borderColor) overrideCSS += `.preview-container .p-tabs { border-bottom-color: ${ov.tabs.borderColor} !important; }\n`;
+  }
+  if (ov.card.enabled) {
+    if (ov.card.background) overrideCSS += `.preview-container .p-stat-card { background: ${ov.card.background} !important; }\n`;
+    if (ov.card.borderColor) overrideCSS += `.preview-container .p-stat-card { border-color: ${ov.card.borderColor} !important; }\n`;
+    if (ov.card.borderRadius) overrideCSS += `.preview-container .p-stat-card { border-radius: ${rs[ov.card.borderRadius] ?? 8}px !important; }\n`;
+  }
+  if (ov.table.enabled) {
+    if (ov.table.headerBg) overrideCSS += `.preview-container .p-table th { background: ${ov.table.headerBg} !important; }\n`;
+    if (ov.table.headerText) overrideCSS += `.preview-container .p-table th { color: ${ov.table.headerText} !important; }\n`;
+    if (ov.table.stripedBg) overrideCSS += `.preview-container .p-table tr:nth-child(even) { background: ${ov.table.stripedBg} !important; }\n`;
+  }
+
+  // Inject or update override style tag
+  let styleEl = document.getElementById('overrideStyles');
+  if (!styleEl) {
+    styleEl = document.createElement('style');
+    styleEl.id = 'overrideStyles';
+    document.head.appendChild(styleEl);
+  }
+  styleEl.textContent = overrideCSS;
+}
+
+// ------------------------------------------------------------
+// DARK MODE TOGGLE
+// ------------------------------------------------------------
+function setupModeToggle() {
+  const toggle = document.getElementById('modeToggle');
+  const buttons = toggle.querySelectorAll('.toggle-option');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.mode = btn.dataset.mode;
+      const pc = document.getElementById('previewContainer');
+      pc.classList.toggle('dark', state.mode === 'dark');
+    });
+  });
+}
+
+// ------------------------------------------------------------
+// JSON EXPORT — Build the full theme JSON from state
+// ------------------------------------------------------------
+function buildThemeJson() {
+  const { typography: typo, spacing, radius, colors, componentOverrides: co } = state;
+  // Compute type scale
+  const computed = {};
+  TYPE_SCALE.forEach(t => {
+    const size = Math.round(typo.baseSize * Math.pow(typo.scaleRatio, t.power));
+    computed[t.name] = {
+      size,
+      lineHeight: t.lineHeight,
+      weight: t.weight,
+      font: t.font
+    };
+  });
+
+  // Build spacing scale
+  const spaceScale = {};
+  SPACING_MULTIPLIERS.forEach((mult, i) => {
+    spaceScale[SPACING_NAMES[i]] = spacing.baseUnit * mult;
+  });
+
+  // Build radius scale
+  const radiusScale = RADIUS_PRESETS[radius.preset] || RADIUS_PRESETS.rounded;
+
+  // Build component overrides (sparse — only non-empty)
+  const overrides = {};
+  Object.entries(co).forEach(([key, val]) => {
+    if (!val.enabled) return;
+    const sparse = {};
+    Object.entries(val).forEach(([prop, v]) => {
+      if (prop !== 'enabled' && v) sparse[prop] = v;
+    });
+    if (Object.keys(sparse).length > 0) overrides[key] = sparse;
+  });
+
+  // Font URLs
+  const bodyUrl = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(typo.bodyFont)}:wght@${typo.bodyWeights.join(';')}&display=swap`;
+  const displayUrl = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(typo.displayFont)}:wght@${typo.displayWeights.join(';')}&display=swap`;
+
+  return {
+    meta: {
+      name: state.themeName,
+      version: '1.0',
+      generatedAt: new Date().toISOString(),
+      generatorVersion: '1.0.0'
+    },
+    colors: {
+      brand:   { hue: colors.brand.hue,   ramp: { ...colors.brand.ramp } },
+      accent:  { hue: colors.accent.hue,  ramp: { ...colors.accent.ramp } },
+      neutral: { hue: colors.neutral.hue, ramp: { ...colors.neutral.ramp } },
+      success: { hue: colors.success.hue, ramp: { ...colors.success.ramp } },
+      warning: { hue: colors.warning.hue, ramp: { ...colors.warning.ramp } },
+      error:   { hue: colors.error.hue,   ramp: { ...colors.error.ramp } }
+    },
+    semanticTokens: {
+      light: {
+        surfaces: {
+          brandInteractive: 'brand.950', brandInteractiveHover: 'brand.800',
+          accentPrimary: 'accent.600', accentPrimaryHover: 'accent.500',
+          basePrimary: 'neutral.50', baseSecondary: 'neutral.100',
+          cardSurface: '#ffffff'
+        },
+        typography: { primary: 'neutral.950', secondary: 'neutral.600', muted: 'neutral.400', onBrand: 'brand.50', onAccent: '#ffffff' },
+        icons: { primary: 'neutral.700', secondary: 'neutral.500', accent: 'accent.600' },
+        border: { default: 'neutral.200', muted: 'neutral.100' }
+      },
+      dark: {
+        surfaces: {
+          brandInteractive: 'brand.50', brandInteractiveHover: 'brand.200',
+          accentPrimary: 'accent.400', accentPrimaryHover: 'accent.300',
+          basePrimary: 'neutral.950', baseSecondary: 'neutral.800',
+          cardSurface: 'neutral.900'
+        },
+        typography: { primary: 'neutral.50', secondary: 'neutral.400', muted: 'neutral.600', onBrand: 'brand.950', onAccent: 'neutral.950' },
+        icons: { primary: 'neutral.300', secondary: 'neutral.500', accent: 'accent.400' },
+        border: { default: 'neutral.800', muted: 'neutral.900' }
+      }
+    },
+    typography: {
+      fonts: {
+        body: {
+          family: typo.bodyFont,
+          googleFontsId: typo.bodyFont.replace(/ /g, '+'),
+          weights: typo.bodyWeights,
+          url: bodyUrl
+        },
+        display: {
+          family: typo.displayFont,
+          googleFontsId: typo.displayFont.replace(/ /g, '+'),
+          weights: typo.displayWeights,
+          url: displayUrl
+        }
+      },
+      scale: {
+        baseSize: typo.baseSize,
+        ratio: typo.scaleRatio,
+        computed
+      }
+    },
+    spacing: { baseUnit: spacing.baseUnit, scale: spaceScale },
+    radius: { preset: radius.preset, scale: radiusScale },
+    componentOverrides: overrides
+  };
+}
+
+/** Update the live JSON preview in the footer */
+function updateJsonPreview() {
+  const json = buildThemeJson();
+  document.getElementById('jsonOutput').textContent = JSON.stringify(json, null, 2);
+}
+
+/** Export JSON as downloadable file */
+function exportJson() {
+  const json = buildThemeJson();
+  const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${state.themeName.replace(/\s+/g, '-').toLowerCase()}-theme.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/** Import JSON from file */
+function importJson(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const json = JSON.parse(e.target.result);
+      // Apply imported values to state
+      if (json.meta?.name) {
+        state.themeName = json.meta.name;
+        document.getElementById('themeName').value = json.meta.name;
+      }
+      // Colors
+      if (json.colors) {
+        Object.keys(json.colors).forEach(key => {
+          if (state.colors[key]) {
+            state.colors[key].hue = json.colors[key].hue || state.colors[key].hue;
+            state.colors[key].ramp = json.colors[key].ramp || generateRamp(state.colors[key].hue);
+          }
+        });
+      }
+      // Typography
+      if (json.typography?.fonts) {
+        if (json.typography.fonts.body) {
+          state.typography.bodyFont = json.typography.fonts.body.family;
+          state.typography.bodyWeights = json.typography.fonts.body.weights || [400,500,600,700];
+        }
+        if (json.typography.fonts.display) {
+          state.typography.displayFont = json.typography.fonts.display.family;
+          state.typography.displayWeights = json.typography.fonts.display.weights || [400,500,600,700];
+        }
+      }
+      if (json.typography?.scale) {
+        state.typography.baseSize = json.typography.scale.baseSize || 16;
+        state.typography.scaleRatio = json.typography.scale.ratio || 1.25;
+      }
+      // Spacing
+      if (json.spacing?.baseUnit) state.spacing.baseUnit = json.spacing.baseUnit;
+      // Radius
+      if (json.radius?.preset) state.radius.preset = json.radius.preset;
+      // Component overrides
+      if (json.componentOverrides) {
+        Object.keys(json.componentOverrides).forEach(key => {
+          if (state.componentOverrides[key]) {
+            state.componentOverrides[key] = { enabled: true, ...json.componentOverrides[key] };
+          }
+        });
+      }
+      // Rebuild UI
+      rebuildControls();
+      applyThemeToPreview();
+      updateJsonPreview();
+    } catch (err) {
+      alert('Invalid theme JSON file: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ------------------------------------------------------------
+// BUILD ALL CONTROLS — Called on init and after import
+// ------------------------------------------------------------
+function rebuildControls() {
+  // Colors
+  const colorsEl = document.getElementById('colorsSection');
+  colorsEl.innerHTML = '';
+  createColorControl(colorsEl, 'Brand Color', 'brand');
+  createColorControl(colorsEl, 'Accent Color', 'accent');
+  createColorControl(colorsEl, 'Neutral / Base', 'neutral');
+  createColorControl(colorsEl, 'Success', 'success');
+  createColorControl(colorsEl, 'Warning', 'warning');
+  createColorControl(colorsEl, 'Error', 'error');
+
+  // Typography
+  const typoEl = document.getElementById('typographySection');
+  typoEl.innerHTML = '';
+  createFontPicker(typoEl, 'Body Font', 'bodyFont');
+  createFontPicker(typoEl, 'Display Font', 'displayFont');
+  createSlider(typoEl, 'Base Size', 12, 22, state.typography.baseSize, 1, 'px', (v) => { state.typography.baseSize = v; });
+  createSelect(typoEl, 'Scale Ratio', SCALE_RATIOS, state.typography.scaleRatio, (v) => { state.typography.scaleRatio = parseFloat(v); });
+  createWeightPicker(typoEl, 'Body Weights', 'bodyWeights');
+  createWeightPicker(typoEl, 'Display Weights', 'displayWeights');
+
+  // Type scale preview (read-only computed table)
+  const scalePreview = document.createElement('div');
+  scalePreview.className = 'control-row';
+  scalePreview.innerHTML = `<div class="control-label">Computed Scale</div><div id="typeScalePreview" style="font-size:11px;color:var(--ui-text-dim)"></div>`;
+  typoEl.appendChild(scalePreview);
+  updateTypeScalePreview();
+
+  // Spacing
+  const spacingEl = document.getElementById('spacingSection');
+  spacingEl.innerHTML = '';
+  createSlider(spacingEl, 'Base Unit', 2, 8, state.spacing.baseUnit, 1, 'px', (v) => { state.spacing.baseUnit = v; updateSpacingPreview(); });
+  const spacePrev = document.createElement('div');
+  spacePrev.className = 'control-row';
+  spacePrev.innerHTML = `<div class="control-label">Scale Preview</div><div class="scale-preview" id="spacingPreview"></div>`;
+  spacingEl.appendChild(spacePrev);
+  updateSpacingPreview();
+
+  // Radius
+  const radiusEl = document.getElementById('radiusSection');
+  radiusEl.innerHTML = '';
+  createSelect(radiusEl, 'Preset', [
+    { label: 'Sharp (all 0)', value: 'sharp' },
+    { label: 'Subtle (2-8)', value: 'subtle' },
+    { label: 'Rounded (4-16)', value: 'rounded' },
+    { label: 'Pill (8-9999)', value: 'pill' }
+  ], state.radius.preset, (v) => { state.radius.preset = v; updateRadiusPreview(); });
+  const radPrev = document.createElement('div');
+  radPrev.className = 'control-row';
+  radPrev.innerHTML = `<div class="control-label">Radius Scale</div><div id="radiusPreview" style="display:flex;gap:8px;flex-wrap:wrap"></div>`;
+  radiusEl.appendChild(radPrev);
+  updateRadiusPreview();
+
+  // Component Overrides
+  const overridesEl = document.getElementById('overridesSection');
+  overridesEl.innerHTML = '';
+  buildOverridesSection();
+}
+
+/** Update computed type scale preview */
+function updateTypeScalePreview() {
+  const el = document.getElementById('typeScalePreview');
+  if (!el) return;
+  const { baseSize, scaleRatio } = state.typography;
+  el.innerHTML = TYPE_SCALE.map(t => {
+    const size = Math.round(baseSize * Math.pow(scaleRatio, t.power));
+    return `<div style="display:flex;justify-content:space-between;padding:2px 0"><span>${t.name}</span><span style="font-family:var(--ui-font-mono)">${size}px</span></div>`;
+  }).join('');
+}
+
+/** Update spacing scale visual preview */
+function updateSpacingPreview() {
+  const el = document.getElementById('spacingPreview');
+  if (!el) return;
+  const maxVal = state.spacing.baseUnit * 24;
+  el.innerHTML = SPACING_MULTIPLIERS.map((mult, i) => {
+    const h = Math.max(4, (state.spacing.baseUnit * mult / maxVal) * 60);
+    return `<div class="scale-bar" style="height:${h}px" title="${SPACING_NAMES[i]}: ${state.spacing.baseUnit * mult}px"></div>`;
+  }).join('');
+}
+
+/** Update radius scale visual preview */
+function updateRadiusPreview() {
+  const el = document.getElementById('radiusPreview');
+  if (!el) return;
+  const scale = RADIUS_PRESETS[state.radius.preset] || RADIUS_PRESETS.rounded;
+  el.innerHTML = Object.entries(scale).map(([key, val]) =>
+    `<div style="width:36px;height:36px;border:2px solid var(--ui-accent);border-radius:${Math.min(val,18)}px;display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--ui-text-dim)">${key}</div>`
+  ).join('');
+}
+
+// ------------------------------------------------------------
+// INITIALIZATION — Wire everything up on page load
+// ------------------------------------------------------------
+function init() {
+  // Theme name input
+  document.getElementById('themeName').addEventListener('input', (e) => {
+    state.themeName = e.target.value;
+    updateJsonPreview();
+  });
+
+  // Mode toggle (light/dark)
+  setupModeToggle();
+
+  // Export button
+  document.getElementById('exportBtn').addEventListener('click', exportJson);
+
+  // Import button
+  document.getElementById('importBtn').addEventListener('click', () => {
+    document.getElementById('importFile').click();
+  });
+  document.getElementById('importFile').addEventListener('change', (e) => {
+    if (e.target.files[0]) importJson(e.target.files[0]);
+  });
+
+  // Load initial fonts
+  loadGoogleFont('Inter', [400,500,600,700]);
+
+  // Build all controls
+  rebuildControls();
+
+  // Apply initial theme to preview
+  applyThemeToPreview();
+
+  // Render initial JSON preview
+  updateJsonPreview();
+}
+
+// Start when DOM is ready
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
