@@ -111,6 +111,9 @@ Invoke these in any Claude session opened at the workspace root:
 | Token Validation | `/validate-tokens [name\|--all]` | Audit components for semantic token misuse (BaseHighContrast/BaseLowContrastPressed in wrong contexts, primitive leakage, hardcoded values) |
 | Supabase Setup | `/supabase-setup [project-ref]` | Wire Supabase client to both Next.js and iOS |
 | Supabase Auth Setup | `/supabase-auth-setup` | Interactive wizard: configure Google/Apple/Email auth providers, dashboard setup, env files |
+| Supabase Onboard | `/supabase-onboard` | New team member setup: link project, fill .env, verify MCP connection |
+| Schema Design | `/schema-design` | Full guided entity design wizard with cross-platform model generation |
+| Add Migration | `/add-migration [description]` | Quick single-table or ALTER migration with model sync |
 | New Screen | `/new-screen <description>` | UI-only screen scaffold on both platforms |
 | PRD Update | `/prd-update [feature\|all]` | Update PRDs and all CLAUDE.md files to match current codebase |
 | Git Push | `/git-push` | Commit and push all repos from the workspace root |
@@ -127,6 +130,7 @@ These run automatically when Claude needs them, or invoke explicitly:
 | `design-system-sync` | Fetches Figma components/tokens via MCP, validates code parity, generates implementation briefs (atomic components only — for complex components Figma is visual reference only) |
 | `complex-component-reviewer` | Reviews complex components for composition correctness, comment quality, interaction completeness, and cross-platform parity |
 | `supabase-schema-validator` | Validates Swift models and TS types match the live Supabase schema |
+| `schema-reviewer` | Reviews schema for normalization, indexes, RLS gaps, naming conventions (pre-apply quality check) |
 | `screen-reviewer` | Reviews a full screen for state handling, navigation wiring, component library usage, responsive layout, accessibility, and cross-platform parity |
 
 ## OpenAI Agent Builder Plugin
@@ -146,6 +150,26 @@ Plugin at `.claude/plugins/openai-agent-builder/` scaffolds OpenAI agent project
 **Subagents**: `agent-code-reviewer` (SDK pattern review), `agent-security-checker` (credential & auth audit).
 
 **Reference docs** in `references/`: Python SDK, TypeScript SDK, voice patterns, ChatKit patterns, guardrails patterns.
+
+## Supabase Schema Builder Plugin
+
+Plugin at `.claude/plugins/supabase-schema-builder/` provides interactive schema design and migration management via Supabase MCP.
+
+| Skill | Invocation | Purpose |
+|-------|-----------|---------|
+| Supabase Onboard | `/supabase-onboard` | New team member setup: verify MCP, fill .env files, check schema |
+| Schema Design | `/schema-design` | Full guided wizard: entities → attributes → relationships → RLS → triggers → indexes → apply → generate models |
+| Add Migration | `/add-migration [description]` | Quick single-table or ALTER migration with cross-platform model sync |
+
+**Agent**: `schema-reviewer` — reviews proposed schema SQL for quality before applying (normalization, indexes, RLS, naming conventions).
+
+**Hooks** (automatic):
+- `migration-model-sync-reminder` (PreToolUse): reminds to generate cross-platform models when writing migration files
+- `model-schema-sync-reminder` (PostToolUse): reminds to check schema sync when model files are edited
+
+**Reference docs** in `references/`: type-mapping, RLS patterns, trigger patterns, index patterns, model templates.
+
+**MCP integration**: All schema operations use the Supabase MCP server (`supabase-bubbleskit`) — no local CLI needed at runtime. Tools used: `list_tables`, `execute_sql`, `apply_migration`, `generate_typescript_types`, `get_advisors`.
 
 ## Shared Documentation
 
@@ -545,4 +569,6 @@ See `docs/design-tokens.md#icon-system` for full reference.
 - **screen-structure-guard** (PostToolUse): warns when a new screen file (`page.tsx` or `*View.swift`) has no imports from the component library, and reminds to wire views into `AdaptiveNavShell` navigation
 - **adaptive-layout-guard** (PostToolUse): warns when a new screen file has no responsive pattern (`md:` prefix on web, `horizontalSizeClass` on iOS) and is not marked `// responsive: N/A`
 - **auto-lint** (PostToolUse): runs `npx eslint --fix` on `.tsx`/`.ts` files after each edit to catch issues early
+- **migration-model-sync-reminder** (PreToolUse, plugin): reminds to generate cross-platform models when writing to `supabase/migrations/*.sql`
+- **model-schema-sync-reminder** (PostToolUse, plugin): reminds to check schema sync when model files (`*Model.swift`, `*Model.kt`, `database.types.ts`) are edited
 - After each successful session → evaluate if `docs/`, `.claude/agents/`, or `.claude/skills/` need updating

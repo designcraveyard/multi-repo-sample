@@ -1,0 +1,11 @@
+/**
+ * Matches `public.{{snake_name}}` table in Supabase.
+ */
+export interface {{PascalName}} {
+  id: string;
+  {{#each columns}}
+  {{sqlName}}: {{tsType}};
+  {{/each}}
+  created_at: string;
+  updated_at: string;
+}

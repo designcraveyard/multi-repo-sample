@@ -1,0 +1,17 @@
+package com.abhishekverma.multirepo.data.model
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+/**
+ * Matches `public.{{snake_name}}` table in Supabase.
+ */
+@Serializable
+data class {{PascalName}}Model(
+    val id: String,
+    {{#each columns}}
+    @SerialName("{{sqlName}}") val {{kotlinName}}: {{kotlinType}},
+    {{/each}}
+    @SerialName("created_at") val createdAt: String,
+    @SerialName("updated_at") val updatedAt: String,
+)

@@ -1,0 +1,26 @@
+//
+//  {{PascalName}}Model.swift
+//  multi-repo-ios
+//
+//  Matches `public.{{snake_name}}` table in Supabase.
+//
+
+import Foundation
+
+struct {{PascalName}}Model: Codable, Identifiable, Sendable {
+    let id: {{idSwiftType}}
+    {{#each columns}}
+    {{mutability}} {{swiftName}}: {{swiftType}}
+    {{/each}}
+    let createdAt: Date
+    let updatedAt: Date
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        {{#each columns}}
+        case {{swiftName}} = "{{sqlName}}"
+        {{/each}}
+        case createdAt = "created_at"
+        case updatedAt = "updated_at"
+    }
+}
