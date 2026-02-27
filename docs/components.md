@@ -32,6 +32,10 @@ Self-contained components with no child component dependencies. Figma is **struc
 | 13 | **Divider** | `95:2092` | Type(SectionDivider/RowDivider) = 2 | `app/components/Divider/Divider.tsx` | `Components/Divider/AppDivider.swift` | `ui/components/AppDivider.kt` | Done |
 | 14 | **StepIndicator** | `108:9891` | Completed(Off/On) = 2 | `app/components/patterns/StepIndicator/StepIndicator.tsx` | `Components/Patterns/AppStepIndicator.swift` | `ui/patterns/AppStepIndicator.kt` | Done |
 | 15 | **Waveform** | (see Figma) | 1 component set | — | — | — | Not started |
+| 16 | **Checkbox** | (bubbles-kit) | State(Unchecked/Checked/Indeterminate) × Disabled(Off/On) | `app/components/Checkbox/Checkbox.tsx` | `Components/Checkbox/AppCheckbox.swift` | `ui/components/AppCheckbox.kt` | Done |
+| 17 | **Switch** | (bubbles-kit) | State(Off/On) × Disabled(Off/On) | `app/components/Switch/Switch.tsx` | `Components/Switch/AppSwitch.swift` | `ui/components/AppSwitch.kt` | Done |
+| 18 | **RadioButton** | (bubbles-kit) | State(Unselected/Selected) × Disabled(Off/On) + RadioGroup container | `app/components/RadioButton/RadioButton.tsx` | `Components/RadioButton/AppRadioButton.swift` | `ui/components/AppRadioButton.kt` | Done |
+| 19 | **MarkdownEditor** | (bubbles-kit) | Rich text editor with toolbar, table support, image attachments | `app/components/MarkdownEditor/MarkdownEditor.tsx` | `Components/MarkdownEditor/AppMarkdownEditor.swift` | `ui/components/AppMarkdownEditor.kt` | Done |
 
 ---
 
@@ -179,7 +183,7 @@ Barrel import (web): `import { AdaptiveNavShell, AdaptiveSheet } from "@/app/com
 |---|---------|------------------------|------------------------|----------|----------|-------------|--------|
 | 1 | **AdaptiveNavShell** | Bottom tab bar (`TabView`) | Collapsible icon-rail sidebar (60px collapsed / 240px expanded) | `Components/Adaptive/AdaptiveNavShell.swift` | `app/components/Adaptive/AdaptiveNavShell.tsx` | `ui/adaptive/AdaptiveNavShell.kt` | Done |
 | 2 | **AdaptiveSheet** | Bottom sheet (`.sheet` / vaul `Drawer`) | Centered modal dialog (Radix `Dialog`) | `Components/Adaptive/AdaptiveSheet.swift` | `app/components/Adaptive/AdaptiveSheet.tsx` | `ui/adaptive/AdaptiveSheet.kt` | Done |
-| 3 | **AdaptiveSplitView** | Push navigation (list → detail) | Side-by-side split panels | `Components/Adaptive/AdaptiveSplitView.swift` | — | `ui/adaptive/AdaptiveSplitView.kt` | In Progress |
+| 3 | **AdaptiveSplitView** | Push navigation (list → detail) | Side-by-side split panels | `Components/Adaptive/AdaptiveSplitView.swift` | `app/components/Adaptive/AdaptiveSplitView.tsx` | `ui/adaptive/AdaptiveSplitView.kt` | Done |
 
 ### Detection Mechanism
 
@@ -260,14 +264,23 @@ Maps each Figma component key to its code location for instant lookup.
 }
 ```
 
+### MarkdownEditor Architecture Notes
+
+**MarkdownEditor** is a complex rich-text editing component backed by TipTap (web) and a custom UITextView stack (iOS):
+
+- **Web**: `app/components/MarkdownEditor/MarkdownEditor.tsx` + `MarkdownToolbar.tsx` — TipTap editor with extensions (Link, Table, TaskList, Placeholder). Companion `markdown-editor.css` for editor-specific styles.
+- **iOS**: `Components/MarkdownEditor/AppMarkdownEditor.swift` is the SwiftUI entry point. Backed by a suite of helper files: `MarkdownTextStorage`, `MarkdownLayoutManager`, `MarkdownInputProcessor`, `MarkdownSelectionToolbar`, `MarkdownKeyboardToolbar`, `MarkdownTableModel`, `MarkdownTableView`, `MarkdownTableActionBar`, `MarkdownTableEditorView`, `MarkdownTableCardView`, `MarkdownImageAttachment`, `MarkdownImageStore`, `MarkdownImageCropView`, `MarkdownImageViewer`, `MarkdownExporter`.
+- **Android**: `ui/components/AppMarkdownEditor.kt` — Compose-based markdown editor.
+
 ### Demo Pages
 
 | Platform | Route / Entry | File | What it covers |
 |----------|--------------|------|---------------|
 | Web | `/input-demo` | `app/input-demo/page.tsx` | Label (all sizes/types/icon combos) + InputField (all states, all slot combos) + TextField (all states) |
 | Web | `/patterns-demo` | `app/patterns-demo/page.tsx` | TextBlock (all slots) + StepIndicator (on/off) + Stepper (all/mixed/single) + ListItem (all trailing variants) |
-| iOS | Main tab (ContentView) | `multi-repo-ios/multi-repo-ios/ContentView.swift` | **All** atomic components (Button, IconButton, Badge, Chip, Tabs, SegmentControlBar, Thumbnail, InputField, Toast, Divider) + **All** complex patterns (TextBlock, StepIndicator, Stepper, ListItem) + **All 13 native wrappers** (Picker, DateTimePicker, ProgressLoader, ColorPicker, BottomSheet ×4 variants, ActionSheet, AlertPopup, ContextMenu ×2 variants, Carousel ×2 styles, Tooltip, RangeSlider ×2 modes, BottomNavBar live, PageHeader live) |
-| Android | `ShowcaseScreen` | `multi-repo-android/app/src/main/java/.../ui/showcase/ShowcaseScreen.kt` | **All** atomic components + **All** complex patterns + **All 13 native wrappers** |
+| Web | `/editor-demo` | `app/editor-demo/page.tsx` | MarkdownEditor (full editor with toolbar, table, task list) |
+| iOS | Main tab (ContentView) | `multi-repo-ios/multi-repo-ios/ContentView.swift` | **All** atomic components (Button, IconButton, Badge, Chip, Tabs, SegmentControlBar, Thumbnail, InputField, Toast, Divider, Checkbox, Switch, RadioButton) + **All** complex patterns (TextBlock, StepIndicator, Stepper, ListItem, MarkdownEditor) + **All 13 native wrappers** (Picker, DateTimePicker, ProgressLoader, ColorPicker, BottomSheet ×4 variants, ActionSheet, AlertPopup, ContextMenu ×2 variants, Carousel ×2 styles, Tooltip, RangeSlider ×2 modes, BottomNavBar live, PageHeader live) |
+| Android | `ShowcaseScreen` | `multi-repo-android/app/src/main/java/.../ui/showcase/ShowcaseScreen.kt` | **All** atomic components (incl. Checkbox, Switch, RadioButton, MarkdownEditor) + **All** complex patterns + **All 13 native wrappers** |
 
 ---
 

@@ -495,6 +495,10 @@ The `comment-enforcer` hook reminds when a file over 80 lines has fewer than 3 c
 | InputField | `app/components/InputField/InputField.tsx` | `Components/InputField/AppInputField.swift` | `ui/components/AppInputField.kt` |
 | Toast | `app/components/Toast/Toast.tsx` | `Components/Toast/AppToast.swift` | `ui/components/AppToast.kt` |
 | Divider | `app/components/Divider/Divider.tsx` | `Components/Divider/AppDivider.swift` | `ui/components/AppDivider.kt` |
+| Checkbox | `app/components/Checkbox/Checkbox.tsx` | `Components/Checkbox/AppCheckbox.swift` | `ui/components/AppCheckbox.kt` |
+| Switch | `app/components/Switch/Switch.tsx` | `Components/Switch/AppSwitch.swift` | `ui/components/AppSwitch.kt` |
+| RadioButton | `app/components/RadioButton/RadioButton.tsx` | `Components/RadioButton/AppRadioButton.swift` | `ui/components/AppRadioButton.kt` |
+| MarkdownEditor | `app/components/MarkdownEditor/MarkdownEditor.tsx` | `Components/MarkdownEditor/AppMarkdownEditor.swift` | `ui/components/AppMarkdownEditor.kt` |
 | TextBlock _(pattern)_ | `app/components/patterns/TextBlock/TextBlock.tsx` | `Components/Patterns/AppTextBlock.swift` | `ui/patterns/AppTextBlock.kt` |
 | StepIndicator _(pattern)_ | `app/components/patterns/StepIndicator/StepIndicator.tsx` | `Components/Patterns/AppStepIndicator.swift` | `ui/patterns/AppStepIndicator.kt` |
 | Stepper _(pattern)_ | `app/components/patterns/Stepper/Stepper.tsx` | `Components/Patterns/AppStepper.swift` | `ui/patterns/AppStepper.kt` |
