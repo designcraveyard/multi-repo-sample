@@ -81,3 +81,4 @@ cd <template-root>
 - Output goes to `~/Documents/GitHub/<app-slug>/` by default
 - The template repo itself is NOT modified — only the copy is transformed
 - All scripts require `jq`, `rsync`, and `perl` (standard on macOS)
+- To expose Supabase data to Claude Code via MCP, use `/new-mcp-server` after schema setup

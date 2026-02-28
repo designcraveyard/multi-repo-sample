@@ -16,6 +16,13 @@
       "headers": {
         "Authorization": "Bearer ${SUPABASE_MCP_TOKEN}"
       }
+    },
+    "mcp-server-profiles": {
+      "type": "http",
+      "url": "http://localhost:3001/mcp",
+      "headers": {
+        "Authorization": "Bearer ${GOOGLE_ID_TOKEN}"
+      }
     }
   }
 }

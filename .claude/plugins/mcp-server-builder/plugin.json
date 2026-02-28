@@ -1,0 +1,28 @@
+{
+  "name": "mcp-server-builder",
+  "version": "1.0.0",
+  "description": "Scaffold MCP servers from Supabase tables with Google OAuth or API key auth, plus code-quality advisory hooks",
+  "skills": "skills/",
+  "agents": "agents/",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/console-log-guard.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/auth-middleware-reminder.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/mcp-json-reminder.py"
+          }
+        ]
+      }
+    ]
+  }
+}

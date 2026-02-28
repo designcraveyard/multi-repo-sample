@@ -164,6 +164,109 @@ This runs a governance checklist:
 - Well-documented?
 - Battle-tested for 2+ weeks?
 
+## MCP Server
+
+Build custom MCP (Model Context Protocol) servers that expose Supabase data to Claude Code and other MCP clients, with Google OAuth authentication.
+
+### Overview
+
+The workspace includes an MCP Server Builder plugin (`.claude/plugins/mcp-server-builder/`) and a working demo server (`mcp-server/`). The builder scaffolds a fully-wired Express + TypeScript MCP server from your Supabase tables.
+
+### Quick Start
+
+```
+/new-mcp-server
+```
+
+This runs an 8-phase wizard:
+
+| Phase | What Happens |
+|-------|-------------|
+| 1. Gather Information | Choose server name, tables, auth method (Google OAuth or API key), port |
+| 2. Scaffold Project | Create directory structure with package.json, tsconfig.json, src/ |
+| 3. Generate Tools | CRUD tools for each selected table (get, list, search, create, update) |
+| 4. Generate Resources | Schema resource + template resource per table |
+| 5. Generate Auth | Google OAuth or API key middleware |
+| 6. Generate README | Setup instructions, .mcp.json snippet, tool/resource tables |
+| 7. Wire .mcp.json | Add entry to workspace `.mcp.json` |
+| 8. Install & Test | npm install, start server, run reviewer agent |
+
+### Demo Server (mcp-server/)
+
+The `mcp-server/` directory is a working reference implementation exposing the `profiles` table. Use it as a reference when building new servers or debugging issues.
+
+Key files:
+- `src/index.ts` — Express server with session management
+- `src/auth.ts` — Google OAuth middleware
+- `src/tools/profiles.ts` — Tool implementations
+- `src/resources/profiles.ts` — Resource implementations
+- `scripts/get-token.mjs` — Browser-based OAuth token acquisition
+
+### Google OAuth Setup
+
+MCP servers authenticate via Google ID tokens. Setup steps:
+
+1. **Create a Google Cloud Console credential:**
+   - Go to [Credentials](https://console.cloud.google.com/apis/credentials) → Create Credentials → OAuth client ID
+   - Application type: **Web application** (not Android or iOS)
+   - Add `http://localhost:3002/callback` to Authorized redirect URIs
+   - Copy the Client ID and Client secret
+
+2. **Configure .env:**
+   ```
+   GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+   GOOGLE_CLIENT_SECRET=your-client-secret
+   ```
+
+3. **Get a token for testing:**
+   ```bash
+   cd mcp-server
+   node scripts/get-token.mjs
+   # Opens browser → Google sign-in → prints ID token
+   export GOOGLE_ID_TOKEN="eyJhbG..."
+   ```
+
+4. **Configure .mcp.json:**
+   ```json
+   {
+     "mcpServers": {
+       "mcp-server-profiles": {
+         "type": "http",
+         "url": "http://localhost:3001/mcp",
+         "headers": {
+           "Authorization": "Bearer ${GOOGLE_ID_TOKEN}"
+         }
+       }
+     }
+   }
+   ```
+
+**Important notes:**
+- The token `audience` must match `GOOGLE_CLIENT_ID` exactly
+- ID tokens expire after approximately 1 hour; re-run `get-token.mjs` to refresh
+- Use the **Web application** credential type, not Android or iOS
+- The SDK package is `@modelcontextprotocol/sdk` (single package, not split packages)
+- When testing with curl, include `Accept: application/json, text/event-stream` header
+- Use `console.error()` for all server logging (stdout is reserved for JSON-RPC framing)
+
+### Plugin Structure
+
+```
+.claude/plugins/mcp-server-builder/
+├── PLUGIN.md                    # Plugin manifest
+├── skills/
+│   └── new-mcp-server/SKILL.md  # 8-phase scaffold wizard
+├── agents/
+│   └── mcp-server-reviewer.md   # Code quality reviewer
+├── hooks/
+│   ├── console-log-guard.md     # Blocks console.log in MCP code
+│   ├── auth-middleware-reminder.md # Checks auth on /mcp routes
+│   └── mcp-json-reminder.md     # Reminds to update .mcp.json
+└── references/
+    ├── mcp-patterns.md          # SDK patterns, imports, tool/resource templates
+    └── auth-patterns.md         # Google OAuth + API key middleware patterns
+```
+
 ## File Inventory
 
 ```

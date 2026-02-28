@@ -124,6 +124,8 @@ Invoke these in any Claude session opened at the workspace root:
 | Git Push | `/git-push` | Commit and push all repos from workspace root |
 | New AI Agent | `/new-ai-agent <description>` | Scaffold AI agent config + tool handlers + UI |
 | Post-Session Review | `/post-session-review` | Guided checklist to update docs, skills, agents |
+| **MCP Server Builder** | | |
+| New MCP Server | `/new-mcp-server` | Scaffold a new MCP server from Supabase tables with auth |
 | **App Template Factory** | | |
 | New Project | `/new-project` | Interactive scaffold wizard — create a new app from this template |
 | Product Discovery | `/product-discovery` | Define personas, features, MVP scope → PRDs |
@@ -149,12 +151,15 @@ Invoke these in any Claude session opened at the workspace root:
 | `screen-reviewer` | Reviews screens for state handling, navigation, accessibility, parity |
 | `automation-architect` | Generates CLAUDE.md, hooks, skills, agents for scaffolded projects |
 | `tracker-agent` | Scans project artifacts and updates tracker.md completion status |
+| `mcp-server-reviewer` | Reviews MCP server directories for SDK patterns, auth, Supabase safety, logging |
 
 ## Plugins
 
 **OpenAI Agent Builder** (`.claude/plugins/openai-agent-builder/`): `/agent-help`, `/new-text-agent`, `/new-voice-agent`, `/new-multi-agent`, `/new-chatkit-agent`. Includes code-reviewer and security-checker subagents.
 
 **Supabase Schema Builder** (`.claude/plugins/supabase-schema-builder/`): `/supabase-onboard`, `/schema-design`, `/add-migration`. Uses Supabase MCP for all schema operations.
+
+**MCP Server Builder** (`.claude/plugins/mcp-server-builder/`): `/new-mcp-server` (8-phase scaffold wizard). Includes `mcp-server-reviewer` agent. Advisory hooks: `console-log-guard`, `auth-middleware-reminder`, `mcp-json-reminder`. Working demo at `mcp-server/`.
 
 ## Shared Documentation
 

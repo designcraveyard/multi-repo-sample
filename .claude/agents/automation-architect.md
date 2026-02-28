@@ -64,6 +64,7 @@ Each stub should reference the feature's PRD, screen specs, and schema.
 Also generate:
 - `/deploy` skill if Vercel URL is configured
 - `/run-tests` skill stub
+- `/new-mcp-server` reference if the project exposes data via APIs — remind users they can use the MCP Server Builder plugin to scaffold MCP servers from their Supabase tables
 
 ### Step 5: Generate Agents
 
