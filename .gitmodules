@@ -1,0 +1,12 @@
+[submodule "multi-repo-nextjs"]
+	path = multi-repo-nextjs
+	url = https://github.com/designcraveyard/multi-repo-nextjs.git
+[submodule "multi-repo-ios"]
+	path = multi-repo-ios
+	url = https://github.com/designcraveyard/multi-repo-ios.git
+[submodule "multi-repo-android"]
+	path = multi-repo-android
+	url = https://github.com/designcraveyard/multi-repo-android.git
+[submodule "figma-cli"]
+	path = figma-cli
+	url = https://github.com/silships/figma-cli.git
