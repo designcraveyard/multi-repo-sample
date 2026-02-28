@@ -136,6 +136,7 @@ Invoke these in any Claude session opened at the workspace root:
 | Build Feature | `/build-feature <name>` | Implement a feature across all platforms from specs |
 | Tracker Status | `/tracker-status` | Show project progress summary |
 | Tracker Update | `/tracker-update <feature> <task>` | Mark a task complete in tracker |
+| Sync from Template | `/sync-from-template` | Pull template improvements into a scaffolded child project |
 | Upstream to Template | `/upstream-to-template` | Send improvements back to the template repo |
 
 ## Subagents
