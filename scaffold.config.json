@@ -79,8 +79,12 @@
     "app/components-showcase/",
     "app/editor-demo/",
     "app/input-demo/",
+    "app/assistant/",
+    "app/assistant-embed/",
+    "app/api/chatkit/",
     "Views/ComponentsShowcaseView.swift",
     "Views/AIDemoView.swift",
+    "Views/AssistantView.swift",
     "feature/showcase/",
     "feature/editor/"
   ],

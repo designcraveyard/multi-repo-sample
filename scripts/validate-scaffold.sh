@@ -4,11 +4,13 @@
 
 set -euo pipefail
 
-TARGET_DIR="${1:?Usage: validate-scaffold.sh <target-dir> <app-slug> <include-web> <include-ios> <include-android>}"
+TARGET_DIR="${1:?Usage: validate-scaffold.sh <target-dir> <app-slug> <include-web> <include-ios> <include-android> [developer] [team-id]}"
 APP_SLUG="${2:?Missing app-slug}"
 INCLUDE_WEB="${3:-true}"
 INCLUDE_IOS="${4:-true}"
 INCLUDE_ANDROID="${5:-true}"
+DEVELOPER="${6:-}"
+TEAM_ID="${7:-}"
 
 PASS=0
 FAIL=0
@@ -37,7 +39,30 @@ TEMPLATE_STRINGS=(
   "MultiRepo"
 )
 
+# Build skip list: template strings that match the user's actual values
+# (these are correct replacements, not leftovers)
+SKIP_STRINGS=()
+if [ -n "$DEVELOPER" ]; then
+  SKIP_STRINGS+=("$DEVELOPER")
+fi
+if [ -n "$TEAM_ID" ]; then
+  SKIP_STRINGS+=("$TEAM_ID")
+fi
+
 for TERM in "${TEMPLATE_STRINGS[@]}"; do
+  # Skip if this template string matches one of the user's actual values
+  SHOULD_SKIP="false"
+  for SKIP in "${SKIP_STRINGS[@]}"; do
+    if [ "$TERM" = "$SKIP" ]; then
+      SHOULD_SKIP="true"
+      break
+    fi
+  done
+  if [ "$SHOULD_SKIP" = "true" ]; then
+    pass "Skipping '$TERM' (matches user's value — not a leftover)"
+    continue
+  fi
+
   MATCHES=$(grep -rl "$TERM" "$TARGET_DIR" \
     --include='*.ts' --include='*.tsx' --include='*.swift' --include='*.kt' \
     --include='*.kts' --include='*.json' --include='*.md' --include='*.xml' \
@@ -90,6 +115,23 @@ fi
 if [ "$INCLUDE_IOS" = "true" ]; then
   IOS_DIR="$TARGET_DIR/${APP_SLUG}-ios"
   check_dir "$IOS_DIR"
+  check_dir "$IOS_DIR/${APP_SLUG}-ios"
+  # Verify Xcode project was renamed (no leftover multi-repo-ios.xcodeproj)
+  if [ -d "$IOS_DIR/multi-repo-ios.xcodeproj" ]; then
+    fail "Xcode project not renamed: multi-repo-ios.xcodeproj still exists"
+  else
+    check_dir "$IOS_DIR/${APP_SLUG}-ios.xcodeproj"
+  fi
+  # Verify ContentView.swift isn't the 93K showcase
+  CONTENT_VIEW=$(find "$IOS_DIR" -name "ContentView.swift" -type f 2>/dev/null | head -1)
+  if [ -n "$CONTENT_VIEW" ]; then
+    CV_LINES=$(wc -l < "$CONTENT_VIEW" | tr -d ' ')
+    if [ "$CV_LINES" -gt 100 ]; then
+      fail "ContentView.swift is $CV_LINES lines — likely still the component showcase"
+    else
+      pass "ContentView.swift is clean ($CV_LINES lines)"
+    fi
+  fi
 fi
 
 if [ "$INCLUDE_ANDROID" = "true" ]; then
@@ -98,7 +140,68 @@ if [ "$INCLUDE_ANDROID" = "true" ]; then
   check_file "$ANDROID_DIR/app/build.gradle.kts"
 fi
 
-# 3. Try web build (if web included and npm available)
+# 3. Check demo content was removed
+echo ""
+echo "Checking demo content removal..."
+
+DEMO_LEFTOVERS=(
+  "ComponentsShowcaseView.swift"
+  "AIDemoView.swift"
+  "components-showcase"
+  "editor-demo"
+  "input-demo"
+)
+for DEMO in "${DEMO_LEFTOVERS[@]}"; do
+  FOUND=$(find "$TARGET_DIR" -name "$DEMO" -not -path '*/.git/*' 2>/dev/null | head -1)
+  if [ -n "$FOUND" ]; then
+    fail "Demo leftover found: $FOUND"
+  else
+    pass "No leftover '$DEMO'"
+  fi
+done
+
+# 4. Check auth stripping (if no Supabase)
+# Detect if Supabase was stripped by checking for supabase/ dir absence
+if [ ! -d "$TARGET_DIR/supabase" ]; then
+  echo ""
+  echo "Checking auth stripping (local-first mode)..."
+  # Should NOT have Auth/ or Supabase/ directories in any platform
+  for PLATFORM_DIR in "$TARGET_DIR/${APP_SLUG}-ios" "$TARGET_DIR/${APP_SLUG}-web" "$TARGET_DIR/${APP_SLUG}-android"; do
+    if [ ! -d "$PLATFORM_DIR" ]; then continue; fi
+    PNAME=$(basename "$PLATFORM_DIR")
+    AUTH_DIR=$(find "$PLATFORM_DIR" -type d -name "Auth" -not -path '*/.git/*' -not -path '*/node_modules/*' 2>/dev/null | head -1)
+    if [ -n "$AUTH_DIR" ]; then
+      fail "Auth directory not stripped: $AUTH_DIR"
+    else
+      pass "$PNAME: no Auth/ directory"
+    fi
+    SUPA_DIR=$(find "$PLATFORM_DIR" -type d -name "Supabase" -not -path '*/.git/*' -not -path '*/node_modules/*' 2>/dev/null | head -1)
+    if [ -n "$SUPA_DIR" ]; then
+      fail "Supabase directory not stripped: $SUPA_DIR"
+    else
+      pass "$PNAME: no Supabase/ directory"
+    fi
+  done
+fi
+
+# 5. Check infrastructure preserved (OpenAI/Audio should exist for iOS)
+if [ "$INCLUDE_IOS" = "true" ]; then
+  IOS_DIR="$TARGET_DIR/${APP_SLUG}-ios"
+  OPENAI_DIR=$(find "$IOS_DIR" -type d -name "OpenAI" 2>/dev/null | head -1)
+  AUDIO_DIR=$(find "$IOS_DIR" -type d -name "Audio" 2>/dev/null | head -1)
+  if [ -n "$OPENAI_DIR" ]; then
+    pass "iOS: OpenAI infrastructure preserved"
+  else
+    warn "iOS: OpenAI directory missing — MarkdownEditor may not build"
+  fi
+  if [ -n "$AUDIO_DIR" ]; then
+    pass "iOS: Audio infrastructure preserved"
+  else
+    warn "iOS: Audio directory missing — MarkdownEditor may not build"
+  fi
+fi
+
+# 6. Try web build (if web included and npm available)
 if [ "$INCLUDE_WEB" = "true" ] && [ -d "$TARGET_DIR/${APP_SLUG}-web" ]; then
   echo ""
   echo "Attempting web build..."
@@ -120,7 +223,7 @@ if [ "$INCLUDE_WEB" = "true" ] && [ -d "$TARGET_DIR/${APP_SLUG}-web" ]; then
   fi
 fi
 
-# 4. Summary
+# 7. Summary
 echo ""
 echo "=================================="
 echo "Validation Summary"

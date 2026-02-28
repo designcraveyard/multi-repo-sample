@@ -17,3 +17,4 @@ supabase/.temp/
 .idea/
 *.swp
 *.swo
+mcp-server/node_modules/

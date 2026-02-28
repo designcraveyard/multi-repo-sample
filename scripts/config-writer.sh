@@ -4,11 +4,12 @@
 
 set -euo pipefail
 
-TARGET_DIR="${1:?Usage: config-writer.sh <target-dir> <templates-dir> <values-json> <app-slug> <platforms>}"
+TARGET_DIR="${1:?Usage: config-writer.sh <target-dir> <templates-dir> <values-json> <app-slug> <platforms> [supabase-ref]}"
 TEMPLATES_DIR="${2:?Missing templates directory}"
 VALUES_JSON="${3:?Missing values JSON}"
 APP_SLUG="${4:?Missing app slug}"
 PLATFORMS="${5:-all}"
+SUPABASE_REF="${6:-}"
 
 if [ ! -d "$TEMPLATES_DIR" ]; then
   echo "ERROR: Templates directory does not exist: $TEMPLATES_DIR" >&2
@@ -40,7 +41,8 @@ substitute_template() {
     VALUE=$(echo "$VALUES_JSON" | jq -r ".${KEY} // empty")
 
     if [ -n "$VALUE" ]; then
-      LC_ALL=C perl -pi -e "s/\Q${TOKEN}\E/${VALUE}/g" "$output_file"
+      LC_ALL=C REPLACE_TOKEN="$TOKEN" REPLACE_VAL="$VALUE" \
+        perl -pi -e 's/\Q$ENV{REPLACE_TOKEN}\E/$ENV{REPLACE_VAL}/g' "$output_file"
     fi
   done
 }
@@ -51,14 +53,10 @@ if [ -d "$WEB_DIR" ]; then
   substitute_template "$TEMPLATES_DIR/env-local.template" "$WEB_DIR/.env.local"
 fi
 
-# iOS: Secrets.swift (if template exists)
+# iOS: Secrets.swift (only when Supabase is configured — local-first mode doesn't need it)
 IOS_DIR="$TARGET_DIR/${APP_SLUG}-ios"
-if [ -d "$IOS_DIR" ]; then
-  # Find the nested app directory (e.g., AppName-ios/AppName-ios/ or App/)
-  IOS_APP_DIR=$(find "$IOS_DIR" -maxdepth 1 -type d ! -name '.*' ! -name "$IOS_DIR" | head -1)
-  if [ -n "$IOS_APP_DIR" ] && [ -f "$TEMPLATES_DIR/secrets-swift.template" ]; then
-    substitute_template "$TEMPLATES_DIR/secrets-swift.template" "$IOS_APP_DIR/Secrets.swift"
-  fi
+if [ -d "$IOS_DIR" ] && [ -n "$SUPABASE_REF" ] && [ -f "$TEMPLATES_DIR/secrets-swift.template" ]; then
+  substitute_template "$TEMPLATES_DIR/secrets-swift.template" "$IOS_DIR/Secrets.swift"
 fi
 
 # Android: local.properties

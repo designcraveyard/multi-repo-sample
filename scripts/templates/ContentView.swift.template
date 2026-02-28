@@ -1,0 +1,32 @@
+import SwiftUI
+import PhosphorSwift
+
+struct ContentView: View {
+    var body: some View {
+        VStack(spacing: 16) {
+            Spacer()
+
+            Ph.house.bold
+                .iconSize(.xl)
+                .foregroundStyle(Color.iconsBrand)
+
+            Text("{{APP_NAME}}")
+                .font(.appHeadingLarge)
+                .foregroundStyle(Color.typographyPrimary)
+
+            Text("{{APP_DESCRIPTION}}")
+                .font(.appBody)
+                .foregroundStyle(Color.typographySecondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.surfacesBaseLowContrast)
+    }
+}
+
+#Preview {
+    ContentView()
+}

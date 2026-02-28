@@ -227,6 +227,32 @@ for OLD_DIR in "$TARGET_DIR"/multi-repo-*; do
   fi
 done
 
+# ── Step 2b: Rename iOS Xcode project internals ──────────────────────────
+
+if [ "$INCLUDE_IOS" = "true" ]; then
+  IOS_DIR="$TARGET_DIR/${APP_SLUG}-ios"
+  if [ -d "$IOS_DIR" ]; then
+    echo "  Renaming iOS Xcode project internals..."
+    # Rename source directory: multi-repo-ios/ → <slug>-ios/
+    if [ -d "$IOS_DIR/multi-repo-ios" ]; then
+      mv "$IOS_DIR/multi-repo-ios" "$IOS_DIR/${APP_SLUG}-ios"
+      echo "    multi-repo-ios/ → ${APP_SLUG}-ios/"
+    fi
+    # Rename .xcodeproj: multi-repo-ios.xcodeproj → <slug>-ios.xcodeproj
+    if [ -d "$IOS_DIR/multi-repo-ios.xcodeproj" ]; then
+      mv "$IOS_DIR/multi-repo-ios.xcodeproj" "$IOS_DIR/${APP_SLUG}-ios.xcodeproj"
+      echo "    multi-repo-ios.xcodeproj → ${APP_SLUG}-ios.xcodeproj"
+    fi
+    # Rename app entry point: multi_repo_iosApp.swift → <slug_underscore>_iosApp.swift
+    OLD_APP_SWIFT="$IOS_DIR/${APP_SLUG}-ios/multi_repo_iosApp.swift"
+    NEW_APP_SWIFT="$IOS_DIR/${APP_SLUG}-ios/${APP_SLUG_UNDERSCORE}_iosApp.swift"
+    if [ -f "$OLD_APP_SWIFT" ]; then
+      mv "$OLD_APP_SWIFT" "$NEW_APP_SWIFT"
+      echo "    multi_repo_iosApp.swift → ${APP_SLUG_UNDERSCORE}_iosApp.swift"
+    fi
+  fi
+fi
+
 # ── Step 3: Rename Android package (if Android included) ──────────────────
 
 if [ "$INCLUDE_ANDROID" = "true" ]; then
@@ -258,17 +284,25 @@ echo ""
 echo "Step 4/8: Selecting platforms..."
 "$SCRIPT_DIR/platform-select.sh" "$TARGET_DIR" "$INCLUDE_WEB" "$INCLUDE_IOS" "$INCLUDE_ANDROID" "$APP_SLUG"
 
+# ── Step 4b: Strip auth & Supabase (if no Supabase ref provided) ─────────
+
+if [ -z "$SUPABASE_REF" ]; then
+  echo ""
+  echo "Step 4b: Stripping auth & Supabase (local-first mode)..."
+  "$SCRIPT_DIR/strip-auth.sh" "$TARGET_DIR" "$APP_SLUG" "$INCLUDE_WEB" "$INCLUDE_IOS" "$INCLUDE_ANDROID"
+fi
+
 # ── Step 5: Clean demo content ────────────────────────────────────────────
 
 echo ""
 echo "Step 5/8: Cleaning demo content..."
-"$SCRIPT_DIR/clean-demo-content.sh" "$TARGET_DIR" "$CONFIG_FILE" "$APP_SLUG"
+"$SCRIPT_DIR/clean-demo-content.sh" "$TARGET_DIR" "$CONFIG_FILE" "$APP_SLUG" "$APP_DESCRIPTION"
 
 # ── Step 6: Generate config files ─────────────────────────────────────────
 
 echo ""
 echo "Step 6/8: Generating config files..."
-"$SCRIPT_DIR/config-writer.sh" "$TARGET_DIR" "$SCRIPT_DIR/templates" "$VALUES_JSON" "$APP_SLUG" "$PLATFORMS"
+"$SCRIPT_DIR/config-writer.sh" "$TARGET_DIR" "$SCRIPT_DIR/templates" "$VALUES_JSON" "$APP_SLUG" "$PLATFORMS" "$SUPABASE_REF"
 
 # ── Step 7: Theme generation ──────────────────────────────────────────────
 
@@ -326,7 +360,7 @@ fi
 
 echo ""
 echo "Running validation..."
-"$SCRIPT_DIR/validate-scaffold.sh" "$TARGET_DIR" "$APP_SLUG" "$INCLUDE_WEB" "$INCLUDE_IOS" "$INCLUDE_ANDROID" || true
+"$SCRIPT_DIR/validate-scaffold.sh" "$TARGET_DIR" "$APP_SLUG" "$INCLUDE_WEB" "$INCLUDE_IOS" "$INCLUDE_ANDROID" "$DEVELOPER" "$TEAM_ID" || true
 
 # ── Done ───────────────────────────────────────────────────────────────────
 
