@@ -26,9 +26,12 @@ Ask the user these questions using `AskUserQuestion` (batch 2-3 related question
    - If no Supabase: app will be scaffolded in **local-first mode** — all auth, Supabase client libraries, and login screens are stripped automatically
    - Users often paste the full `.env` block — extract from it: project ref = slug in `NEXT_PUBLIC_SUPABASE_URL` (e.g. `https://<ref>.supabase.co`), anon key = `NEXT_PUBLIC_SUPABASE_ANON_KEY` value
 7. GitHub org/username? (default: designcraveyard)
+8. Create GitHub repos now? (requires `gh` CLI — creates private repos, sets up submodules + upstream tracking to this template)
+   - YES → scaffold.sh will call git-setup.sh automatically
+   - NO → pass `--skip-git` to scaffold.sh; user handles git setup manually later
 
 **Batch 3 — Design:**
-8. Brand palette? Show these options:
+9. Brand palette? Show these options:
    - zinc (default, neutral gray)
    - indigo (blue-purple)
    - rose (pink-red)
@@ -37,14 +40,14 @@ Ask the user these questions using `AskUserQuestion` (batch 2-3 related question
    - violet (purple)
    - amber (warm yellow)
    - Other (show full list: slate, gray, zinc, neutral, stone, red, orange, amber, yellow, lime, green, emerald, teal, cyan, sky, blue, indigo, violet, purple, fuchsia, pink, rose)
-9. Corner radius style?
+10. Corner radius style?
    - none (sharp corners)
    - sm (subtle rounding)
    - md (default, moderate)
    - lg (rounded)
    - xl (very rounded)
    - full (pill/circle)
-10. Selection component style?
+11. Selection component style?
    - brand (colored checkboxes, switches, radio buttons)
    - neutral (gray selection controls)
 
@@ -66,20 +69,24 @@ cd <template-root>
   --brand "<palette>" \
   --neutral "<neutral>" \
   --radius "<radius>" \
-  --selection "<selection>"
+  --selection "<selection>" \
+  --skip-git  # Only if user chose NOT to create GitHub repos
 ```
 
 **Do NOT pass** `--supabase-ref ""` or `--supabase-key ""` with empty strings — omit them entirely when the user chose no Supabase. The script detects empty `SUPABASE_REF` to trigger local-first mode.
 
+**Omit `--skip-git`** when the user wants GitHub repos created. The script will auto-detect `gh` CLI availability and skip gracefully if not installed.
+
 ### Phase 3: Post-Scaffold
 
 1. Report the results to the user (pass/fail from validate-scaffold.sh)
-2. The validator now auto-skips developer name and team-id checks when they match the user's values (no more false positives for same-value reuse). If other failures appear, investigate manually with `plutil -lint` and `grep`.
-3. For iOS local-first scaffolds, always verify the critical files:
+2. If git setup ran: report the GitHub repos created, submodule structure, and upstream remotes. If skipped: tell the user they can run `scripts/git-setup.sh` manually later.
+3. The validator now auto-skips developer name and team-id checks when they match the user's values (no more false positives for same-value reuse). If other failures appear, investigate manually with `plutil -lint` and `grep`.
+4. For iOS local-first scaffolds, always verify the critical files:
    - `plutil -lint` on both `project.pbxproj` and `Info.plist`
    - `grep -c "isa = XCSwiftPackageProductDependency"` should return 1 (PhosphorSwift only)
-4. Initialize `tracker.md` in the new project using the tracker template
-5. Ask: "Project scaffolded! Ready for product discovery? This defines what you're building."
+5. Initialize `tracker.md` in the new project using the tracker template
+6. Ask: "Project scaffolded! Ready for product discovery? This defines what you're building."
    - If yes → tell them to run `/product-discovery` in a Claude session opened at the new project directory
    - If no → print next steps and close
 
@@ -111,6 +118,7 @@ The pipeline runs 8 steps (see `scripts/scaffold.sh`):
 | 6 | config-writer.sh | Generate .env.local, tracker.md, etc. |
 | 7 | theme-generator.js | Swap brand/neutral palettes with accessibility-aware semantic remapping |
 | 8 | npm install | Install web dependencies (if web included) |
+| 9 | git-setup.sh | **If not --skip-git:** init repos, create GitHub repos (private), register submodules, add upstream remotes to template |
 | ✓ | validate-scaffold.sh | Verify no leftover template strings, demo content, or auth remnants |
 
 ## Key Design Decisions

@@ -17,6 +17,7 @@
 #   --neutral       Neutral palette name (default: neutral)
 #   --radius        Corner radius preset (default: md)
 #   --selection     Selection style: brand|neutral (default: brand)
+#   --skip-git      Skip git init + GitHub repo creation (default: false)
 #   --output-dir    Output parent directory (default: ~/Documents/GitHub)
 
 set -euo pipefail
@@ -39,6 +40,7 @@ BRAND="zinc"
 NEUTRAL="neutral"
 RADIUS="md"
 SELECTION="brand"
+SKIP_GIT="false"
 OUTPUT_DIR="$HOME/Documents/GitHub"
 
 while [[ $# -gt 0 ]]; do
@@ -55,6 +57,7 @@ while [[ $# -gt 0 ]]; do
     --neutral) NEUTRAL="$2"; shift 2 ;;
     --radius) RADIUS="$2"; shift 2 ;;
     --selection) SELECTION="$2"; shift 2 ;;
+    --skip-git) SKIP_GIT="true"; shift ;;
     --output-dir) OUTPUT_DIR="$2"; shift 2 ;;
     *) echo "Unknown option: $1" >&2; exit 1 ;;
   esac
@@ -187,7 +190,7 @@ VALUES_JSON=$(jq -n \
 
 # ── Step 1: Copy template to target ───────────────────────────────────────
 
-echo "Step 1/8: Copying template..."
+echo "Step 1/9: Copying template..."
 
 # Build rsync exclude list from config
 EXCLUDES=()
@@ -205,7 +208,7 @@ echo "  Copied to $TARGET_DIR"
 # ── Step 2: Bulk text replacement (ordered) ────────────────────────────────
 
 echo ""
-echo "Step 2/8: Replacing template parameters..."
+echo "Step 2/9: Replacing template parameters..."
 "$SCRIPT_DIR/replace-params.sh" "$TARGET_DIR" "$CONFIG_FILE" "$VALUES_JSON"
 
 # Rename top-level sub-repo directories (replace-params only does in-file text)
@@ -257,7 +260,7 @@ fi
 
 if [ "$INCLUDE_ANDROID" = "true" ]; then
   echo ""
-  echo "Step 3/8: Renaming Android package..."
+  echo "Step 3/9: Renaming Android package..."
   ANDROID_DIR="$TARGET_DIR/${APP_SLUG}-android"
   if [ -d "$ANDROID_DIR" ]; then
     # replace-params.sh already changed file contents (com.abhishekverma.multirepo → new package)
@@ -275,13 +278,13 @@ if [ "$INCLUDE_ANDROID" = "true" ]; then
   fi
 else
   echo ""
-  echo "Step 3/8: Skipping Android package rename (not included)"
+  echo "Step 3/9: Skipping Android package rename (not included)"
 fi
 
 # ── Step 4: Platform selection (remove excluded platforms) ────────────────
 
 echo ""
-echo "Step 4/8: Selecting platforms..."
+echo "Step 4/9: Selecting platforms..."
 "$SCRIPT_DIR/platform-select.sh" "$TARGET_DIR" "$INCLUDE_WEB" "$INCLUDE_IOS" "$INCLUDE_ANDROID" "$APP_SLUG"
 
 # ── Step 4b: Strip auth & Supabase (if no Supabase ref provided) ─────────
@@ -295,20 +298,20 @@ fi
 # ── Step 5: Clean demo content ────────────────────────────────────────────
 
 echo ""
-echo "Step 5/8: Cleaning demo content..."
+echo "Step 5/9: Cleaning demo content..."
 "$SCRIPT_DIR/clean-demo-content.sh" "$TARGET_DIR" "$CONFIG_FILE" "$APP_SLUG" "$APP_DESCRIPTION"
 
 # ── Step 6: Generate config files ─────────────────────────────────────────
 
 echo ""
-echo "Step 6/8: Generating config files..."
+echo "Step 6/9: Generating config files..."
 "$SCRIPT_DIR/config-writer.sh" "$TARGET_DIR" "$SCRIPT_DIR/templates" "$VALUES_JSON" "$APP_SLUG" "$PLATFORMS" "$SUPABASE_REF"
 
 # ── Step 7: Theme generation ──────────────────────────────────────────────
 
 if [ "$BRAND" != "zinc" ] || [ "$NEUTRAL" != "neutral" ]; then
   echo ""
-  echo "Step 7/8: Generating theme..."
+  echo "Step 7/9: Generating theme..."
 
   THEME_ARGS=("--brand" "$BRAND" "--neutral" "$NEUTRAL" "--radius" "$RADIUS" "--selection" "$SELECTION")
 
@@ -337,7 +340,7 @@ if [ "$BRAND" != "zinc" ] || [ "$NEUTRAL" != "neutral" ]; then
   node "$SCRIPT_DIR/theme-generator.js" "${THEME_ARGS[@]}"
 else
   echo ""
-  echo "Step 7/8: Skipping theme generation (using defaults)"
+  echo "Step 7/9: Skipping theme generation (using defaults)"
 fi
 
 # ── Step 8: Install web dependencies ──────────────────────────────────────
@@ -346,14 +349,29 @@ if [ "$INCLUDE_WEB" = "true" ]; then
   WEB_DIR="$TARGET_DIR/${APP_SLUG}-web"
   if [ -d "$WEB_DIR" ] && [ -f "$WEB_DIR/package.json" ]; then
     echo ""
-    echo "Step 8/8: Installing web dependencies..."
+    echo "Step 8/9: Installing web dependencies..."
     cd "$WEB_DIR"
     npm install --loglevel=error 2>&1 | tail -3
     cd "$TARGET_DIR"
   fi
 else
   echo ""
-  echo "Step 8/8: Skipping web dependency install (not included)"
+  echo "Step 8/9: Skipping web dependency install (not included)"
+fi
+
+# ── Step 9: Git setup (repos, submodules, upstream) ──────────────────────
+
+if [ "$SKIP_GIT" = "false" ]; then
+  echo ""
+  echo "Step 9/9: Setting up git repos, GitHub remotes, and submodules..."
+  "$SCRIPT_DIR/git-setup.sh" "$TARGET_DIR" "$APP_SLUG" "$GITHUB_ORG" "$INCLUDE_WEB" "$INCLUDE_IOS" "$INCLUDE_ANDROID" || {
+    echo ""
+    echo "  WARN: Git setup failed or was skipped. You can run it manually later:"
+    echo "    ./scripts/git-setup.sh $TARGET_DIR $APP_SLUG $GITHUB_ORG $INCLUDE_WEB $INCLUDE_IOS $INCLUDE_ANDROID"
+  }
+else
+  echo ""
+  echo "Step 9/9: Skipping git setup (--skip-git)"
 fi
 
 # ── Validation ─────────────────────────────────────────────────────────────
