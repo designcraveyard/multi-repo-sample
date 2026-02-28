@@ -117,6 +117,20 @@ If a specific component name was provided:
 - All colors via Semantic tokens (design-token-guard enforces this)
 ```
 
+### Phase 5b: Per-Component Documentation Check
+
+For each component in the registry:
+
+1. Check if `docs/components/<Name>.md` exists
+2. If **missing**: create a stub doc file with the template from `docs/components/Button.md` as reference:
+   - Header with file paths for all 3 platforms
+   - `## Overview` with placeholder description
+   - `## Props` with empty tables for Web/iOS/Android
+   - `## Usage Examples` with empty code blocks
+   - `## Accessibility` with placeholder
+3. If **exists**: verify it has `### Android` props table (many older files were missing this)
+4. Report documentation status in the sync output
+
 ### Phase 6: Output Sync Report
 
 ```
@@ -130,10 +144,10 @@ If a specific component name was provided:
 | Verified| ...      | Implementation confirmed |
 
 ### Implementation Status
-| Component | Figma Variants | Web | iOS | Android | Status |
-|-----------|---------------|-----|-----|---------|--------|
-| Button    | 20            | ✓   | ✓   | ✓       | Done   |
-| IconButton| 72            | ✗   | ✗   | ✗       | Not started |
+| Component | Figma Variants | Web | iOS | Android | Docs | Status |
+|-----------|---------------|-----|-----|---------|------|--------|
+| Button    | 20            | ✓   | ✓   | ✓       | ✓    | Done   |
+| IconButton| 72            | ✗   | ✗   | ✗       | ✗    | Not started |
 
 ### Token Gaps
 (Tokens needed by unimplemented components that don't exist in code yet)

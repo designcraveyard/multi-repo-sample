@@ -1,6 +1,7 @@
 # Divider
 
 **Figma:** bubbles-kit › `95:2092`
+**Android:** `multi-repo-android/.../ui/components/AppDivider.kt`
 **Axes:** Type(SectionDivider/RowDivider) = 2
 
 A horizontal (or vertical) separator line. Two weights: `section` for between page sections, `row` for between list/table rows.
@@ -25,6 +26,15 @@ A horizontal (or vertical) separator line. Two weights: `section` for between pa
 | `type` | `AppDividerType` | `.row` | Visual weight |
 | `orientation` | `AppDividerOrientation` | `.horizontal` | Line direction |
 | `label` | `String?` | `nil` | Optional centered label |
+
+### Android (`AppDivider`)
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `modifier` | `Modifier` | `Modifier` | Compose modifier |
+| `type` | `AppDividerType` | `AppDividerType.Row` | Visual weight (`Section`/`Row`) |
+| `orientation` | `AppDividerOrientation` | `AppDividerOrientation.Horizontal` | Line direction |
+| `label` | `String?` | `null` | Optional centered label |
 
 ---
 
@@ -77,6 +87,7 @@ When `label` is set (horizontal + section only), the divider renders two lines f
 
 - Renders with `role="separator"` and `aria-orientation` on both web and iOS
 - Labels are wrapped in `<span>` (not included in the `aria-label`) — the label is decorative
+- Android: Uses Material 3 `HorizontalDivider`/`VerticalDivider` semantics; TalkBack treats as separator; label is decorative
 
 ---
 
@@ -120,6 +131,19 @@ AppDivider(type: .section, label: "OR TODAY")
 
 // Vertical divider
 AppDivider(orientation: .vertical)
+```
+
+### Android
+
+```kotlin
+// Row divider (default)
+AppDivider()
+
+// Section divider
+AppDivider(type = AppDividerType.Section)
+
+// Labeled section divider
+AppDivider(type = AppDividerType.Section, label = "or")
 ```
 
 ---

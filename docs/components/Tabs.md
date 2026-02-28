@@ -1,6 +1,9 @@
 # Tabs
 
 **Figma:** bubbles-kit › `78:284` (bar) + `76:660` (_Tabs item)
+**Web:** `multi-repo-nextjs/app/components/Tabs/Tabs.tsx`
+**iOS:** `multi-repo-ios/multi-repo-ios/Components/Tabs/AppTabs.swift`
+**Android:** `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppTabs.kt`
 **Axes:** Size(Small/Medium/Large) × Active(Off/On) = 6
 
 A horizontal tab navigation bar with an animated sliding underline indicator. Supports uncontrolled and controlled active state. Full keyboard navigation (Arrow keys, Home, End).
@@ -36,6 +39,16 @@ A horizontal tab navigation bar with an animated sliding underline indicator. Su
 | `size` | `AppTabSize` | `.md` | Size |
 | `activeTab` | `String` (binding) | — | Binding to active tab id |
 | `onChange` | `((String) -> Void)?` | `nil` | Change callback |
+
+### Android (`AppTabs`)
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `items` | `List<AppTabItem>` | — | **Required.** Tab definitions (id + label) |
+| `activeTab` | `String` | — | **Required.** The `id` of the currently active tab |
+| `onTabSelected` | `(String) -> Unit` | — | **Required.** Callback with newly selected tab id |
+| `modifier` | `Modifier` | `Modifier` | Compose modifier |
+| `size` | `AppTabSize` | `Md` | Size tier (`Sm`/`Md`/`Lg`) |
 
 ---
 
@@ -89,6 +102,7 @@ const [active, setActive] = useState("home");
 - Each button: `role="tab"` + `aria-selected` + `aria-controls="tabpanel-{id}"`
 - Roving `tabIndex` — only active tab is in tab order; arrow keys move focus
 - Keyboard: `ArrowRight` / `ArrowLeft` cycle tabs; `Home` / `End` jump to first/last
+- Android: TalkBack announces tab label and selected state; Material 3 `TabRow` provides built-in tab semantics and focus management
 
 ### TabPanel companion
 
@@ -143,5 +157,32 @@ AppTabs(
         AppTabItem(id: "settings", label: "Settings"),
     ],
     activeTab: $activeTab
+)
+```
+
+### Android
+
+```kotlin
+var activeTab by remember { mutableStateOf("design") }
+
+AppTabs(
+    items = listOf(
+        AppTabItem("design", "Design"),
+        AppTabItem("code", "Code"),
+        AppTabItem("preview", "Preview")
+    ),
+    activeTab = activeTab,
+    onTabSelected = { activeTab = it }
+)
+
+// Small size
+AppTabs(
+    items = listOf(
+        AppTabItem("all", "All"),
+        AppTabItem("recent", "Recent")
+    ),
+    activeTab = activeTab,
+    onTabSelected = { activeTab = it },
+    size = AppTabSize.Sm
 )
 ```

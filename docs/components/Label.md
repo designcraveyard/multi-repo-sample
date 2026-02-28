@@ -3,6 +3,7 @@
 **Figma:** bubbles-kit › node `82:1401`
 **Web:** `multi-repo-nextjs/app/components/Label/Label.tsx`
 **iOS:** `multi-repo-ios/multi-repo-ios/Components/Label/AppLabel.swift`
+**Android:** `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppLabel.kt`
 
 ---
 
@@ -38,6 +39,19 @@ A pill-shaped inline label with optional leading and trailing icon slots. Has no
 | `trailingIcon` | `AnyView?` | `nil` | Trailing icon |
 | `showLeadingIcon` | `Bool` | `true` | Toggle leading slot |
 | `showTrailingIcon` | `Bool` | `true` | Toggle trailing slot |
+
+### Android (`AppLabel`)
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `String` | — | Display text (required) |
+| `modifier` | `Modifier` | `Modifier` | Compose modifier |
+| `size` | `LabelSize` | `LabelSize.Md` | Size token (`Sm`/`Md`/`Lg`) |
+| `type` | `LabelType` | `LabelType.SecondaryAction` | Color/weight style (`SecondaryAction`/`PrimaryAction`/`BrandInteractive`/`Information`) |
+| `leadingIcon` | `ImageVector?` | `null` | Leading icon |
+| `trailingIcon` | `ImageVector?` | `null` | Trailing icon |
+| `showLeadingIcon` | `Boolean` | `true` | Toggle leading icon slot |
+| `showTrailingIcon` | `Boolean` | `true` | Toggle trailing icon slot |
 
 ---
 
@@ -108,6 +122,24 @@ AppLabel(
 
 // Currency prefix in InputField
 AppLabel(label: "USD", size: .md, type: .secondaryAction)
+```
+
+### Android
+
+```kotlin
+// Basic
+AppLabel(label = "Tag")
+
+// With leading icon
+AppLabel(
+    label = "Verified",
+    size = LabelSize.Lg,
+    type = LabelType.PrimaryAction,
+    leadingIcon = Icons.Default.CheckCircle
+)
+
+// Currency prefix in InputField
+AppLabel(label = "USD", size = LabelSize.Md, type = LabelType.SecondaryAction)
 ```
 
 ---

@@ -3,6 +3,7 @@
 **Figma:** bubbles-kit › node `90:3753` (InputField), `90:3525` (_InputField base)
 **Web:** `multi-repo-nextjs/app/components/InputField/InputField.tsx`
 **iOS:** `multi-repo-ios/multi-repo-ios/Components/InputField/AppInputField.swift`
+**Android:** `multi-repo-android/.../ui/components/AppInputField.kt`
 
 ---
 
@@ -63,6 +64,35 @@ Same as InputField except no slot props. Adds:
 | `trailingSeparator` | `Bool` | `false` | Separator before trailingLabel |
 | `isDisabled` | `Bool` | `false` | Disable interaction |
 | `multiline` | `Bool` | `false` | Multiline / TextEditor mode |
+
+### Android — `AppInputField`
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `text` | `String` | — | Current text value (required) |
+| `onTextChange` | `(String) -> Unit` | — | Text change callback (required) |
+| `modifier` | `Modifier` | `Modifier` | Compose modifier |
+| `label` | `String?` | `null` | Floating label above input |
+| `placeholder` | `String` | `""` | Placeholder text |
+| `state` | `AppInputFieldState` | `AppInputFieldState.Default` | Validation state (`Default`/`Success`/`Warning`/`Error`) |
+| `hint` | `String?` | `null` | Helper / error text below |
+| `leadingIcon` | `ImageVector?` | `null` | Icon left of input |
+| `trailingIcon` | `ImageVector?` | `null` | Icon right of input |
+| `isDisabled` | `Boolean` | `false` | Disable interaction |
+
+### Android — `AppTextField` (multiline)
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `text` | `String` | — | Current text value (required) |
+| `onTextChange` | `(String) -> Unit` | — | Text change callback (required) |
+| `modifier` | `Modifier` | `Modifier` | Compose modifier |
+| `label` | `String?` | `null` | Floating label |
+| `placeholder` | `String` | `""` | Placeholder text |
+| `state` | `AppInputFieldState` | `AppInputFieldState.Default` | Validation state |
+| `hint` | `String?` | `null` | Helper text below |
+| `minLines` | `Int` | `4` | Minimum visible lines |
+| `isDisabled` | `Boolean` | `false` | Disable interaction |
 
 ---
 
@@ -201,6 +231,55 @@ AppInputField(
 AppInputField(text: $bio, label: "Bio", multiline: true)
 ```
 
+### Android
+
+```kotlin
+var name by remember { mutableStateOf("") }
+
+// Basic
+AppInputField(
+    text = name,
+    onTextChange = { name = it },
+    label = "Full Name",
+    placeholder = "Enter your name"
+)
+
+// Validation states
+AppInputField(
+    text = username,
+    onTextChange = { username = it },
+    label = "Username",
+    state = AppInputFieldState.Success,
+    hint = "Username is available"
+)
+
+AppInputField(
+    text = password,
+    onTextChange = { password = it },
+    label = "Password",
+    state = AppInputFieldState.Error,
+    hint = "Must be 8+ characters"
+)
+
+// Leading icon (search)
+AppInputField(
+    text = query,
+    onTextChange = { query = it },
+    label = "Search",
+    placeholder = "Find anything…",
+    leadingIcon = Icons.Default.Search
+)
+
+// Multiline (TextField variant)
+AppTextField(
+    text = bio,
+    onTextChange = { bio = it },
+    label = "Bio",
+    placeholder = "Tell us about yourself…",
+    minLines = 5
+)
+```
+
 ---
 
 ## Accessibility
@@ -210,3 +289,4 @@ AppInputField(text: $bio, label: "Bio", multiline: true)
 - `aria-invalid="true"` on error state
 - State icons are `aria-hidden` (conveyed via `hint` text)
 - iOS: label tied to `TextField` via `.accessibilityLabel`
+- Android: `label` maps to Material 3 `OutlinedTextField` label with built-in TalkBack support; `hint` is announced as supporting text; error state sets `isError` for proper semantics

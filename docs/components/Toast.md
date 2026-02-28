@@ -3,6 +3,7 @@
 **Figma:** bubbles-kit › node `108:4229`
 **Web:** `multi-repo-nextjs/app/components/Toast/Toast.tsx`
 **iOS:** `multi-repo-ios/multi-repo-ios/Components/Toast/AppToast.swift`
+**Android:** `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppToast.kt`
 
 ---
 
@@ -41,6 +42,27 @@ Supports an optional action button and a dismiss (×) button. Can auto-dismiss a
 | `onAction` | `(() -> Void)?` | `nil` | Action handler |
 | `dismissible` | `Bool` | `false` | Show dismiss button |
 | `onDismiss` | `(() -> Void)?` | `nil` | Dismiss handler |
+
+### Android (`AppToast`)
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `message` | `String` | — | **Required.** Toast message text (up to 2 lines) |
+| `modifier` | `Modifier` | `Modifier` | Compose modifier |
+| `actionLabel` | `String?` | `null` | Optional action button text (e.g. "Undo", "View") |
+| `onAction` | `(() -> Unit)?` | `null` | Callback when action button is tapped |
+| `dismissible` | `Boolean` | `false` | Whether to show the dismiss (X) button |
+| `onDismiss` | `(() -> Unit)?` | `null` | Callback when dismiss button is tapped |
+
+### Android (`ToastOverlay`) — presentation helper
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `isPresented` | `Boolean` | — | **Required.** Whether the toast is visible |
+| `onDismiss` | `() -> Unit` | — | **Required.** Callback to hide the toast |
+| `modifier` | `Modifier` | `Modifier` | Compose modifier |
+| `durationMs` | `Long` | `3000L` | Auto-dismiss delay in ms (0 = no auto-dismiss) |
+| `content` | `@Composable () -> Unit` | — | **Required.** Toast composable to display |
 
 ---
 
@@ -137,6 +159,38 @@ AppToast(
 )
 ```
 
+### Android
+
+```kotlin
+import com.abhishekverma.multirepo.ui.components.AppToast
+import com.abhishekverma.multirepo.ui.components.ToastOverlay
+
+// Simple toast
+AppToast(message = "Settings saved")
+
+// With dismiss button
+AppToast(
+    message = "Settings saved",
+    dismissible = true,
+    onDismiss = { showToast = false },
+)
+
+// With action button
+AppToast(
+    message = "Upload complete!",
+    actionLabel = "View",
+    onAction = { viewDetails() },
+)
+
+// Presentation with ToastOverlay (animated + auto-dismiss)
+Box {
+    ScreenContent()
+    ToastOverlay(isPresented = showToast, onDismiss = { showToast = false }) {
+        AppToast(message = "Saved!", dismissible = true, onDismiss = { showToast = false })
+    }
+}
+```
+
 ---
 
 ## Accessibility
@@ -144,3 +198,4 @@ AppToast(
 - `role="alert"` + `aria-live="polite"` + `aria-atomic="true"` on web
 - iOS uses `.accessibilityAddTraits(.isStaticText)` and announces via VoiceOver
 - Dismiss button has `aria-label="Dismiss notification"`
+- Android: TalkBack announces toast message when it appears; dismiss and action buttons have `contentDescription` for accessibility; `ToastOverlay` manages focus announcement on show

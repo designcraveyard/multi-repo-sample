@@ -15,27 +15,27 @@ This is the single source of truth mapping Figma design system components to the
 
 Self-contained components with no child component dependencies. Figma is **structural truth** for these.
 
-| # | Figma Component | Figma Node | Variants | Web Implementation | iOS Implementation | Android Implementation | Status |
-|---|----------------|-----------|----------|-------------------|-------------------|----------------------|--------|
-| 1 | **Button** | `66:1818` | Type(Primary/Secondary/Tertiary/Success/Danger) × State(Default/Hover/Pressed/Disabled) = 20 | `app/components/Button/Button.tsx` | `Components/Button/AppButton.swift` | `ui/components/AppButton.kt` | Done |
-| 2 | **IconButton** | `76:208` | Type(Primary/Secondary/Tertiary/Quarternary/Success/Danger) × State(Default/Hover/Pressed/Disabled) × Size(Small/Medium/Large) = 72 | `app/components/IconButton/IconButton.tsx` | `Components/IconButton/AppIconButton.swift` | `ui/components/AppIconButton.kt` | Done |
-| 3 | **Badge** | `87:1071` | Size(Small/Number/Tiny/Medium) × Subtle(Off/On) × Type(Brand/Success/Error/Accent) = 32 | `app/components/Badge/Badge.tsx` | `Components/Badge/AppBadge.swift` | `ui/components/AppBadge.kt` | Done |
-| 4 | **Label** | `82:1401` | Size(Small/Medium/Large) × Type(SecondaryAction/Information/PrimaryAction/BrandInteractive) = 12 | `app/components/Label/Label.tsx` | `Components/Label/AppLabel.swift` | `ui/components/AppLabel.kt` | Done |
-| 5 | **Chips** | `76:460` | Type(ChipTabs/Filters/SegmentControl) × State(Default/Hover/Pressed/Disabled) × Active(Off/On) = 24 | `app/components/Chip/Chip.tsx` | `Components/Chip/AppChip.swift` | `ui/components/AppChip.kt` | Done |
-| 6 | **Tabs** | `78:284` | Size(Small/Medium/Large) × Active(Off/On) = 6 | `app/components/Tabs/Tabs.tsx` | `Components/Tabs/AppTabs.swift` | `ui/components/AppTabs.kt` | Done |
-| 7 | **SegmentControlBar** | `81:637` | Size(Small/Medium/Large) × Type(SegmentControl/Chips/Filters) = 9 | `app/components/SegmentControlBar/SegmentControlBar.tsx` | `Components/SegmentControlBar/AppSegmentControlBar.swift` | `ui/components/AppSegmentControlBar.kt` | Done |
-| 8 | **Thumbnail** | `82:1235` | Sizes(xs/sm/md/lg/xl/xxl) × Rounded(Off/On) = 12 | `app/components/Thumbnail/Thumbnail.tsx` | `Components/Thumbnail/AppThumbnail.swift` | `ui/components/AppThumbnail.kt` | Done |
-| 9 | **Input Field** | `90:3753` | State(Default/Disabled/Focus/Filled/Success/Warning/Error) × Type(Default/TextField) = 11; slots: leadingLabel · leadingSeparator · leadingIcon \| input \| trailingIcon · trailingSeparator · trailingLabel | `app/components/InputField/InputField.tsx` | `Components/InputField/AppInputField.swift` | `ui/components/AppInputField.kt` | Done |
-| 10 | **Toast Message** | `108:4229` | Type(Default/Success/Warning/Error/Info) × has-action × has-dismiss | `app/components/Toast/Toast.tsx` | `Components/Toast/AppToast.swift` | `ui/components/AppToast.kt` | Done |
-| 11 | **Date Component** | `93:4399` | Toggle(Off/On) = 2 | — | — | — | Not started |
-| 12 | **StreakChecks** | `94:1795` | Property1(CheckCircle/Circle/CircleNotch/ArrowCircleRight/XCircle) = 5 | — | — | — | Not started |
-| 13 | **Divider** | `95:2092` | Type(SectionDivider/RowDivider) = 2 | `app/components/Divider/Divider.tsx` | `Components/Divider/AppDivider.swift` | `ui/components/AppDivider.kt` | Done |
-| 14 | **StepIndicator** | `108:9891` | Completed(Off/On) = 2 | `app/components/patterns/StepIndicator/StepIndicator.tsx` | `Components/Patterns/AppStepIndicator.swift` | `ui/patterns/AppStepIndicator.kt` | Done |
-| 15 | **Waveform** | (see Figma) | 1 component set | — | — | — | Not started |
-| 16 | **Checkbox** | (bubbles-kit) | State(Unchecked/Checked/Indeterminate) × Disabled(Off/On) | `app/components/Checkbox/Checkbox.tsx` | `Components/Checkbox/AppCheckbox.swift` | `ui/components/AppCheckbox.kt` | Done |
-| 17 | **Switch** | (bubbles-kit) | State(Off/On) × Disabled(Off/On) | `app/components/Switch/Switch.tsx` | `Components/Switch/AppSwitch.swift` | `ui/components/AppSwitch.kt` | Done |
-| 18 | **RadioButton** | (bubbles-kit) | State(Unselected/Selected) × Disabled(Off/On) + RadioGroup container | `app/components/RadioButton/RadioButton.tsx` | `Components/RadioButton/AppRadioButton.swift` | `ui/components/AppRadioButton.kt` | Done |
-| 19 | **MarkdownEditor** | (bubbles-kit) | Rich text editor with toolbar, table support, image attachments | `app/components/MarkdownEditor/MarkdownEditor.tsx` | `Components/MarkdownEditor/AppMarkdownEditor.swift` | `ui/components/AppMarkdownEditor.kt` | Done |
+| # | Figma Component | Figma Node | Variants | Web Implementation | iOS Implementation | Android Implementation | Docs | Status |
+|---|----------------|-----------|----------|-------------------|-------------------|----------------------|------|--------|
+| 1 | **Button** | `66:1818` | Type(Primary/Secondary/Tertiary/Success/Danger) × State(Default/Hover/Pressed/Disabled) = 20 | `app/components/Button/Button.tsx` | `Components/Button/AppButton.swift` | `ui/components/AppButton.kt` | [View](components/Button.md) | Done |
+| 2 | **IconButton** | `76:208` | Type(Primary/Secondary/Tertiary/Quarternary/Success/Danger) × State(Default/Hover/Pressed/Disabled) × Size(Small/Medium/Large) = 72 | `app/components/IconButton/IconButton.tsx` | `Components/IconButton/AppIconButton.swift` | `ui/components/AppIconButton.kt` | [View](components/IconButton.md) | Done |
+| 3 | **Badge** | `87:1071` | Size(Small/Number/Tiny/Medium) × Subtle(Off/On) × Type(Brand/Success/Error/Accent) = 32 | `app/components/Badge/Badge.tsx` | `Components/Badge/AppBadge.swift` | `ui/components/AppBadge.kt` | [View](components/Badge.md) | Done |
+| 4 | **Label** | `82:1401` | Size(Small/Medium/Large) × Type(SecondaryAction/Information/PrimaryAction/BrandInteractive) = 12 | `app/components/Label/Label.tsx` | `Components/Label/AppLabel.swift` | `ui/components/AppLabel.kt` | [View](components/Label.md) | Done |
+| 5 | **Chips** | `76:460` | Type(ChipTabs/Filters/SegmentControl) × State(Default/Hover/Pressed/Disabled) × Active(Off/On) = 24 | `app/components/Chip/Chip.tsx` | `Components/Chip/AppChip.swift` | `ui/components/AppChip.kt` | [View](components/Chip.md) | Done |
+| 6 | **Tabs** | `78:284` | Size(Small/Medium/Large) × Active(Off/On) = 6 | `app/components/Tabs/Tabs.tsx` | `Components/Tabs/AppTabs.swift` | `ui/components/AppTabs.kt` | [View](components/Tabs.md) | Done |
+| 7 | **SegmentControlBar** | `81:637` | Size(Small/Medium/Large) × Type(SegmentControl/Chips/Filters) = 9 | `app/components/SegmentControlBar/SegmentControlBar.tsx` | `Components/SegmentControlBar/AppSegmentControlBar.swift` | `ui/components/AppSegmentControlBar.kt` | [View](components/SegmentControlBar.md) | Done |
+| 8 | **Thumbnail** | `82:1235` | Sizes(xs/sm/md/lg/xl/xxl) × Rounded(Off/On) = 12 | `app/components/Thumbnail/Thumbnail.tsx` | `Components/Thumbnail/AppThumbnail.swift` | `ui/components/AppThumbnail.kt` | [View](components/Thumbnail.md) | Done |
+| 9 | **Input Field** | `90:3753` | State(Default/Disabled/Focus/Filled/Success/Warning/Error) × Type(Default/TextField) = 11; slots: leadingLabel · leadingSeparator · leadingIcon \| input \| trailingIcon · trailingSeparator · trailingLabel | `app/components/InputField/InputField.tsx` | `Components/InputField/AppInputField.swift` | `ui/components/AppInputField.kt` | [View](components/InputField.md) | Done |
+| 10 | **Toast Message** | `108:4229` | Type(Default/Success/Warning/Error/Info) × has-action × has-dismiss | `app/components/Toast/Toast.tsx` | `Components/Toast/AppToast.swift` | `ui/components/AppToast.kt` | [View](components/Toast.md) | Done |
+| 11 | **Date Component** | `93:4399` (item) · `95:2791` (grid) | Toggle(Off/On) = 2; DateGrid = 7-cell week strip | `app/components/DateGrid/DateGrid.tsx` → `DateItem`, `DateGrid` | `Components/DateGrid/AppDateGrid.swift` → `AppDateItem`, `AppDateGrid` | `ui/components/AppDateGrid.kt` → `AppDateItem`, `AppDateGrid` | [View](components/DateGrid.md) | Done |
+| 12 | **StreakChecks** | `94:1795` | Property1(CheckCircle/Circle/CircleNotch/ArrowCircleRight/XCircle) = 5 | — | — | — | [View](components/StreakChecks.md) | Not started |
+| 13 | **Divider** | `95:2092` | Type(SectionDivider/RowDivider) = 2 | `app/components/Divider/Divider.tsx` | `Components/Divider/AppDivider.swift` | `ui/components/AppDivider.kt` | [View](components/Divider.md) | Done |
+| 14 | **StepIndicator** | `108:9891` | Completed(Off/On) = 2 | `app/components/patterns/StepIndicator/StepIndicator.tsx` | `Components/Patterns/AppStepIndicator.swift` | `ui/patterns/AppStepIndicator.kt` | [View](components/StepIndicator.md) | Done |
+| 15 | **Waveform** | (see Figma) | 1 component set | — | — | — | [View](components/Waveform.md) | Not started |
+| 16 | **Checkbox** | (bubbles-kit) | State(Unchecked/Checked/Indeterminate) × Disabled(Off/On) | `app/components/Checkbox/Checkbox.tsx` | `Components/Checkbox/AppCheckbox.swift` | `ui/components/AppCheckbox.kt` | [View](components/Checkbox.md) | Done |
+| 17 | **Switch** | (bubbles-kit) | State(Off/On) × Disabled(Off/On) | `app/components/Switch/Switch.tsx` | `Components/Switch/AppSwitch.swift` | `ui/components/AppSwitch.kt` | [View](components/Switch.md) | Done |
+| 18 | **RadioButton** | (bubbles-kit) | State(Unselected/Selected) × Disabled(Off/On) + RadioGroup container | `app/components/RadioButton/RadioButton.tsx` | `Components/RadioButton/AppRadioButton.swift` | `ui/components/AppRadioButton.kt` | [View](components/RadioButton.md) | Done |
+| 19 | **MarkdownEditor** | (bubbles-kit) | Rich text editor with toolbar, table support, image attachments | `app/components/MarkdownEditor/MarkdownEditor.tsx` | `Components/MarkdownEditor/AppMarkdownEditor.swift` | `ui/components/AppMarkdownEditor.kt` | [View](components/MarkdownEditor.md) | Done |
 
 ---
 
@@ -49,12 +49,12 @@ Patterns live in a dedicated `patterns/` subdirectory on both platforms:
 
 > Start with `/complex-component <name>` · Validate with `/component-audit <name>` · Use `complex-component-reviewer` agent for final check
 
-| # | Component | Figma Reference | Composes | Web Implementation | iOS Implementation | Android Implementation | Status |
-|---|-----------|----------------|----------|-------------------|-------------------|----------------------|--------|
-| 1 | **TextBlock** | `84:789` | — (typography-only pattern) | `app/components/patterns/TextBlock/TextBlock.tsx` | `Components/Patterns/AppTextBlock.swift` | `ui/patterns/AppTextBlock.kt` | Done |
-| 2 | **StepIndicator** | `108:9891` | — (atomic, also in Atomic table) | `app/components/patterns/StepIndicator/StepIndicator.tsx` | `Components/Patterns/AppStepIndicator.swift` | `ui/patterns/AppStepIndicator.kt` | Done |
-| 3 | **Stepper** | `108:4357` (TimelineStepper) | TextBlock + StepIndicator | `app/components/patterns/Stepper/Stepper.tsx` | `Components/Patterns/AppStepper.swift` | `ui/patterns/AppStepper.kt` | Done |
-| 4 | **ListItem** | (bubbles-kit ListItem) | TextBlock + Thumbnail + Button + IconButton + Badge + Divider | `app/components/patterns/ListItem/ListItem.tsx` | `Components/Patterns/AppListItem.swift` | `ui/patterns/AppListItem.kt` | Done |
+| # | Component | Figma Reference | Composes | Web Implementation | iOS Implementation | Android Implementation | Docs | Status |
+|---|-----------|----------------|----------|-------------------|-------------------|----------------------|------|--------|
+| 1 | **TextBlock** | `84:789` | — (typography-only pattern) | `app/components/patterns/TextBlock/TextBlock.tsx` | `Components/Patterns/AppTextBlock.swift` | `ui/patterns/AppTextBlock.kt` | [View](components/TextBlock.md) | Done |
+| 2 | **StepIndicator** | `108:9891` | — (atomic, also in Atomic table) | `app/components/patterns/StepIndicator/StepIndicator.tsx` | `Components/Patterns/AppStepIndicator.swift` | `ui/patterns/AppStepIndicator.kt` | [View](components/StepIndicator.md) | Done |
+| 3 | **Stepper** | `108:4357` (TimelineStepper) | TextBlock + StepIndicator | `app/components/patterns/Stepper/Stepper.tsx` | `Components/Patterns/AppStepper.swift` | `ui/patterns/AppStepper.kt` | [View](components/Stepper.md) | Done |
+| 4 | **ListItem** | (bubbles-kit ListItem) | TextBlock + Thumbnail + Button + IconButton + Badge + Divider | `app/components/patterns/ListItem/ListItem.tsx` | `Components/Patterns/AppListItem.swift` | `ui/patterns/AppListItem.kt` | [View](components/ListItem.md) | Done |
 
 ### Complex Component Status Legend
 
@@ -86,29 +86,29 @@ The `native-wrapper-guard` hook will warn if raw SwiftUI APIs (`Picker(`, `DateP
 
 ### Standalone Views
 
-| # | Wrapper | Wraps | File | Key Props | Status |
-|---|---------|-------|------|-----------|--------|
-| 1 | **AppNativePicker** | `Picker` | `Components/Native/AppNativePicker.swift` | `selection`, `options: [PickerOption]`, `style: .menu/.segmented/.wheel`, `isDisabled`, `showError` | Done |
-| 2 | **AppDateTimePicker** | `DatePicker` | `Components/Native/AppDateTimePicker.swift` | `selection: Date`, `mode: .date/.time/.dateAndTime`, `displayStyle: .compact/.graphical/.wheel`, `range` | Done |
-| 3 | **AppProgressLoader** | `ProgressView` | `Components/Native/AppProgressLoader.swift` | `variant: .indefinite/.definite(value:total:)`, `label` | Done |
-| 4 | **AppColorPicker** | `ColorPicker` | `Components/Native/AppColorPicker.swift` | `label`, `selection: Color`, `supportsOpacity` | Done |
-| 5 | **AppBottomNavBar** | `TabView` | `Components/Native/AppBottomNavBar.swift` | `selectedTab: Binding<Int>`, `@ViewBuilder content` | Done |
-| 6 | **AppCarousel** | `TabView(.page)` / `ScrollView` | `Components/Native/AppCarousel.swift` | `items`, `style: .paged/.scrollSnap`, `showDots`, `@ViewBuilder content` | Done |
-| 7 | **AppTooltip** | `.popover` | `Components/Native/AppTooltip.swift` | `isPresented`, `tipText` or custom `tipContent`, `arrowEdge` | Done |
-| 8 | **AppRangeSlider** | dual `Slider` | `Components/Native/AppRangeSlider.swift` | `lowerValue`, `upperValue`, `range`, `step`, `showLabels` | Done |
-| 9 | **AppWebView** | `WKWebView` | `Components/Native/AppWebView.swift` | `url: URL`, `isLoading: Binding<Bool>`, `onError: ((Error) -> Void)?` | Done |
+| # | Wrapper | Wraps | File | Key Props | Docs | Status |
+|---|---------|-------|------|-----------|------|--------|
+| 1 | **AppNativePicker** | `Picker` | `Components/Native/AppNativePicker.swift` | `selection`, `options: [PickerOption]`, `style: .menu/.segmented/.wheel`, `isDisabled`, `showError` | [View](components/AppNativePicker.md) | Done |
+| 2 | **AppDateTimePicker** | `DatePicker` | `Components/Native/AppDateTimePicker.swift` | `selection: Date`, `mode: .date/.time/.dateAndTime`, `displayStyle: .compact/.graphical/.wheel`, `range` | [View](components/AppDateTimePicker.md) | Done |
+| 3 | **AppProgressLoader** | `ProgressView` | `Components/Native/AppProgressLoader.swift` | `variant: .indefinite/.definite(value:total:)`, `label` | [View](components/AppProgressLoader.md) | Done |
+| 4 | **AppColorPicker** | `ColorPicker` | `Components/Native/AppColorPicker.swift` | `label`, `selection: Color`, `supportsOpacity` | [View](components/AppColorPicker.md) | Done |
+| 5 | **AppBottomNavBar** | `TabView` | `Components/Native/AppBottomNavBar.swift` | `selectedTab: Binding<Int>`, `@ViewBuilder content` | [View](components/AppBottomNavBar.md) | Done |
+| 6 | **AppCarousel** | `TabView(.page)` / `ScrollView` | `Components/Native/AppCarousel.swift` | `items`, `style: .paged/.scrollSnap`, `showDots`, `@ViewBuilder content` | [View](components/AppCarousel.md) | Done |
+| 7 | **AppTooltip** | `.popover` | `Components/Native/AppTooltip.swift` | `isPresented`, `tipText` or custom `tipContent`, `arrowEdge` | [View](components/AppTooltip.md) | Done |
+| 8 | **AppRangeSlider** | dual `Slider` | `Components/Native/AppRangeSlider.swift` | `lowerValue`, `upperValue`, `range`, `step`, `showLabels` | [View](components/AppRangeSlider.md) | Done |
+| 9 | **AppWebView** | `WKWebView` | `Components/Native/AppWebView.swift` | `url: URL`, `isLoading: Binding<Bool>`, `onError: ((Error) -> Void)?` | [View](components/AppWebView.md) | Done |
 
 ### ViewModifier Wrappers
 
 Applied via dot-syntax on any `View` inside a `NavigationStack` or at the screen level.
 
-| # | Wrapper | Wraps | File | Usage | Status |
-|---|---------|-------|------|-------|--------|
-| 9 | **AppBottomSheet** | `.sheet` | `Components/Native/AppBottomSheet.swift` | `.appBottomSheet(isPresented:detents:content:)` | Done |
-| 10 | **AppActionSheet** | `.confirmationDialog` | `Components/Native/AppActionSheet.swift` | `.appActionSheet(isPresented:title:message:actions:)` | Done |
-| 11 | **AppAlertPopup** | `.alert` | `Components/Native/AppAlertPopup.swift` | `.appAlert(isPresented:title:message:buttons:)` | Done |
-| 12 | **AppPageHeader** | `.navigationTitle` + `.toolbar` | `Components/Native/AppPageHeader.swift` | `.appPageHeader(title:displayMode:trailingActions:)` | Done |
-| 13 | **AppContextMenu** | `.contextMenu` | `Components/Native/AppContextMenu.swift` | `.appContextMenu(items:)` + `AppPopoverMenu(isPresented:items:label:)` | Done |
+| # | Wrapper | Wraps | File | Usage | Docs | Status |
+|---|---------|-------|------|-------|------|--------|
+| 9 | **AppBottomSheet** | `.sheet` | `Components/Native/AppBottomSheet.swift` | `.appBottomSheet(isPresented:detents:content:)` | [View](components/AppBottomSheet.md) | Done |
+| 10 | **AppActionSheet** | `.confirmationDialog` | `Components/Native/AppActionSheet.swift` | `.appActionSheet(isPresented:title:message:actions:)` | [View](components/AppActionSheet.md) | Done |
+| 11 | **AppAlertPopup** | `.alert` | `Components/Native/AppAlertPopup.swift` | `.appAlert(isPresented:title:message:buttons:)` | [View](components/AppAlertPopup.md) | Done |
+| 12 | **AppPageHeader** | `.navigationTitle` + `.toolbar` | `Components/Native/AppPageHeader.swift` | `.appPageHeader(title:displayMode:trailingActions:)` | [View](components/AppPageHeader.md) | Done |
+| 13 | **AppContextMenu** | `.contextMenu` | `Components/Native/AppContextMenu.swift` | `.appContextMenu(items:)` + `AppPopoverMenu(isPresented:items:label:)` | [View](components/AppContextMenu.md) | Done |
 
 ### Web Equivalents (Next.js)
 
@@ -134,22 +134,22 @@ Barrel import: `import { AppNativePicker, AppTooltip } from "@/app/components/Na
 
 Thin wrappers around Material 3 / Compose APIs, styled via `NativeComponentStyling.kt`. **Always use these instead of raw Material 3 APIs** in screen files.
 
-| # | Wrapper | Wraps | File | Key Props | Status |
-|---|---------|-------|------|-----------|--------|
-| 1 | **AppNativePicker** | `ExposedDropdownMenuBox` | `ui/native/AppNativePicker.kt` | `value`, `options`, `onSelect`, `label`, `showError` | Done |
-| 2 | **AppDateTimePicker** | `DatePickerDialog` / `TimePickerDialog` | `ui/native/AppDateTimePicker.kt` | `selectedDateMillis`, `onDateSelected`, `mode` | Done |
-| 3 | **AppProgressLoader** | `CircularProgressIndicator` / `LinearProgressIndicator` | `ui/native/AppProgressLoader.kt` | `variant: ProgressVariant`, `label` | Done |
-| 4 | **AppColorPicker** | Custom swatch grid | `ui/native/AppColorPicker.kt` | `selectedColor`, `onColorSelected`, `label` | Done |
-| 5 | **AppBottomSheet** | `ModalBottomSheet` | `ui/native/AppBottomSheet.kt` | `isPresented`, `onDismiss`, `content` | Done |
-| 6 | **AppActionSheet** | `AlertDialog` + action list | `ui/native/AppActionSheet.kt` | `isPresented`, `onDismiss`, `title`, `actions` | Done |
-| 7 | **AppAlertPopup** | `AlertDialog` | `ui/native/AppAlertPopup.kt` | `isPresented`, `onDismiss`, `title`, `message`, `buttons` | Done |
-| 8 | **AppPageHeader** | `TopAppBar` | `ui/native/AppPageHeader.kt` | `title`, `navigationIcon`, `actions` | Done |
-| 9 | **AppContextMenu** | `DropdownMenu` | `ui/native/AppContextMenu.kt` | `isExpanded`, `onDismiss`, `items` | Done |
-| 10 | **AppBottomNavBar** | `NavigationBar` | `ui/native/AppBottomNavBar.kt` | `selectedTab`, `onTabSelect`, `tabs` | Done |
-| 11 | **AppCarousel** | `HorizontalPager` | `ui/native/AppCarousel.kt` | `items`, `style`, `showDots` | Done |
-| 12 | **AppTooltip** | `PlainTooltip` | `ui/native/AppTooltip.kt` | `isVisible`, `text` | Done |
-| 13 | **AppRangeSlider** | `RangeSlider` | `ui/native/AppRangeSlider.kt` | `lowerValue`, `upperValue`, `range`, `step` | Done |
-| 14 | **AppWebView** | `android.webkit.WebView` | `ui/native/AppWebView.kt` | `url: String`, `modifier: Modifier` | Done |
+| # | Wrapper | Wraps | File | Key Props | Docs | Status |
+|---|---------|-------|------|-----------|------|--------|
+| 1 | **AppNativePicker** | `ExposedDropdownMenuBox` | `ui/native/AppNativePicker.kt` | `value`, `options`, `onSelect`, `label`, `showError` | [View](components/AppNativePicker.md) | Done |
+| 2 | **AppDateTimePicker** | `DatePickerDialog` / `TimePickerDialog` | `ui/native/AppDateTimePicker.kt` | `selectedDateMillis`, `onDateSelected`, `mode` | [View](components/AppDateTimePicker.md) | Done |
+| 3 | **AppProgressLoader** | `CircularProgressIndicator` / `LinearProgressIndicator` | `ui/native/AppProgressLoader.kt` | `variant: ProgressVariant`, `label` | [View](components/AppProgressLoader.md) | Done |
+| 4 | **AppColorPicker** | Custom swatch grid | `ui/native/AppColorPicker.kt` | `selectedColor`, `onColorSelected`, `label` | [View](components/AppColorPicker.md) | Done |
+| 5 | **AppBottomSheet** | `ModalBottomSheet` | `ui/native/AppBottomSheet.kt` | `isPresented`, `onDismiss`, `content` | [View](components/AppBottomSheet.md) | Done |
+| 6 | **AppActionSheet** | `AlertDialog` + action list | `ui/native/AppActionSheet.kt` | `isPresented`, `onDismiss`, `title`, `actions` | [View](components/AppActionSheet.md) | Done |
+| 7 | **AppAlertPopup** | `AlertDialog` | `ui/native/AppAlertPopup.kt` | `isPresented`, `onDismiss`, `title`, `message`, `buttons` | [View](components/AppAlertPopup.md) | Done |
+| 8 | **AppPageHeader** | `TopAppBar` | `ui/native/AppPageHeader.kt` | `title`, `navigationIcon`, `actions` | [View](components/AppPageHeader.md) | Done |
+| 9 | **AppContextMenu** | `DropdownMenu` | `ui/native/AppContextMenu.kt` | `isExpanded`, `onDismiss`, `items` | [View](components/AppContextMenu.md) | Done |
+| 10 | **AppBottomNavBar** | `NavigationBar` | `ui/native/AppBottomNavBar.kt` | `selectedTab`, `onTabSelect`, `tabs` | [View](components/AppBottomNavBar.md) | Done |
+| 11 | **AppCarousel** | `HorizontalPager` | `ui/native/AppCarousel.kt` | `items`, `style`, `showDots` | [View](components/AppCarousel.md) | Done |
+| 12 | **AppTooltip** | `PlainTooltip` | `ui/native/AppTooltip.kt` | `isVisible`, `text` | [View](components/AppTooltip.md) | Done |
+| 13 | **AppRangeSlider** | `RangeSlider` | `ui/native/AppRangeSlider.kt` | `lowerValue`, `upperValue`, `range`, `step` | [View](components/AppRangeSlider.md) | Done |
+| 14 | **AppWebView** | `android.webkit.WebView` | `ui/native/AppWebView.kt` | `url: String`, `modifier: Modifier` | [View](components/AppWebView.md) | Done |
 
 ### iOS Architecture Notes
 
@@ -179,11 +179,11 @@ Auto-switch between compact (phone / mobile web) and regular (iPad landscape / d
 
 Barrel import (web): `import { AdaptiveNavShell, AdaptiveSheet } from "@/app/components/Adaptive";`
 
-| # | Wrapper | Compact (Phone/Mobile) | Regular (iPad/Desktop) | iOS File | Web File | Android File | Status |
-|---|---------|------------------------|------------------------|----------|----------|-------------|--------|
-| 1 | **AdaptiveNavShell** | Bottom tab bar (`TabView`) | Collapsible icon-rail sidebar (60px collapsed / 240px expanded) | `Components/Adaptive/AdaptiveNavShell.swift` | `app/components/Adaptive/AdaptiveNavShell.tsx` | `ui/adaptive/AdaptiveNavShell.kt` | Done |
-| 2 | **AdaptiveSheet** | Bottom sheet (`.sheet` / vaul `Drawer`) | Centered modal dialog (Radix `Dialog`) | `Components/Adaptive/AdaptiveSheet.swift` | `app/components/Adaptive/AdaptiveSheet.tsx` | `ui/adaptive/AdaptiveSheet.kt` | Done |
-| 3 | **AdaptiveSplitView** | Push navigation (list → detail) | Side-by-side split panels | `Components/Adaptive/AdaptiveSplitView.swift` | `app/components/Adaptive/AdaptiveSplitView.tsx` | `ui/adaptive/AdaptiveSplitView.kt` | Done |
+| # | Wrapper | Compact (Phone/Mobile) | Regular (iPad/Desktop) | iOS File | Web File | Android File | Docs | Status |
+|---|---------|------------------------|------------------------|----------|----------|-------------|------|--------|
+| 1 | **AdaptiveNavShell** | Bottom tab bar (`TabView`) | Collapsible icon-rail sidebar (60px collapsed / 240px expanded) | `Components/Adaptive/AdaptiveNavShell.swift` | `app/components/Adaptive/AdaptiveNavShell.tsx` | `ui/adaptive/AdaptiveNavShell.kt` | [View](components/AdaptiveNavShell.md) | Done |
+| 2 | **AdaptiveSheet** | Bottom sheet (`.sheet` / vaul `Drawer`) | Centered modal dialog (Radix `Dialog`) | `Components/Adaptive/AdaptiveSheet.swift` | `app/components/Adaptive/AdaptiveSheet.tsx` | `ui/adaptive/AdaptiveSheet.kt` | [View](components/AdaptiveSheet.md) | Done |
+| 3 | **AdaptiveSplitView** | Push navigation (list → detail) | Side-by-side split panels | `Components/Adaptive/AdaptiveSplitView.swift` | `app/components/Adaptive/AdaptiveSplitView.tsx` | `ui/adaptive/AdaptiveSplitView.kt` | [View](components/AdaptiveSplitView.md) | Done |
 
 ### Detection Mechanism
 

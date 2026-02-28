@@ -1,6 +1,7 @@
 # IconButton
 
 **Figma:** bubbles-kit › `76:208`
+**Android:** `multi-repo-android/.../ui/components/AppIconButton.kt`
 **Axes:** Type(Primary/Secondary/Tertiary/Quarternary/Success/Danger) × State(Default/Hover/Pressed/Disabled) × Size(Small/Medium/Large) = 72
 
 A square/circle icon-only button. Requires an `icon` element and an accessibility `label` (never rendered visually — screen-reader only).
@@ -33,6 +34,19 @@ A square/circle icon-only button. Requires an `icon` element and an accessibilit
 | `isLoading` | `Bool` | `false` | Shows spinner |
 | `isDisabled` | `Bool` | `false` | Disabled state |
 | `action` | `() -> Void` | — | Tap handler |
+
+### Android (`AppIconButton`)
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `icon` | `ImageVector` | — | Icon vector (required) |
+| `contentDescription` | `String` | — | Accessibility label (required) |
+| `onClick` | `() -> Unit` | — | Click handler (required) |
+| `modifier` | `Modifier` | `Modifier` | Compose modifier |
+| `variant` | `IconButtonVariant` | `IconButtonVariant.Primary` | Color/fill style (`Primary`/`Secondary`/`Tertiary`/`Quaternary`/`Success`/`Danger`) |
+| `size` | `IconButtonSize` | `IconButtonSize.Lg` | Button size (`Sm`/`Md`/`Lg`) |
+| `enabled` | `Boolean` | `true` | Enabled state; `false` applies 0.5 opacity |
+| `isLoading` | `Boolean` | `false` | Shows spinner; disables interaction |
 
 ---
 
@@ -91,6 +105,7 @@ A square/circle icon-only button. Requires an `icon` element and an accessibilit
 - `label` is **required** — rendered as `aria-label` on the `<button>` (web) / `.accessibilityLabel()` (iOS)
 - Web: `aria-busy="true"` when `isLoading`, `aria-disabled="true"` when `disabled`
 - Minimum touch target: 44 × 44 pt (enforced by hit-area padding on `sm` size)
+- Android: `contentDescription` is required and used by TalkBack; Material 3 `IconButton` provides built-in semantics for disabled and loading states
 
 ---
 
@@ -167,6 +182,42 @@ AppIconButton(
 ) {
     handleMenu()
 }
+```
+
+### Android
+
+```kotlin
+// Default primary
+AppIconButton(
+    icon = Icons.Default.Favorite,
+    contentDescription = "Like",
+    onClick = { toggleLike() }
+)
+
+// Secondary medium
+AppIconButton(
+    icon = Icons.Default.Edit,
+    contentDescription = "Edit item",
+    variant = IconButtonVariant.Secondary,
+    size = IconButtonSize.Md,
+    onClick = { handleEdit() }
+)
+
+// Quaternary (ghost) — common in list rows
+AppIconButton(
+    icon = Icons.Default.MoreVert,
+    contentDescription = "More options",
+    variant = IconButtonVariant.Quaternary,
+    onClick = { handleMenu() }
+)
+
+// Loading state
+AppIconButton(
+    icon = Icons.Default.Save,
+    contentDescription = "Save",
+    isLoading = isSaving,
+    onClick = { handleSave() }
+)
 ```
 
 ---

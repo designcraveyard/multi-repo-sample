@@ -3,6 +3,7 @@
 **Figma:** bubbles-kit › "ListItem" (composed pattern)
 **Web:** `multi-repo-nextjs/app/components/patterns/ListItem/ListItem.tsx`
 **iOS:** `multi-repo-ios/multi-repo-ios/Components/Patterns/AppListItem.swift`
+**Android:** `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/patterns/AppListItem.kt`
 **Type:** Complex Component — composes `TextBlock` + `Thumbnail` + `Button` / `IconButton` / `Badge` + `Divider`
 
 ---
@@ -48,6 +49,19 @@ A horizontal row with an optional leading thumbnail, required title (+ optional 
 | `trailing` | `AppListItemTrailing?` | `nil` | Trailing action (see below) |
 | `divider` | `Bool` | `false` | Row divider below item |
 
+### Android (`AppListItem`)
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `String` | — | **Required.** Primary text |
+| `modifier` | `Modifier` | `Modifier` | Compose modifier |
+| `subtitle` | `String?` | `null` | Secondary line |
+| `body` | `String?` | `null` | Body copy |
+| `metadata` | `String?` | `null` | Footnote / timestamp |
+| `thumbnail` | `AppThumbnailConfig?` | `null` | Leading thumbnail config |
+| `trailing` | `AppListItemTrailing?` | `null` | Trailing action (see below) |
+| `divider` | `Boolean` | `false` | Row divider below item |
+
 ---
 
 ## Trailing Slot
@@ -78,6 +92,28 @@ public enum AppListItemTrailing {
     case badge(label: String, type: AppBadgeType = .brand, subtle: Bool = false)
 }
 ```
+
+### Android — `AppListItemTrailing` (sealed interface)
+
+```kotlin
+sealed interface AppListItemTrailing {
+    data class Button(...)
+    data class IconButton(...)
+    data class Badge(label: String, type: BadgeType = BadgeType.Brand)
+    data class Radio(...)
+    data class Checkbox(...)
+    data class Toggle(...)
+}
+```
+
+| `type` | Rendered as | Notes |
+|--------|-------------|-------|
+| `Button` | `AppButton(size = Sm)` | Default secondary variant |
+| `IconButton` | `AppIconButton(size = Sm)` | Pass `ImageVector` as icon |
+| `Badge` | `AppBadge(size = Sm)` | Default brand type |
+| `Radio` | Radio button | Selection indicator |
+| `Checkbox` | Checkbox | Toggle indicator |
+| `Toggle` | Switch | Toggle indicator |
 
 ---
 
@@ -193,6 +229,32 @@ AppListItem(
 )
 ```
 
+### Android
+
+```kotlin
+// Title + subtitle
+AppListItem(
+    title = "Ayurveda Books",
+    subtitle = "bought for Anjali"
+)
+
+// Badge trailing with divider
+AppListItem(
+    title = "Inbox",
+    trailing = AppListItemTrailing.Badge(label = "3", type = BadgeType.Error),
+    divider = true
+)
+
+// Thumbnail + badge
+AppListItem(
+    title = "Pack luggage",
+    subtitle = "Ready for the trip",
+    thumbnail = AppThumbnailConfig(size = AppThumbnailSize.Sm),
+    trailing = AppListItemTrailing.Badge(label = "New", type = BadgeType.Brand),
+    divider = true
+)
+```
+
 ---
 
 ## Accessibility
@@ -202,3 +264,4 @@ AppListItem(
 - Trailing button/iconButton have their own accessible labels
 - Badge is decorative but readable by screen reader via its text content
 - Consider wrapping a list of `ListItem`s in a `<ul>`/`<li>` structure on web for proper list semantics
+- Android: TalkBack reads title + subtitle as a combined row; trailing actions have independent semantics via Material 3 built-in support

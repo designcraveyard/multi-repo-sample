@@ -3,6 +3,7 @@
 **Figma:** bubbles-kit › node `108:4357` ("TimelineStepper")
 **Web:** `multi-repo-nextjs/app/components/patterns/Stepper/Stepper.tsx`
 **iOS:** `multi-repo-ios/multi-repo-ios/Components/Patterns/AppStepper.swift`
+**Android:** `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/patterns/AppStepper.kt`
 **Type:** Complex Component — composes `StepIndicator` + `TextBlock`
 
 ---
@@ -66,6 +67,24 @@ public struct AppStepperStep {
 | Prop | Type | Description |
 |------|------|-------------|
 | `steps` | `[AppStepperStep]` | Array of step data. Must have ≥ 1 step. |
+
+### Android (`AppStepper`)
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `steps` | `List<AppStepperStep>` | — | **Required.** List of step data (title, subtitle, body, completed) |
+| `modifier` | `Modifier` | `Modifier` | Compose modifier |
+
+### Android `AppStepperStep`
+
+```kotlin
+data class AppStepperStep(
+    val title: String,
+    val subtitle: String? = null,
+    val body: String? = null,
+    val completed: Boolean = false,
+)
+```
 
 ---
 
@@ -142,6 +161,27 @@ AppStepper(steps: [
 ])
 ```
 
+### Android
+
+```kotlin
+// All completed
+AppStepper(
+    steps = listOf(
+        AppStepperStep(title = "Ordered", completed = true),
+        AppStepperStep(title = "Shipped", completed = true)
+    )
+)
+
+// Mixed state
+AppStepper(
+    steps = listOf(
+        AppStepperStep(title = "Ordered", subtitle = "Mar 1", completed = true),
+        AppStepperStep(title = "Shipped"),
+        AppStepperStep(title = "Delivered", subtitle = "Mar 4")
+    )
+)
+```
+
 ---
 
 ## Accessibility
@@ -150,3 +190,4 @@ AppStepper(steps: [
 - `.isStaticText` trait on iOS
 - The connecting line is decorative — `aria-hidden` on web
 - Consider wrapping in a `<section aria-label="Order status">` or similar on web for screen reader context
+- Android: Each `AppStepIndicator` has a `contentDescription` for TalkBack; connector lines are decorative with no semantics

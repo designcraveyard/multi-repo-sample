@@ -3,6 +3,7 @@
 **Figma:** bubbles-kit › node `66:1818`
 **Web:** `multi-repo-nextjs/app/components/Button/Button.tsx`
 **iOS:** `multi-repo-ios/multi-repo-ios/Components/Button/AppButton.swift`
+**Android:** `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppButton.kt`
 
 ---
 
@@ -38,6 +39,20 @@ A pill-shaped action trigger with five semantic variants and three sizes. Suppor
 | `trailingIcon` | `AnyView?` | `nil` | Trailing icon view |
 | `isLoading` | `Bool` | `false` | Shows spinner |
 | `action` | `() -> Void` | — | Tap handler |
+
+### Android (`AppButton`)
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `label` | `String` | — | **Required.** Button text |
+| `onClick` | `() -> Unit` | — | **Required.** Tap handler |
+| `modifier` | `Modifier` | `Modifier` | Compose modifier |
+| `variant` | `ButtonVariant` | `Primary` | Visual style (Primary/Secondary/Tertiary/Success/Danger) |
+| `size` | `ButtonSize` | `Lg` | Size tier (Sm/Md/Lg) |
+| `enabled` | `Boolean` | `true` | Interactive; false = 0.5 opacity |
+| `isLoading` | `Boolean` | `false` | Replaces leading icon with spinner; disables |
+| `leadingIcon` | `ImageVector?` | `null` | Icon before label |
+| `trailingIcon` | `ImageVector?` | `null` | Icon after label |
 
 ---
 
@@ -135,6 +150,31 @@ AppButton(label: "Delete account", variant: .danger, action: {})
 
 // Loading
 AppButton(label: "Saving…", isLoading: true, action: {})
+```
+
+### Android
+
+```kotlin
+import com.abhishekverma.multirepo.ui.components.AppButton
+import com.abhishekverma.multirepo.ui.components.ButtonVariant
+
+// Basic
+AppButton(label = "Save", onClick = { save() })
+
+// Danger with leading icon
+AppButton(
+    label = "Delete",
+    variant = ButtonVariant.Danger,
+    size = ButtonSize.Md,
+    leadingIcon = Icons.Default.Delete,
+    onClick = { deleteItem() },
+)
+
+// Loading state
+AppButton(label = "Submitting…", isLoading = true, onClick = {})
+
+// Disabled
+AppButton(label = "Continue", enabled = false, onClick = {})
 ```
 
 ---

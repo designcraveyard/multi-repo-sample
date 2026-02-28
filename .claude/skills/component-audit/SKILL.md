@@ -108,14 +108,30 @@ Determine component type: **atomic** (<80 lines, no child component imports) or 
 - [ ] `Modifier.semantics { disabled() }` on disabled composables
 - [ ] `Modifier.clearAndSetSemantics { }` used where internal structure would be noisy to TalkBack
 
-### 5. Registry Entry in docs/components.md
+### 5. Component Documentation (`docs/components/$ARGUMENTS.md`)
+
+- [ ] File exists at `docs/components/$ARGUMENTS.md`
+- [ ] Has `### Web` props table with all current props
+- [ ] Has `### iOS` props table with all current props
+- [ ] Has `### Android` props table with all current props
+- [ ] Has `### Web` usage example in Usage Examples section
+- [ ] Has `### iOS` usage example in Usage Examples section
+- [ ] Has `### Android` usage example in Usage Examples section
+- [ ] Has non-empty `## Accessibility` section
+- [ ] Props tables match the actual source code (no stale/missing params)
+
+> If doc file missing: create it using the template from `docs/components/Button.md` as reference.
+> If props are stale: update the tables to match current source code.
+
+### 6. Registry Entry in docs/components.md
 
 - [ ] Row exists for `$ARGUMENTS` in the correct table (Atomic or Complex)
 - [ ] Figma node ID is listed (or noted as "no Figma node" for complex patterns)
 - [ ] All three platform file paths (web, iOS, Android) are listed and accurate
 - [ ] Status reflects current reality (not "Done" if issues remain)
+- [ ] Docs column links to `docs/components/$ARGUMENTS.md`
 
-### 6. Figma Design Parity (if Figma node exists)
+### 7. Figma Design Parity (if Figma node exists)
 
 Use the Figma MCP server to read the design, and optionally figma-cli to export/update:
 

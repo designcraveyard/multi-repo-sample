@@ -3,6 +3,7 @@
 **Figma:** bubbles-kit › node `87:1071`
 **Web:** `multi-repo-nextjs/app/components/Badge/Badge.tsx`
 **iOS:** `multi-repo-ios/multi-repo-ios/Components/Badge/AppBadge.swift`
+**Android:** `multi-repo-android/.../ui/components/AppBadge.kt`
 
 ---
 
@@ -32,6 +33,23 @@ A small pill-shaped indicator used to convey status, counts, or category. Comes 
 | `size` | `AppBadgeSize` | `.md` | Size token |
 | `type` | `AppBadgeType` | `.brand` | Semantic color |
 | `subtle` | `Bool` | `false` | Subtle/tinted mode |
+
+### Android (`AppBadge`)
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `String?` | `null` | Text displayed inside badge |
+| `modifier` | `Modifier` | `Modifier` | Compose modifier |
+| `size` | `BadgeSize` | `BadgeSize.Md` | Size token (`Tiny`/`Sm`/`Number`/`Md`) |
+| `type` | `BadgeType` | `BadgeType.Brand` | Semantic color (`Brand`/`Success`/`Error`/`Accent`) |
+| `subtle` | `Boolean` | `false` | Subtle/tinted mode |
+
+Int overload:
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `count` | `Int` | — | Numeric count value |
+| `size` | `BadgeSize` | `BadgeSize.Number` | Size token |
 
 ---
 
@@ -102,6 +120,19 @@ AppBadge(label: "Verified", type: .success, subtle: true)
 
 // Dot
 AppBadge(size: .tiny, type: .error)
+```
+
+### Android
+
+```kotlin
+// Default brand badge
+AppBadge(label = "New", type = BadgeType.Brand)
+
+// Numeric count (Int overload)
+AppBadge(count = 12, type = BadgeType.Error)
+
+// Dot indicator (tiny)
+AppBadge(size = BadgeSize.Tiny, type = BadgeType.Success)
 ```
 
 ---

@@ -1,6 +1,7 @@
 # Chip
 
 **Figma:** bubbles-kit › `76:460`
+**Android:** `multi-repo-android/.../ui/components/AppChip.kt`
 **Axes:** Type(ChipTabs/Filters/SegmentControl) × State(Default/Hover/Pressed/Disabled) × Active(Off/On) = 24
 
 A single selection pill used in tab rows, filter rows, or segment controls. Typically composed into `SegmentControlBar` rather than used standalone.
@@ -35,6 +36,20 @@ A single selection pill used in tab rows, filter rows, or segment controls. Typi
 | `leadingIcon` | `AnyView?` | `nil` | Leading icon view |
 | `trailingIcon` | `AnyView?` | `nil` | Trailing icon view |
 | `action` | `() -> Void` | — | Tap handler |
+
+### Android (`AppChip`)
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `String` | — | Display label (required) |
+| `onClick` | `() -> Unit` | — | Click handler (required) |
+| `modifier` | `Modifier` | `Modifier` | Compose modifier |
+| `variant` | `ChipVariant` | `ChipVariant.ChipTabs` | Visual style (`ChipTabs`/`Filters`/`SegmentControl`) |
+| `size` | `ChipSize` | `ChipSize.Md` | Size (`Sm`/`Md`/`Lg`) |
+| `isActive` | `Boolean` | `false` | Selected/active state |
+| `leadingIcon` | `ImageVector?` | `null` | Leading icon |
+| `trailingIcon` | `ImageVector?` | `null` | Trailing icon |
+| `isDisabled` | `Boolean` | `false` | Disabled state; applies 0.5 opacity |
 
 ---
 
@@ -89,6 +104,7 @@ A single selection pill used in tab rows, filter rows, or segment controls. Typi
 - Web: `role="tab"` + `aria-selected` for `chipTabs`; `aria-pressed` for `filters`
 - Disabled: `aria-disabled="true"` + `pointer-events: none`
 - iOS: `.accessibilityAddTraits(.isButton)` + `.accessibilityValue(isActive ? "selected" : "unselected")`
+- Android: TalkBack announces active state via Material 3 built-in semantics; `isDisabled` maps to `enabled = false` for proper accessibility
 
 ---
 
@@ -135,6 +151,35 @@ AppChip(
 ) {
     toggleFilter("photos")
 }
+```
+
+### Android
+
+```kotlin
+// Basic active chip
+AppChip(
+    label = "Design",
+    variant = ChipVariant.ChipTabs,
+    isActive = true,
+    onClick = { selectTab("design") }
+)
+
+// Filter chip with icon
+AppChip(
+    label = "Photos",
+    variant = ChipVariant.Filters,
+    size = ChipSize.Sm,
+    isActive = selectedFilters.contains("photos"),
+    leadingIcon = Icons.Default.Image,
+    onClick = { toggleFilter("photos") }
+)
+
+// Disabled
+AppChip(
+    label = "Coming soon",
+    isDisabled = true,
+    onClick = { }
+)
 ```
 
 ---

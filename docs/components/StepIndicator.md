@@ -3,6 +3,7 @@
 **Figma:** bubbles-kit › node `108:9891`
 **Web:** `multi-repo-nextjs/app/components/patterns/StepIndicator/StepIndicator.tsx`
 **iOS:** `multi-repo-ios/multi-repo-ios/Components/Patterns/AppStepIndicator.swift`
+**Android:** `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/patterns/AppStepIndicator.kt`
 **Type:** Atomic + used as part of Stepper
 
 ---
@@ -32,6 +33,13 @@ A 12×12 circular dot representing a single step in a timeline. Two states:
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `completed` | `Bool` | `false` | Whether this step is done |
+
+### Android (`AppStepIndicator`)
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `modifier` | `Modifier` | `Modifier` | Compose modifier |
+| `completed` | `Boolean` | `false` | Whether this step is done |
 
 ---
 
@@ -65,9 +73,17 @@ AppStepIndicator()                  // incomplete
 AppStepIndicator(completed: true)   // completed with checkmark
 ```
 
+### Android
+
+```kotlin
+AppStepIndicator()                           // incomplete
+AppStepIndicator(completed = true)           // completed with checkmark
+```
+
 ---
 
 ## Accessibility
 
 - **Web:** `aria-label` set to `"Step completed"` or `"Step not yet completed"` based on state
 - **iOS:** `.accessibilityLabel(completed ? "Step completed" : "Step incomplete")` + `.isStaticText` trait
+- **Android:** `contentDescription` set to `"Step completed"` or `"Step incomplete"` via `semantics` modifier for TalkBack support

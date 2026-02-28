@@ -3,6 +3,7 @@
 **Figma:** bubbles-kit › node `82:1235`
 **Web:** `multi-repo-nextjs/app/components/Thumbnail/Thumbnail.tsx`
 **iOS:** `multi-repo-ios/multi-repo-ios/Components/Thumbnail/AppThumbnail.swift`
+**Android:** `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppThumbnail.kt`
 
 ---
 
@@ -42,6 +43,17 @@ iOS uses `AppThumbnailConfig` as a convenience wrapper when passing to `AppListI
 AppThumbnailConfig(size: .sm)                       // placeholder
 AppThumbnailConfig(src: "https://…", size: .md)     // remote image
 ```
+
+### Android (`AppThumbnail`)
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `modifier` | `Modifier` | `Modifier` | Compose modifier |
+| `imageUrl` | `String?` | `null` | Remote image URL |
+| `size` | `AppThumbnailSize` | `Md` | Size tier (`Xs`/`Sm`/`Md`/`Lg`/`Xl`/`Xxl`) |
+| `rounded` | `Boolean` | `false` | `true` = circle; `false` = rounded square |
+| `contentDescription` | `String` | `""` | Accessibility label |
+| `fallback` | `(@Composable () -> Unit)?` | `null` | Custom fallback content (e.g. initials text) |
 
 ---
 
@@ -107,4 +119,28 @@ AppListItem(
     title: "Trip to Bali",
     thumbnail: AppThumbnailConfig(src: "https://…", size: .sm)
 )
+```
+
+### Android
+
+```kotlin
+import com.abhishekverma.multirepo.ui.components.AppThumbnail
+import com.abhishekverma.multirepo.ui.components.AppThumbnailSize
+
+// Default placeholder (silhouette)
+AppThumbnail(size = AppThumbnailSize.Md)
+
+// Remote image
+AppThumbnail(imageUrl = "https://example.com/avatar.png", size = AppThumbnailSize.Md)
+
+// Circle crop
+AppThumbnail(imageUrl = "https://example.com/photo.jpg", size = AppThumbnailSize.Lg, rounded = true)
+
+// Initials fallback
+AppThumbnail(size = AppThumbnailSize.Xl, rounded = true) {
+    Text(text = "AB", style = AppTypography.bodySmall, color = SemanticColors.typographySecondary)
+}
+
+// Generic silhouette (no image, no fallback)
+AppThumbnail(size = AppThumbnailSize.Sm, rounded = true)
 ```

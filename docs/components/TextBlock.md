@@ -3,6 +3,7 @@
 **Figma:** bubbles-kit › node `84:789`
 **Web:** `multi-repo-nextjs/app/components/patterns/TextBlock/TextBlock.tsx`
 **iOS:** `multi-repo-ios/multi-repo-ios/Components/Patterns/AppTextBlock.swift`
+**Android:** `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/patterns/AppTextBlock.kt`
 **Type:** Complex Component (typography-only pattern)
 
 ---
@@ -45,6 +46,17 @@ All slots are optional — only non-nil slots are rendered. The component expand
 | `subtext` | `String?` | `nil` | Subtitle |
 | `body` | `String?` | `nil` | Body copy (init parameter; stored as `bodyText`) |
 | `metadata` | `String?` | `nil` | Footnote |
+
+### Android (`AppTextBlock`)
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `modifier` | `Modifier` | `Modifier` | Compose modifier |
+| `overline` | `String?` | `null` | Uppercase category/tag line (auto-uppercased) |
+| `title` | `String?` | `null` | Primary title text |
+| `subtext` | `String?` | `null` | Secondary subtitle |
+| `body` | `String?` | `null` | Body paragraph |
+| `metadata` | `String?` | `null` | Footnote / timestamp caption |
 
 ---
 
@@ -111,6 +123,30 @@ AppTextBlock(
 
 // Title only
 AppTextBlock(title: "Inbox")
+```
+
+### Android
+
+```kotlin
+import com.abhishekverma.multirepo.ui.patterns.AppTextBlock
+
+// Title + subtext
+AppTextBlock(title = "Ayurveda Books", subtext = "bought for Anjali at airport")
+
+// All slots
+AppTextBlock(
+    overline = "RECENT",
+    title = "Trip to Bali",
+    subtext = "Summer vacation",
+    body = "Some description can come here regarding the task.",
+    metadata = "Posted 2d ago",
+)
+
+// Title only
+AppTextBlock(title = "Inbox")
+
+// Body + metadata (no header)
+AppTextBlock(body = "Some description text here.", metadata = "3 days ago")
 ```
 
 ---

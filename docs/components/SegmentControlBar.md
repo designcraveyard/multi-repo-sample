@@ -1,6 +1,9 @@
 # SegmentControlBar
 
 **Figma:** bubbles-kit › `81:637`
+**Web:** `multi-repo-nextjs/app/components/SegmentControlBar/SegmentControlBar.tsx`
+**iOS:** `multi-repo-ios/multi-repo-ios/Components/SegmentControlBar/AppSegmentControlBar.swift`
+**Android:** `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppSegmentControlBar.kt`
 **Axes:** Size(Small/Medium/Large) × Type(SegmentControl/Chips/Filters) = 9
 
 A unified selection bar with three behavioral modes: a pill-shaped segment control (single-select with animated sliding thumb), a row of chip tabs (single-select), or a row of filter chips (multi-select).
@@ -37,6 +40,25 @@ A unified selection bar with three behavioral modes: a pill-shaped segment contr
 | `size` | `AppSegmentBarSize` | `.md` | Size |
 | `selection` | `Binding<String>` or `Binding<[String]>` | — | Selection binding |
 | `onChange` | `((String) -> Void)?` | `nil` | Optional callback |
+
+### Android (`AppSegmentControlBar`)
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | `List<AppSegmentItem>` | — | Item definitions (required) |
+| `selected` | `String` | — | Currently selected item id (required) |
+| `onSelected` | `(String) -> Unit` | — | Selection callback (required) |
+| `modifier` | `Modifier` | `Modifier` | Compose modifier |
+| `type` | `AppSegmentBarType` | `AppSegmentBarType.SegmentControl` | Selection mode (`SegmentControl`/`Chips`/`Filters`) |
+| `size` | `AppSegmentBarSize` | `AppSegmentBarSize.Md` | Size (`Sm`/`Md`/`Lg`) |
+
+Multi-select variant: `AppSegmentControlBarMulti`
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | `List<AppSegmentItem>` | — | Item definitions (required) |
+| `selected` | `Set<String>` | — | Currently selected item ids (required) |
+| `onSelectedChange` | `(Set<String>) -> Unit` | — | Selection change callback (required) |
 
 ---
 
@@ -104,6 +126,7 @@ const [filters, setFilters] = useState<string[]>([]);
 - `filters`: container `role="group"`; each item `role="checkbox"` + `aria-checked`
 - Focus ring: `--border-active` ring on each item
 - iOS: `.accessibilityElement` on container; each item `.accessibilityAddTraits`
+- Android: TalkBack announces selected state via Material 3 built-in semantics; each segment item is focusable and announces its label and selection state
 
 ---
 
@@ -167,6 +190,46 @@ AppSegmentControlBar(
         AppSegmentItem(id: "starred", label: "Starred"),
     ],
     multiSelection: $activeFilters
+)
+```
+
+### Android
+
+```kotlin
+var selected by remember { mutableStateOf("week") }
+
+// Segment control (single-select)
+AppSegmentControlBar(
+    items = listOf(
+        AppSegmentItem("week", "Week"),
+        AppSegmentItem("month", "Month")
+    ),
+    selected = selected,
+    onSelected = { selected = it }
+)
+
+// Chips row
+AppSegmentControlBar(
+    items = listOf(
+        AppSegmentItem("all", "All"),
+        AppSegmentItem("photos", "Photos"),
+        AppSegmentItem("videos", "Videos")
+    ),
+    selected = selected,
+    onSelected = { selected = it },
+    type = AppSegmentBarType.Chips,
+    size = AppSegmentBarSize.Sm
+)
+
+// Filters (multi-select)
+var activeFilters by remember { mutableStateOf(setOf<String>()) }
+AppSegmentControlBarMulti(
+    items = listOf(
+        AppSegmentItem("recent", "Recent"),
+        AppSegmentItem("starred", "Starred")
+    ),
+    selected = activeFilters,
+    onSelectedChange = { activeFilters = it }
 )
 ```
 
