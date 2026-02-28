@@ -1,0 +1,23 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hook": "python3 -c \"import sys,json; d=json.loads(sys.stdin.read()); p=d.get('tool_input',{}).get('file_path',''); c=d.get('tool_input',{}).get('content','')or d.get('tool_input',{}).get('new_string',''); blocked=any(s in c for s in ['.supabase.co','eyJhbGciOi']); print(json.dumps({'decision':'block','reason':'Use env vars or BuildConfig for secrets'} if blocked else {'decision':'approve'}))\"",
+        "description": "credential-guard: Block Supabase URLs and JWT keys in source files"
+      },
+      {
+        "matcher": "Edit|Write",
+        "hook": "python3 -c \"import sys,json,re; d=json.loads(sys.stdin.read()); p=d.get('tool_input',{}).get('file_path',''); c=d.get('tool_input',{}).get('content','')or d.get('tool_input',{}).get('new_string',''); is_comp=any(x in p for x in ['components/','Components/','ui/components/','ui/patterns/']); is_token='DesignTokens' in p or 'globals.css' in p; has_primitive=bool(re.search(r'var\\(--color-(?:zinc|neutral|slate|gray|stone)-',c)) or bool(re.search(r'Color\\.color(?:Zinc|Neutral|Slate|Gray|Stone)\\d',c)) or bool(re.search(r'PrimitiveColors\\.',c)); print(json.dumps({'decision':'block','reason':'Use Semantic tokens in components (not Primitives)'} if (is_comp and not is_token and has_primitive) else {'decision':'approve'}))\"",
+        "description": "design-token-guard: Enforce semantic-only tokens in components"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hook": "python3 -c \"import sys,json; d=json.loads(sys.stdin.read()); p=d.get('tool_input',{}).get('file_path',''); msg=''; ext=p.split('.')[-1] if '.' in p else ''; msg='Check the web counterpart' if ext=='swift' else ('Check the iOS counterpart' if ext in ['tsx','ts'] else ''); print(json.dumps({'decision':'approve','message':msg} if msg else {'decision':'approve'}))\"",
+        "description": "cross-platform-reminder: Remind to check counterpart platform"
+      }
+    ]
+  }
+}

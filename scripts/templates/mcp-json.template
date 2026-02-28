@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "supabase-bubbleskit": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anthropic-ai/supabase-mcp@latest",
+        "--supabase-access-token",
+        "${SUPABASE_ACCESS_TOKEN}"
+      ]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["@anthropic-ai/mcp-server-playwright@latest"]
+    }
+  }
+}

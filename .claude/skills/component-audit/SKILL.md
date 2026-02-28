@@ -115,6 +115,29 @@ Determine component type: **atomic** (<80 lines, no child component imports) or 
 - [ ] All three platform file paths (web, iOS, Android) are listed and accurate
 - [ ] Status reflects current reality (not "Done" if issues remain)
 
+### 6. Figma Design Parity (if Figma node exists)
+
+Use the Figma MCP server to read the design, and optionally figma-cli to export/update:
+
+**Read from Figma:**
+- [ ] Fetch component screenshot via Figma MCP `get_screenshot(nodeId, fileKey)` for visual reference
+- [ ] Fetch component spec via Figma MCP `get_design_context(nodeId, fileKey)` for layout/token details
+- [ ] Verify variant axes in code match Figma variant properties
+
+**Write to Figma (optional, if figma-cli/ exists):**
+- [ ] If component was updated in code but Figma is stale, offer to re-render:
+  ```bash
+  node figma-cli/src/index.js connect
+  node figma-cli/src/index.js render '<Frame name="$ARGUMENTS - Updated" ...>'
+  node figma-cli/src/index.js node to-component "<node-id>"
+  ```
+- [ ] Export current Figma component for comparison:
+  ```bash
+  node figma-cli/src/index.js export png
+  ```
+
+> If no Figma node ID exists for this component, skip this section and note "No Figma reference" in the report.
+
 ---
 
 ## Output Format
@@ -135,6 +158,11 @@ After running all checks and fixing any issues found, produce this report:
 
 ### Remaining Issues (require user input or design decision)
 - [issue]: [why it can't be auto-fixed, what decision is needed]
+
+### Figma Parity
+- Figma node: [nodeId | no Figma reference]
+- Visual match: [verified via screenshot | not checked]
+- Figma updated via figma-cli: [yes | skipped | N/A]
 
 ### Registry Status
 - docs/components.md entry: [correct | updated | missing]

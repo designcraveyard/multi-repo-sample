@@ -1,0 +1,34 @@
+---
+project: {{APP_NAME}}
+created: {{DATE}}
+platforms: [{{PLATFORMS}}]
+current_phase: product
+---
+
+# Project Tracker: {{APP_NAME}}
+
+## Phase Summary
+
+| Phase | Status | Completion |
+|-------|--------|------------|
+| Product Definition | Pending | 0% |
+| Design | Pending | 0% |
+| Schema Design | Pending | 0% |
+| Automation Setup | Pending | 0% |
+| Development | Pending | 0% |
+
+## Features
+
+### Must Have
+
+_(Run /product-discovery to define features)_
+
+### Should Have
+
+### Could Have
+
+## Decision Log
+
+| Date | Decision | Context | Skill/Agent |
+|------|----------|---------|-------------|
+| {{DATE}} | Project scaffolded from app-template | Initial setup | /new-project |

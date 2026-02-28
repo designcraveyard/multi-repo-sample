@@ -117,10 +117,27 @@ Compare web, iOS, and Android implementations:
 - `Modifier.semantics { disabled() }` on disabled composables?
 - `Modifier.clearAndSetSemantics { }` used where internal structure would be noisy to TalkBack?
 
-#### G. Registry Entry
+#### G. Figma Design Parity (optional)
+
+If a Figma node ID is listed in `docs/components.md` for this component:
+
+1. Fetch a screenshot via Figma MCP `get_screenshot(nodeId, fileKey)` for visual reference
+2. Compare layout, spacing, and color usage against all three platform implementations
+3. Flag any obvious visual divergences (wrong spacing, missing elements, color mismatches)
+
+If `figma-cli/` exists and the component needs updating in Figma:
+```bash
+node figma-cli/src/index.js connect
+node figma-cli/src/index.js export png          # Export current Figma state for comparison
+```
+
+If no Figma node exists, note "No Figma reference — visual parity not checked" in the report.
+
+#### H. Registry Entry
 
 - Does `docs/components.md` have a row in the Complex Components table?
 - Are all three platform file paths listed (web, iOS, Android) and correct?
+- Is the Figma node ID listed (or "no Figma node" noted)?
 - Is the status accurate?
 
 ---
@@ -185,6 +202,9 @@ Always cite `file:lineNumber` for every specific issue.
 #### Android
 ✅ [passing checks]
 ❌ [issue] — [file:line] — [specific fix: add Modifier.semantics { ... }]
+
+### Figma Parity
+✅ Visual match / ⚠️ [divergence description] / ℹ️ No Figma reference
 
 ### Registry
 ✅ Up to date / ❌ [what's missing or wrong — e.g. Android path not listed]

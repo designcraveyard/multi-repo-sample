@@ -231,17 +231,33 @@ For each token in the spec, verify:
 - `var(--surface-brand)` or `var(--text-brand)` in component files — legacy alias, still works but new code should use `var(--surfaces-brand-interactive)` / `var(--typography-brand)`
 - `Color.appSurfaceBrand` or `Color.appTextBrand` in Swift component files — legacy alias, still works but new code should use `Color.surfacesBrandInteractive` / `Color.typographyBrand`
 
+### Step 10: Cross-Check Against Figma Variables (optional)
+
+If `figma-cli/` exists at the workspace root, cross-check code tokens against Figma:
+
+```bash
+node figma-cli/src/index.js connect
+node figma-cli/src/index.js var list
+```
+
+Compare the variable list output against tokens defined in `globals.css`:
+- Flag any CSS custom property with no corresponding Figma variable
+- Flag any Figma variable with no corresponding CSS custom property
+- Add to the report under a "Figma Variable Parity" section
+
+If Figma Desktop is not available, skip and note in the report.
+
 ### Token naming reference (Figma → code)
-| Figma Variable | CSS Custom Property | Swift Static |
-|----------------|---------------------|--------------|
-| Colors/zinc/950 | --color-zinc-950 | .colorZinc950 |
-| Surfaces/BrandInteractive | --surfaces-brand-interactive | .surfacesBrandInteractive |
-| Surfaces/BrandInteractiveHover | --surfaces-brand-interactive-hover | .surfacesBrandInteractiveHover |
-| Surfaces/BrandInteractivePressed | --surfaces-brand-interactive-pressed | .surfacesBrandInteractivePressed |
-| Surfaces/BrandInteractiveLowContrast | --surfaces-brand-interactive-low-contrast | .surfacesBrandInteractiveLowContrast |
-| Surfaces/BasePrimary | --surfaces-base-primary | .surfacesBasePrimary |
-| Surfaces/SuccessSolid | --surfaces-success-solid | .surfacesSuccessSolid |
-| Surfaces/ErrorSolid | --surfaces-error-solid | .surfacesErrorSolid |
-| Typography/OnBrandPrimary | --typography-on-brand-primary | .typographyOnBrandPrimary |
-| Typography/Brand | --typography-brand | .typographyBrand |
-| Border/Brand | --border-brand | .borderBrand |
+| Figma Variable | CSS Custom Property | Swift Static | Kotlin Static |
+|----------------|---------------------|--------------|---------------|
+| Colors/zinc/950 | --color-zinc-950 | .colorZinc950 | PrimitiveColors.colorZinc950 |
+| Surfaces/BrandInteractive | --surfaces-brand-interactive | .surfacesBrandInteractive | SemanticColors.surfacesBrandInteractive |
+| Surfaces/BrandInteractiveHover | --surfaces-brand-interactive-hover | .surfacesBrandInteractiveHover | SemanticColors.surfacesBrandInteractiveHover |
+| Surfaces/BrandInteractivePressed | --surfaces-brand-interactive-pressed | .surfacesBrandInteractivePressed | SemanticColors.surfacesBrandInteractivePressed |
+| Surfaces/BrandInteractiveLowContrast | --surfaces-brand-interactive-low-contrast | .surfacesBrandInteractiveLowContrast | SemanticColors.surfacesBrandInteractiveLowContrast |
+| Surfaces/BasePrimary | --surfaces-base-primary | .surfacesBasePrimary | SemanticColors.surfacesBasePrimary |
+| Surfaces/SuccessSolid | --surfaces-success-solid | .surfacesSuccessSolid | SemanticColors.surfacesSuccessSolid |
+| Surfaces/ErrorSolid | --surfaces-error-solid | .surfacesErrorSolid | SemanticColors.surfacesErrorSolid |
+| Typography/OnBrandPrimary | --typography-on-brand-primary | .typographyOnBrandPrimary | SemanticColors.typographyOnBrandPrimary |
+| Typography/Brand | --typography-brand | .typographyBrand | SemanticColors.typographyBrand |
+| Border/Brand | --border-brand | .borderBrand | SemanticColors.borderBrand |

@@ -1,0 +1,103 @@
+{
+  "version": "1.0.0",
+  "parameters": {
+    "identity": {
+      "APP_NAME": { "description": "App display name (PascalCase)", "example": "CoolApp", "required": true },
+      "APP_SLUG": { "description": "Kebab-case slug", "derived_from": "APP_NAME", "example": "cool-app" },
+      "APP_DESCRIPTION": { "description": "One-line app description", "required": true },
+      "GITHUB_ORG": { "description": "GitHub org/user", "default": "designcraveyard" },
+      "DEVELOPER_NAME": { "description": "Developer name for file headers", "required": true }
+    },
+    "ios": {
+      "BUNDLE_ID": { "description": "iOS bundle identifier", "derived_from": "com.<DEVELOPER_NAME>.<APP_SLUG>", "required": true },
+      "TEAM_ID": { "description": "Apple Development Team ID", "required": true },
+      "GOOGLE_IOS_CLIENT_ID": { "description": "Google Sign-In client ID for iOS", "required": false }
+    },
+    "android": {
+      "PACKAGE_NAME": { "description": "Android package name", "derived_from": "com.<DEVELOPER_NAME>.<APP_SLUG_NO_DASH>", "required": true },
+      "GOOGLE_WEB_CLIENT_ID": { "description": "Google Sign-In web client ID", "required": false }
+    },
+    "supabase": {
+      "SUPABASE_PROJECT_REF": { "description": "Supabase project reference", "required": false },
+      "SUPABASE_URL": { "description": "Supabase URL", "derived_from": "https://<SUPABASE_PROJECT_REF>.supabase.co" },
+      "SUPABASE_ANON_KEY": { "description": "Supabase anonymous key", "required": false }
+    },
+    "deployment": {
+      "VERCEL_URL": { "description": "Vercel deployment URL", "required": false },
+      "CHATKIT_WORKFLOW_ID": { "description": "ChatKit workflow ID", "required": false }
+    },
+    "design": {
+      "FIGMA_FILE_KEY": { "description": "Figma design file key", "required": false },
+      "BRAND_PALETTE": { "description": "Tailwind palette name for brand color", "default": "zinc", "enum": ["slate","gray","zinc","neutral","stone","red","orange","amber","yellow","lime","green","emerald","teal","cyan","sky","blue","indigo","violet","purple","fuchsia","pink","rose"] },
+      "NEUTRAL_PALETTE": { "description": "Tailwind palette name for neutral surfaces", "default": "neutral" },
+      "CORNER_RADIUS": { "description": "Global corner radius preset", "default": "md", "enum": ["none","sm","md","lg","xl","full"] },
+      "SELECTION_STYLE": { "description": "Selection components (Checkbox, Radio, Switch) use brand or neutral", "default": "brand", "enum": ["brand","neutral"] }
+    },
+    "platforms": {
+      "INCLUDE_WEB": { "type": "boolean", "default": true },
+      "INCLUDE_IOS": { "type": "boolean", "default": true },
+      "INCLUDE_ANDROID": { "type": "boolean", "default": true }
+    }
+  },
+  "replacement_priority": [
+    "com.abhishekverma.multi-repo-ios",
+    "com.abhishekverma.multirepo",
+    "wf_69157991bfd081909cc0815050b47abf0f93481201224b4b",
+    "kqxiugkmkvymoegzxoye",
+    "ZtcCQT96M2dJZjU35X8uMQ",
+    "225246924892-j8isof6kj43geg9j54651kt2hd5c62al",
+    "lifegraph-agent.vercel.app",
+    "multi-repo-nextjs",
+    "multi-repo-android",
+    "multi-repo-ios",
+    "multi-repo-sample",
+    "multi_repo_ios",
+    "L6KKWH5M53",
+    "designcraveyard",
+    "MultiRepo",
+    "abhishekverma"
+  ],
+  "replacement_map": {
+    "com.abhishekverma.multi-repo-ios": "{{BUNDLE_ID}}",
+    "com.abhishekverma.multirepo": "{{PACKAGE_NAME}}",
+    "wf_69157991bfd081909cc0815050b47abf0f93481201224b4b": "{{CHATKIT_WORKFLOW_ID}}",
+    "kqxiugkmkvymoegzxoye": "{{SUPABASE_PROJECT_REF}}",
+    "ZtcCQT96M2dJZjU35X8uMQ": "{{FIGMA_FILE_KEY}}",
+    "225246924892-j8isof6kj43geg9j54651kt2hd5c62al": "{{GOOGLE_IOS_CLIENT_ID}}",
+    "lifegraph-agent.vercel.app": "{{VERCEL_URL}}",
+    "multi-repo-nextjs": "{{APP_SLUG}}-web",
+    "multi-repo-android": "{{APP_SLUG}}-android",
+    "multi-repo-ios": "{{APP_SLUG}}-ios",
+    "multi-repo-sample": "{{APP_SLUG}}",
+    "multi_repo_ios": "{{APP_SLUG_UNDERSCORE}}_ios",
+    "L6KKWH5M53": "{{TEAM_ID}}",
+    "designcraveyard": "{{GITHUB_ORG}}",
+    "MultiRepo": "{{APP_NAME}}",
+    "abhishekverma": "{{DEVELOPER_NAME}}"
+  },
+  "demo_content_to_remove": [
+    "app/components-showcase/",
+    "app/editor-demo/",
+    "app/input-demo/",
+    "Views/ComponentsShowcaseView.swift",
+    "Views/AIDemoView.swift",
+    "feature/showcase/",
+    "feature/editor/"
+  ],
+  "rsync_excludes": [
+    ".git/",
+    "node_modules/",
+    ".next/",
+    "build/",
+    ".gradle/",
+    "Pods/",
+    ".build/",
+    "DerivedData/",
+    ".swiftpm/",
+    "scripts/",
+    "scaffold.config.json",
+    "docs/plans/",
+    "docs/ScaffoldingStrategy.md",
+    "Untitled/"
+  ]
+}

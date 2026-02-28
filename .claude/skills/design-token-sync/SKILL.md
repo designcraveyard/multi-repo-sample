@@ -200,3 +200,22 @@ Spec updated: docs/design-tokens.md
 ```
 
 Flag any tokens in the CSS that have no Swift counterpart, no Kotlin counterpart, or vice versa.
+
+### Phase 7: Push to Figma
+
+If `figma-cli/` exists in the workspace root, push updated tokens to Figma Desktop.
+All commands run from the workspace root:
+
+```bash
+node figma-cli/src/index.js connect
+node figma-cli/src/index.js var delete-all           # Clear stale variables
+node figma-cli/src/index.js tokens preset shadcn      # Push primitives + semantic tokens (Light/Dark)
+node figma-cli/src/index.js var visualize             # Create color swatches on canvas
+```
+
+If Figma Desktop is not open, note in the report and suggest running the push later.
+
+Add to the sync report:
+```
+Figma tokens: Pushed ✓ (or: Figma Desktop not available — run manually later)
+```

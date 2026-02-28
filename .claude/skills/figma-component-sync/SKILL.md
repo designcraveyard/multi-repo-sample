@@ -144,11 +144,49 @@ If a specific component name was provided:
 - Run `/design-token-sync` if tokens were added
 ```
 
+### Phase 7: Push to Figma (optional)
+
+If `figma-cli/` exists in the workspace root, offer to push designs back to Figma Desktop:
+
+**a) Push missing component frames:**
+For any component marked "Done" in code but not found in Figma, create a visual representation:
+
+```bash
+node figma-cli/src/index.js connect
+node figma-cli/src/index.js render '<Frame name="<ComponentName>" w={320} h={200} bg="#18181b" rounded={12} flex="col" p={24} gap={12}>
+  <Text size={18} weight="bold" color="#fff"><ComponentName></Text>
+  <Text size={14} color="#a1a1aa">Variant: Default / State: Default</Text>
+</Frame>'
+node figma-cli/src/index.js node to-component "<returned-node-id>"
+```
+
+**b) Cross-check tokens against Figma variables:**
+
+```bash
+node figma-cli/src/index.js var list
+```
+
+Compare the output against `docs/design-tokens.md`. Flag any tokens used by components that don't exist as Figma variables.
+
+**c) Visualize token coverage:**
+
+```bash
+node figma-cli/src/index.js var visualize
+```
+
+Add Figma sync status to the Phase 6 report:
+```
+### Figma Sync
+- Component frames pushed: X (or: Figma Desktop not available — skipped)
+- Token gaps in Figma: X variables missing
+```
+
 ## Rules
 
 - **Never modify component code** — this skill only syncs the registry and generates briefs
-- **Use figma-console MCP** for all Figma data — never hardcode Figma values
+- **Use Figma MCP to read** from Figma, **figma-cli to write** to Figma — complementary tools
 - **Phosphor icon component sets** (5 variants with weight axes like thin/light/regular/bold/fill/duotone) are NOT UI components — skip them
 - **Internal components** (prefixed `_`) are documented but don't need standalone implementations
 - **Always update `docs/components.md`** when changes are detected
 - **Token validation** uses Semantic layer names only (e.g. `--surfaces-*`, `Color.surfaces*`, `SemanticColors.*`)
+- **figma-cli commands** run from workspace root as `node figma-cli/src/index.js <command>`

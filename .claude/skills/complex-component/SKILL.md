@@ -260,3 +260,44 @@ After writing all three platform implementations:
 3. **Run `/component-audit $ARGUMENTS`** to validate token compliance, comment quality, and parity before marking Done.
 
 4. **Update registry status to Done** only after the audit passes.
+
+---
+
+## Phase 5: Push to Figma (optional)
+
+If `figma-cli/` exists at the workspace root and Figma Desktop is open, offer to create the component in Figma:
+
+### 5a. Render the component frame
+
+Build a visual representation matching the approved design from Phase 2:
+
+```bash
+node figma-cli/src/index.js connect
+node figma-cli/src/index.js render '<Frame name="$ARGUMENTS" w={320} h={auto} bg="#18181b" rounded={12} flex="col" p={24} gap={12}>
+  <!-- Render each variant state as a labeled section -->
+  <Text size={14} weight="bold" color="#a1a1aa">Default</Text>
+  <!-- ... child atoms rendered as approximate visual frames ... -->
+</Frame>'
+```
+
+For multiple variants, use `render-batch` to create all states side by side.
+
+### 5b. Convert to Figma component
+
+```bash
+node figma-cli/src/index.js node to-component "<returned-node-id>"
+```
+
+### 5c. Bind design tokens
+
+If the component uses semantic token colors, bind them to Figma variables:
+
+```bash
+node figma-cli/src/index.js bind fill "surfaces/brand-interactive" -n "<node-id>"
+```
+
+### 5d. Update registry
+
+Add the new Figma node ID to `docs/components.md` for the component row.
+
+> Skip this phase if Figma Desktop is not running or the user declines. Note the skip in the output.

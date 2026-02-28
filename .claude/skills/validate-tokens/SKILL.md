@@ -130,6 +130,28 @@ Stepper           ✅       ✅      ✅        —
 Total: 6 components, 0 errors, 1 warning
 ```
 
+### 6. Figma Variable Cross-Check (optional)
+
+If `figma-cli/` exists at the workspace root, cross-check tokens found in code against Figma variables:
+
+```bash
+node figma-cli/src/index.js connect
+node figma-cli/src/index.js var list
+```
+
+Compare the variable list against tokens used in component files:
+- Flag any semantic token used in code that does NOT exist as a Figma variable
+- Flag any Figma variable that has no corresponding CSS custom property in `globals.css`
+
+Add to the output:
+```
+### Figma Variable Parity
+- Tokens in code with no Figma variable: [list or "none"]
+- Figma variables with no code token: [list or "none"]
+```
+
+> Skip if Figma Desktop is not running or `figma-cli/` doesn't exist.
+
 ## Reference
 
 See `docs/design-tokens.md` — "Important: Semantic Token Guidelines" section for the full rules and decision tree.

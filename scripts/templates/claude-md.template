@@ -1,0 +1,83 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code when working with code in this repository.
+
+## Repository Structure
+
+This is a **multi-repo workspace** for **{{APP_NAME}}** — {{APP_DESCRIPTION}}.
+
+Contains independent sub-repos:
+
+<!-- PLATFORM:WEB:START -->
+- `{{APP_SLUG}}-web/` — Next.js web application
+<!-- PLATFORM:WEB:END -->
+<!-- PLATFORM:IOS:START -->
+- `{{APP_SLUG}}-ios/` — SwiftUI iOS application
+<!-- PLATFORM:IOS:END -->
+<!-- PLATFORM:ANDROID:START -->
+- `{{APP_SLUG}}-android/` — Jetpack Compose Android application
+<!-- PLATFORM:ANDROID:END -->
+
+Each project is developed independently with its own git repository.
+
+<!-- PLATFORM:WEB:START -->
+## {{APP_SLUG}}-web
+
+**Stack:** Next.js, React 19, TypeScript 5, Tailwind CSS v4
+
+### Commands
+
+```bash
+cd {{APP_SLUG}}-web
+npm run dev      # Dev server
+npm run build    # Production build
+npm run lint     # ESLint
+```
+<!-- PLATFORM:WEB:END -->
+
+<!-- PLATFORM:IOS:START -->
+## {{APP_SLUG}}-ios
+
+**Stack:** SwiftUI, Swift 5.0, iOS 26+
+
+### Building
+
+Open `{{APP_SLUG}}-ios/*.xcodeproj` in Xcode.
+Bundle ID: `{{BUNDLE_ID}}`
+<!-- PLATFORM:IOS:END -->
+
+<!-- PLATFORM:ANDROID:START -->
+## {{APP_SLUG}}-android
+
+**Stack:** Kotlin, Jetpack Compose, Material Design 3, Hilt
+
+### Commands
+
+```bash
+cd {{APP_SLUG}}-android
+./gradlew assembleDebug
+```
+
+Package: `{{PACKAGE_NAME}}`
+<!-- PLATFORM:ANDROID:END -->
+
+---
+
+## Skills
+
+| Skill | Purpose |
+|-------|---------|
+| `/tracker-status` | Show project progress |
+| `/tracker-update` | Mark a task complete |
+| `/build-feature <name>` | Build a feature across platforms |
+| `/generate-theme` | Change the color palette |
+
+## Design Token Architecture
+
+Two-layer system: **Primitive → Semantic**. Never use Primitive tokens in component files.
+
+## Cross-Platform Conventions
+
+- Feature naming: PascalCase on all platforms
+- Routes: kebab-case (web) → PascalCase (iOS/Android)
+- All screens on all platforms unless marked platform-specific
