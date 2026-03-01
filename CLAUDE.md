@@ -131,7 +131,12 @@ Invoke these in any Claude session opened at the workspace root:
 | Product Discovery | `/product-discovery` | Define personas, features, MVP scope → PRDs |
 | Deep Dive | `/deep-dive <feature>` | Expand a brief PRD into full behavioral spec |
 | Design Discovery | `/design-discovery` | IA, theme, component audit, wireframes → screen specs |
+| Define Theme | `/define-theme` | Define visual identity: personality → archetype → palette → shape → `docs/design/theme.md`. Offers to apply via `/generate-theme`. |
 | Generate Theme | `/generate-theme` | Swap Tailwind color palette across all platforms + push to Figma |
+| Wireframe | `/wireframe <screen\|--all\|--iterate>` | Generate 3-variation grayscale wireframes as HTML prototype and/or Figma frames |
+| Figma Design | `/figma-design [feature\|screen\|--all\|--refresh-map]` | Generate Figma screen designs from PRDs + IA + wireframes via figma-cli |
+| Asset Gen | `/asset-gen` | Generate app icons, illustrations, empty states via OpenAI `gpt-image-1`. Reads theme.md, runs visual brief. |
+| Asset Iterate | `/asset-iterate` | Iterate on generated assets: variations, prompt refinement, or reference-guided |
 | Schema Discovery | `/schema-discovery` | Auto-propose schema, refine, apply via Supabase MCP |
 | Build Feature | `/build-feature <name>` | Implement a feature across all platforms from specs |
 | Tracker Status | `/tracker-status` | Show project progress summary |
@@ -162,6 +167,8 @@ Invoke these in any Claude session opened at the workspace root:
 
 **MCP Server Builder** (`.claude/plugins/mcp-server-builder/`): `/new-mcp-server` (8-phase scaffold wizard). Includes `mcp-server-reviewer` agent. Advisory hooks: `console-log-guard`, `auth-middleware-reminder`, `mcp-json-reminder`. Working demo at `mcp-server/`.
 
+**Asset Gen** (`.claude/plugins/asset-gen/`): `generate.js`, `iterate.js`. OpenAI `gpt-image-1` pipeline for app icons, illustrations, empty states. Requires `OPENAI_API_KEY` in `.env.local`.
+
 ## Shared Documentation
 
 | File | Purpose |
@@ -176,7 +183,7 @@ Invoke these in any Claude session opened at the workspace root:
 
 This repo doubles as a **living app template**. Run `/new-project` to scaffold a new cross-platform app.
 
-**Discovery flow:** `/new-project` → `/product-discovery` → `/design-discovery` → `/schema-discovery` → `/build-feature`
+**Discovery flow:** `/new-project` → `/product-discovery` → `/design-discovery` (IA → `/define-theme` → component audit → `/wireframe`) → `/asset-gen` → `/figma-design` → `/schema-discovery` → `/build-feature`
 
 See `docs/SCAFFOLDING.md` for the complete guide and `scaffold.config.json` for parameter registry.
 

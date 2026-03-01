@@ -97,10 +97,25 @@ Expands a brief PRD into a full behavioral spec with screen flows, data requirem
 
 ### /design-discovery
 Multi-phase design workflow:
-1. **Information Architecture** — navigation structure, screen inventory
-2. **Theme** — palette selection (or import from Figma)
-3. **Component Audit** — map screens to existing components, identify gaps
+1. **Information Architecture** — navigation structure, screen inventory → `docs/design/information-architecture.md`
+2. **Theme** — delegates to `/define-theme` (personality → archetype → palette → typography → shape → motion) → `docs/design/theme.md`
+3. **Component Audit** — map screens to existing components, identify gaps → `docs/design/component-map.md`
 4. **Screen Design** — HTML wireframes → Playwright screenshots → user approval
+
+### /define-theme
+Interactive visual identity wizard (7 phases). Produces `docs/design/theme.md` with aesthetic archetype, color system, typography direction, shape language, atmosphere, motion personality, and style descriptors. Offers to apply via `/generate-theme` when done.
+
+### /wireframe \<screen|--all|--iterate\>
+Rapid wireframe exploration: 3 grayscale variations per screen as clickable HTML prototypes (tabbed UI with hypothesis labels). Optional Figma CLI output. Complete CSS design system for consistent wireframe vocabulary.
+
+### /figma-design \[feature|screen|--all|--refresh-map\]
+Generate Figma screen designs from PRDs + IA + wireframes using figma-cli. Dynamically reads tokens, components, and screen specs from project docs. Produces a design brief with node IDs and component coverage.
+
+### /asset-gen
+AI-powered visual asset generation via OpenAI `gpt-image-1`. Reads `docs/design/theme.md`, conducts deep visual brief with reference image analysis, generates app icons, illustrations, empty states, hero images. Saves to `assets/generated/` with manifest versioning.
+
+### /asset-iterate
+Iterate on generated assets: variations (same prompt, different seeds), prompt refinement (direction fix), or reference-guided (drop new image). Versions as v1/v2, updates manifest + iteration log.
 
 ### /schema-discovery
 Database design workflow:

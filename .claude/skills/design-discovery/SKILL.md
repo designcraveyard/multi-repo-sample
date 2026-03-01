@@ -39,23 +39,25 @@ User says "/design-discovery" or "start design discovery" or "design the app"
 
 ### Sub-flow B: Theme & Design System
 
-Ask user which path:
+**Delegate to `/define-theme`.**
 
-**Option A — Keep current theme:** Already configured during scaffold. Skip.
+After the IA checkpoint is approved, prompt the user:
 
-**Option B — Change palette:** Run `/generate-theme` skill to swap colors.
+> "Sub-flow B: Visual Identity. Run `/define-theme` now to define the brand personality,
+> color palette, shape language, and typography feel — then generate `docs/design/theme.md`.
+> It will offer to apply the palette to all platform files when done."
 
-**Option C — Import from Figma:** If user has a Figma design file:
-  - Use Figma MCP `get_variable_defs` to read design tokens
-  - Map Figma variables to the closest Tailwind palette
-  - Run theme-generator.js with mapped values
-  - Push updated tokens back to Figma via figma-cli:
-    ```bash
-    node figma-cli/src/index.js connect
-    node figma-cli/src/index.js var delete-all
-    node figma-cli/src/index.js tokens preset shadcn
-    node figma-cli/src/index.js var visualize
-    ```
+Then wait. `/define-theme` handles everything in this sub-flow:
+- Reads existing state (current palette, any existing theme.md)
+- Asks guided questions: personality, mood, color direction, neutral, shape, density, references
+- Recommends Tailwind palettes with rationale based on answers
+- Writes `docs/design/theme.md`
+- Offers to run `/generate-theme` to apply the chosen palette
+
+**Checkpoint:** Once the user confirms `/define-theme` is complete and `docs/design/theme.md` exists, proceed to Sub-flow C.
+
+> **If the user wants to skip theme definition** (e.g. keeping the scaffold default), note it
+> in the session log and proceed to Sub-flow C with the existing palette unchanged.
 
 ### Sub-flow C: Component Audit
 
