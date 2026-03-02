@@ -11,8 +11,22 @@ User says "/deep-dive <feature-name>" or "expand the PRD for <feature>"
 ## Arguments
 
 - `feature-name`: The feature slug (matches filename in `docs/PRDs/`)
+- `--batch`: Expand ALL Must-Have features from `docs/mvp-matrix.md` in sequence
+- `--batch <feat1> <feat2> ...`: Expand specific features only
 
 ## Instructions
+
+### Batch Mode (when `--batch` is passed)
+
+1. Read `docs/mvp-matrix.md` and extract all Must-Have feature slugs (or use the specific features listed after `--batch`)
+2. Read shared context once: `docs/app-brief.md`, `docs/personas/`, `docs/mvp-matrix.md`
+3. For each feature in the batch:
+   a. Read its brief PRD from `docs/PRDs/<feature-slug>.md`
+   b. Execute Steps 2-4 below (expand, write, update tracker)
+   c. After each feature, ask: "Expanded <feature>. Continue to next (<next-feature>), or stop here?"
+4. After all features are expanded (or user stops), show summary: "Expanded N of M features."
+
+### Single Feature Mode (default)
 
 ### Step 1: Read the Brief PRD
 

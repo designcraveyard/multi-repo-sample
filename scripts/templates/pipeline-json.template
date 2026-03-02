@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "project": "{{APP_NAME}}",
+  "started": "{{TIMESTAMP}}",
+  "flags": {
+    "skip_figma": false,
+    "platforms": {{PLATFORMS_JSON}},
+    "has_supabase": {{HAS_SUPABASE}}
+  },
+  "phases": {
+    "scaffold":           { "status": "done", "completed_at": "{{TIMESTAMP}}" },
+    "product_discovery":  { "status": "pending" },
+    "deep_dive":          { "status": "pending" },
+    "design_ia":          { "status": "pending" },
+    "design_theme":       { "status": "pending" },
+    "design_theme_apply": { "status": "pending" },
+    "design_components":  { "status": "pending" },
+    "design_wireframes":  { "status": "pending" },
+    "design_assets":      { "status": "pending" },
+    "design_figma":       { "status": "pending" },
+    "schema":             { "status": "pending" },
+    "build":              { "status": "pending", "features_completed": [], "features_remaining": [] }
+  }
+}

@@ -127,13 +127,15 @@ Invoke these in any Claude session opened at the workspace root:
 | **MCP Server Builder** | | |
 | New MCP Server | `/new-mcp-server` | Scaffold a new MCP server from Supabase tables with auth |
 | **App Template Factory** | | |
+| **Pipeline** | **`/pipeline`** | **Guided orchestrator — chains all discovery phases with checkpoint validation, auto-tracker, and `--skip-figma` mode** |
 | New Project | `/new-project` | Interactive scaffold wizard — create a new app from this template |
 | Product Discovery | `/product-discovery` | Define personas, features, MVP scope → PRDs |
-| Deep Dive | `/deep-dive <feature>` | Expand a brief PRD into full behavioral spec |
-| Design Discovery | `/design-discovery` | IA, theme, component audit, wireframes → screen specs |
+| Deep Dive | `/deep-dive <feature\|--batch>` | Expand a brief PRD into full behavioral spec (supports `--batch` for all features) |
 | Define Theme | `/define-theme` | Define visual identity: personality → archetype → palette → shape → `docs/design/theme.md`. Offers to apply via `/generate-theme`. |
 | Generate Theme | `/generate-theme` | Swap Tailwind color palette across all platforms + push to Figma |
-| Wireframe | `/wireframe <screen\|--all\|--iterate>` | Generate 3-variation grayscale wireframes as HTML prototype and/or Figma frames |
+| Wireframe | `/wireframe <screen\|--all\|--iterate>` | Generate 3-variation grayscale wireframes as separate HTML files (one per variation) |
+| iOS Design | `/ios-design <screen\|--pattern\|--both\|--dark>` | Generate iOS 26 Liquid Glass screen mockup (iPhone + iPad HTML) |
+| Send to Figma | `/send-to-figma [folder-path]` | Serve HTML files locally, capture as editable Figma layers via Figma MCP `generate_figma_design` |
 | Figma Design | `/figma-design [feature\|screen\|--all\|--refresh-map]` | Generate Figma screen designs from PRDs + IA + wireframes via figma-cli |
 | Asset Gen | `/asset-gen` | Generate app icons, illustrations, empty states via OpenAI `gpt-image-1`. Reads theme.md, runs visual brief. |
 | Asset Iterate | `/asset-iterate` | Iterate on generated assets: variations, prompt refinement, or reference-guided |
@@ -183,7 +185,9 @@ Invoke these in any Claude session opened at the workspace root:
 
 This repo doubles as a **living app template**. Run `/new-project` to scaffold a new cross-platform app.
 
-**Discovery flow:** `/new-project` → `/product-discovery` → `/design-discovery` (IA → `/define-theme` → component audit → `/wireframe`) → `/asset-gen` → `/figma-design` → `/schema-discovery` → `/build-feature`
+**Discovery flow:** `/new-project` → **`/pipeline`** (chains all phases automatically: product → deep-dive → IA → theme → wireframes → assets → schema → build)
+
+Individual skills still work standalone. `/pipeline` orchestrates them with checkpoint validation, state tracking via `pipeline.json`, and `--skip-figma` mode.
 
 See `docs/SCAFFOLDING.md` for the complete guide and `scaffold.config.json` for parameter registry.
 

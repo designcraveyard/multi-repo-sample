@@ -81,9 +81,55 @@ multi-repo-ios                    → replaced before
 abhishekverma                     → replaced last
 ```
 
-## Discovery Skills
+## Pipeline Orchestrator
 
-After scaffolding, these skills guide you through defining what to build:
+After scaffolding, run `/pipeline` to chain all discovery phases automatically:
+
+```
+/pipeline              # Start from the beginning (or resume from last phase)
+/pipeline --skip-figma # Code-first mode — no Figma Desktop required
+```
+
+### How It Works
+
+The pipeline manages 12 sequential phases with checkpoint validation between each:
+
+```
+scaffold → product_discovery → deep_dive → design_ia → design_theme →
+design_theme_apply → design_components → design_wireframes → design_assets →
+design_figma → schema → build
+```
+
+State is tracked in `pipeline.json` at the project root:
+- **Phase statuses:** pending / in_progress / done / skipped
+- **Global flags:** `skip_figma`, `platforms`, `has_supabase`
+- **Resumable:** Running `/pipeline` again reads `pipeline.json` and continues from the last incomplete phase
+
+Before each phase, the pipeline validates that prerequisite artifacts exist (e.g., PRDs before deep-dive, IA before theme definition). If something is missing, it reports what's needed and suggests the remediation skill.
+
+After each phase, `tracker.md` is auto-updated with completion status.
+
+### --skip-figma Mode
+
+When `skip_figma` is true (set via flag or interactive question):
+- `/define-theme` skips Figma variable reads
+- `/wireframe` outputs HTML only (no Figma CLI rendering)
+- `/asset-gen` omits the "Push to Figma" option
+- `design_figma` phase is skipped entirely
+
+### Running Individual Skills
+
+You can still run any skill standalone (outside the pipeline):
+```
+/product-discovery    # Just product definition
+/define-theme         # Just theme design
+/wireframe --all      # Just wireframes
+/build-feature <name> # Just one feature
+```
+
+## Discovery Skills (Standalone Reference)
+
+These skills are chained by `/pipeline` but also work independently:
 
 ### /product-discovery
 Interactive Q&A that produces:
@@ -304,16 +350,18 @@ scripts/
     ├── local-properties.template
     ├── mcp-json.template
     ├── settings-json.template
-    └── supabase-config.template
+    ├── supabase-config.template
+    └── pipeline-json.template
 
 scaffold.config.json          # Parameter registry
 .changeset/config.json        # Changeset versioning
 
 .claude/skills/
+├── pipeline/                 # Guided orchestrator (chains all phases)
 ├── new-project/              # Scaffold wizard
 ├── product-discovery/        # Product definition
-├── deep-dive/                # Feature spec expansion
-├── design-discovery/         # Design workflow
+├── deep-dive/                # Feature spec expansion (supports --batch)
+├── design-discovery/         # DEPRECATED → use /pipeline
 ├── generate-theme/           # Theme swapping
 ├── schema-discovery/         # Database design
 ├── build-feature/            # Feature implementation

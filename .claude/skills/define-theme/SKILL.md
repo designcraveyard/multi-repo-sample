@@ -39,6 +39,20 @@ is `/generate-theme` (palette execution). The output is `docs/design/theme.md`, 
 
 ---
 
+## CRITICAL EXECUTION RULES
+
+**Read before starting:**
+
+1. **Questions are MANDATORY.** Phases 1–4 consist entirely of interactive questions via `AskUserQuestion`. Do NOT infer, assume, or pre-fill answers from app context — even if `docs/app-brief.md` or `docs/PRDs/` clearly implies a direction. Always stop and ask.
+
+2. **This skill writes ONE thing:** `docs/design/theme.md`. It does NOT create wireframes, Figma frames, render layouts, write CSS, or run figma-cli commands. Those belong to other skills (`/generate-theme`, `/wireframe`, `/figma-design`).
+
+3. **After writing theme.md:** Present next steps from the reference table in Phase 7. Offer to invoke `/generate-theme` if the user is ready to apply to code. Do NOT proceed further without explicit user instruction.
+
+4. **Never invoke `/wireframe` directly.** That skill runs its own interactive clarification phase for alternate layouts. Always suggest it as a next step — never inline.
+
+---
+
 ## Phase 0: Read Existing State
 
 Before asking anything:
@@ -56,14 +70,15 @@ Before asking anything:
    Grep `DesignTokens.swift` or `globals.css` for color palette names (colorEmerald, colorIndigo…).
    Note: "Current brand palette: emerald." Surface as a default option in Phase 2.
 
-4. **Check Figma variables** (if Figma MCP is available):
+4. **Check Figma variables** (if Figma MCP is available and `pipeline.json` `flags.skip_figma` is NOT true):
    `mcp__figma__get_variable_defs` with the project file key. Note any brand variables found.
+   Skip this step if `pipeline.json` exists and `flags.skip_figma` is `true`, or if Figma MCP is unavailable.
 
 ---
 
 ## Phase 1: Personality & Mood
 
-Ask 2 questions via `AskUserQuestion` (header pair: "Personality" + "Mood").
+**Mandatory: ask these questions now.** Do not use app context to pre-fill or skip. Use `AskUserQuestion` (header pair: "Personality" + "Mood").
 
 **Q1 — Personality:** "How would you describe this app's personality?"
 - **Calm & focused** — quiet, reliable, gets out of the way. Notion, Bear, Apple Notes.
@@ -393,47 +408,75 @@ these should only fit THIS app.]
 
 ## Next Steps
 
+**If coming from /design-discovery:**
+1. Component audit — verify registry matches IA screens
+2. Explore layout variations: `/wireframe`
+3. Generate assets: `/asset-gen`
+4. Render Figma screens: `/figma-design`
+5. Apply theme to code: `/generate-theme [brand] [neutral] --radius [preset]`
+
+**If standalone:**
 1. Apply palette to all platforms:
    `/generate-theme [brand] [neutral] --radius [preset]`
-
 2. Push updated tokens to Figma:
    `node figma-cli/src/index.js tokens preset shadcn`
-
-3. Render screens using this identity:
-   `/figma-design`
-
-4. Generate app icon and empty-state illustrations:
-   `/asset-gen`
+3. Render screens using this identity: `/figma-design`
+4. Generate app icon and illustrations: `/asset-gen`
 ```
 
 ---
 
-## Phase 7: Handoff to /generate-theme
+## Phase 7: Handoff
 
-After writing the doc, summarise the identity in 2–3 sentences (use the theme.md narrative),
-then present the handoff clearly:
+After writing the doc, summarise the identity in 2–3 sentences (use the theme.md narrative), then present next steps.
 
-> "Theme direction is locked in `docs/design/theme.md`. The next step is `/generate-theme`,
-> which will complete the full application."
+**Determine context** — check whether this session started from `/design-discovery`:
+- If yes (i.e., the user mentioned design-discovery, or `docs/PRDs/` was recently created): show **Path A**
+- If standalone: show **Path B**
 
-**What `/generate-theme` will do (tell the user this so they know what to expect):**
+---
 
-1. **Core tokens** — palette, neutral, radius, and control style across all platforms
-   (pre-filled from the decisions just made here)
-2. **Shadow system** — designs and writes 7 shadow tokens based on your atmosphere choice;
-   adds them to `globals.css`, `DesignTokens.swift`, and `DesignTokens.kt`
-3. **Component group overrides** — lets you customize or lock styling decisions for 5 groups
-   (Actions, Selection, Forms, Feedback, Display) with optional per-component drill-down
-4. **Figma library push** — asks for your Figma file (advises duplicating BubblesKit),
-   pushes tokens + shadow swatches + component reference frames via figma-cli
+### Path A — Coming from /design-discovery
+
+> "Theme direction is locked in `docs/design/theme.md`. You're in the middle of the design-discovery flow. Here's where things stand:"
+
+```
+Design discovery progress
+──────────────────────────────────────────────
+✓  Information architecture
+✓  /define-theme — done (theme.md written)
+→  Component audit  — verify registry matches IA
+→  /wireframe       — explore layout variations (3 options per screen)
+   /asset-gen       — icons + illustrations
+   /figma-design    — render full screens in Figma
+──────────────────────────────────────────────
+Next: run /wireframe <screen-name> to start layout exploration.
+/generate-theme can run any time to apply the palette to code.
+```
+
+Options:
+- **Run /wireframe now** — invoke the wireframe skill immediately
+- **Run /generate-theme first** — apply the palette to code, then continue discovery
+- **Not yet** — stop here
+
+---
+
+### Path B — Standalone run
+
+> "Theme direction is locked in `docs/design/theme.md`. The next step is `/generate-theme`, which applies this palette to all three platforms."
+
+**What `/generate-theme` will do:**
+
+1. **Core tokens** — palette, neutral, radius, and control style across all platforms (pre-filled from decisions made here)
+2. **Shadow system** — designs and writes 7 shadow tokens based on your atmosphere choice; adds them to `globals.css`, `DesignTokens.swift`, and `DesignTokens.kt`
+3. **Component group overrides** — lets you customize or lock styling for 5 groups (Actions, Selection, Forms, Feedback, Display)
+4. **Figma library push** — pushes tokens + shadow swatches + component reference frames via figma-cli
 5. **Approval gate** — waits for you to review in Figma before touching any code files
-6. **Code write** — only after approval, writes all changes across web, iOS, and Android;
-   updates `docs/design-tokens.md` with the shadow section
+6. **Code write** — only after approval, writes all changes across web, iOS, and Android
 
 Ask:
 
-> "Ready to apply? I can invoke `/generate-theme` now — it will pick up everything from
-> `docs/design/theme.md` automatically."
+> "Ready to apply? I can invoke `/generate-theme` now — it will pick up everything from `docs/design/theme.md` automatically."
 
 Options:
 - **Yes, run /generate-theme now** — invoke it immediately

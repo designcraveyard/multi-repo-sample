@@ -82,4 +82,29 @@ if [ -d "$SUPABASE_DIR" ] && [ -f "$TEMPLATES_DIR/supabase-config.template" ]; t
   substitute_template "$TEMPLATES_DIR/supabase-config.template" "$SUPABASE_DIR/config.toml"
 fi
 
+# Root: pipeline.json (pipeline orchestrator state)
+if [ -f "$TEMPLATES_DIR/pipeline-json.template" ]; then
+  TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  HAS_SUPABASE="false"
+  if [ -n "$SUPABASE_REF" ]; then
+    HAS_SUPABASE="true"
+  fi
+
+  # Build platforms JSON array from PLATFORMS string (e.g., "web,ios,android" → ["web","ios","android"])
+  PLATFORMS_JSON=$(echo "$PLATFORMS" | tr ',' '\n' | sed 's/^/"/;s/$/"/' | paste -sd',' - | sed 's/^/[/;s/$/]/')
+
+  echo "  Writing: $TARGET_DIR/pipeline.json"
+  cp "$TEMPLATES_DIR/pipeline-json.template" "$TARGET_DIR/pipeline.json"
+  LC_ALL=C perl -pi -e "s/\\{\\{TIMESTAMP\\}\\}/$TIMESTAMP/g" "$TARGET_DIR/pipeline.json"
+  LC_ALL=C perl -pi -e "s/\\{\\{HAS_SUPABASE\\}\\}/$HAS_SUPABASE/g" "$TARGET_DIR/pipeline.json"
+  LC_ALL=C perl -pi -e "s/\\{\\{PLATFORMS_JSON\\}\\}/$PLATFORMS_JSON/g" "$TARGET_DIR/pipeline.json"
+
+  # APP_NAME substitution is handled by the main VALUES_JSON loop via replace-params.sh
+  APP_NAME_VAL=$(echo "$VALUES_JSON" | jq -r '.APP_NAME // empty')
+  if [ -n "$APP_NAME_VAL" ]; then
+    LC_ALL=C REPLACE_TOKEN="{{APP_NAME}}" REPLACE_VAL="$APP_NAME_VAL" \
+      perl -pi -e 's/\Q$ENV{REPLACE_TOKEN}\E/$ENV{REPLACE_VAL}/g' "$TARGET_DIR/pipeline.json"
+  fi
+fi
+
 echo "Config file generation complete."

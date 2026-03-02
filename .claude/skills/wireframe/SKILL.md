@@ -3,7 +3,8 @@ name: wireframe
 description: >
   Rapidly explore layout patterns, navigation structures, and information
   architecture through low-fidelity, grayscale wireframes. Generates 3
-  variations per screen as a clickable HTML prototype and/or Figma frames.
+  variations per screen as separate standalone HTML files — one per variation.
+  Each file is a single 375x812 phone artboard, ready for /send-to-figma capture.
   Use after /design-discovery has produced an IA and PRD docs, before
   committing to a screen implementation.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
@@ -88,9 +89,10 @@ Store the selection as `output_format` (html | figma | both).
 
 ### 2c. Iterate (`/wireframe --iterate <Name>`)
 
-1. Read `docs/wireframes/<kebab>.html` (the existing HTML wireframe).
-2. Read associated screen spec `docs/design/screens/<kebab>.md` if present.
-3. Skip to **Phase 4b: Iterate Loop**.
+1. Glob `docs/wireframes/<kebab>-v*.html` to find all existing variation files.
+2. Read each variation file.
+3. Read associated screen spec `docs/design/screens/<kebab>.md` if present.
+4. Skip to **Phase 4b: Iterate Loop**.
 
 ### Key info to extract per screen:
 - **Purpose** — what job does the user do here?
@@ -490,7 +492,7 @@ body {
   font-style: italic;
 }
 
-/* ── Variation Tab Strip (top of page, outside device frame) ─────── */
+/* ── Variation Navigation (links between sibling variation files) ── */
 .wf-variation-strip {
   display: flex;
   gap: 4px;
@@ -508,14 +510,13 @@ body {
   color: var(--wf-text-muted);
   font-family: var(--font);
   transition: all 0.15s;
+  text-decoration: none;
 }
 .wf-variation-tab.active {
   background: var(--wf-text);
   color: var(--wf-surface);
   border-color: var(--wf-text);
 }
-.wf-variation-panel { display: none; }
-.wf-variation-panel.active { display: flex; justify-content: center; padding: 24px 16px; }
 
 /* ── Index grid ─────────────────────────────────────────────────── */
 .wf-index-grid {
@@ -557,9 +558,20 @@ body {
 
 ---
 
-### Generating Each Screen's HTML File
+### Generating Each Variation as a Separate HTML File
 
-Create `docs/wireframes/<kebab>.html` using this template:
+Each variation is its own standalone file. For a screen named `NoteEditor` with
+3 variations, create:
+
+```
+docs/wireframes/note-editor-v1.html
+docs/wireframes/note-editor-v2.html
+docs/wireframes/note-editor-v3.html
+```
+
+**File naming:** `<kebab>-v<N>.html` where N is the variation number (1-based).
+
+**Template for each variation file** (`docs/wireframes/<kebab>-v<N>.html`):
 
 ```html
 <!DOCTYPE html>
@@ -567,7 +579,7 @@ Create `docs/wireframes/<kebab>.html` using this template:
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><HumanTitle> — Wireframes</title>
+  <title><HumanTitle> — V<N>: <VN Short Title></title>
   <link rel="stylesheet" href="_wireframe.css" />
   <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -579,22 +591,23 @@ Create `docs/wireframes/<kebab>.html` using this template:
     <a href="index.html" style="font-size:12px; color:var(--wf-text-muted); text-decoration:none;">← All screens</a>
   </div>
   <h1 style="text-align:center; font-size:18px; font-weight:700; margin-bottom:4px;"><HumanTitle></h1>
-  <p style="text-align:center; font-size:12px; color:var(--wf-text-muted); margin-bottom:16px;">
-    <HumanTitle> · 3 variations
+  <p style="text-align:center; font-size:12px; color:var(--wf-text-muted); margin-bottom:4px;">
+    V<N>: <VN Short Title>
+  </p>
+  <p style="text-align:center; font-size:11px; color:var(--wf-text-muted); margin-bottom:16px; padding:0 24px;">
+    <VN hypothesis text>
   </p>
 
-  <!-- Variation selector -->
+  <!-- Variation navigation -->
   <div class="wf-variation-strip">
-    <button class="wf-variation-tab active" onclick="showVariation('v1', this)">V1: <V1 Short Title></button>
-    <button class="wf-variation-tab"        onclick="showVariation('v2', this)">V2: <V2 Short Title></button>
-    <button class="wf-variation-tab"        onclick="showVariation('v3', this)">V3: <V3 Short Title></button>
+    <!-- Link to all sibling variations (active = current) -->
+    <a href="<kebab>-v1.html" class="wf-variation-tab <'active' if N==1>">V1</a>
+    <a href="<kebab>-v2.html" class="wf-variation-tab <'active' if N==2>">V2</a>
+    <a href="<kebab>-v3.html" class="wf-variation-tab <'active' if N==3>">V3</a>
   </div>
 
-  <!-- Hypothesis strip -->
-  <div id="hypothesis" style="text-align:center; padding:8px 24px; font-size:12px; color:var(--wf-text-muted); min-height:36px;"></div>
-
-  <!-- ── V1 ── -->
-  <div class="wf-variation-panel active" id="panel-v1">
+  <!-- Single phone artboard -->
+  <div style="display:flex; justify-content:center; padding:24px 16px;">
     <div class="wf-device">
       <div class="wf-status-bar">
         <span>9:41</span>
@@ -603,42 +616,12 @@ Create `docs/wireframes/<kebab>.html` using this template:
           <i class="ph ph-battery-full"></i>
         </div>
       </div>
-      <!-- V1 SCREEN CONTENT -->
       <div class="wf-screen">
-        <!-- ... generated per screen ... -->
+        <!-- SCREEN CONTENT for this variation -->
       </div>
     </div>
   </div>
 
-  <!-- ── V2 ── -->
-  <div class="wf-variation-panel" id="panel-v2">
-    <div class="wf-device">
-      <!-- V2 SCREEN CONTENT -->
-    </div>
-  </div>
-
-  <!-- ── V3 ── -->
-  <div class="wf-variation-panel" id="panel-v3">
-    <div class="wf-device">
-      <!-- V3 SCREEN CONTENT -->
-    </div>
-  </div>
-
-  <script>
-    const hypotheses = {
-      v1: '<V1 hypothesis text>',
-      v2: '<V2 hypothesis text>',
-      v3: '<V3 hypothesis text>',
-    };
-    function showVariation(id, btn) {
-      document.querySelectorAll('.wf-variation-panel').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.wf-variation-tab').forEach(b => b.classList.remove('active'));
-      document.getElementById('panel-' + id).classList.add('active');
-      btn.classList.add('active');
-      document.getElementById('hypothesis').textContent = '💡 ' + hypotheses[id];
-    }
-    document.getElementById('hypothesis').textContent = '💡 ' + hypotheses.v1;
-  </script>
 </body>
 </html>
 ```
@@ -656,7 +639,9 @@ Create `docs/wireframes/<kebab>.html` using this template:
 
 ### Generating the Index Page
 
-Create/update `docs/wireframes/index.html` after each generation run:
+Create/update `docs/wireframes/index.html` after each generation run. The index
+shows **every variation file** as its own card in a grid — not grouped by screen.
+This makes each card a distinct artboard for `/send-to-figma` capture.
 
 ```html
 <!DOCTYPE html>
@@ -669,15 +654,26 @@ Create/update `docs/wireframes/index.html` after each generation run:
 <body style="background:var(--wf-bg); min-height:100vh;">
   <div style="padding:32px 24px 16px; text-align:center;">
     <h1 style="font-size:24px; font-weight:700; margin-bottom:4px;">Wireframes</h1>
-    <p style="font-size:13px; color:var(--wf-text-muted);">Click any screen to explore variations</p>
+    <p style="font-size:13px; color:var(--wf-text-muted);">Each card is one artboard — ready for /send-to-figma</p>
   </div>
   <div class="wf-index-grid">
-    <!-- one .wf-index-card per screen -->
-    <a href="<kebab>.html" class="wf-index-card">
-      <div class="wf-index-thumb"><HumanTitle></div>
+    <!-- one .wf-index-card per variation FILE -->
+    <a href="<kebab>-v1.html" class="wf-index-card">
+      <div class="wf-index-thumb"><HumanTitle> V1</div>
       <div class="wf-index-label"><HumanTitle></div>
-      <div class="wf-index-sub">3 variations</div>
+      <div class="wf-index-sub">V1: <V1 Short Title></div>
     </a>
+    <a href="<kebab>-v2.html" class="wf-index-card">
+      <div class="wf-index-thumb"><HumanTitle> V2</div>
+      <div class="wf-index-label"><HumanTitle></div>
+      <div class="wf-index-sub">V2: <V2 Short Title></div>
+    </a>
+    <a href="<kebab>-v3.html" class="wf-index-card">
+      <div class="wf-index-thumb"><HumanTitle> V3</div>
+      <div class="wf-index-label"><HumanTitle></div>
+      <div class="wf-index-sub">V3: <V3 Short Title></div>
+    </a>
+    <!-- repeat for all screens × variations -->
   </div>
 </body>
 </html>
@@ -686,6 +682,8 @@ Create/update `docs/wireframes/index.html` after each generation run:
 ---
 
 ## Phase 4b: Generate — Figma CLI
+
+**Skip-Figma check:** If `pipeline.json` exists at the project root and `flags.skip_figma` is `true`, skip this entire phase (treat as `output_format = html`). Also skip if `--html` flag was passed explicitly.
 
 If `output_format` is `figma` or `both`:
 
@@ -732,10 +730,16 @@ After generating all files, show:
 ```
 ## Wireframes ready: <HumanTitle>
 
-Files: docs/wireframes/<kebab>.html
+Files:
+  docs/wireframes/<kebab>-v1.html
+  docs/wireframes/<kebab>-v2.html
+  docs/wireframes/<kebab>-v3.html
 
 ### Open in browser:
-open docs/wireframes/<kebab>.html
+open docs/wireframes/<kebab>-v1.html
+
+### Send to Figma:
+/send-to-figma docs/wireframes
 
 ---
 ### Variation summary:
@@ -763,7 +767,7 @@ specifically the `Hypothesis` and `Key tradeoff` fields.
 
 ## Phase 4b (Iterate mode): `/wireframe --iterate <Name>`
 
-1. Read existing `docs/wireframes/<kebab>.html`.
+1. Glob and read all existing `docs/wireframes/<kebab>-v*.html` files.
 
 2. Ask:
    > "What do you want to change? Describe in plain English, e.g.:
@@ -773,15 +777,17 @@ specifically the `Hypothesis` and `Key tradeoff` fields.
    > - 'Add a search screen variation'"
 
 3. Parse the feedback and determine:
-   - Which variation(s) to modify
-   - Whether to add a new variation (append as V4/V5 if `variation_count` allows)
+   - Which variation file(s) to modify
+   - Whether to add a new variation (create `<kebab>-v4.html` etc. if `variation_count` allows)
    - Whether to synthesize a new variation that merges picks from multiple
 
-4. Update only the affected `<div id="panel-v*">` sections in the HTML file.
-   Add a new tab button to `wf-variation-strip` if adding a variation.
-   Update `hypotheses` object in the `<script>` block.
+4. Write/update the affected `<kebab>-v<N>.html` file(s). Each file is standalone,
+   so just rewrite the file content. Update the sibling navigation links in ALL
+   variation files for this screen if a new variation was added.
 
-5. Show the decision prompt again.
+5. Update `index.html` to include cards for any new variation files.
+
+6. Show the decision prompt again.
 
 ---
 
@@ -821,11 +827,12 @@ Use these conventions consistently across all generated wireframes:
 
 Before marking generation complete, verify:
 - [ ] `_wireframe.css` exists in `docs/wireframes/`
-- [ ] `index.html` updated with a card for each new screen
-- [ ] Each screen file has all `variation_count` panels with real content
-- [ ] Tab strip JS switches panels correctly (verify `panel-v1`/`v2`/`v3` IDs match)
+- [ ] `index.html` updated with a card for each variation file
+- [ ] Each variation is its own standalone `<kebab>-v<N>.html` file
+- [ ] Each file contains exactly one `.wf-device` phone artboard (375x812)
+- [ ] Sibling variation links (`wf-variation-strip`) are correct in all files for a screen
+- [ ] Hypothesis text is shown inline in each file's header
 - [ ] At least one navigation link between screens exists
-- [ ] Hypotheses populated in the `hypotheses` JS object
 - [ ] No hardcoded hex colors (use only CSS vars from `_wireframe.css`)
 - [ ] All images are `.wf-placeholder.img` — no `<img>` tags with real src
 
@@ -836,6 +843,7 @@ Before marking generation complete, verify:
 | Skill | Relationship |
 |-------|-------------|
 | `/design-discovery` | Prerequisite: produces the IA and PRDs this skill reads. Sub-flow D of design-discovery generates an initial wireframe per screen — `/wireframe` is the standalone, iterative version for deeper exploration. |
+| `/send-to-figma` | Downstream: after generating wireframes, run `/send-to-figma docs/wireframes` to capture all variation files as editable Figma layers. Each variation file = one Figma artboard. |
 | `/new-screen` | Downstream: once a wireframe variation is approved, use `/new-screen` to scaffold the production screen based on it. |
 | `/complex-component` | Downstream: if a wireframe reveals a complex UI pattern, use `/complex-component` to design and build it. |
 | `/figma-cli` | Used for Figma output mode. Refer to its SKILL.md for render JSX syntax. |

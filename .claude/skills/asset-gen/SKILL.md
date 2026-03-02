@@ -155,12 +155,14 @@ For each generated asset, report success or failure with the file path.
 
 ### Step 6: Post-generation options
 
-After generation completes, offer three optional steps via `AskUserQuestion` (multiSelect):
+After generation completes, offer optional next steps via `AskUserQuestion` (multiSelect).
+
+**Skip-Figma check:** If `pipeline.json` exists and `flags.skip_figma` is `true`, omit Option B from the choices below.
 
 **A — Update code references**
 For empty states, heroes, onboarding: scan relevant component/screen files and update placeholder image `src` attributes or asset references to point at the newly generated files.
 
-**B — Push to Figma**
+**B — Push to Figma** (omit this option if skip_figma is true)
 If `figma-cli/` exists and Figma Desktop is open:
 ```bash
 node figma-cli/src/index.js connect

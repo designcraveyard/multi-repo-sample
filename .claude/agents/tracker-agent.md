@@ -18,6 +18,13 @@ Read `tracker.md` and parse:
 - Feature checklists
 - Decision log
 
+Also check for `pipeline.json` at the project root. If it exists, read it for:
+- Phase statuses (may be more current than tracker.md)
+- Global flags (`skip_figma`, `platforms`, `has_supabase`)
+- Feature completion data from the `build` phase
+
+When both sources exist, use `pipeline.json` as the authoritative source for phase-level status and reconcile `tracker.md` to match.
+
 ### Step 2: Scan Artifacts
 
 Check actual file existence to determine task completion:

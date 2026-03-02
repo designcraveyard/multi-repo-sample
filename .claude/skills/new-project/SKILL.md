@@ -86,8 +86,9 @@ cd <template-root>
    - `plutil -lint` on both `project.pbxproj` and `Info.plist`
    - `grep -c "isa = XCSwiftPackageProductDependency"` should return 1 (PhosphorSwift only)
 5. Initialize `tracker.md` in the new project using the tracker template
-6. Ask: "Project scaffolded! Ready for product discovery? This defines what you're building."
-   - If yes → tell them to run `/product-discovery` in a Claude session opened at the new project directory
+6. Ask: "Project scaffolded! Ready to start building?"
+   - If yes → tell them to run `/pipeline` in a Claude session opened at the new project directory. This chains all discovery phases (product, design, schema, build) with guided transitions and checkpoint validation.
+   - If they prefer to run skills individually → suggest `/product-discovery` as the first step
    - If no → print next steps and close
 
 ### Pre-filling from Command Arguments
