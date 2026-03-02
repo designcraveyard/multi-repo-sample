@@ -49,6 +49,37 @@ If a Figma URL is present in `$ARGUMENTS`, extract the node ID and use the Figma
 
 Read `docs/design/design-guidelines.md` for layout, spacing, typography, and component usage standards. Apply them to the scaffold — particularly page padding, section spacing, typography pairings, and button hierarchy rules.
 
+### Step 3c: Component Selection
+
+Read `docs/components.md` to get the full registry of available components (atomic, patterns, native wrappers).
+
+Based on the screen description from `$ARGUMENTS`, auto-select which components the screen will need. Use this mapping as a starting guide:
+
+| Screen Pattern | Likely Components |
+|----------------|-------------------|
+| List / feed screen | ListItem, Chip (filters), InputField (search), Badge, Divider |
+| Detail / profile screen | Thumbnail, Label, Badge, TextBlock, Button, Divider |
+| Form / settings screen | InputField, Switch, RadioButton, Checkbox, Button, Divider, ListItem |
+| Dashboard / overview | Badge, Label, Tabs, DateGrid, Button |
+| Editor screen | MarkdownEditor, InputField, Button, IconButton |
+| Empty / onboarding | Button, Label, StepIndicator |
+
+Also check if any wireframes exist at `docs/wireframes/<kebab>-v*.html`. If found, parse the `<!-- COMPONENT-MANIFEST ... -->` comment block or scan for `data-component` attributes to extract the exact component list the wireframe uses.
+
+Present the selected components to the user:
+
+> "Based on the screen description, I'll scaffold with these components:
+> - **AppButton** (primary CTA + secondary actions)
+> - **AppInputField** (form fields)
+> - **AppListItem** (content rows)
+> - ...
+>
+> Adjust? (yes / looks good)"
+
+Wait for confirmation. The confirmed list becomes the **Component Import List** used in Steps 4–6 below.
+
+**Rule:** Every UI element in the scaffold MUST use a component from the registry. If a component doesn't exist, flag it as a gap and note it for `/complex-component` creation.
+
 ### Step 4: Create Next.js Page
 
 Create `multi-repo-nextjs/app/<kebab>/page.tsx`:
@@ -56,11 +87,15 @@ Create `multi-repo-nextjs/app/<kebab>/page.tsx`:
 **UI-only mode:**
 ```tsx
 // <Pascal> page — Next.js App Router
-import type { Metadata } from 'next'
+'use client'
 
-export const metadata: Metadata = {
-  title: '<Title>',
-}
+import type { Metadata } from 'next'
+// --- Component imports (from Step 3c Component Import List)
+// Add imports for each confirmed component, e.g.:
+// import { Button } from '@/app/components/Button'
+// import { InputField } from '@/app/components/InputField'
+// import { ListItem } from '@/app/components/patterns/ListItem'
+// import { Divider } from '@/app/components/Divider'
 
 export default function <Pascal>Page() {
   return (
@@ -70,12 +105,25 @@ export default function <Pascal>Page() {
     >
       <div className="mx-auto max-w-[1400px]">
         <h1 className="text-2xl md:text-3xl font-semibold tracking-tight mb-8 md:mb-10"><Title></h1>
-        {/* TODO: implement <Pascal> UI */}
+
+        {/* --- Screen Content (using confirmed components) */}
+        {/* Generate initial layout using the Component Import List.
+            For each confirmed component, add a representative usage.
+            Example for a settings screen:
+              <div className="flex flex-col gap-6">
+                <InputField label="Display Name" placeholder="Enter name..." />
+                <ListItem title="Notifications" trailing={<Switch />} />
+                <Divider />
+                <Button variant="primary" size="lg" className="w-full">Save Changes</Button>
+              </div>
+        */}
       </div>
     </main>
   )
 }
 ```
+
+> **Important:** Replace the comment-only component examples above with **actual component instances** based on the confirmed Component Import List from Step 3c. Every visible UI element should use a registered component — no raw `<button>`, `<input>`, or `<div>` substitutes.
 
 **Data mode** — also create:
 
@@ -169,6 +217,8 @@ export default async function <Pascal>Page() {
 ```swift
 //  <Pascal>View.swift
 import SwiftUI
+// --- Component imports (from Step 3c Component Import List)
+// Add imports are automatic in Swift (same module), but add usage of confirmed components below
 
 struct <Pascal>View: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
@@ -176,10 +226,13 @@ struct <Pascal>View: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: CGFloat.spaceLG) {
-                // TODO: implement <Pascal> UI
-                // Use `sizeClass == .regular` to show wider layouts on iPad/desktop
-                Text("Content goes here")
-                    .foregroundStyle(.secondary)
+                // --- Screen Content (using confirmed components)
+                // Generate initial layout using the Component Import List.
+                // For each confirmed component, add a representative usage.
+                // Example for a settings screen:
+                //   AppListItem(title: "Notifications", trailing: { AppSwitch(isOn: .constant(true)) })
+                //   AppDivider()
+                //   AppButton("Save Changes", variant: .primary, size: .lg) { }
             }
             .padding(.horizontal, CGFloat.spaceLG)
             .padding(.vertical, CGFloat.spaceXL)
@@ -193,6 +246,8 @@ struct <Pascal>View: View {
     <Pascal>View()
 }
 ```
+
+> **Important:** Replace the comment-only component examples above with **actual component instances** based on the confirmed Component Import List from Step 3c. iOS components are in the same module — no import needed, just use `AppButton`, `AppListItem`, etc. directly.
 
 > **Note:** Do NOT wrap in `NavigationStack` — the parent `AdaptiveNavShell` provides navigation context. Use `sizeClass == .regular` for wider layouts on iPad landscape / macOS.
 
@@ -294,6 +349,11 @@ import <base.package>.ui.components.adaptive.AdaptiveNavShell
 import <base.package>.ui.theme.SemanticColors
 import <base.package>.ui.theme.Spacing
 import <base.package>.ui.theme.AppTypography
+// --- Component imports (from Step 3c Component Import List)
+// Add imports for each confirmed component, e.g.:
+// import <base.package>.ui.components.AppButton
+// import <base.package>.ui.components.AppInputField
+// import <base.package>.ui.patterns.AppListItem
 
 // responsive: WindowSizeClass via LocalWindowSizeClass.current
 // Compact = phone portrait; Medium/Expanded = tablet/foldable landscape
@@ -315,11 +375,19 @@ fun <Pascal>Screen(
             color = SemanticColors.typographyPrimary,
         )
         Spacer(modifier = Modifier.height(Spacing.MD))
-        // TODO: implement <Pascal> UI
-        // Use LocalWindowSizeClass.current for compact vs. expanded layout branching
+
+        // --- Screen Content (using confirmed components)
+        // Generate initial layout using the Component Import List.
+        // For each confirmed component, add a representative usage.
+        // Example for a settings screen:
+        //   AppListItem(title = "Notifications", trailing = { AppSwitch(...) })
+        //   AppDivider()
+        //   AppButton(text = "Save Changes", variant = ButtonVariant.Primary, size = ButtonSize.Lg)
     }
 }
 ```
+
+> **Important:** Replace the comment-only component examples above with **actual component instances** based on the confirmed Component Import List from Step 3c.
 
 **Data mode** — add a `<Pascal>ViewModel.kt` and wire the four states (see `/cross-platform-feature` for the full HiltViewModel + ScreenState template).
 
@@ -371,10 +439,13 @@ Add the new screen to `multi-repo-android/CLAUDE.md` under **Screens** if the An
 Navigation: [updated AdaptiveNavShell on all platforms / TODO noted]
 Responsive: [horizontalSizeClass on iOS / md: classes on web / WindowSizeClass on Android]
 
+### Components Used
+[List the Component Import List from Step 3c — e.g. AppButton, AppListItem, AppSwitch, AppDivider]
+
 ### Next Steps
-- Implement UI using components from `docs/components.md`
 - [If data mode] Wire data fetching to Supabase/repository layer
 - [If split-view] Wrap in `AdaptiveSplitView` for list→detail layout
+- Flesh out component instances with real props and data bindings
 - Test both compact and regular size classes on all platforms
 - Run `screen-reviewer` agent before marking complete
 - Run `/prd-update` to keep docs current

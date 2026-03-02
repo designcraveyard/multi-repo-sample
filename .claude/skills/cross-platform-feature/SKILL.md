@@ -22,9 +22,37 @@ Scaffold a feature across BOTH platforms in one coordinated workflow.
 
 ## Workflow
 
-### Phase 0: Read Design Guidelines
+### Phase 0: Read Design Guidelines & Component Registry
 
 Read `docs/design/design-guidelines.md` for layout, spacing, typography, and component usage standards. Apply to all scaffolded files — particularly page padding (24px mobile / 32–40px desktop), max content width (1400px), and component sizing (lg variants for mobile touch targets).
+
+Read **`docs/components.md`** to get the full component registry (atomic, patterns, native wrappers, adaptive layouts).
+
+Based on the feature description from `$ARGUMENTS`, auto-select which components the feature's screens will need. Use this mapping as a guide:
+
+| Screen Pattern | Likely Components |
+|----------------|-------------------|
+| List / feed screen | ListItem, Chip (filters), InputField (search), Badge, Divider |
+| Detail / profile screen | Thumbnail, Label, Badge, TextBlock, Button, Divider |
+| Form / settings screen | InputField, Switch, RadioButton, Checkbox, Button, Divider, ListItem |
+| Dashboard / overview | Badge, Label, Tabs, DateGrid, Button |
+| Editor screen | MarkdownEditor, InputField, Button, IconButton |
+| Empty / onboarding | Button, Label, StepIndicator |
+
+Also check for wireframes at `docs/wireframes/` matching this feature. If found, parse `data-component` attributes or `<!-- COMPONENT-MANIFEST -->` blocks to extract the exact component list.
+
+Present the selected components to the user for confirmation before proceeding:
+
+> "I'll scaffold this feature using these components:
+> - **AppButton** (primary CTA + secondary actions)
+> - **AppInputField** (form fields)
+> - ...
+>
+> Adjust? (yes / looks good)"
+
+The confirmed list becomes the **Component Import List** used in Phases 2–4.
+
+**Rule:** Every UI element MUST use a component from the registry. If a component doesn't exist, flag it for `/complex-component` creation.
 
 ### Phase 1: Derive Names & Read State
 
@@ -54,6 +82,13 @@ Create `multi-repo-nextjs/app/<kebab>/components/<Pascal>View.tsx`:
 // <Pascal>View.tsx — presentational component
 'use client'
 
+// --- Component imports (from Phase 0 Component Import List)
+// Add imports for each confirmed component, e.g.:
+// import { Button } from '@/app/components/Button'
+// import { InputField } from '@/app/components/InputField'
+// import { ListItem } from '@/app/components/patterns/ListItem'
+// import { Divider } from '@/app/components/Divider'
+
 interface <Pascal>ViewProps {
   // TODO: add props
 }
@@ -61,17 +96,22 @@ interface <Pascal>ViewProps {
 export function <Pascal>View({}: <Pascal>ViewProps) {
   return (
     <div className="flex flex-col gap-4">
-      {/* TODO: implement <Pascal> UI */}
+      {/* --- Screen Content (using confirmed components)
+          Generate initial layout using the Component Import List from Phase 0.
+          For each confirmed component, add a representative usage. */}
     </div>
   )
 }
 ```
+
+> **Important:** Replace the comment-only component examples above with **actual component instances** based on the confirmed Component Import List from Phase 0. Every visible UI element should use a registered component.
 
 **Web rules:**
 - Use `var(--background)`, `var(--foreground)` etc. — never hardcode hex
 - Tailwind v4 utility classes only
 - `@/` path alias for all internal imports
 - TypeScript strict — no `any`
+- All UI elements must use components from `docs/components.md`
 
 ### Phase 3: Scaffold iOS (SwiftUI)
 
@@ -102,6 +142,7 @@ final class <Pascal>ViewModel: ObservableObject {
 - Use `Color.app*` from `DesignTokens.swift` if it exists, otherwise use `.primary`/`.secondary` and add `// TODO: use design tokens`
 - Use `CGFloat.space*` for padding/spacing
 - iOS 26.2 — modern SwiftUI APIs are available
+- All UI elements must use `App*` components from `docs/components.md` — use the Component Import List from Phase 0
 
 ### Phase 4: Scaffold Android (Jetpack Compose)
 
@@ -252,6 +293,9 @@ private fun <Pascal>Content(
                     .fillMaxSize()
                     .padding(Spacing.MD),
             ) {
+                // --- Screen Content (using confirmed components from Phase 0)
+                // Import and use App* components from the Component Import List.
+                // Example: AppListItem, AppButton, AppDivider, etc.
                 // TODO: implement <Pascal> UI with data
             }
         }
@@ -275,6 +319,7 @@ Wire the new screen into the navigation graph at
 - HiltViewModel required for all data screens — inject via `hiltViewModel()`
 - StateFlow for all UI state — `MutableStateFlow` in ViewModel, `collectAsState()` in composable
 - WindowSizeClass for adaptive layouts: `LocalWindowSizeClass.current` for compact/medium/expanded breakpoints
+- All UI elements must use `App*` components from `docs/components.md` — use the Component Import List from Phase 0
 
 If the Android project does not exist yet, skip this phase and note:
 > Android project not found at `multi-repo-android/` — skipping Android phase.

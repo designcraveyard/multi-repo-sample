@@ -19,19 +19,37 @@ User says "/build-feature <feature-name>" or "build the <feature> feature"
 Read all specs for this feature:
 - `docs/PRDs/<feature-name>.md` — full behavioral spec
 - `docs/design/design-guidelines.md` — layout, spacing, typography, and component usage standards
+- **`docs/components.md` — full component registry (atomic, patterns, native wrappers, adaptive layouts)**
 - `docs/design/screens/` — screen specs for this feature's screens
-- `docs/design/component-map.md` — what components each screen needs
+- `docs/design/component-map.md` — what components each screen needs (if exists from `/pipeline`)
 - `docs/design/information-architecture.md` — navigation context
 - Supabase migration files — schema for this feature
 - Model files — data structures
 
-### Step 2: Plan Implementation
+Also check for wireframes at `docs/wireframes/<feature>-*.html`. If found, parse any `data-component` attributes or `<!-- COMPONENT-MANIFEST -->` comment blocks to extract the component list the wireframe designed around.
 
-Present the implementation plan to the user:
+### Step 2: Plan Implementation — Component Shopping List
+
+Present the implementation plan to the user with an explicit **Component Shopping List** per screen:
+
+```
+Screen: <ScreenName>
+├── AppButton (primary, secondary)
+├── AppThumbnail (lg, circular)
+├── AppLabel (primary, secondary)
+├── AppListItem (with chevron)
+├── AppDivider
+└── AppBadge (accent)
+```
+
+Also include:
 - List of files to create per platform
-- Components to use
 - Data flow (API → ViewModel → View)
 - Navigation wiring needed
+
+**Rule:** Every UI element in the screen MUST use a component from `docs/components.md`. If a component doesn't exist for what the screen needs, flag it as a gap and either:
+1. Use the closest existing component with a `// TODO: replace with <ideal component>` note
+2. Note it for `/complex-component` creation before building this screen
 
 Ask user to confirm or adjust.
 

@@ -85,6 +85,54 @@ Read `docs/design/design-guidelines.md` for layout and spacing standards. Apply 
 - 3–4 type sizes per screen, one primary CTA per view
 - 44pt minimum touch targets (prefer lg component variants on phone)
 
+### 2a-bis: Read Component Registry
+
+Read `docs/components.md` to get the full list of available production components. When generating wireframe HTML in Phase 4a, **annotate every interactive/content element** with a `data-component` attribute mapping to the production component name:
+
+| Wireframe CSS Class | `data-component` | `data-variant` | Production Component |
+|---------------------|------------------|----------------|---------------------|
+| `.wf-btn` | `AppButton` | `primary` / `secondary` / `tertiary` / `ghost` | Button |
+| `.wf-input` | `AppInputField` | — | InputField |
+| `.wf-chip` | `AppChip` | `filter` / `tag` | Chip |
+| `.wf-tab-bar` | `AppTabs` | — | Tabs |
+| `.wf-list-item` | `AppListItem` | — | ListItem (pattern) |
+| `.wf-card` | `AppListItem` | `card` | ListItem or Card pattern |
+| `.wf-toggle` | `AppSwitch` | — | Switch |
+| `.wf-checkbox` | `AppCheckbox` | — | Checkbox |
+| `.wf-radio` | `AppRadioButton` | — | RadioButton |
+| `.wf-badge` | `AppBadge` | — | Badge |
+| `.wf-avatar` | `AppThumbnail` | `sm` / `md` / `lg` | Thumbnail |
+| `.wf-divider` | `AppDivider` | — | Divider |
+| `.wf-search-bar` | `AppInputField` | `search` | InputField (search) |
+| `.wf-bottom-sheet` | `AdaptiveSheet` | — | Native wrapper |
+| `.wf-fab` | `AppIconButton` | `primary` / `lg` | IconButton |
+| `.wf-empty-state` | `EmptyState` | — | Pattern (TextBlock + Button) |
+
+**Example annotated HTML:**
+```html
+<button class="wf-btn primary lg" data-component="AppButton" data-variant="primary" data-size="lg">
+  Save Changes
+</button>
+<div class="wf-list-item" data-component="AppListItem">
+  <div class="wf-list-label">Notifications</div>
+  <div class="wf-toggle" data-component="AppSwitch"></div>
+</div>
+```
+
+**At the end of each wireframe file**, append a hidden component manifest comment:
+```html
+<!-- COMPONENT-MANIFEST
+AppButton: primary(2), secondary(1)
+AppInputField: search(1)
+AppChip: filter(4)
+AppListItem: default(6)
+AppDivider: default(3)
+AppSwitch: default(2)
+-->
+```
+
+This manifest enables downstream skills (`/build-feature`, `/new-screen`) to parse wireframes and auto-import the right components.
+
 ### 2b. Single screen (`/wireframe <Name>`)
 
 1. Search for the screen's PRD:

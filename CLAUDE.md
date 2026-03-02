@@ -343,6 +343,14 @@ Atomic: one JSDoc/header comment. Complex (>80 lines): section headers required 
 
 **Android:** Use `App*` wrappers from `ui/native/`. Full API: `/android-native-components` skill.
 
+### Component-First Workflow
+
+All builder skills (`/new-screen`, `/build-feature`, `/cross-platform-feature`) read `docs/components.md` before scaffolding and auto-select matching components based on the screen description. The confirmed **Component Import List** is included as actual imports in generated templates on all platforms.
+
+Wireframes (`/wireframe`) annotate every interactive element with `data-component` attributes and append a `<!-- COMPONENT-MANIFEST -->` block. Downstream skills parse these to auto-import the right components.
+
+**Rule:** Every UI element in a screen MUST use a component from the registry. If a component doesn't exist, flag it for `/complex-component` creation before building.
+
 ## Icon System (Phosphor Icons / SF Symbols)
 
 Phosphor Icons on web and Android. iOS uses Phosphor by default but can use **SF Symbols** if chosen at scaffold time (`--ios-icons sf-symbols`).
