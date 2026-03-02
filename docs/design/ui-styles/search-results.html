@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search Results — NoteBuddy</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <style>
+    .search-bar-active {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 16px 0;
+      padding: 10px 14px;
+      background: var(--surface-input);
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--rust-400);
+    }
+    .search-bar-active input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+    }
+    .search-bar-active input::placeholder { color: var(--text-muted); }
+
+    .filter-row {
+      display: flex;
+      gap: 6px;
+      padding: 10px 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .filter-row::-webkit-scrollbar { display: none; }
+
+    .filter-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: var(--font-weight-medium);
+      white-space: nowrap;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .filter-pill.active {
+      background: var(--rust-600);
+      color: white;
+    }
+    .filter-pill.inactive {
+      background: var(--surface-elevated);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-muted);
+    }
+
+    .results-count {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      letter-spacing: var(--tracking-wide);
+      padding: 4px 16px 8px;
+    }
+
+    .result-card {
+      background: var(--surface-elevated);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-muted);
+      padding: 14px 16px;
+      margin: 0 16px 10px;
+      cursor: pointer;
+    }
+
+    .result-type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .result-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-primary);
+      letter-spacing: var(--tracking-tight);
+      font-style: italic;
+      margin-bottom: 5px;
+      line-height: 1.25;
+    }
+
+    .result-snippet {
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: var(--leading-snug);
+    }
+
+    .result-highlight {
+      background: var(--rust-100);
+      color: var(--rust-700);
+      border-radius: 2px;
+      padding: 0 2px;
+      font-weight: var(--font-weight-medium);
+    }
+
+    .result-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .result-folder {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+
+    .result-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      background: var(--surface-brand-mid);
+      color: var(--rust-700);
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: var(--font-weight-medium);
+    }
+
+    /* Voice memo result */
+    .result-waveform-mini {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 20px;
+      margin: 6px 0;
+    }
+    .result-waveform-mini span {
+      display: block;
+      width: 3px;
+      border-radius: 2px;
+      background: var(--rust-300);
+    }
+    .result-waveform-mini span.played { background: var(--rust-600); }
+
+    .no-results {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 32px;
+      text-align: center;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body class="viewer">
+
+  <nav class="prototype-nav">
+    <span class="prototype-nav-label">NoteBuddy</span>
+    <a href="index.html">Hub</a>
+    <a href="note-list.html">Notes</a>
+    <a href="note-editor.html">Editor</a>
+    <a href="note-info.html">Note Info</a>
+    <a href="voice-memo-list.html">Voice</a>
+    <a href="voice-recorder.html">Recorder</a>
+    <a href="voice-memo-detail.html">Memo Detail</a>
+    <a href="ai-chat.html">AI Chat</a>
+    <a href="chat-history.html">History</a>
+    <a href="search-results.html" class="active">Search</a>
+    <a href="folder-manager.html">Folders</a>
+    <a href="tag-browser.html">Tags</a>
+    <a href="settings.html">Settings</a>
+  </nav>
+
+  <div class="phone-stage">
+    <div class="phone-frame">
+
+      <div class="status-bar">
+        <span class="status-time">9:41</span>
+        <div class="dynamic-island"></div>
+        <div class="status-icons">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="6" width="3" height="6" rx="1" fill="currentColor"/><rect x="4.5" y="4" width="3" height="8" rx="1" fill="currentColor"/><rect x="9" y="2" width="3" height="10" rx="1" fill="currentColor"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" stroke-opacity="0.35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><path d="M23 4v4a2 2 0 0 0 0-4z" fill="currentColor" opacity="0.4"/></svg>
+        </div>
+      </div>
+
+      <div class="screen">
+
+        <!-- Search bar (active, filled) -->
+        <div style="padding-top: 12px;">
+          <div class="search-bar-active">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--rust-600)" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" value="planning" />
+            <button style="background:none;border:none;color:var(--text-muted);cursor:pointer;padding:0;display:flex;align-items:center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+
+          <!-- Filter pills -->
+          <div class="filter-row">
+            <div class="filter-pill active">All</div>
+            <div class="filter-pill inactive">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+              Notes
+            </div>
+            <div class="filter-pill inactive">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/></svg>
+              Voice
+            </div>
+            <div class="filter-pill inactive">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Chats
+            </div>
+          </div>
+
+          <div class="results-count">7 RESULTS FOR "PLANNING"</div>
+        </div>
+
+        <div class="screen-content" style="padding-top: 0;">
+
+          <!-- Note result 1 -->
+          <a href="note-editor.html" style="text-decoration:none;display:block">
+            <div class="result-card">
+              <div class="result-type-badge">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                NOTE
+              </div>
+              <div class="result-title">Weekly <span class="result-highlight">Planning</span> — Feb 2026</div>
+              <p class="result-snippet">Monday: team sync at 10am. Bring design system audit. Tuesday: user research sessions on <span class="result-highlight">planning</span> tools…</p>
+              <div class="result-meta">
+                <span class="result-folder">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                  Work
+                </span>
+                <span class="result-tag">Planning</span>
+                <span style="font-family:var(--font-body);font-size:10px;color:var(--text-muted);margin-left:auto">Today</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Note result 2 -->
+          <a href="note-editor.html" style="text-decoration:none;display:block">
+            <div class="result-card">
+              <div class="result-type-badge">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                NOTE
+              </div>
+              <div class="result-title">Q1 <span class="result-highlight">Planning</span> Retrospective</div>
+              <p class="result-snippet">Reflecting on our <span class="result-highlight">planning</span> process this quarter. Three things that worked, three things to improve...</p>
+              <div class="result-meta">
+                <span class="result-folder">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                  Work
+                </span>
+                <span class="result-tag">Retrospective</span>
+                <span style="font-family:var(--font-body);font-size:10px;color:var(--text-muted);margin-left:auto">Feb 14</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Voice result -->
+          <a href="voice-memo-detail.html" style="text-decoration:none;display:block">
+            <div class="result-card">
+              <div class="result-type-badge">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/></svg>
+                VOICE MEMO
+              </div>
+              <div class="result-title">Sprint <span class="result-highlight">Planning</span> Notes</div>
+              <div class="result-waveform-mini">
+                <span class="played" style="height:8px"></span><span class="played" style="height:14px"></span><span class="played" style="height:10px"></span><span class="played" style="height:16px"></span><span class="played" style="height:7px"></span><span style="height:12px"></span><span style="height:18px"></span><span style="height:9px"></span><span style="height:14px"></span><span style="height:6px"></span><span style="height:15px"></span><span style="height:11px"></span>
+              </div>
+              <p class="result-snippet">…decided the <span class="result-highlight">planning</span> session needs a clearer agenda, starting with blockers before backlog review…</p>
+              <div class="result-meta">
+                <span style="font-family:var(--font-body);font-size:10px;color:var(--text-muted)">3:12 · Yesterday</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Chat result -->
+          <a href="ai-chat.html" style="text-decoration:none;display:block">
+            <div class="result-card">
+              <div class="result-type-badge">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                AI CHAT
+              </div>
+              <div class="result-title">Weekly <span class="result-highlight">planning</span> recap</div>
+              <p class="result-snippet">You: Can you summarise my <span class="result-highlight">planning</span> note and pull out tasks? · AI: Here are the key actions from your Weekly <span class="result-highlight">Planning</span>...</p>
+              <div class="result-meta">
+                <span style="font-family:var(--font-body);font-size:10px;color:var(--text-muted)">8 messages · Today, 9:30 am</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Note result 3 -->
+          <a href="note-editor.html" style="text-decoration:none;display:block">
+            <div class="result-card">
+              <div class="result-type-badge">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                NOTE
+              </div>
+              <div class="result-title">Travel <span class="result-highlight">Planning</span> — Tokyo 2026</div>
+              <p class="result-snippet">Itinerary notes, logistics, packing list. <span class="result-highlight">Planning</span> to depart mid-March if project wraps early...</p>
+              <div class="result-meta">
+                <span class="result-folder">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                  Personal
+                </span>
+                <span class="result-tag">Travel</span>
+                <span style="font-family:var(--font-body);font-size:10px;color:var(--text-muted);margin-left:auto">Feb 20</span>
+              </div>
+            </div>
+          </a>
+
+          <div style="height: 16px;"></div>
+
+        </div><!-- /screen-content -->
+
+        <!-- Tab bar -->
+        <div class="tab-bar">
+          <a href="note-list.html" class="tab-item active">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 4h5v7h7v9H6V4z"/></svg>
+            <span>Notes</span>
+          </a>
+          <a href="voice-memo-list.html" class="tab-item">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            <span>Voice</span>
+          </a>
+          <a href="chat-history.html" class="tab-item">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>AI</span>
+          </a>
+          <a href="settings.html" class="tab-item">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span>Settings</span>
+          </a>
+        </div>
+
+      </div><!-- /screen -->
+    </div><!-- /phone-frame -->
+  </div>
+
+</body>
+</html>

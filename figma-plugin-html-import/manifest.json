@@ -1,0 +1,13 @@
+{
+  "name": "HTML Import",
+  "id": "html-import-plugin",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["*"],
+    "reasoning": "Fetches HTML/CSS from user-provided URLs for import"
+  }
+}

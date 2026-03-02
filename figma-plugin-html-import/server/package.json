@@ -1,0 +1,15 @@
+{
+  "name": "h2f-render-server",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Local Puppeteer companion server for high-fidelity HTML→Figma rendering",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "puppeteer": "^24.0.0"
+  }
+}

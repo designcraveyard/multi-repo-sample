@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings — NoteBuddy</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <style>
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 16px 20px;
+      background: var(--surface-base);
+      border-bottom: 1px solid var(--border-muted);
+    }
+
+    .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--surface-brand-mid);
+      border: 2px solid var(--rust-200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--rust-600);
+      flex-shrink: 0;
+      font-style: italic;
+    }
+
+    .profile-info { flex: 1; }
+    .profile-name {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-primary);
+      letter-spacing: var(--tracking-tight);
+      font-style: italic;
+    }
+    .profile-email {
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .profile-edit {
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      color: var(--text-brand);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .settings-section {
+      background: var(--surface-base);
+      border-top: 1px solid var(--border-muted);
+      margin-top: 8px;
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border-muted);
+      cursor: pointer;
+    }
+    .setting-row:last-child { border-bottom: none; }
+
+    .setting-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: white;
+    }
+    .icon-rust { background: var(--rust-600); }
+    .icon-amber { background: #D97706; }
+    .icon-blue { background: #2563EB; }
+    .icon-plum { background: #7C3AED; }
+    .icon-slate { background: #475569; }
+    .icon-teal { background: #0D9488; }
+    .icon-rose { background: #E11D48; }
+    .icon-sage { background: #65A30D; }
+
+    .setting-label {
+      flex: 1;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+    }
+
+    .setting-value {
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin-right: 6px;
+    }
+
+    .setting-chevron {
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .plan-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      background: var(--surface-brand-mid);
+      color: var(--rust-700);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: var(--font-weight-semibold);
+      margin-right: 6px;
+    }
+
+    .version-footer {
+      padding: 20px 16px 8px;
+      text-align: center;
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+
+    .danger-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border-muted);
+      cursor: pointer;
+    }
+    .danger-row:last-child { border-bottom: none; }
+    .danger-label {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      color: #DC2626;
+    }
+  </style>
+</head>
+<body class="viewer">
+
+  <nav class="prototype-nav">
+    <span class="prototype-nav-label">NoteBuddy</span>
+    <a href="index.html">Hub</a>
+    <a href="note-list.html">Notes</a>
+    <a href="note-editor.html">Editor</a>
+    <a href="note-info.html">Note Info</a>
+    <a href="voice-memo-list.html">Voice</a>
+    <a href="voice-recorder.html">Recorder</a>
+    <a href="voice-memo-detail.html">Memo Detail</a>
+    <a href="ai-chat.html">AI Chat</a>
+    <a href="chat-history.html">History</a>
+    <a href="search-results.html">Search</a>
+    <a href="folder-manager.html">Folders</a>
+    <a href="tag-browser.html">Tags</a>
+    <a href="settings.html" class="active">Settings</a>
+  </nav>
+
+  <div class="phone-stage">
+    <div class="phone-frame">
+
+      <div class="status-bar">
+        <span class="status-time">9:41</span>
+        <div class="dynamic-island"></div>
+        <div class="status-icons">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="6" width="3" height="6" rx="1" fill="currentColor"/><rect x="4.5" y="4" width="3" height="8" rx="1" fill="currentColor"/><rect x="9" y="2" width="3" height="10" rx="1" fill="currentColor"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" stroke-opacity="0.35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><path d="M23 4v4a2 2 0 0 0 0-4z" fill="currentColor" opacity="0.4"/></svg>
+        </div>
+      </div>
+
+      <div class="screen">
+
+        <!-- Nav bar -->
+        <div class="nav-bar">
+          <div class="nav-bar-inner">
+            <div class="nav-title-large">Settings</div>
+          </div>
+        </div>
+
+        <div class="screen-content" style="padding-top:0;">
+
+          <!-- Profile -->
+          <div class="profile-header">
+            <div class="avatar">AV</div>
+            <div class="profile-info">
+              <div class="profile-name">Abhishek Verma</div>
+              <div class="profile-email">abhishek@noteme.app</div>
+            </div>
+            <span class="profile-edit">Edit</span>
+          </div>
+
+          <!-- Subscription -->
+          <div class="settings-section" style="margin-top:8px">
+            <div class="setting-row">
+              <div class="setting-icon icon-amber">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <span class="setting-label">NoteBuddy Pro</span>
+              <span class="plan-badge">PRO</span>
+              <svg class="setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+
+          <!-- Appearance -->
+          <div class="settings-section">
+            <div class="setting-row">
+              <div class="setting-icon icon-rust">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              </div>
+              <span class="setting-label">Appearance</span>
+              <span class="setting-value">Light</span>
+              <svg class="setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+            <div class="setting-row">
+              <div class="setting-icon" style="background:#374151;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><text x="4" y="17" font-family="serif" font-size="14" fill="white" stroke="none">A</text></svg>
+              </div>
+              <span class="setting-label">Editor Font</span>
+              <span class="setting-value">Cormorant</span>
+              <svg class="setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+            <div class="setting-row">
+              <div class="setting-icon icon-teal">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+              </div>
+              <span class="setting-label">Note Width</span>
+              <span class="setting-value">Comfortable</span>
+              <svg class="setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+
+          <!-- AI & Voice -->
+          <div class="settings-section">
+            <div class="setting-row">
+              <div class="setting-icon icon-plum">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <span class="setting-label">AI Model</span>
+              <span class="setting-value">GPT-4o</span>
+              <svg class="setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+            <div class="setting-row">
+              <div class="setting-icon icon-rust">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+              </div>
+              <span class="setting-label">Transcription Language</span>
+              <span class="setting-value">English</span>
+              <svg class="setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+            <div class="setting-row">
+              <div class="setting-icon icon-sage">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span class="setting-label">Auto-summarise Memos</span>
+              <div class="toggle on" style="transform:scale(0.78);transform-origin:right center"></div>
+            </div>
+          </div>
+
+          <!-- Sync & Storage -->
+          <div class="settings-section">
+            <div class="setting-row">
+              <div class="setting-icon icon-blue">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 17 21 12 16 7"/><polyline points="8 7 3 12 8 17"/></svg>
+              </div>
+              <span class="setting-label">iCloud Sync</span>
+              <div class="toggle on" style="transform:scale(0.78);transform-origin:right center"></div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-icon icon-slate">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              </div>
+              <span class="setting-label">Storage Used</span>
+              <span class="setting-value">124 MB of 5 GB</span>
+              <svg class="setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+            <div class="setting-row">
+              <div class="setting-icon icon-amber">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </div>
+              <span class="setting-label">Export All Notes</span>
+              <svg class="setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+
+          <!-- Notifications & Privacy -->
+          <div class="settings-section">
+            <div class="setting-row">
+              <div class="setting-icon icon-rose">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              </div>
+              <span class="setting-label">Notifications</span>
+              <span class="setting-value">Daily Reminders</span>
+              <svg class="setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+            <div class="setting-row">
+              <div class="setting-icon icon-slate">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <span class="setting-label">Privacy</span>
+              <svg class="setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+
+          <!-- Danger zone -->
+          <div class="settings-section" style="margin-top:8px">
+            <div class="danger-row">
+              <span class="danger-label">Sign Out</span>
+            </div>
+          </div>
+
+          <!-- Version -->
+          <div class="version-footer">NoteBuddy 1.0.0 (build 42)</div>
+
+          <div style="height: 8px;"></div>
+
+        </div><!-- /screen-content -->
+
+        <!-- Tab bar -->
+        <div class="tab-bar">
+          <a href="note-list.html" class="tab-item">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span>Notes</span>
+          </a>
+          <a href="voice-memo-list.html" class="tab-item">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            <span>Voice</span>
+          </a>
+          <a href="chat-history.html" class="tab-item">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>AI</span>
+          </a>
+          <a href="settings.html" class="tab-item active">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7zm7.43-2.49c.04-.32.07-.64.07-.97s-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1s.03.65.07.97l-2.11 1.66c-.19.15-.25.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.58 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66z"/></svg>
+            <span>Settings</span>
+          </a>
+        </div>
+
+      </div><!-- /screen -->
+    </div><!-- /phone-frame -->
+  </div>
+
+</body>
+</html>

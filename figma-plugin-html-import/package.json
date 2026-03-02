@@ -1,0 +1,15 @@
+{
+  "name": "figma-plugin-html-import",
+  "version": "1.0.0",
+  "description": "Import HTML/CSS into editable Figma layers",
+  "scripts": {
+    "build": "node esbuild.config.mjs",
+    "watch": "node esbuild.config.mjs --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.100.0",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.0"
+  }
+}

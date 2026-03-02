@@ -18,11 +18,15 @@ INCLUDE_ANDROID="${6:-true}"
 TEMPLATE_ORG="${7:-designcraveyard}"
 
 # Template repo mapping: new project dir suffix → template repo name
-declare -A TEMPLATE_MAP=(
-  ["web"]="multi-repo-nextjs"
-  ["ios"]="multi-repo-ios"
-  ["android"]="multi-repo-android"
-)
+# Using a function instead of associative array for bash 3.2 compatibility (macOS default)
+get_template_repo() {
+  case "$1" in
+    web) echo "multi-repo-nextjs" ;;
+    ios) echo "multi-repo-ios" ;;
+    android) echo "multi-repo-android" ;;
+    *) echo "" ;;
+  esac
+}
 TEMPLATE_ROOT_REPO="multi-repo-sample"
 
 # ── Pre-flight checks ─────────────────────────────────────────────────────
@@ -69,7 +73,8 @@ setup_platform_repo() {
     return
   fi
 
-  local template_repo="${TEMPLATE_MAP[$platform_key]}"
+  local template_repo
+  template_repo="$(get_template_repo "$platform_key")"
   local upstream_url="https://github.com/${TEMPLATE_ORG}/${template_repo}.git"
   local repo_url="https://github.com/${GITHUB_ORG}/${repo_name}"
 

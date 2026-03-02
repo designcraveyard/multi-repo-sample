@@ -408,18 +408,36 @@ these should only fit THIS app.]
 
 ---
 
-## Phase 7: Apply
+## Phase 7: Handoff to /generate-theme
 
-After writing the doc, summarise the identity in 2–3 sentences (use the theme.md narrative)
-and ask:
+After writing the doc, summarise the identity in 2–3 sentences (use the theme.md narrative),
+then present the handoff clearly:
 
-"Theme doc written. Ready to apply this palette to all platform files now?"
+> "Theme direction is locked in `docs/design/theme.md`. The next step is `/generate-theme`,
+> which will complete the full application."
+
+**What `/generate-theme` will do (tell the user this so they know what to expect):**
+
+1. **Core tokens** — palette, neutral, radius, and control style across all platforms
+   (pre-filled from the decisions just made here)
+2. **Shadow system** — designs and writes 7 shadow tokens based on your atmosphere choice;
+   adds them to `globals.css`, `DesignTokens.swift`, and `DesignTokens.kt`
+3. **Component group overrides** — lets you customize or lock styling decisions for 5 groups
+   (Actions, Selection, Forms, Feedback, Display) with optional per-component drill-down
+4. **Figma library push** — asks for your Figma file (advises duplicating BubblesKit),
+   pushes tokens + shadow swatches + component reference frames via figma-cli
+5. **Approval gate** — waits for you to review in Figma before touching any code files
+6. **Code write** — only after approval, writes all changes across web, iOS, and Android;
+   updates `docs/design-tokens.md` with the shadow section
+
+Ask:
+
+> "Ready to apply? I can invoke `/generate-theme` now — it will pick up everything from
+> `docs/design/theme.md` automatically."
 
 Options:
-- **Yes, apply now** — run `/generate-theme [brand] [neutral] --radius [preset]` immediately
-- **Not yet** — print the exact command to run later, then stop
-
-If applying: execute `/generate-theme`, report updated files.
+- **Yes, run /generate-theme now** — invoke it immediately
+- **Not yet** — print the command and stop: `/generate-theme`
 
 ---
 
