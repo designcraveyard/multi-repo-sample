@@ -45,6 +45,10 @@ If the screen already exists, report it and stop.
 If a Figma URL is present in `$ARGUMENTS`, extract the node ID and use the Figma MCP
 (`get_design_context`) to get the design spec before generating code. Apply design-first.
 
+### Step 3b: Read Design Guidelines
+
+Read `docs/design/design-guidelines.md` for layout, spacing, typography, and component usage standards. Apply them to the scaffold — particularly page padding, section spacing, typography pairings, and button hierarchy rules.
+
 ### Step 4: Create Next.js Page
 
 Create `multi-repo-nextjs/app/<kebab>/page.tsx`:
@@ -61,11 +65,11 @@ export const metadata: Metadata = {
 export default function <Pascal>Page() {
   return (
     <main
-      className="min-h-screen p-4 md:p-8 font-sans"
+      className="min-h-screen px-6 md:px-10 py-8 md:py-10 font-sans"
       style={{ background: 'var(--surfaces-base-default)', color: 'var(--typography-primary)' }}
     >
-      <div className="mx-auto max-w-4xl md:max-w-6xl">
-        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight mb-4 md:mb-6"><Title></h1>
+      <div className="mx-auto max-w-[1400px]">
+        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight mb-8 md:mb-10"><Title></h1>
         {/* TODO: implement <Pascal> UI */}
       </div>
     </main>
@@ -146,11 +150,11 @@ export default async function <Pascal>Page() {
 
   return (
     <main
-      className="min-h-screen p-4 md:p-8 font-sans"
+      className="min-h-screen px-6 md:px-10 py-8 md:py-10 font-sans"
       style={{ background: 'var(--surfaces-base-default)', color: 'var(--typography-primary)' }}
     >
-      <div className="mx-auto max-w-4xl md:max-w-6xl">
-        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight mb-4 md:mb-6"><Title></h1>
+      <div className="mx-auto max-w-[1400px]">
+        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight mb-8 md:mb-10"><Title></h1>
         {/* TODO: implement <Pascal> UI with data */}
       </div>
     </main>
@@ -171,14 +175,15 @@ struct <Pascal>View: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: CGFloat.spaceMD) {
+            VStack(alignment: .leading, spacing: CGFloat.spaceLG) {
                 // TODO: implement <Pascal> UI
                 // Use `sizeClass == .regular` to show wider layouts on iPad/desktop
                 Text("Content goes here")
                     .foregroundStyle(.secondary)
             }
-            .padding(CGFloat.spaceMD)
-            .frame(maxWidth: sizeClass == .regular ? 720 : .infinity)
+            .padding(.horizontal, CGFloat.spaceLG)
+            .padding(.vertical, CGFloat.spaceXL)
+            .frame(maxWidth: sizeClass == .regular ? 1400 : .infinity)
         }
         .appPageHeader(title: "<Title>")
     }

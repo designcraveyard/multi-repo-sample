@@ -35,13 +35,15 @@ standalone; this skill simply orchestrates them.
  3. deep_dive           → /deep-dive --batch
  4. design_ia           → Information Architecture (inlined)
  5. design_theme        → /define-theme
- 6. design_theme_apply  → /generate-theme [--skip-figma]
- 7. design_components   → Component Audit (inlined)
- 8. design_wireframes   → /wireframe --all [--html]
- 9. design_assets       → /asset-gen (optional)
-10. design_figma        → /send-to-figma + /figma-design (skip if --skip-figma)
-11. schema              → /schema-discovery
-12. build               → /build-feature (per Must-Have feature)
+ 6. design_stylescape   → /stylescape
+ 7. design_theme_apply  → /generate-theme [--skip-figma]
+ 8. design_components   → Component Audit (inlined)
+ 9. design_wireframes   → /wireframe --all [--html]
+10. design_ios_mockups  → /ios-design (optional)
+11. design_assets       → /asset-gen (optional)
+12. design_figma        → /send-to-figma + /figma-design (skip if --skip-figma)
+13. schema              → /schema-discovery
+14. build               → /build-feature (per Must-Have feature)
 ```
 
 ---
@@ -78,7 +80,8 @@ standalone; this skill simply orchestrates them.
   "flags": {
     "skip_figma": false,
     "platforms": ["web", "ios", "android"],
-    "has_supabase": true
+    "has_supabase": true,
+    "ios_icon_system": "phosphor"
   },
   "phases": {
     "scaffold":           { "status": "done", "completed_at": "..." },
@@ -86,9 +89,11 @@ standalone; this skill simply orchestrates them.
     "deep_dive":          { "status": "done", "completed_at": "...", "expanded": ["notes", "settings"] },
     "design_ia":          { "status": "in_progress" },
     "design_theme":       { "status": "pending" },
+    "design_stylescape":  { "status": "pending" },
     "design_theme_apply": { "status": "pending" },
     "design_components":  { "status": "pending" },
     "design_wireframes":  { "status": "pending" },
+    "design_ios_mockups": { "status": "pending" },
     "design_assets":      { "status": "pending" },
     "design_figma":       { "status": "pending" },
     "schema":             { "status": "pending" },
@@ -124,7 +129,16 @@ standalone; this skill simply orchestrates them.
 
 3. Detect `has_supabase` by checking for `.env.local` with `SUPABASE_URL` or `supabase/` directory.
 
-4. Create `pipeline.json` with scaffold phase marked `done` and all others `pending`.
+4. Detect `ios_icon_system`:
+   - If `scaffold.config.json` exists, read `parameters.ios.IOS_ICON_SYSTEM.default` (or the active value)
+   - If platforms include iOS but no config found, ask via `AskUserQuestion`:
+     ```
+     "Which icon system does the iOS app use?"
+     Options: Phosphor Icons (default) / SF Symbols
+     ```
+   - Set `flags.ios_icon_system` to `"phosphor"` or `"sf-symbols"`
+
+5. Create `pipeline.json` with scaffold phase marked `done` and all others `pending`.
 
 5. Determine which Must-Have features exist by reading `docs/mvp-matrix.md` (if it exists) or `docs/PRDs/` filenames.
 
@@ -143,9 +157,11 @@ standalone; this skill simply orchestrates them.
      [done]     Deep Dive (4 PRDs expanded)
      [current]  Information Architecture
      [pending]  Theme Definition
+     [pending]  Stylescape
      [pending]  Theme Application
      [pending]  Component Audit
      [pending]  Wireframes
+     [pending]  iOS Mockups (optional)
      [pending]  Assets (optional)
      [pending]  Schema Design
      [pending]  Build Features
@@ -209,10 +225,17 @@ Before starting each phase, run these checks. Use `Glob` and `Grep` tools.
 - Grep for "Screen Inventory" or "screen inventory" in the IA file
 - **Fix:** "The IA phase needs to run first (creates the screen inventory)."
 
+### Before `design_stylescape`
+- `docs/design/theme.md` exists
+- Grep for "## Candidates" in theme.md (must have candidates section with at least 2 `### Candidate` blocks)
+- **Warn** (not block): if `.env.local` lacks `OPENAI_API_KEY` — "Images will use CSS placeholders. Add OPENAI_API_KEY for AI-generated mood imagery."
+- **Fix:** "Run `/define-theme` to create theme candidates."
+
 ### Before `design_theme_apply`
 - `docs/design/theme.md` exists
-- Grep for "Brand palette" or "brand palette" in theme.md
-- **Fix:** "Run `/define-theme` to create the theme document."
+- Grep for "Brand palette" or "brand palette" in theme.md (winner must be promoted to main sections)
+- Grep for "## Candidates" should NOT exist (stylescape should have promoted the winner and removed this section)
+- **Fix:** "Run `/stylescape` to pick a winning theme direction."
 
 ### Before `design_components`
 - `docs/design/theme.md` exists
@@ -223,7 +246,15 @@ Before starting each phase, run these checks. Use `Glob` and `Grep` tools.
 - `docs/design/component-map.md` exists
 - Grep for "|" (table rows) in component-map.md
 - `docs/design/information-architecture.md` exists
+- `docs/design/design-guidelines.md` exists — **Fix:** "Create `docs/design/design-guidelines.md` with layout and spacing standards. Run `/design-guideline` for reference, or copy from the template."
 - **Fix:** "Run the component audit phase to create the component map."
+
+### Before `design_ios_mockups`
+- If `flags.platforms` does not include `"ios"` → auto-skip with reason "no iOS platform"
+- `docs/design/theme.md` exists (winner must be promoted — no `## Candidates` section)
+- `docs/design/information-architecture.md` exists
+- `docs/wireframes/*.html` matches >= 1 file (wireframes serve as layout reference)
+- **Fix:** "Complete the wireframe phase first. iOS mockups build on wireframe layouts and theme direction."
 
 ### Before `design_assets`
 - `docs/design/theme.md` exists
@@ -314,13 +345,25 @@ This phase is inlined — it does NOT invoke a separate skill. Execute these ste
 
 **Invoke:** `/define-theme`
 
-This is a complex standalone skill (550 lines, 7 interactive phases). The pipeline invokes it inline and waits for it to complete. After `/define-theme` writes `docs/design/theme.md`:
+This is a complex standalone skill (550+ lines, 7 interactive phases). The pipeline invokes it inline and waits for it to complete. After `/define-theme` writes `docs/design/theme.md` with 3 candidates:
 
 1. Verify theme.md was created
-2. Update pipeline.json
-3. Show transition prompt — next is Theme Application
+2. Verify `## Candidates` section exists with at least 2 candidate blocks
+3. Update pipeline.json
+4. Show transition prompt — next is Stylescape
 
-### Phase 6: design_theme_apply
+### Phase 6: design_stylescape
+
+**Invoke:** `/stylescape`
+
+This skill generates visual mood boards for each theme candidate and lets the user pick a winner. After `/stylescape` completes:
+
+1. Verify theme.md was updated (Candidates section removed, winner promoted to main sections)
+2. Verify stylescape HTML files exist in `docs/design/stylescapes/`
+3. Update pipeline.json
+4. Show transition prompt — next is Theme Application
+
+### Phase 7: design_theme_apply (was Phase 6)
 
 **Check `flags.skip_figma`:**
 - If true → **invoke:** `/generate-theme --skip-figma`
@@ -331,7 +374,7 @@ After it completes:
 2. Update pipeline.json
 3. Show transition prompt
 
-### Phase 7: design_components (Inlined)
+### Phase 8: design_components (Inlined)
 
 This phase is inlined. Execute these steps directly:
 
@@ -356,7 +399,7 @@ This phase is inlined. Execute these steps directly:
 - Update pipeline.json and tracker.md
 - Show transition prompt
 
-### Phase 8: design_wireframes
+### Phase 9: design_wireframes
 
 **Check `flags.skip_figma`:**
 - If true → **invoke:** `/wireframe --all --html`
@@ -367,7 +410,28 @@ After it completes:
 2. Update pipeline.json
 3. Show transition prompt
 
-### Phase 9: design_assets (Optional)
+### Phase 10: design_ios_mockups (Optional)
+
+**Auto-skip check:** If `flags.platforms` does not include `"ios"`:
+- Mark phase as `skipped` with reason "no iOS platform"
+- Proceed to next phase
+
+Before invoking, ask the user:
+```
+Using AskUserQuestion:
+- "Generate iOS 26 Liquid Glass screen mockups now?"
+  Options:
+  - Yes — run /ios-design for key screens (iPhone + iPad HTML mockups)
+  - Skip — generate iOS mockups later (or never)
+```
+
+- If **yes** → **invoke:** `/ios-design --both` for each key screen (2-3 from the IA screen inventory — typically a list screen, a detail screen, and a unique feature screen)
+  - After each screen completes, verify the HTML file was created in `docs/design/ios-mockups/`
+- If **skip** → mark phase as `skipped` with reason "user chose to skip"
+
+Update pipeline.json and show transition prompt.
+
+### Phase 11: design_assets (Optional)
 
 Before invoking, ask the user:
 ```
@@ -384,7 +448,7 @@ Using AskUserQuestion:
 
 Update pipeline.json and show transition prompt.
 
-### Phase 10: design_figma
+### Phase 12: design_figma
 
 **Auto-skip check:** If `flags.skip_figma` is true:
 - Mark phase as `skipped` with reason "--skip-figma mode"
@@ -398,7 +462,7 @@ Update pipeline.json and show transition prompt.
    - Renders full-fidelity screen frames in Figma
 3. Update pipeline.json and show transition prompt
 
-### Phase 11: schema
+### Phase 13: schema
 
 **Auto-skip check:** If `flags.has_supabase` is false:
 - Mark phase as `skipped` with reason "no Supabase configured (local-first mode)"
@@ -410,7 +474,7 @@ Update pipeline.json and show transition prompt.
 - After it completes, update pipeline.json and tracker.md
 - Show transition prompt
 
-### Phase 12: build
+### Phase 14: build
 
 This phase loops over each Must-Have feature.
 
@@ -442,9 +506,11 @@ This phase loops over each Must-Have feature.
        [done] Deep Dive (N PRDs expanded)
        [done] Information Architecture
        [done] Theme Definition
+       [done] Stylescape
        [done] Theme Application
        [done] Component Audit
        [done] Wireframes
+       [done/skipped] iOS Mockups
        [done/skipped] Assets
        [done/skipped] Figma Design
        [done/skipped] Schema
@@ -467,7 +533,7 @@ After EVERY phase completion, execute this:
    - **product_discovery done** → set "Product Definition" phase to Done/100%; add features to checklist
    - **deep_dive done** → mark each feature's "PRD written" as checked with "(expanded)"
    - **design_ia done** → start "Design" phase percentage tracking
-   - **design_theme + design_theme_apply + design_components + design_wireframes done** → set "Design" = Done/100%
+   - **design_theme + design_stylescape + design_theme_apply + design_components + design_wireframes + design_ios_mockups done** → set "Design" = Done/100%
    - **schema done** → set "Schema Design" = Done/100%; mark each feature's "Schema applied"
    - **build (per feature)** → mark platform checkboxes; when all platforms done, mark feature complete
 3. Recalculate overall completion:
@@ -521,7 +587,7 @@ Claude: [Reads pipeline.json, shows progress, resumes from design_wireframes]
 ### Code-First Mode
 ```
 User: /pipeline --skip-figma
-Claude: [Sets flag, auto-skips phases 10, adapts phases 6/8 to skip Figma CLI]
+Claude: [Sets flag, auto-skips phase 12, adapts phases 7/9 to skip Figma CLI]
 ```
 
 ### Skip to Specific Phase

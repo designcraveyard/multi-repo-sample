@@ -184,6 +184,59 @@ if [ ! -d "$TARGET_DIR/supabase" ]; then
   done
 fi
 
+# 4b. Check SF Symbols conversion (if chosen)
+if [ "$INCLUDE_IOS" = "true" ]; then
+  IOS_DIR="$TARGET_DIR/${APP_SLUG}-ios"
+  SF_HELPER=$(find "$IOS_DIR" -name "SFSymbolIconHelper.swift" -type f 2>/dev/null | head -1)
+
+  if [ -n "$SF_HELPER" ]; then
+    echo ""
+    echo "Checking SF Symbols conversion..."
+
+    # No PhosphorSwift imports should remain
+    PH_IMPORTS=$(grep -rl "import PhosphorSwift" "$IOS_DIR" --include='*.swift' 2>/dev/null || true)
+    if [ -n "$PH_IMPORTS" ]; then
+      fail "PhosphorSwift import still present in: $(echo "$PH_IMPORTS" | head -3 | xargs -I{} basename {})"
+    else
+      pass "No PhosphorSwift imports remain"
+    fi
+
+    # No Ph.<name>.<weight> patterns should remain
+    PH_USAGE=$(grep -rlE 'Ph\.\w+\.\w+' "$IOS_DIR" --include='*.swift' 2>/dev/null || true)
+    if [ -n "$PH_USAGE" ]; then
+      fail "Ph.<name>.<weight> patterns still present in: $(echo "$PH_USAGE" | head -3 | xargs -I{} basename {})"
+    else
+      pass "No Ph.* icon patterns remain"
+    fi
+
+    # PhosphorSwift should not be in pbxproj
+    PBXPROJ="$IOS_DIR/${APP_SLUG}-ios.xcodeproj/project.pbxproj"
+    if [ -f "$PBXPROJ" ]; then
+      if grep -q "PhosphorSwift\|phosphor-icons" "$PBXPROJ"; then
+        fail "PhosphorSwift references still in pbxproj"
+      else
+        pass "No PhosphorSwift in pbxproj"
+      fi
+
+      if plutil -lint "$PBXPROJ" >/dev/null 2>&1; then
+        pass "pbxproj valid after icon system conversion"
+      else
+        fail "pbxproj invalid after icon system conversion"
+      fi
+    fi
+
+    # PhosphorIconHelper.swift should NOT exist
+    PH_HELPER=$(find "$IOS_DIR" -name "PhosphorIconHelper.swift" -type f 2>/dev/null | head -1)
+    if [ -n "$PH_HELPER" ]; then
+      fail "PhosphorIconHelper.swift not removed"
+    else
+      pass "PhosphorIconHelper.swift removed"
+    fi
+
+    pass "SFSymbolIconHelper.swift present"
+  fi
+fi
+
 # 5. Check infrastructure preserved (OpenAI/Audio should exist for iOS)
 if [ "$INCLUDE_IOS" = "true" ]; then
   IOS_DIR="$TARGET_DIR/${APP_SLUG}-ios"

@@ -22,16 +22,19 @@ Ask the user these questions using `AskUserQuestion` (batch 2-3 related question
 **Batch 2 — Platforms & Infrastructure:**
 4. Which platforms? (Web / iOS / Android / All)
 5. Apple Development Team ID? (if iOS selected, otherwise skip)
-6. Do you have a Supabase project? (yes → ask for project ref + anon key, no → skip)
+6. iOS icon library? (if iOS selected, otherwise skip)
+   - Phosphor Icons (default) — cross-platform consistency with web and Android
+   - SF Symbols — native iOS, faster loading, built-in animations
+7. Do you have a Supabase project? (yes → ask for project ref + anon key, no → skip)
    - If no Supabase: app will be scaffolded in **local-first mode** — all auth, Supabase client libraries, and login screens are stripped automatically
    - Users often paste the full `.env` block — extract from it: project ref = slug in `NEXT_PUBLIC_SUPABASE_URL` (e.g. `https://<ref>.supabase.co`), anon key = `NEXT_PUBLIC_SUPABASE_ANON_KEY` value
-7. GitHub org/username? (default: designcraveyard)
-8. Create GitHub repos now? (requires `gh` CLI — creates private repos, sets up submodules + upstream tracking to this template)
+8. GitHub org/username? (default: designcraveyard)
+9. Create GitHub repos now? (requires `gh` CLI — creates private repos, sets up submodules + upstream tracking to this template)
    - YES → scaffold.sh will call git-setup.sh automatically
    - NO → pass `--skip-git` to scaffold.sh; user handles git setup manually later
 
 **Batch 3 — Design:**
-9. Brand palette? Show these options:
+10. Brand palette? Show these options:
    - zinc (default, neutral gray)
    - indigo (blue-purple)
    - rose (pink-red)
@@ -40,14 +43,14 @@ Ask the user these questions using `AskUserQuestion` (batch 2-3 related question
    - violet (purple)
    - amber (warm yellow)
    - Other (show full list: slate, gray, zinc, neutral, stone, red, orange, amber, yellow, lime, green, emerald, teal, cyan, sky, blue, indigo, violet, purple, fuchsia, pink, rose)
-10. Corner radius style?
+11. Corner radius style?
    - none (sharp corners)
    - sm (subtle rounding)
    - md (default, moderate)
    - lg (rounded)
    - xl (very rounded)
    - full (pill/circle)
-11. Selection component style?
+12. Selection component style?
    - brand (colored checkboxes, switches, radio buttons)
    - neutral (gray selection controls)
 
@@ -64,6 +67,7 @@ cd <template-root>
   --platforms "<platforms>" \
   --github-org "<org>" \
   --team-id "<teamId>" \
+  --ios-icons "<phosphor|sf-symbols>" \
   --supabase-ref "<ref>" \
   --supabase-key "<key>" \
   --brand "<palette>" \
@@ -72,6 +76,8 @@ cd <template-root>
   --selection "<selection>" \
   --skip-git  # Only if user chose NOT to create GitHub repos
 ```
+
+**Omit `--ios-icons`** when the user chose Phosphor (the default). Only pass `--ios-icons sf-symbols` when SF Symbols is explicitly chosen.
 
 **Do NOT pass** `--supabase-ref ""` or `--supabase-key ""` with empty strings — omit them entirely when the user chose no Supabase. The script detects empty `SUPABASE_REF` to trigger local-first mode.
 
@@ -84,7 +90,7 @@ cd <template-root>
 3. The validator now auto-skips developer name and team-id checks when they match the user's values (no more false positives for same-value reuse). If other failures appear, investigate manually with `plutil -lint` and `grep`.
 4. For iOS local-first scaffolds, always verify the critical files:
    - `plutil -lint` on both `project.pbxproj` and `Info.plist`
-   - `grep -c "isa = XCSwiftPackageProductDependency"` should return 1 (PhosphorSwift only)
+   - `grep -c "isa = XCSwiftPackageProductDependency"` should return 1 (PhosphorSwift) or 0 (if SF Symbols chosen)
 5. Initialize `tracker.md` in the new project using the tracker template
 6. Ask: "Project scaffolded! Ready to start building?"
    - If yes → tell them to run `/pipeline` in a Claude session opened at the new project directory. This chains all discovery phases (product, design, schema, build) with guided transitions and checkpoint validation.
@@ -116,6 +122,7 @@ The pipeline runs 8 steps (see `scripts/scaffold.sh`):
 | 4 | platform-select.sh | Remove excluded platform directories |
 | 4b | strip-auth.sh | **If no Supabase:** strip auth, Supabase, GoogleSignIn from all platforms |
 | 5 | clean-demo-content.sh | Remove demo views; replace ContentView.swift with clean starter |
+| 5b | strip-phosphor.sh | **If SF Symbols chosen:** convert iOS icons from PhosphorSwift to SF Symbols |
 | 6 | config-writer.sh | Generate .env.local, tracker.md, etc. |
 | 7 | theme-generator.js | Swap brand/neutral palettes with accessibility-aware semantic remapping |
 | 8 | npm install | Install web dependencies (if web included) |
@@ -208,7 +215,7 @@ A correctly scaffolded project should have:
 
 After `strip-auth.sh`, the iOS project should have:
 
-**`project.pbxproj`:** Only PhosphorSwift package remains — one `XCRemoteSwiftPackageReference`, one `XCSwiftPackageProductDependency`. Validate with `plutil -lint`.
+**`project.pbxproj`:** If Phosphor Icons: only PhosphorSwift package remains — one `XCRemoteSwiftPackageReference`, one `XCSwiftPackageProductDependency`. If SF Symbols: zero icon SPM packages. Validate with `plutil -lint`.
 
 **`Info.plist`:** Only `NSCameraUsageDescription` and `NSMicrophoneUsageDescription` keys. No `CFBundleURLTypes`, `GIDClientID`, or `NSAppTransportSecurity`. Validate with `plutil -lint`.
 

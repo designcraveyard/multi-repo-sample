@@ -1,0 +1,183 @@
+/**
+ * SFSymbolIconHelper.swift
+ *
+ * SwiftUI size-token layer for SF Symbols.
+ *
+ * Web counterpart: app/components/icons/Icon.tsx  (<Icon name="House" />)
+ * Note: Web and Android use Phosphor Icons; iOS uses SF Symbols.
+ *
+ * ── How SF Symbols work ──────────────────────────────────────────────────
+ *
+ * Icons are accessed as  Image(systemName: "<name>")  — a standard SwiftUI
+ * Image.  Chain font/frame/foregroundStyle modifiers to style them.
+ *
+ * ── Usage ────────────────────────────────────────────────────────────────
+ *
+ *   // Preferred: use IconSize tokens for consistent sizing
+ *   Image(systemName: "house").iconSize(.md)
+ *   Image(systemName: "heart.fill").iconSize(.lg).iconColor(.appTextError)
+ *   Image(systemName: "arrow.right").iconSize(.sm).fontWeight(.bold)
+ *
+ *   // With default color (inherits from environment)
+ *   Image(systemName: "bell").iconSize(.md)
+ *
+ *   // Accessible icon: chain .iconAccessibility(label:)
+ *   Image(systemName: "bell").iconSize(.md).iconAccessibility(label: "Notifications")
+ *
+ *   // Weight via fontWeight modifier
+ *   Image(systemName: "checkmark").iconSize(.md).fontWeight(.bold)
+ *
+ * ── Size tokens (mirrors web IconSize) ───────────────────────────────────
+ *   .xs  = 12pt    .sm = 16pt    .md = 20pt (default)
+ *   .lg  = 24pt    .xl = 32pt
+ *
+ * ── Weight mapping (from Phosphor) ───────────────────────────────────────
+ *   .thin → .fontWeight(.thin)       .light → .fontWeight(.light)
+ *   .regular → (default)             .bold → .fontWeight(.bold)
+ *   .fill → append ".fill" to name   .duotone → .symbolRenderingMode(.hierarchical)
+ *
+ * ── Letter-spacing note ──────────────────────────────────────────────────
+ *   SwiftUI doesn't bake tracking into a View. When using Overline typography
+ *   alongside icons, apply `.tracking(1)` or `.tracking(2)` on the Text node.
+ */
+
+import SwiftUI
+
+// MARK: - Icon Size Token
+
+/// Named size aliases that mirror the web IconSize tokens.
+/// xs=12  sm=16  md=20 (default)  lg=24  xl=32
+public enum IconSize: CGFloat {
+    case xs  = 12
+    case sm  = 16
+    case md  = 20
+    case lg  = 24
+    case xl  = 32
+}
+
+// MARK: - View extension — sizing and color helpers
+
+public extension View {
+
+    /// Apply a token-based icon size.
+    /// Use on any  Image(systemName:)  icon view.
+    ///
+    ///   Image(systemName: "house").iconSize(.md)
+    ///   Image(systemName: "heart.fill").iconSize(.lg).iconColor(.appTextError)
+    func iconSize(_ size: IconSize) -> some View {
+        self
+            .font(.system(size: size.rawValue))
+            .frame(width: size.rawValue, height: size.rawValue)
+    }
+
+    /// Apply an icon size using raw pt value.
+    /// Prefer the  `iconSize(_:IconSize)`  overload when possible.
+    func iconSize(_ pt: CGFloat) -> some View {
+        self
+            .font(.system(size: pt))
+            .frame(width: pt, height: pt)
+    }
+
+    /// Apply a color to an SF Symbol icon.
+    /// Equivalent to `.foregroundStyle()` but discoverable alongside `.iconSize()`.
+    ///
+    ///   Image(systemName: "exclamationmark.triangle.fill").iconSize(.sm).iconColor(.appTextError)
+    func iconColor(_ color: Color) -> some View {
+        self.foregroundStyle(color)
+    }
+
+    /// Make an icon accessible.
+    /// - Parameter label: VoiceOver label. Passing `nil` marks the icon as decorative.
+    func iconAccessibility(label: String?) -> some View {
+        self
+            .accessibilityLabel(label ?? "")
+            .accessibilityHidden(label == nil)
+    }
+}
+
+// MARK: - Preview
+
+#if DEBUG
+#Preview("SF Symbol icon tokens") {
+    ScrollView {
+        VStack(alignment: .leading, spacing: CGFloat.space6) {
+
+            // ── Size tokens ───────────────────────────────────────────────
+            Text("Size tokens").font(.appTitleSmall)
+
+            HStack(spacing: CGFloat.space4) {
+                VStack(spacing: CGFloat.space2) {
+                    Image(systemName: "house").iconSize(.xs)
+                    Text("xs").font(.appCaptionSmall)
+                }
+                VStack(spacing: CGFloat.space2) {
+                    Image(systemName: "house").iconSize(.sm)
+                    Text("sm").font(.appCaptionSmall)
+                }
+                VStack(spacing: CGFloat.space2) {
+                    Image(systemName: "house").iconSize(.md)
+                    Text("md").font(.appCaptionSmall)
+                }
+                VStack(spacing: CGFloat.space2) {
+                    Image(systemName: "house").iconSize(.lg)
+                    Text("lg").font(.appCaptionSmall)
+                }
+                VStack(spacing: CGFloat.space2) {
+                    Image(systemName: "house").iconSize(.xl)
+                    Text("xl").font(.appCaptionSmall)
+                }
+            }
+
+            Divider()
+
+            // ── Weight variants ───────────────────────────────────────────
+            Text("Weight variants").font(.appTitleSmall)
+
+            HStack(spacing: CGFloat.space4) {
+                VStack(spacing: CGFloat.space2) {
+                    Image(systemName: "heart").iconSize(.lg).fontWeight(.thin)
+                    Text("thin").font(.appCaptionSmall)
+                }
+                VStack(spacing: CGFloat.space2) {
+                    Image(systemName: "heart").iconSize(.lg).fontWeight(.light)
+                    Text("light").font(.appCaptionSmall)
+                }
+                VStack(spacing: CGFloat.space2) {
+                    Image(systemName: "heart").iconSize(.lg)
+                    Text("regular").font(.appCaptionSmall)
+                }
+                VStack(spacing: CGFloat.space2) {
+                    Image(systemName: "heart").iconSize(.lg).fontWeight(.bold)
+                    Text("bold").font(.appCaptionSmall)
+                }
+                VStack(spacing: CGFloat.space2) {
+                    Image(systemName: "heart.fill").iconSize(.lg)
+                    Text("fill").font(.appCaptionSmall)
+                }
+                VStack(spacing: CGFloat.space2) {
+                    Image(systemName: "heart").iconSize(.lg).symbolRenderingMode(.hierarchical)
+                    Text("hierarchical").font(.appCaptionSmall)
+                }
+            }
+
+            Divider()
+
+            // ── Color tokens ──────────────────────────────────────────────
+            Text("Color tokens").font(.appTitleSmall)
+
+            HStack(spacing: CGFloat.space4) {
+                Image(systemName: "exclamationmark.triangle.fill").iconSize(.lg).iconColor(.appTextError)
+                Image(systemName: "checkmark.circle.fill").iconSize(.lg).iconColor(.appTextSuccess)
+                Image(systemName: "info.circle.fill").iconSize(.lg).iconColor(.appTextAccent)
+            }
+
+            Divider()
+
+            // ── Accessibility ─────────────────────────────────────────────
+            Text("Accessible icon").font(.appTitleSmall)
+            Image(systemName: "bell").iconSize(.lg).iconAccessibility(label: "Notifications")
+        }
+        .padding(CGFloat.space6)
+    }
+}
+#endif

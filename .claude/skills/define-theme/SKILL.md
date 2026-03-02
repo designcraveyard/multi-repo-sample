@@ -26,8 +26,8 @@ is `/generate-theme` (palette execution). The output is `docs/design/theme.md`, 
 
 **Skill chain:**
 ```
-/design-discovery  →  /define-theme  →  /generate-theme  →  /figma-design
-  (IA + screens)      (identity spec)    (apply to code)    (render screens)
+/design-discovery  →  /define-theme  →  /stylescape      →  /generate-theme  →  /figma-design
+  (IA + screens)      (3 candidates)    (visual boards)      (apply winner)      (render screens)
 ```
 
 ## Arguments
@@ -94,12 +94,12 @@ Before asking anything:
 
 ---
 
-## Phase 1.5: Aesthetic Archetype (Claude synthesis, no question yet)
+## Phase 1.5: Aesthetic Archetype — 3 Candidates (Claude synthesis)
 
-**Do NOT ask a question.** Based on Phase 1, Claude synthesises a recommendation as narrative,
-then asks the user to confirm it.
+**Do NOT ask a question yet.** Based on Phase 1, Claude synthesises THREE directions as a
+narrative, then asks the user to confirm the set.
 
-**Archetype mapping:**
+**Archetype mapping (primary + alternative):**
 
 | Personality + Mood | Primary archetype | Alternative |
 |---|---|---|
@@ -112,22 +112,47 @@ then asks the user to confirm it.
 | Clean + Focused clarity | **Technical utility** — tight grid, data-forward, monospace accents, zero decoration | **Arc-style** — utility that is secretly beautiful underneath |
 | Clean + Sharp precision | **Hyperminimal** — maximum reduction; every element must justify its existence | **Crystalline** — minimal but with one sharp geometric signature |
 
-**Write the recommendation as a specific narrative**, for example:
-> "Given **Warm & approachable + Warm energy**, I'd point you toward **Warm & organic** —
-> rounded, inviting, with subtle depth and a natural accent color. Think Day One: nothing
-> flashy, but every surface feels considered. The alternative is **Soft editorial** if you
-> want a slightly more composed, less bubbly feel. I'd start with Warm & organic."
+**Wild card mapping:** Pick an archetype from a DIFFERENT personality row that creates
+interesting tension. The wild card should be unexpected but coherent with the user's mood:
+
+| Personality + Mood | Wild card archetype | Rationale |
+|---|---|---|
+| Calm + Focused clarity | Technical utility | "focused" maps across rows — clean utility serves clarity |
+| Calm + Quiet confidence | Luxury minimal (if not alt) OR Hyperminimal | push the premium feel further |
+| Bold + Focused clarity | High-contrast expressive | bold + focused can also be dramatic |
+| Bold + Sharp precision | Bold geometric | strong shapes channel the energy differently |
+| Warm + Warm energy | Soft editorial | warmth channeled through type rather than shape |
+| Warm + Quiet confidence | Editorial/refined | elevate warmth into something compositional |
+| Clean + Focused clarity | Brutally minimal | "clean" pushed to its logical extreme |
+| Clean + Sharp precision | Technical utility | structured precision with a functional twist |
+
+**Write the recommendation as a specific narrative**, presenting all 3 as a set:
+> "Given **Warm & approachable + Warm energy**, here are 3 directions to explore:
+>
+> **1. Warm & organic** — rounded, inviting, with subtle depth and a natural accent color.
+> Think Day One: nothing flashy, but every surface feels considered.
+>
+> **2. Soft editorial** — warm grays, refined type, gentle shadows. Same warmth but channeled
+> through composition and typography rather than shape.
+>
+> **3. Playful & tactile** (wild card) — the bubbly, energetic cousin. Pushes the warmth
+> further into personality and delight. Think Duolingo meets Day One."
 
 Then ask:
 
-**Q3 — Aesthetic archetype (header: "Aesthetic"):** "Does this feel right?"
-- [Primary archetype] — [short description]
-- [Alternative archetype] — [short description]
-- Something different (describe it)
+**Q3 — Confirm 3 directions (header: "Directions"):** "Here are 3 directions I'd explore. Confirm, swap one out, or describe a replacement."
+- **All 3 look good** — explore these in stylescapes
+- **Swap [weakest]** — replace it (describe what you'd prefer)
+- **Replace one with something specific** — describe it
 
 ---
 
 ## Phase 2: Color & Typography Direction
+
+> **3-candidate mode:** The user answers preference questions once. Claude internally
+> synthesizes archetype-specific interpretations for each of the 3 candidates. Do NOT
+> show per-candidate breakdowns to the user during Q&A — keep it concise. The per-candidate
+> details are written into the `## Candidates` section of theme.md in Phase 6.
 
 Generate palette recommendations with rationale before asking. Use this mapping:
 
@@ -372,6 +397,36 @@ Synthesise all answers into the theme document.
 
 ---
 
+## Icon Style
+
+| Setting | Value |
+|---|---|
+| Weight | [thin / light / regular / bold / fill] |
+| Character | [precise line / rounded soft / geometric / expressive] |
+| Usage philosophy | [minimal — icons supplement text / icon-forward — icons as primary navigation] |
+
+---
+
+## Illustration Direction
+
+| Setting | Value |
+|---|---|
+| Style | [none / flat geometric / organic hand-drawn / sharp 2D+3D / abstract minimal] |
+| Color approach | [monochrome / brand-tinted / full-color / duotone] |
+| Usage | [empty states only / section headers / decorative throughout / hero moments] |
+
+---
+
+## Image Treatment
+
+| Setting | Value |
+|---|---|
+| Photography style | [high contrast / warm saturated / desaturated editorial / none — illustration only] |
+| Overlay treatment | [none / gradient fade / brand tint / grain texture] |
+| Shape masking | [rectangular / rounded / circular / organic blob] |
+
+---
+
 ## Style Descriptors
 
 [12–18 adjectives/phrases defining the visual language. Used by `/figma-design` for
@@ -406,81 +461,105 @@ these should only fit THIS app.]
 
 ---
 
+## Candidates
+
+> 3 directions to explore. Run `/stylescape` to see them visualized.
+> After picking one, `/stylescape` will finalize theme.md.
+
+### Candidate 1: [Archetype Name]
+| Attribute | Value |
+|---|---|
+| Archetype | [name] |
+| Brand palette | [Tailwind name] + hex swatches |
+| Neutral | [name] |
+| Display font | [font name] |
+| Body font | [font name] |
+| Shape | [pill/rounded/sharp + radius values] |
+| Atmosphere | [flat/elevation/glass/atmospheric] |
+| Icon weight | [regular/light/bold/fill] |
+| Icon character | [precise/rounded/geometric/expressive] |
+| Illustration | [style + color approach] |
+| Image treatment | [photography + overlay + masking] |
+| Shadow | [none/hairline/shaped/dramatic] |
+| Texture | [none/grain/pattern/mesh] |
+| Motion | [minimal/purposeful/expressive] |
+| Signature moment | [the unforgettable thing] |
+| In 3 words | [adjective, adjective, adjective] |
+
+> [2-sentence narrative for this direction]
+
+**Style descriptors:** [6-8 vivid phrases specific to this candidate]
+
+### Candidate 2: [Archetype Name]
+[same structure as Candidate 1]
+
+### Candidate 3: [Archetype Name]
+[same structure as Candidate 1]
+
+---
+
 ## Next Steps
 
-**If coming from /design-discovery:**
-1. Component audit — verify registry matches IA screens
-2. Explore layout variations: `/wireframe`
-3. Generate assets: `/asset-gen`
-4. Render Figma screens: `/figma-design`
-5. Apply theme to code: `/generate-theme [brand] [neutral] --radius [preset]`
-
-**If standalone:**
-1. Apply palette to all platforms:
-   `/generate-theme [brand] [neutral] --radius [preset]`
-2. Push updated tokens to Figma:
-   `node figma-cli/src/index.js tokens preset shadcn`
-3. Render screens using this identity: `/figma-design`
-4. Generate app icon and illustrations: `/asset-gen`
+> Run `/stylescape` to see all 3 directions as visual mood boards, then pick a winner.
+> `/stylescape` will promote the winner into the main sections above and remove Candidates.
+> Then `/generate-theme` applies the winning palette to code.
 ```
 
 ---
 
 ## Phase 7: Handoff
 
-After writing the doc, summarise the identity in 2–3 sentences (use the theme.md narrative), then present next steps.
+After writing the doc, summarise the 3 candidates in 1 line each, then present next steps.
 
-**Determine context** — check whether this session started from `/design-discovery`:
-- If yes (i.e., the user mentioned design-discovery, or `docs/PRDs/` was recently created): show **Path A**
+**Determine context** — check whether this session started from `/design-discovery` or `/pipeline`:
+- If yes: show **Path A**
 - If standalone: show **Path B**
 
 ---
 
-### Path A — Coming from /design-discovery
+### Path A — Coming from /design-discovery or /pipeline
 
-> "Theme direction is locked in `docs/design/theme.md`. You're in the middle of the design-discovery flow. Here's where things stand:"
+> "3 theme candidates are saved in `docs/design/theme.md`. Next step: visualize them as mood boards."
 
 ```
 Design discovery progress
 ──────────────────────────────────────────────
 ✓  Information architecture
-✓  /define-theme — done (theme.md written)
-→  Component audit  — verify registry matches IA
-→  /wireframe       — explore layout variations (3 options per screen)
-   /asset-gen       — icons + illustrations
-   /figma-design    — render full screens in Figma
+✓  /define-theme — done (3 candidates in theme.md)
+→  /stylescape   — visual mood boards, pick a winner
+   /generate-theme — apply winning palette to code
+   /wireframe    — explore layout variations
+   /asset-gen    — icons + illustrations
 ──────────────────────────────────────────────
-Next: run /wireframe <screen-name> to start layout exploration.
-/generate-theme can run any time to apply the palette to code.
+Next: run /stylescape to see all 3 directions as visual mood boards.
 ```
 
 Options:
-- **Run /wireframe now** — invoke the wireframe skill immediately
-- **Run /generate-theme first** — apply the palette to code, then continue discovery
+- **Run /stylescape now** — generate visual boards and pick a winner
+- **Skip to /generate-theme** — already know which direction (use `/stylescape --pick N`)
 - **Not yet** — stop here
 
 ---
 
 ### Path B — Standalone run
 
-> "Theme direction is locked in `docs/design/theme.md`. The next step is `/generate-theme`, which applies this palette to all three platforms."
+> "3 theme candidates are saved in `docs/design/theme.md`. The next step is `/stylescape`, which generates visual mood boards so you can compare before committing."
 
-**What `/generate-theme` will do:**
+**What `/stylescape` will do:**
 
-1. **Core tokens** — palette, neutral, radius, and control style across all platforms (pre-filled from decisions made here)
-2. **Shadow system** — designs and writes 7 shadow tokens based on your atmosphere choice; adds them to `globals.css`, `DesignTokens.swift`, and `DesignTokens.kt`
-3. **Component group overrides** — lets you customize or lock styling for 5 groups (Actions, Selection, Forms, Feedback, Display)
-4. **Figma library push** — pushes tokens + shadow swatches + component reference frames via figma-cli
-5. **Approval gate** — waits for you to review in Figma before touching any code files
-6. **Code write** — only after approval, writes all changes across web, iOS, and Android
+1. **AI mood images** — generates atmosphere, gradient, illustration, and icon style samples per candidate (via `gpt-image-1-mini`)
+2. **HTML boards** — rich mood board per candidate showing palette, typography, shape, icons, and applied phone mockups
+3. **Selection** — pick a winner; theme.md is updated to single-direction format
+4. **Then** → `/generate-theme` applies the winning palette to all platforms
 
 Ask:
 
-> "Ready to apply? I can invoke `/generate-theme` now — it will pick up everything from `docs/design/theme.md` automatically."
+> "Ready to visualize? I can invoke `/stylescape` now — it reads candidates from `docs/design/theme.md` automatically."
 
 Options:
-- **Yes, run /generate-theme now** — invoke it immediately
-- **Not yet** — print the command and stop: `/generate-theme`
+- **Yes, run /stylescape now** — invoke it immediately
+- **Skip stylescapes, run /generate-theme** — already know which direction (I'll ask which candidate)
+- **Not yet** — print the command and stop: `/stylescape`
 
 ---
 

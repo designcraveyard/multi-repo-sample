@@ -11,7 +11,8 @@
     "ios": {
       "BUNDLE_ID": { "description": "iOS bundle identifier", "derived_from": "com.<DEVELOPER_NAME>.<APP_SLUG>", "required": true },
       "TEAM_ID": { "description": "Apple Development Team ID", "required": true },
-      "GOOGLE_IOS_CLIENT_ID": { "description": "Google Sign-In client ID for iOS", "required": false }
+      "GOOGLE_IOS_CLIENT_ID": { "description": "Google Sign-In client ID for iOS", "required": false },
+      "IOS_ICON_SYSTEM": { "description": "Icon library for iOS", "default": "phosphor", "enum": ["phosphor", "sf-symbols"] }
     },
     "android": {
       "PACKAGE_NAME": { "description": "Android package name", "derived_from": "com.<DEVELOPER_NAME>.<APP_SLUG_NO_DASH>", "required": true },
@@ -102,6 +103,8 @@
     "scaffold.config.json",
     "docs/plans/",
     "docs/ScaffoldingStrategy.md",
-    "Untitled/"
+    "Untitled/",
+    "OpenAISecrets.swift",
+    "OpenAISecrets.swift.template"
   ]
 }

@@ -59,6 +59,12 @@ if [ -d "$IOS_DIR" ] && [ -n "$SUPABASE_REF" ] && [ -f "$TEMPLATES_DIR/secrets-s
   substitute_template "$TEMPLATES_DIR/secrets-swift.template" "$IOS_DIR/Secrets.swift"
 fi
 
+# iOS: OpenAISecrets.swift (always generate with empty placeholders — user fills in their own key)
+IOS_OPENAI_DIR="$IOS_DIR/${APP_SLUG}-ios/OpenAI"
+if [ -d "$IOS_OPENAI_DIR" ] && [ -f "$TEMPLATES_DIR/openai-secrets-swift.template" ]; then
+  substitute_template "$TEMPLATES_DIR/openai-secrets-swift.template" "$IOS_OPENAI_DIR/OpenAISecrets.swift"
+fi
+
 # Android: local.properties
 ANDROID_DIR="$TARGET_DIR/${APP_SLUG}-android"
 if [ -d "$ANDROID_DIR" ]; then

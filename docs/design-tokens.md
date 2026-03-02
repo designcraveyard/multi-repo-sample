@@ -251,19 +251,19 @@ _Web uses Geist Sans (loaded via `next/font`). iOS uses system default — close
 
 ## Icon System
 
-**Library:** [Phosphor Icons](https://phosphoricons.com/) — open-source, 6 weights, 1000+ icons. Same icon set used in Figma, web, and iOS.
+**Library:** [Phosphor Icons](https://phosphoricons.com/) — open-source, 6 weights, 1000+ icons. Used on web and Android. iOS uses Phosphor by default but can use **SF Symbols** if chosen at scaffold time (`--ios-icons sf-symbols`).
 
 ### Icon Size Tokens
 
 Both platforms use the same 5 named sizes:
 
-| Token | px / pt | Web (`IconSize`) | iOS (`PhosphorIconSize`) | Android |
-|-------|---------|-----------------|--------------------------|---------|
-| `xs`  | 12      | `"xs"`          | `.xs`                    | `IconSize.xs` |
-| `sm`  | 16      | `"sm"`          | `.sm`                    | `IconSize.sm` |
-| `md`  | 20 _(default)_ | `"md"` | `.md`              | `IconSize.md` _(default)_ |
-| `lg`  | 24      | `"lg"`          | `.lg`                    | `IconSize.lg` |
-| `xl`  | 32      | `"xl"`          | `.xl`                    | `IconSize.xl` |
+| Token | px / pt | Web (`IconSize`) | iOS Phosphor (`PhosphorIconSize`) | iOS SF Symbols (`IconSize`) | Android |
+|-------|---------|-----------------|-----------------------------------|-----------------------------|---------|
+| `xs`  | 12      | `"xs"`          | `.xs`                    | `.xs`                       | `IconSize.xs` |
+| `sm`  | 16      | `"sm"`          | `.sm`                    | `.sm`                       | `IconSize.sm` |
+| `md`  | 20 _(default)_ | `"md"` | `.md`              | `.md`                       | `IconSize.md` _(default)_ |
+| `lg`  | 24      | `"lg"`          | `.lg`                    | `.lg`                       | `IconSize.lg` |
+| `xl`  | 32      | `"xl"`          | `.xl`                    | `.xl`                       | `IconSize.xl` |
 
 **Android usage:** `AppIcon(name = "House", size = IconSize.Md)` (Phosphor Compose package — placeholder until library is wired)
 
@@ -343,6 +343,37 @@ Ph.house.regular.color(.appIconPrimary).frame(width: 24, height: 24)
 ```
 
 **Overline + icon letter-spacing:** SwiftUI `Font` cannot bake in tracking. Apply `.tracking(1)` or `.tracking(2)` on adjacent `Text` nodes when pairing overline type with icons.
+
+### iOS Usage (SF Symbols)
+
+If `--ios-icons sf-symbols` was chosen at scaffold time, iOS uses native SF Symbols instead of PhosphorSwift. The helper is `SFSymbolIconHelper.swift` with an `IconSize` enum (same values as `PhosphorIconSize`).
+
+```swift
+// Basic — default weight, md size (20pt), inherits foreground color
+Image(systemName: "house").iconSize(.md)
+
+// With size and color tokens
+Image(systemName: "heart.fill").iconSize(.lg).iconColor(.appTextError)
+
+// Bold weight
+Image(systemName: "arrow.right").iconSize(.sm).fontWeight(.bold)
+
+// Accessible (adds VoiceOver label; decorative when nil)
+Image(systemName: "bell").iconSize(.md).iconAccessibility(label: "Notifications")
+
+// Hierarchical rendering (closest to Phosphor duotone)
+Image(systemName: "heart").iconSize(.lg).symbolRenderingMode(.hierarchical)
+```
+
+**Weight mapping from Phosphor:**
+| Phosphor | SF Symbols |
+|----------|-----------|
+| `.regular` | _(default, no modifier)_ |
+| `.bold` | `.fontWeight(.bold)` |
+| `.thin` | `.fontWeight(.thin)` |
+| `.light` | `.fontWeight(.light)` |
+| `.fill` | Append `.fill` to symbol name |
+| `.duotone` | `.symbolRenderingMode(.hierarchical)` |
 
 ### Color Token Integration
 

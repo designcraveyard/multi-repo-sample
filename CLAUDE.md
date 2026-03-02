@@ -110,6 +110,7 @@ Invoke these in any Claude session opened at the workspace root:
 | Skill | Invocation | Purpose |
 |-------|-----------|---------|
 | Cross-Platform Feature | `/cross-platform-feature <name>` | Scaffold a feature on all platforms + Supabase migration stub + PRD |
+| Design Guideline | `/design-guideline` | Universal design standards: layout, spacing, typography, color, motion, accessibility. Auto-loaded by screen/feature skills |
 | Design Token Sync | `/design-token-sync` | Sync `globals.css` → `DesignTokens.swift` → `DesignTokens.kt` (+ optional Figma push) |
 | Figma Component Sync | `/figma-component-sync [component]` | Sync Figma → `docs/components.md` registry; generate implementation brief for **atomic** components |
 | Complex Component | `/complex-component <name>` | Build a complex component (2+ atoms): clarification → design → implement |
@@ -131,7 +132,8 @@ Invoke these in any Claude session opened at the workspace root:
 | New Project | `/new-project` | Interactive scaffold wizard — create a new app from this template |
 | Product Discovery | `/product-discovery` | Define personas, features, MVP scope → PRDs |
 | Deep Dive | `/deep-dive <feature\|--batch>` | Expand a brief PRD into full behavioral spec (supports `--batch` for all features) |
-| Define Theme | `/define-theme` | Define visual identity: personality → archetype → palette → shape → `docs/design/theme.md`. Offers to apply via `/generate-theme`. |
+| Define Theme | `/define-theme` | Define visual identity: personality → 3 archetype candidates → palette → shape → `docs/design/theme.md`. Outputs 3 candidates for `/stylescape`. |
+| Stylescape | `/stylescape` | Generate AI-powered visual mood boards for theme candidates — pick a winner before `/generate-theme` |
 | Generate Theme | `/generate-theme` | Swap Tailwind color palette across all platforms + push to Figma |
 | Wireframe | `/wireframe <screen\|--all\|--iterate>` | Generate 3-variation grayscale wireframes as separate HTML files (one per variation) |
 | iOS Design | `/ios-design <screen\|--pattern\|--both\|--dark>` | Generate iOS 26 Liquid Glass screen mockup (iPhone + iPad HTML) |
@@ -177,6 +179,7 @@ Invoke these in any Claude session opened at the workspace root:
 |------|---------|
 | `docs/components.md` | Component registry: Figma ↔ code mapping, variant specs, implementation status |
 | `docs/design-tokens.md` | Canonical token reference (CSS var ↔ Swift ↔ Kotlin, light/dark values) |
+| `docs/design/design-guidelines.md` | Universal design standards: layout, spacing, typography, color, motion, accessibility |
 | `docs/api-contracts.md` | Supabase table shapes, type mapping rules, RLS conventions |
 | `docs/PRDs/` | Per-feature product requirement documents |
 | `docs/SCAFFOLDING.md` | Full guide for the app template factory system |
@@ -185,7 +188,7 @@ Invoke these in any Claude session opened at the workspace root:
 
 This repo doubles as a **living app template**. Run `/new-project` to scaffold a new cross-platform app.
 
-**Discovery flow:** `/new-project` → **`/pipeline`** (chains all phases automatically: product → deep-dive → IA → theme → wireframes → assets → schema → build)
+**Discovery flow:** `/new-project` → **`/pipeline`** (chains all phases automatically: product → deep-dive → IA → theme → stylescape → theme-apply → wireframes → assets → schema → build)
 
 Individual skills still work standalone. `/pipeline` orchestrates them with checkpoint validation, state tracking via `pipeline.json`, and `--skip-figma` mode.
 
@@ -340,11 +343,15 @@ Atomic: one JSDoc/header comment. Complex (>80 lines): section headers required 
 
 **Android:** Use `App*` wrappers from `ui/native/`. Full API: `/android-native-components` skill.
 
-## Icon System (Phosphor Icons)
+## Icon System (Phosphor Icons / SF Symbols)
 
-Phosphor Icons across all platforms. Web: `<Icon name="House" />` from `@/app/components/icons`. iOS: `Ph.house.regular.iconSize(.md)`. Android: `AppIcon(Icons.Filled.Home, size = IconSize.Md)`.
+Phosphor Icons on web and Android. iOS uses Phosphor by default but can use **SF Symbols** if chosen at scaffold time (`--ios-icons sf-symbols`).
 
-Sizes: `xs`=12 `sm`=16 `md`=20 `lg`=24 `xl`=32. Weights: thin, light, regular _(default)_, bold, fill, duotone. See `docs/design-tokens.md#icon-system` for full reference.
+**Phosphor:** Web: `<Icon name="House" />`. iOS: `Ph.house.regular.iconSize(.md)`. Android: `AppIcon(Icons.Filled.Home, size = IconSize.Md)`.
+
+**SF Symbols (iOS only):** `Image(systemName: "house").iconSize(.md)`. Same size tokens (`.xs`/`.sm`/`.md`/`.lg`/`.xl`), same `.iconColor()` and `.iconAccessibility()` helpers. Weight via `.fontWeight(.bold)` instead of `.bold` variant. Helper: `SFSymbolIconHelper.swift`.
+
+Sizes: `xs`=12 `sm`=16 `md`=20 `lg`=24 `xl`=32. See `docs/design-tokens.md#icon-system` for full reference.
 
 ## Hooks (Automatic)
 

@@ -43,8 +43,9 @@ Also check if `docs/components/<name>.md` exists — if so, pre-populate answers
 
 ## Phase 1: Clarification
 
-Before writing any code, read `docs/components.md` and `docs/components/<name>.md` (if exists)
-to understand context and pre-fill answers.
+Before writing any code, read:
+- `docs/components.md` and `docs/components/<name>.md` (if exists) for context and pre-fill answers
+- `docs/design/design-guidelines.md` for spacing, touch target, and component usage standards (e.g., button hierarchy, chip variant selection, motion timing)
 
 ### Pattern Mode (`--pattern`)
 

@@ -123,7 +123,17 @@ Determine component type: **atomic** (<80 lines, no child component imports) or 
 > If doc file missing: create it using the template from `docs/components/Button.md` as reference.
 > If props are stale: update the tables to match current source code.
 
-### 6. Registry Entry in docs/components.md
+### 6. Design Guideline Compliance
+
+Read `docs/design/design-guidelines.md` and check:
+- [ ] Animation/transition timing uses standard durations (100ms quick, 150ms normal, 200ms moderate, 300ms slow) with `ease-out` for state changes
+- [ ] Minimum touch target is 44pt for standalone interactive elements
+- [ ] Haptic feedback follows guidelines: `.medium` for primary actions, `.light` for secondary (iOS only)
+- [ ] Semantic colors used only for their intended purpose (green = success, red = error, amber = warning)
+
+> These are **usage** checks, not token compliance (covered in check 1). Flag as advisory (P2) — don't block shipping.
+
+### 7. Registry Entry in docs/components.md
 
 - [ ] Row exists for `$ARGUMENTS` in the correct table (Atomic or Complex)
 - [ ] Figma node ID is listed (or noted as "no Figma node" for complex patterns)

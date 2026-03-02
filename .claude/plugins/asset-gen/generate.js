@@ -130,7 +130,7 @@ async function generateAsset(asset) {
     const refImage = fs.createReadStream(referenceImages[0]);
 
     const response = await openai.images.edit({
-      model: 'gpt-image-1',
+      model: asset.model ?? 'gpt-image-1',
       image: refImage,
       prompt,
       size,
@@ -143,7 +143,7 @@ async function generateAsset(asset) {
     console.log(`  Mode: text-to-image`);
 
     const response = await openai.images.generate({
-      model: 'gpt-image-1',
+      model: asset.model ?? 'gpt-image-1',
       prompt,
       size,
       quality: quality ?? 'high',
@@ -183,7 +183,7 @@ for (const asset of assets) {
       version,
       path: asset.outputPath,
       prompt: asset.prompt,
-      model: 'gpt-image-1',
+      model: asset.model ?? 'gpt-image-1',
       size: asset.size,
       quality: asset.quality ?? 'high',
       referenceImages: asset.referenceImages ?? [],

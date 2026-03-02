@@ -130,7 +130,35 @@ Check responsive/adaptive patterns on **all** platforms:
 - VoiceOver reading order is logical (check view hierarchy)
 - Dynamic Type support (no fixed font sizes)
 
-### Step 7: Cross-Platform Parity
+### Step 7: Design Guideline Compliance
+
+Read `docs/design/design-guidelines.md` (if it exists) and check:
+
+**Layout & Spacing:**
+- Page horizontal padding ~24px (mobile) / 32–40px (desktop) — `px-6` / `px-8` to `px-10`
+- Section gaps 32–40px — `gap-8` to `gap-10` / `CGFloat.spaceXL` / `Spacing.XL`
+- Form groups separated by 16–20px, fields by 12px
+- Desktop content constrained to max 1400px
+
+**Typography & Emphasis:**
+- No more than 4–5 distinct type sizes on the screen
+- No more than 2–3 emphasis levels (primary/secondary/muted) per section
+- Weight hierarchy: bold for headings only, semibold for CTAs, medium for emphasis
+
+**Component Usage:**
+- Only one primary button per view (everything else secondary/tertiary)
+- Destructive actions use danger variant, not primary
+- All standalone touch targets >= 44pt (prefer lg variants on mobile)
+- Empty states have headline + CTA
+
+**Content:**
+- Title Case for page titles, button labels, tab labels
+- Sentence case for input labels, placeholders, error messages
+- Error messages are specific and suggest a fix
+
+> Flag guideline issues as **P1** (should fix). These are standards, not hard blockers.
+
+### Step 8: Cross-Platform Parity
 
 Compare the two implementations:
 - Same data fields displayed?
@@ -191,6 +219,17 @@ Compare the two implementations:
 | Heading hierarchy / content description | ... | ... | ... |
 | Focus management | ... | ... | ... |
 | Screen reader labels | ... | ... | ... |
+
+### Design Guidelines (from docs/design/design-guidelines.md)
+| Check | Web | iOS | Android | Status |
+|-------|-----|-----|---------|--------|
+| Page padding (24px mobile / 32–40px desktop) | ... | ... | ... | ... |
+| Section spacing (32–40px) | ... | ... | ... | ... |
+| Max content width (1400px desktop) | ... | ... | ... | ... |
+| Type sizes (<=4 per screen) | ... | ... | ... | ... |
+| Single primary CTA | ... | ... | ... | ... |
+| Touch targets (>=44pt) | ... | ... | ... | ... |
+| Empty state (headline + CTA) | ... | ... | ... | ... |
 
 ### Cross-Platform Parity
 | Aspect | Web | iOS | Android | Match? |

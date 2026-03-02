@@ -17,6 +17,7 @@
 #   --neutral       Neutral palette name (default: neutral)
 #   --radius        Corner radius preset (default: md)
 #   --selection     Selection style: brand|neutral (default: brand)
+#   --ios-icons     iOS icon library: phosphor|sf-symbols (default: phosphor)
 #   --skip-git      Skip git init + GitHub repo creation (default: false)
 #   --output-dir    Output parent directory (default: ~/Documents/GitHub)
 
@@ -40,6 +41,7 @@ BRAND="zinc"
 NEUTRAL="neutral"
 RADIUS="md"
 SELECTION="brand"
+IOS_ICONS="phosphor"
 SKIP_GIT="false"
 OUTPUT_DIR="$HOME/Documents/GitHub"
 
@@ -57,6 +59,7 @@ while [[ $# -gt 0 ]]; do
     --neutral) NEUTRAL="$2"; shift 2 ;;
     --radius) RADIUS="$2"; shift 2 ;;
     --selection) SELECTION="$2"; shift 2 ;;
+    --ios-icons) IOS_ICONS="$2"; shift 2 ;;
     --skip-git) SKIP_GIT="true"; shift ;;
     --output-dir) OUTPUT_DIR="$2"; shift 2 ;;
     *) echo "Unknown option: $1" >&2; exit 1 ;;
@@ -122,6 +125,7 @@ echo "  App Name:    $APP_NAME"
 echo "  App Slug:    $APP_SLUG"
 echo "  Developer:   $DEVELOPER"
 echo "  Platforms:   web=$INCLUDE_WEB, ios=$INCLUDE_IOS, android=$INCLUDE_ANDROID"
+echo "  iOS Icons:   $IOS_ICONS"
 echo "  Brand:       $BRAND"
 echo "  Neutral:     $NEUTRAL"
 echo "  Radius:      $RADIUS"
@@ -300,6 +304,14 @@ fi
 echo ""
 echo "Step 5/9: Cleaning demo content..."
 "$SCRIPT_DIR/clean-demo-content.sh" "$TARGET_DIR" "$CONFIG_FILE" "$APP_SLUG" "$APP_DESCRIPTION"
+
+# ── Step 5b: Convert to SF Symbols (if chosen) ───────────────────────
+
+if [ "$IOS_ICONS" = "sf-symbols" ] && [ "$INCLUDE_IOS" = "true" ]; then
+  echo ""
+  echo "Step 5b: Converting iOS icons to SF Symbols..."
+  "$SCRIPT_DIR/strip-phosphor.sh" "$TARGET_DIR" "$APP_SLUG"
+fi
 
 # ── Step 6: Generate config files ─────────────────────────────────────────
 

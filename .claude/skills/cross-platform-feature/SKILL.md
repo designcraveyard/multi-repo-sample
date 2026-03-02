@@ -22,6 +22,10 @@ Scaffold a feature across BOTH platforms in one coordinated workflow.
 
 ## Workflow
 
+### Phase 0: Read Design Guidelines
+
+Read `docs/design/design-guidelines.md` for layout, spacing, typography, and component usage standards. Apply to all scaffolded files — particularly page padding (24px mobile / 32–40px desktop), max content width (1400px), and component sizing (lg variants for mobile touch targets).
+
 ### Phase 1: Derive Names & Read State
 
 From `$ARGUMENTS`, derive:
