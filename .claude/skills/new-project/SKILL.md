@@ -92,10 +92,89 @@ cd <template-root>
    - `plutil -lint` on both `project.pbxproj` and `Info.plist`
    - `grep -c "isa = XCSwiftPackageProductDependency"` should return 1 (PhosphorSwift) or 0 (if SF Symbols chosen)
 5. Initialize `tracker.md` in the new project using the tracker template
-6. Ask: "Project scaffolded! Ready to start building?"
+6. Execute **Phase 3b** (Supabase setup guidance) if Supabase was enabled
+7. Ask: "Project scaffolded! Ready to start building?"
    - If yes → tell them to run `/pipeline` in a Claude session opened at the new project directory. This chains all discovery phases (product, design, schema, build) with guided transitions and checkpoint validation.
    - If they prefer to run skills individually → suggest `/product-discovery` as the first step
    - If no → print next steps and close
+
+### Phase 3b: Supabase Setup (run only if user provided Supabase credentials)
+
+After scaffolding with Supabase enabled, guide the user through activating their backend. Present this as a checklist — ask which steps they've already done and walk through the rest together.
+
+**Step A — Verify credentials are in place**
+
+The scaffold already wrote credentials to:
+- `<slug>-web/.env.local` — `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `<slug>-ios/<slug>-ios/Secrets.swift` — `supabaseURL` and `supabaseAnonKey`
+- `<slug>-android/local.properties` — `SUPABASE_URL` and `SUPABASE_ANON_KEY`
+
+Tell the user: "Your Supabase project ref (`<ref>`) and anon key are already written to all three platform config files."
+
+**Step B — Link the Supabase CLI and apply migrations**
+
+Ask: "Have you already linked the Supabase CLI to your project?"
+- If no → guide them: `supabase link --project-ref <ref>` (requires `supabase` CLI + Docker)
+- If yes → proceed
+
+Run migrations to set up the profiles table and any other initial schema:
+```bash
+cd <project-root>
+supabase db push
+```
+
+Generate TypeScript types for the web app:
+```bash
+supabase gen types typescript --linked > <slug>-web/lib/database.types.ts
+```
+
+**Step C — Auth providers (Google, Apple, Email)**
+
+Tell the user: "Auth provider setup requires accounts in three external consoles — Google Cloud, Apple Developer Portal, and your Supabase dashboard. This takes about 15–30 minutes."
+
+Present a summary of what's needed per provider:
+
+| Provider | What you need | Where |
+|----------|--------------|-------|
+| **Google OAuth** | Web client ID + secret, iOS client ID, Android SHA-1 fingerprint | Google Cloud Console → APIs & Services → Credentials |
+| **Apple Sign In** | Services ID, private key + key ID, team ID | Apple Developer Portal → Certificates, Identifiers & Profiles |
+| **Email/Password** | SMTP server (for production) | Supabase dashboard → Authentication → Providers |
+
+Ask: "Would you like a step-by-step walkthrough of each provider setup right now?"
+- **Yes** → Tell them to run `/supabase-auth-setup` which has a complete 9-phase guided wizard covering Google Cloud Console, Apple Developer Portal, Supabase dashboard, env file updates, migration push, and verification
+- **No** → Print the checklist below and close:
+
+```
+Supabase auth setup checklist (run /supabase-auth-setup when ready):
+
+  □ Google Cloud Console
+    □ Create OAuth 2.0 Web Client ID (add Supabase callback URL as redirect URI)
+    □ Create iOS Client ID (bundle ID: com.<developer>.<slug>)
+    □ Create Android Client ID (SHA-1 fingerprint from keystore)
+    □ Add Web Client ID + Secret to Supabase dashboard → Auth → Google
+
+  □ Apple Sign In
+    □ Enable Sign In with Apple for your App ID
+    □ Create a Services ID (web OAuth)
+    □ Create a private key with Sign In with Apple capability
+    □ Add Services ID + private key to Supabase dashboard → Auth → Apple
+
+  □ Supabase Dashboard
+    □ Authentication → URL Configuration → add your Vercel URL
+    □ Authentication → Email → enable (already on by default)
+
+  □ Run: supabase db push  (apply migrations)
+  □ Run: supabase gen types typescript --linked > <slug>-web/lib/database.types.ts
+```
+
+**Step D — Vercel deployment (web)**
+
+If the user wants to deploy the web app now:
+1. `cd <slug>-web && vercel` (or push to GitHub and connect in Vercel dashboard)
+2. Add Supabase env vars in Vercel: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+3. Add the Vercel URL to Supabase → Authentication → URL Configuration as a redirect URL
+
+**Local-first mode note:** If the user chose NO Supabase, skip Phase 3b entirely. Mention they can add Supabase later by running `/supabase-setup <project-ref>` when they're ready.
 
 ### Pre-filling from Command Arguments
 
