@@ -153,8 +153,8 @@ import { Icon } from "@/app/components/icons";
 ### iOS
 
 ```swift
-import PhosphorSwift
 import SwiftUI
+// No import needed — PhosphorSlim.swift is in the same module
 
 // Default secondary
 AppIconButton(

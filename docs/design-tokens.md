@@ -321,7 +321,7 @@ Accepted color values: CSS custom properties (`var(--icon-primary)`), hex, or an
 Icons are accessed as `Ph.<name>.<weight>` — each returns a SwiftUI `View`. Chain the token helpers from `PhosphorIconHelper.swift`:
 
 ```swift
-import PhosphorSwift
+// No import needed — PhosphorSlim.swift is compiled directly into the target
 
 // Basic — regular weight, md size (20pt), inherits foreground color
 Ph.house.regular.iconSize(.md)
@@ -346,7 +346,7 @@ Ph.house.regular.color(.appIconPrimary).frame(width: 24, height: 24)
 
 ### iOS Usage (SF Symbols)
 
-If `--ios-icons sf-symbols` was chosen at scaffold time, iOS uses native SF Symbols instead of PhosphorSwift. The helper is `SFSymbolIconHelper.swift` with an `IconSize` enum (same values as `PhosphorIconSize`).
+If `--ios-icons sf-symbols` was chosen at scaffold time, iOS uses native SF Symbols instead of PhosphorSlim. The helper is `SFSymbolIconHelper.swift` with an `IconSize` enum (same values as `PhosphorIconSize`).
 
 ```swift
 // Basic — default weight, md size (20pt), inherits foreground color

@@ -134,7 +134,7 @@ standalone; this skill simply orchestrates them.
    - If platforms include iOS but no config found, ask via `AskUserQuestion`:
      ```
      "Which icon system does the iOS app use?"
-     Options: Phosphor Icons (default) / SF Symbols
+     Options: Phosphor Icons via PhosphorSlim (default, local SVGs) / SF Symbols
      ```
    - Set `flags.ios_icon_system` to `"phosphor"` or `"sf-symbols"`
 
@@ -314,32 +314,77 @@ After it completes:
 
 This phase is inlined — it does NOT invoke a separate skill. Execute these steps directly:
 
+**Checkpoint:** `docs/PRDs/` must contain at least one PRD file.
+
 **Step 1: Read Context**
-- Read `docs/PRDs/` — all feature specs
-- Read `docs/personas/` — user types
-- Read `docs/mvp-matrix.md` — feature priorities
-- Read `docs/app-brief.md` — app context
+Read all available context:
+- `docs/app-brief.md` — app name, description, value proposition
+- `docs/personas/*.md` — user personas and their goals
+- `docs/mvp-matrix.md` — feature priorities and platform scope
+- `docs/PRDs/*.md` — feature specs and user stories
+- `docs/design/user-journeys/*.md` — user journey maps (if created by /product-discovery)
 
-**Step 2: Propose Navigation Structure**
-- Propose tab bar items (bottom nav on mobile, sidebar on desktop)
-- Propose screen hierarchy under each tab
-- Propose modal flows (settings, overlays)
-- Present to user via `AskUserQuestion` for approval
+**Step 2: Navigation Architecture**
+Define the complete navigation structure:
+- Tab hierarchy with icons and labels (map to Phosphor icon names)
+- Modal/overlay flows: which screens trigger sheets vs push navigation
+- Deep link routes per screen (e.g., `myapp://notes/:id`)
+- Responsive layout pattern per screen (phone-only, split-view on tablet, sidebar on desktop)
 
-**Step 3: Generate Screen Inventory**
-- List every screen: name, parent tab, purpose, navigation path
-- Mark which screens are in MVP scope
+**Step 3: Screen Inventory**
+Create a comprehensive screen table:
 
-**Step 4: Write Output**
-- Write `docs/design/information-architecture.md` with:
-  - Navigation structure (tab hierarchy)
-  - Screen inventory table
-  - Modal/overlay flows
-  - MVP scope markers
+| Screen | Tab | Purpose | Nav Path | MVP | Responsive | Entry Points | Exit Points | Type |
+|--------|-----|---------|----------|-----|------------|-------------|-------------|------|
 
-**Step 5: Checkpoint**
-- Ask user to review the IA before proceeding
-- Update pipeline.json and tracker.md
+For each screen, specify:
+- Parent tab or modal context
+- How the user gets here (entry points)
+- Where the user goes next (exit points)
+- Screen type: full-page / modal / bottom-sheet / overlay
+
+**Step 4: User Flow Diagrams**
+Generate **Mermaid flowcharts** for each major user journey (from personas):
+
+```mermaid
+graph TD
+    A[Home Screen] -->|Tap New Note| B[Editor]
+    B -->|Save| C[Note List]
+    B -->|Cancel| A
+    C -->|Tap Note| D[Note Detail]
+    D -->|Edit| B
+    D -->|Delete| E{Confirm?}
+    E -->|Yes| C
+    E -->|No| D
+```
+
+Create one flow per persona's primary journey. Include decision branches, error paths, and happy paths.
+
+**Step 5: Screen-to-Screen Transition Map**
+Create a table mapping every direct navigation link:
+
+| From Screen | Trigger | To Screen | Transition Type |
+|-------------|---------|-----------|-----------------|
+| Home | Tap note | NoteDetail | push |
+| NoteDetail | Tap edit | Editor | push |
+| Any screen | Tap + FAB | NewNote | modal/sheet |
+| Settings | Tap account | AccountDetail | push |
+
+Transition types: push / modal / sheet / replace / tab-switch
+
+**Step 6: Write Output**
+Write `docs/design/information-architecture.md` containing:
+1. Navigation structure (tab hierarchy with icons)
+2. Screen inventory table (expanded columns from Step 3)
+3. User flow Mermaid diagrams (one per major journey, from Step 4)
+4. Screen transition map (from Step 5)
+5. Deep link routes
+6. Modal/overlay catalog
+7. MVP scope markers
+
+Ask user to **review the IA** before proceeding to the next phase (explicit checkpoint).
+
+**Artifacts:** `docs/design/information-architecture.md`
 
 ### Phase 5: design_theme
 
@@ -407,8 +452,17 @@ This phase is inlined. Execute these steps directly:
 
 After it completes:
 1. Verify wireframe HTML files were created in `docs/wireframes/`
-2. Update pipeline.json
-3. Show transition prompt
+2. Parse `<!-- COMPONENT-MANIFEST -->` blocks from each wireframe HTML — these list the components each screen uses. Store this mapping for the build phase (Phase 14), where `/build-feature` will auto-import the correct components.
+3. Update pipeline.json
+4. **Wireframe review gate:** Ask the user to review the wireframes before proceeding:
+   ```
+   Using AskUserQuestion:
+   - "Review the wireframes in docs/wireframes/ before proceeding to mockups/assets."
+     Options:
+     - Looks good — continue to next phase
+     - Need changes — I'll run /wireframe --iterate first
+   ```
+   If user wants changes, wait for them to complete `/wireframe --iterate`, then resume.
 
 ### Phase 10: design_ios_mockups (Optional)
 

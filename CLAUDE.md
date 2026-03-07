@@ -55,7 +55,7 @@ npm run lint     # ESLint (runs `eslint` directly, flat config)
 
 ### Building and Running
 
-Open `multi-repo-ios/multi-repo-ios.xcodeproj` in Xcode. No external dependencies (no CocoaPods, no SPM packages).
+Open `multi-repo-ios/multi-repo-ios.xcodeproj` in Xcode. Icons via local PhosphorSlim (no SPM package). Supabase/GoogleSignIn SPM added only when running `/supabase-setup`.
 
 ```bash
 cd multi-repo-ios
@@ -115,6 +115,7 @@ Invoke these in any Claude session opened at the workspace root:
 | Figma Component Sync | `/figma-component-sync [component]` | Sync Figma → `docs/components.md` registry; generate implementation brief for **atomic** components |
 | Complex Component | `/complex-component <name>` | Build a complex component (2+ atoms): clarification → design → implement |
 | Component Audit | `/component-audit <name>` | Audit for token compliance, comments, parity, accessibility |
+| Add Phosphor Icon | `/add-phosphor-icon <name>` | Add icon to PhosphorSlim (iOS): download SVG, create xcasset, add enum case |
 | Token Validation | `/validate-tokens [name\|--all]` | Audit for semantic token misuse, primitive leakage, hardcoded values |
 | Supabase Setup | `/supabase-setup [project-ref]` | Wire Supabase client to all platforms |
 | Supabase Auth Setup | `/supabase-auth-setup` | Configure Google/Apple/Email auth providers |
@@ -135,7 +136,7 @@ Invoke these in any Claude session opened at the workspace root:
 | Define Theme | `/define-theme` | Define visual identity: personality → 3 archetype candidates → palette → shape → `docs/design/theme.md`. Outputs 3 candidates for `/stylescape`. |
 | Stylescape | `/stylescape` | Generate AI-powered visual mood boards for theme candidates — pick a winner before `/generate-theme` |
 | Generate Theme | `/generate-theme` | Swap Tailwind color palette across all platforms + push to Figma |
-| Wireframe | `/wireframe <screen\|--all\|--iterate>` | Generate 3-variation grayscale wireframes as separate HTML files (one per variation) |
+| Wireframe | `/wireframe <screen\|--all\|--iterate>` | Generate 3-variation grayscale wireframes; `--all` produces a zoomable Figma-like canvas |
 | iOS Design | `/ios-design <screen\|--pattern\|--both\|--dark>` | Generate iOS 26 Liquid Glass screen mockup (iPhone + iPad HTML) |
 | Send to Figma | `/send-to-figma [folder-path]` | Serve HTML files locally, capture as editable Figma layers via Figma MCP `generate_figma_design` |
 | Figma Design | `/figma-design [feature\|screen\|--all\|--refresh-map]` | Generate Figma screen designs from PRDs + IA + wireframes via figma-cli |
@@ -353,9 +354,9 @@ Wireframes (`/wireframe`) annotate every interactive element with `data-componen
 
 ## Icon System (Phosphor Icons / SF Symbols)
 
-Phosphor Icons on web and Android. iOS uses Phosphor by default but can use **SF Symbols** if chosen at scaffold time (`--ios-icons sf-symbols`).
+Phosphor Icons on web and Android. iOS uses **PhosphorSlim** (local SVGs, ~45 icons) by default but can use **SF Symbols** if chosen at scaffold time (`--ios-icons sf-symbols`). Run `/add-phosphor-icon <name>` to add new icons on demand.
 
-**Phosphor:** Web: `<Icon name="House" />`. iOS: `Ph.house.regular.iconSize(.md)`. Android: `AppIcon(Icons.Filled.Home, size = IconSize.Md)`.
+**Phosphor:** Web: `<Icon name="House" />`. iOS: `Ph.house.regular.iconSize(.md)` (no import needed — PhosphorSlim is local code). Android: `AppIcon(Icons.Filled.Home, size = IconSize.Md)`.
 
 **SF Symbols (iOS only):** `Image(systemName: "house").iconSize(.md)`. Same size tokens (`.xs`/`.sm`/`.md`/`.lg`/`.xl`), same `.iconColor()` and `.iconAccessibility()` helpers. Weight via `.fontWeight(.bold)` instead of `.bold` variant. Helper: `SFSymbolIconHelper.swift`.
 
@@ -371,6 +372,7 @@ All hooks fire automatically via `.claude/settings.json`:
 - `design-token-semantics-guard` — blocks surface token misuse as borders (enforces `Border/Default` or `Border/Muted` for lines; `BaseLowContrastPressed` only for Chip/Button active states)
 - `complex-component-clarifier` — warns when writing a file composing 2+ atomic components
 - `package-lock-guard` — blocks direct edits to `package-lock.json`
+- `phosphor-import-guard` — blocks `import PhosphorSwift` (PhosphorSlim needs no import)
 
 **Advisory (PostToolUse):**
 - `cross-platform` — reminds to check counterparts after platform file edits
@@ -380,5 +382,6 @@ All hooks fire automatically via `.claude/settings.json`:
 - `screen-structure-guard` — warns on new screens with no component imports or nav wiring
 - `adaptive-layout-guard` — warns on screens with no responsive pattern
 - `auto-lint` — runs ESLint fix after web file edits
+- `phosphor-slim-guard` — warns when `Ph.xxx` icon not in PhosphorSlim set; suggests `/add-phosphor-icon`
 - `migration-model-sync-reminder` — reminds to generate models after migration writes
 - `model-schema-sync-reminder` — reminds to check schema sync after model edits

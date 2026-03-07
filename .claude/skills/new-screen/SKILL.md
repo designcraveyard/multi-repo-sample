@@ -78,7 +78,11 @@ Present the selected components to the user:
 
 Wait for confirmation. The confirmed list becomes the **Component Import List** used in Steps 4–6 below.
 
-**Rule:** Every UI element in the scaffold MUST use a component from the registry. If a component doesn't exist, flag it as a gap and note it for `/complex-component` creation.
+**Rule:** Every UI element MUST use a component from the registry. If a required component doesn't exist:
+1. **STOP** and tell the user: "Component `<Name>` is needed for this screen but doesn't exist. Run `/complex-component <Name>` first."
+2. Do NOT scaffold the screen with placeholder components or TODOs for missing components
+3. After the component is built, resume screen creation
+4. Exception: trivial wrappers can be inlined with user approval
 
 ### Step 4: Create Next.js Page
 

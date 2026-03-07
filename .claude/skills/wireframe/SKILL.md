@@ -3,15 +3,28 @@ name: wireframe
 description: >
   Rapidly explore layout patterns, navigation structures, and information
   architecture through component-matched wireframes. Generates 3 variations
-  per screen as separate standalone HTML files — one per variation. Each file
-  shows a phone artboard (393x852) with optional iPad (1024x1366) and desktop
-  (1440x900) frames. Component primitives mirror the production design system.
-  Use after /design-discovery has produced an IA and PRD docs, before
-  committing to a screen implementation.
+  per screen as standalone HTML files. In --all mode, also produces a single
+  zoomable Figma-like canvas (canvas.html) with all artboards on a flat grid
+  with zoom+pan interaction. Each artboard shows a phone frame (393x852) with
+  optional iPad and desktop frames. Component primitives mirror the production
+  design system. Use after /design-discovery has produced an IA and PRD docs,
+  before committing to a screen implementation.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
 # /wireframe — Rapid Wireframe Exploration
+
+### CSS Design System
+
+The wireframe CSS lives as a bundled skill resource at `.claude/skills/wireframe/wireframe.css`.
+
+On first run, copy it to `docs/wireframes/_wireframe.css` if not already present:
+```bash
+cp .claude/skills/wireframe/wireframe.css docs/wireframes/_wireframe.css 2>/dev/null || true
+```
+
+All wireframe HTML files reference this shared CSS via `<link rel="stylesheet" href="_wireframe.css">`.
+Never regenerate the CSS inline — always reference the existing file.
 
 ## Purpose
 
@@ -230,1203 +243,17 @@ Wait for user confirmation before Phase 4.
 
 ### Setup
 
-Check if `docs/wireframes/` exists. If not, create it and generate the shared stylesheet:
+The shared wireframe stylesheet ships as a static file at `docs/wireframes/_wireframe.css`.
+It is included in the repo and copied automatically during `/new-project` scaffolding.
 
-**`docs/wireframes/_wireframe.css`**
+Verify the file exists before generating wireframes:
 
-```css
-/* ═══════════════════════════════════════════════════════════════════
-   Wireframe Design System v2
-   Component-matched grayscale: mirrors production token architecture
-   Same spacing, radius, typography — neutral palette for layout focus
-   ═══════════════════════════════════════════════════════════════════ */
-
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* ─── TOKEN VARIABLES ──────────────────────────────────────────── */
-:root {
-  /* Fonts — system stack matching production Geist/SF Pro */
-  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
-  --font-body:    -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
-
-  /* Font weights (matching production) */
-  --weight-regular:  400;
-  --weight-medium:   500;
-  --weight-semibold: 600;
-  --weight-bold:     700;
-
-  /* Font sizes — iOS point scale matching production typography tokens */
-  --text-badge:    8px;
-  --text-overline: 10px;
-  --text-caption:  10px;
-  --text-xs:       11px;
-  --text-sm:       12px;
-  --text-body-sm:  12px;
-  --text-body-md:  14px;
-  --text-base:     15px;
-  --text-body-lg:  16px;
-  --text-cta-sm:   12px;
-  --text-cta-md:   14px;
-  --text-cta-lg:   16px;
-  --text-md:       17px;
-  --text-title-sm: 20px;
-  --text-title-md: 24px;
-  --text-title-lg: 28px;
-  --text-heading:  34px;
-
-  /* Line heights */
-  --leading-tight:   1.2;
-  --leading-snug:    1.3;
-  --leading-normal:  1.5;
-  --leading-relaxed: 1.65;
-
-  /* Letter spacing */
-  --tracking-tight:  -0.02em;
-  --tracking-normal:  0;
-  --tracking-wide:    0.03em;
-  --tracking-wider:   0.06em;
-  --tracking-widest:  0.12em;
-
-  /* Spacing — 4px grid matching production space-1 through space-24 */
-  --space-1:  4px;
-  --space-2:  8px;
-  --space-3:  12px;
-  --space-4:  16px;
-  --space-5:  20px;
-  --space-6:  24px;
-  --space-8:  32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
-  --space-20: 80px;
-  --space-24: 96px;
-
-  /* Border radius — matching production radius-xs through radius-full */
-  --radius-none: 0px;
-  --radius-xs:   4px;
-  --radius-sm:   8px;
-  --radius-md:   12px;
-  --radius-lg:   16px;
-  --radius-xl:   22px;
-  --radius-2xl:  28px;
-  --radius-full: 9999px;
-
-  /* ── Surfaces (matching production semantic token names) ────── */
-  --surfaces-base-primary:       #F5F5F5;
-  --surfaces-base-low-contrast:  #EBEBEB;
-  --surfaces-base-high-contrast: #DEDEDE;
-  --surface-elevated:            #FFFFFF;
-  --surfaces-inverse-primary:    #1A1A1A;
-  --surfaces-brand-interactive:  #1A1A1A;
-  --surfaces-brand-interactive-low-contrast: #EBEBEB;
-  --surfaces-accent-primary:     #6366F1;
-  --surfaces-accent-low-contrast:#EEF2FF;
-  --surfaces-success-solid:      #22C55E;
-  --surfaces-success-subtle:     #DCFCE7;
-  --surfaces-warning-solid:      #EAB308;
-  --surfaces-warning-subtle:     #FEF9C3;
-  --surfaces-error-solid:        #EF4444;
-  --surfaces-error-subtle:       #FEE2E2;
-  --surface-overlay:             rgba(0, 0, 0, 0.4);
-  --surface-tabbar:              rgba(255, 255, 255, 0.92);
-  --surface-navbar:              rgba(255, 255, 255, 0.96);
-  --surface-input:               #EBEBEB;
-
-  /* ── Typography (matching production semantic token names) ──── */
-  --typography-primary:         #171717;
-  --typography-secondary:       #525252;
-  --typography-muted:           #A3A3A3;
-  --typography-placeholder:     #C4C4C4;
-  --typography-brand:           #1A1A1A;
-  --typography-on-brand-primary:#FFFFFF;
-  --typography-accent:          #4F46E5;
-  --typography-success:         #16A34A;
-  --typography-warning:         #CA8A04;
-  --typography-error:           #DC2626;
-
-  /* ── Icons (matching production semantic token names) ────────── */
-  --icons-primary:          #171717;
-  --icons-secondary:        #737373;
-  --icons-muted:            #B3B3B3;
-  --icons-brand:            #1A1A1A;
-  --icons-on-brand-primary: #FFFFFF;
-  --icons-accent:           #4F46E5;
-
-  /* ── Borders (matching production semantic token names) ──────── */
-  --border-default:  #E5E5E5;
-  --border-muted:    #F0F0F0;
-  --border-active:   #171717;
-  --border-brand:    #1A1A1A;
-  --border-strong:   #ABABAB;
-
-  /* ── Shadows (warm neutral) ─────────────────────────────────── */
-  --shadow-xs:  0 1px 2px rgba(0,0,0,0.05);
-  --shadow-sm:  0 2px 6px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md:  0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-  --shadow-lg:  0 8px 24px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.05);
-  --shadow-xl:  0 16px 40px rgba(0,0,0,0.12), 0 8px 16px rgba(0,0,0,0.06);
-  --shadow-brand: 0 4px 16px rgba(0,0,0,0.20);
-
-  /* ── Transitions ────────────────────────────────────────────── */
-  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-in:     cubic-bezier(0.64, 0, 0.78, 0);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --duration-fast:   150ms;
-  --duration-normal: 250ms;
-  --duration-slow:   380ms;
-}
-
-body {
-  font-family: var(--font-body);
-  font-size: var(--text-base);
-  font-weight: var(--weight-regular);
-  color: var(--typography-primary);
-  background: #1A1A1A;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ─── VIEWER ENVIRONMENT ────────────────────────────────────────── */
-.wf-viewer {
-  background: #1A1A1A;
-  background-image:
-    radial-gradient(ellipse 60% 40% at 20% 30%, rgba(99,102,241,0.04) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 60% at 80% 70%, rgba(0,0,0,0.06) 0%, transparent 60%);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-bottom: 60px;
-}
-
-/* ─── PROTOTYPE NAVIGATION BAR ──────────────────────────────────── */
-.wf-prototype-nav {
-  width: 100%;
-  background: rgba(20, 20, 20, 0.96);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  backdrop-filter: blur(12px);
-}
-.wf-prototype-nav-label {
-  font-size: 10px;
-  font-weight: var(--weight-semibold);
-  color: rgba(255,255,255,0.5);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-right: 4px;
-  white-space: nowrap;
-}
-.wf-prototype-nav a {
-  font-size: 11px;
-  font-weight: var(--weight-medium);
-  color: rgba(255,255,255,0.45);
-  text-decoration: none;
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
-  border: 1px solid rgba(255,255,255,0.08);
-  transition: all var(--duration-fast) var(--ease-out);
-  white-space: nowrap;
-}
-.wf-prototype-nav a:hover,
-.wf-prototype-nav a.active {
-  background: var(--surfaces-brand-interactive);
-  color: var(--typography-on-brand-primary);
-  border-color: var(--surfaces-brand-interactive);
-}
-
-/* ─── DEVICE FRAMES ─────────────────────────────────────────────── */
-.wf-stage {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  padding: 32px 20px 0;
-  flex-wrap: wrap;
-}
-
-/* iPhone (393 x 852) */
-.wf-phone {
-  width: 393px;
-  height: 852px;
-  background: var(--surfaces-base-primary);
-  border-radius: 54px;
-  overflow: hidden;
-  position: relative;
-  box-shadow:
-    0 0 0 1.5px rgba(255,255,255,0.10),
-    0 0 0 8px rgba(0,0,0,0.6),
-    0 0 0 9.5px rgba(255,255,255,0.06),
-    0 30px 80px rgba(0,0,0,0.5);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-}
-
-/* iPad (1024 x 1366 scaled to 60% for display) */
-.wf-tablet {
-  width: 614px;   /* 1024 * 0.6 */
-  height: 820px;  /* 1366 * 0.6 */
-  background: var(--surfaces-base-primary);
-  border-radius: 28px;
-  overflow: hidden;
-  position: relative;
-  box-shadow:
-    0 0 0 1.5px rgba(255,255,255,0.10),
-    0 0 0 6px rgba(0,0,0,0.5),
-    0 20px 60px rgba(0,0,0,0.4);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-}
-
-/* Desktop browser (1440 x 900 scaled to 60%) */
-.wf-desktop {
-  width: 864px;   /* 1440 * 0.6 */
-  height: 540px;  /* 900 * 0.6 */
-  background: var(--surfaces-base-primary);
-  border-radius: 12px;
-  overflow: hidden;
-  position: relative;
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,0.08),
-    0 20px 60px rgba(0,0,0,0.4);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-}
-
-/* Desktop browser chrome bar */
-.wf-browser-bar {
-  height: 36px;
-  background: #2A2A2A;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  gap: 8px;
-  flex-shrink: 0;
-}
-.wf-browser-dots {
-  display: flex;
-  gap: 6px;
-}
-.wf-browser-dots span {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-}
-.wf-browser-url {
-  flex: 1;
-  height: 22px;
-  background: rgba(255,255,255,0.06);
-  border-radius: var(--radius-sm);
-  margin: 0 40px;
-}
-
-/* Device label (shown under each frame) */
-.wf-device-label {
-  text-align: center;
-  font-size: var(--text-xs);
-  color: rgba(255,255,255,0.35);
-  margin-top: 12px;
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-wide);
-}
-
-/* ─── STATUS BAR (iPhone) ───────────────────────────────────────── */
-.wf-status-bar {
-  height: 59px;
-  padding: 16px 24px 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  position: relative;
-  background: transparent;
-  flex-shrink: 0;
-  z-index: 10;
-}
-.wf-status-time {
-  font-size: 15px;
-  font-weight: var(--weight-semibold);
-  color: var(--typography-primary);
-  letter-spacing: var(--tracking-tight);
-}
-.wf-status-icons {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding-top: 1px;
-}
-.wf-status-icons svg { color: var(--typography-primary); }
-
-/* ─── DYNAMIC ISLAND ────────────────────────────────────────────── */
-.wf-dynamic-island {
-  position: absolute;
-  top: 13px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 126px;
-  height: 37px;
-  background: #0A0A0A;
-  border-radius: var(--radius-full);
-  z-index: 20;
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.5);
-}
-
-/* ─── SCREEN WRAPPER ────────────────────────────────────────────── */
-.wf-screen {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  position: relative;
-}
-
-/* ─── NAVIGATION BAR ────────────────────────────────────────────── */
-.wf-nav-bar {
-  background: var(--surface-navbar);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-muted);
-  padding: 0 20px 12px;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 5;
-}
-.wf-nav-bar-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 44px;
-  padding-top: 4px;
-}
-.wf-nav-large-title {
-  font-family: var(--font-display);
-  font-size: var(--text-heading);
-  font-weight: var(--weight-bold);
-  color: var(--typography-primary);
-  letter-spacing: var(--tracking-tight);
-  line-height: var(--leading-tight);
-  margin-top: 4px;
-  padding-bottom: 2px;
-}
-.wf-nav-title {
-  font-size: var(--text-md);
-  font-weight: var(--weight-semibold);
-  color: var(--typography-primary);
-  letter-spacing: -0.01em;
-}
-.wf-nav-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--typography-secondary);
-  font-size: var(--text-base);
-  font-weight: var(--weight-medium);
-  padding: 6px 4px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  border-radius: var(--radius-sm);
-}
-.wf-nav-icon-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-full);
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--icons-secondary);
-  transition: background var(--duration-fast);
-}
-.wf-nav-icon-btn:hover {
-  background: var(--surfaces-base-low-contrast);
-}
-
-/* ─── TAB BAR (83px matching production) ────────────────────────── */
-.wf-tab-bar {
-  height: 83px;
-  background: var(--surface-tabbar);
-  backdrop-filter: blur(20px) saturate(1.2);
-  -webkit-backdrop-filter: blur(20px) saturate(1.2);
-  border-top: 1px solid var(--border-muted);
-  display: flex;
-  align-items: flex-start;
-  padding: 10px 0 0;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 5;
-}
-.wf-tab-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  cursor: pointer;
-  text-decoration: none;
-  padding: 2px 0;
-  transition: all var(--duration-fast) var(--ease-out);
-  color: var(--icons-muted);
-}
-.wf-tab-icon-wrap {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
-  transition: all var(--duration-fast) var(--ease-out);
-}
-.wf-tab-item.active .wf-tab-icon-wrap {
-  background: var(--surfaces-base-low-contrast);
-}
-.wf-tab-item.active {
-  color: var(--icons-primary);
-}
-.wf-tab-label {
-  font-size: 10px;
-  font-weight: var(--weight-medium);
-  color: var(--typography-muted);
-  letter-spacing: 0.01em;
-}
-.wf-tab-item.active .wf-tab-label {
-  color: var(--typography-primary);
-  font-weight: var(--weight-semibold);
-}
-
-/* ─── SCREEN CONTENT ────────────────────────────────────────────── */
-.wf-content {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background: var(--surfaces-base-primary);
-  scrollbar-width: none;
-}
-.wf-content::-webkit-scrollbar { display: none; }
-
-/* Standard content padding */
-.wf-padded {
-  padding: var(--space-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-/* ─── SEARCH BAR (matching production SearchBar component) ──────── */
-.wf-search-wrap {
-  padding: var(--space-2) var(--space-4) var(--space-3);
-}
-.wf-search-bar {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  background: var(--surface-input);
-  border-radius: var(--radius-md);
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border-muted);
-}
-.wf-search-bar input {
-  flex: 1;
-  border: none;
-  background: none;
-  font-family: var(--font-body);
-  font-size: var(--text-base);
-  color: var(--typography-primary);
-  outline: none;
-}
-.wf-search-bar input::placeholder { color: var(--typography-placeholder); }
-.wf-search-bar svg { color: var(--icons-secondary); flex-shrink: 0; }
-
-/* ─── CHIP ROW (matching production Chip component) ─────────────── */
-.wf-chip-row {
-  display: flex;
-  gap: var(--space-2);
-  padding: 0 var(--space-4) var(--space-3);
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.wf-chip-row::-webkit-scrollbar { display: none; }
-
-.wf-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 12px;
-  border-radius: var(--radius-full);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-medium);
-  white-space: nowrap;
-  cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-out);
-  border: 1px solid var(--border-default);
-  background: var(--surface-elevated);
-  color: var(--typography-secondary);
-}
-.wf-chip.active {
-  background: var(--surfaces-brand-interactive);
-  border-color: var(--surfaces-brand-interactive);
-  color: var(--typography-on-brand-primary);
-  box-shadow: var(--shadow-brand);
-}
-.wf-chip:hover:not(.active) {
-  background: var(--surfaces-base-low-contrast);
-}
-
-/* ─── SECTION HEADER ────────────────────────────────────────────── */
-.wf-section-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: var(--space-4) var(--space-4) var(--space-2);
-}
-.wf-section-title {
-  font-size: var(--text-title-sm);
-  font-weight: var(--weight-semibold);
-  color: var(--typography-primary);
-  letter-spacing: var(--tracking-tight);
-}
-.wf-section-action {
-  font-size: var(--text-sm);
-  font-weight: var(--weight-medium);
-  color: var(--typography-secondary);
-  text-decoration: none;
-  cursor: pointer;
-}
-.wf-section-label {
-  font-size: var(--text-xs);
-  font-weight: var(--weight-semibold);
-  color: var(--typography-muted);
-  letter-spacing: var(--tracking-widest);
-  text-transform: uppercase;
-  padding: var(--space-4) var(--space-4) var(--space-2);
-}
-
-/* ─── CARD (matching production Card component) ─────────────────── */
-.wf-card {
-  background: var(--surface-elevated);
-  border-radius: var(--radius-lg);
-  padding: 14px 16px;
-  margin: 0 var(--space-4) 10px;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border-muted);
-  cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-out);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-.wf-card:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-1px);
-}
-.wf-card.row {
-  flex-direction: row;
-  align-items: center;
-  gap: var(--space-3);
-}
-.wf-card-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 5px;
-}
-.wf-card-title {
-  font-size: var(--text-md);
-  font-weight: var(--weight-semibold);
-  color: var(--typography-primary);
-  letter-spacing: var(--tracking-tight);
-  line-height: var(--leading-snug);
-  flex: 1;
-  margin-right: var(--space-2);
-}
-.wf-card-subtitle {
-  font-size: var(--text-sm);
-  color: var(--typography-secondary);
-  line-height: var(--leading-normal);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.wf-card-meta {
-  font-size: var(--text-xs);
-  color: var(--typography-muted);
-  letter-spacing: var(--tracking-wide);
-}
-.wf-card-footer {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-/* ─── LIST ROWS (matching production ListItem component) ─────────── */
-.wf-list-section {
-  margin: 0 var(--space-4) var(--space-5);
-  background: var(--surface-elevated);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-muted);
-  overflow: hidden;
-  box-shadow: var(--shadow-xs);
-}
-.wf-list-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: 13px var(--space-4);
-  border-bottom: 1px solid var(--border-muted);
-  cursor: pointer;
-  transition: background var(--duration-fast);
-}
-.wf-list-item:last-child { border-bottom: none; }
-.wf-list-item:hover { background: var(--surfaces-base-low-contrast); }
-
-.wf-list-icon {
-  width: 30px;
-  height: 30px;
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  background: var(--surfaces-base-low-contrast);
-  color: var(--icons-secondary);
-}
-.wf-list-label {
-  flex: 1;
-  font-size: var(--text-base);
-  font-weight: var(--weight-medium);
-  color: var(--typography-primary);
-}
-.wf-list-sublabel {
-  font-size: var(--text-sm);
-  color: var(--typography-muted);
-  margin-top: 1px;
-}
-.wf-list-value {
-  font-size: var(--text-base);
-  color: var(--typography-muted);
-}
-.wf-list-chevron {
-  color: var(--icons-muted);
-  flex-shrink: 0;
-}
-
-/* ─── BUTTON (matching production Button — pill shape) ──────────── */
-.wf-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  border-radius: var(--radius-full);
-  font-family: var(--font-body);
-  font-weight: var(--weight-semibold);
-  cursor: pointer;
-  border: none;
-  transition: all var(--duration-fast) var(--ease-out);
-  letter-spacing: -0.01em;
-}
-/* Size: sm */
-.wf-btn.sm {
-  height: 32px;
-  padding: 0 12px;
-  font-size: var(--text-cta-sm);
-}
-/* Size: md (default) */
-.wf-btn.md, .wf-btn:not(.sm):not(.lg) {
-  height: 40px;
-  padding: 0 var(--space-4);
-  font-size: var(--text-cta-md);
-}
-/* Size: lg */
-.wf-btn.lg {
-  height: 48px;
-  padding: 0 var(--space-5);
-  font-size: var(--text-cta-lg);
-}
-/* Variant: primary */
-.wf-btn.primary {
-  background: var(--surfaces-brand-interactive);
-  color: var(--typography-on-brand-primary);
-  box-shadow: var(--shadow-brand);
-}
-.wf-btn.primary:hover { opacity: 0.9; }
-/* Variant: secondary */
-.wf-btn.secondary {
-  background: var(--surfaces-base-low-contrast);
-  color: var(--typography-primary);
-}
-.wf-btn.secondary:hover { background: var(--surfaces-base-high-contrast); }
-/* Variant: tertiary */
-.wf-btn.tertiary {
-  background: transparent;
-  color: var(--typography-primary);
-  border: 1.5px solid var(--border-brand);
-}
-/* Variant: ghost */
-.wf-btn.ghost {
-  background: transparent;
-  color: var(--typography-secondary);
-}
-/* Full width */
-.wf-btn.full { width: 100%; }
-/* Disabled */
-.wf-btn.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* ─── INPUT FIELD (matching production InputField) ──────────────── */
-.wf-input {
-  height: 44px;
-  background: var(--surface-elevated);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-md);
-  padding: 0 var(--space-3);
-  font-size: var(--text-body-md);
-  color: var(--typography-placeholder);
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-.wf-input-label {
-  font-size: var(--text-body-sm);
-  font-weight: var(--weight-medium);
-  color: var(--typography-secondary);
-  margin-bottom: var(--space-1);
-}
-.wf-input-hint {
-  font-size: var(--text-caption);
-  color: var(--typography-muted);
-  margin-top: var(--space-1);
-}
-.wf-input.search {
-  padding-left: 36px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 256 256'%3E%3Cpath fill='%23A3A3A3' d='M229.66 218.34l-50.07-50.06a88.11 88.11 0 1 0-11.31 11.31l50.06 50.07a8 8 0 0 0 11.32-11.32ZM40 112a72 72 0 1 1 72 72A72.08 72.08 0 0 1 40 112Z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: 10px center;
-}
-.wf-textarea {
-  background: var(--surface-elevated);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-md);
-  padding: var(--space-3);
-  font-size: var(--text-body-md);
-  color: var(--typography-placeholder);
-  min-height: 120px;
-  resize: none;
-  font-family: var(--font-body);
-  width: 100%;
-}
-
-/* ─── AVATAR ────────────────────────────────────────────────────── */
-.wf-avatar {
-  width: 40px;
-  height: 40px;
-  background: var(--surfaces-base-high-contrast);
-  border-radius: 50%;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--icons-muted);
-  font-weight: var(--weight-semibold);
-  font-size: var(--text-sm);
-}
-.wf-avatar.sm { width: 28px; height: 28px; font-size: var(--text-xs); }
-.wf-avatar.lg { width: 56px; height: 56px; font-size: var(--text-base); }
-
-/* ─── BADGE (matching production Badge component) ───────────────── */
-.wf-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
-  border-radius: var(--radius-full);
-  background: var(--surfaces-brand-interactive);
-  color: var(--typography-on-brand-primary);
-  font-size: var(--text-xs);
-  font-weight: var(--weight-bold);
-}
-
-/* ─── TAG PILL (matching production Label component) ────────────── */
-.wf-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  font-size: var(--text-xs);
-  font-weight: var(--weight-medium);
-  background: var(--surfaces-brand-interactive-low-contrast);
-  color: var(--typography-secondary);
-  letter-spacing: var(--tracking-wide);
-}
-
-/* ─── FAB (matching production — bottom-right, 56px) ────────────── */
-.wf-fab {
-  position: absolute;
-  bottom: 96px;
-  right: var(--space-4);
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-full);
-  background: var(--surfaces-brand-interactive);
-  color: var(--typography-on-brand-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: var(--shadow-brand);
-  border: none;
-  transition: all var(--duration-normal) var(--ease-spring);
-  z-index: 10;
-}
-.wf-fab:hover { transform: scale(1.05); }
-
-/* ─── BOTTOM SHEET ──────────────────────────────────────────────── */
-.wf-bottom-sheet {
-  background: var(--surface-elevated);
-  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
-  border-top: 1px solid var(--border-muted);
-  padding: 0 var(--space-4) var(--space-6);
-  box-shadow: 0 -8px 32px rgba(0,0,0,0.10);
-}
-.wf-sheet-handle {
-  width: 36px;
-  height: 4px;
-  border-radius: var(--radius-full);
-  background: var(--border-strong);
-  margin: var(--space-2) auto var(--space-4);
-}
-
-/* ─── TOGGLE SWITCH (matching production Switch) ────────────────── */
-.wf-toggle {
-  width: 51px;
-  height: 31px;
-  border-radius: var(--radius-full);
-  background: var(--surfaces-base-high-contrast);
-  position: relative;
-  cursor: pointer;
-  transition: background var(--duration-normal) var(--ease-out);
-  flex-shrink: 0;
-}
-.wf-toggle.on { background: var(--surfaces-brand-interactive); }
-.wf-toggle::after {
-  content: '';
-  position: absolute;
-  width: 27px;
-  height: 27px;
-  border-radius: var(--radius-full);
-  background: white;
-  top: 2px;
-  left: 2px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-  transition: transform var(--duration-normal) var(--ease-out);
-}
-.wf-toggle.on::after { transform: translateX(20px); }
-
-/* ─── RADIO BUTTON (matching production RadioButton) ────────────── */
-.wf-radio {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid var(--border-default);
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.wf-radio.checked {
-  border-color: var(--surfaces-brand-interactive);
-}
-.wf-radio.checked::after {
-  content: '';
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--surfaces-brand-interactive);
-}
-
-/* ─── CHECKBOX (matching production Checkbox) ───────────────────── */
-.wf-checkbox {
-  width: 20px;
-  height: 20px;
-  border-radius: var(--radius-xs);
-  border: 2px solid var(--border-default);
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.wf-checkbox.checked {
-  background: var(--surfaces-brand-interactive);
-  border-color: var(--surfaces-brand-interactive);
-  color: var(--typography-on-brand-primary);
-}
-
-/* ─── DIVIDER ───────────────────────────────────────────────────── */
-.wf-divider {
-  height: 1px;
-  background: var(--border-muted);
-  margin: 0 var(--space-4);
-}
-.wf-divider.full { margin: 0; }
-
-/* ─── EMPTY STATE (matching production EmptyState pattern) ──────── */
-.wf-empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
-  padding: var(--space-16) var(--space-8);
-  text-align: center;
-}
-.wf-empty-icon {
-  width: 72px;
-  height: 72px;
-  border-radius: var(--radius-2xl);
-  background: var(--surfaces-base-low-contrast);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--icons-muted);
-  margin-bottom: var(--space-1);
-}
-.wf-empty-title {
-  font-size: var(--text-title-sm);
-  font-weight: var(--weight-semibold);
-  color: var(--typography-primary);
-}
-.wf-empty-body {
-  font-size: var(--text-base);
-  color: var(--typography-muted);
-  line-height: var(--leading-relaxed);
-  max-width: 240px;
-}
-
-/* ─── PLACEHOLDER (for images/media) ────────────────────────────── */
-.wf-placeholder {
-  background: var(--surfaces-base-low-contrast);
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--typography-muted);
-  font-size: var(--text-sm);
-}
-.wf-placeholder::before { content: attr(data-label); }
-.wf-placeholder.img {
-  position: relative;
-}
-.wf-placeholder.img::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    -45deg, transparent, transparent 8px,
-    rgba(0,0,0,0.04) 8px, rgba(0,0,0,0.04) 9px
-  );
-  border-radius: inherit;
-}
-
-/* ─── IMAGE THUMB (for card thumbnails) ─────────────────────────── */
-.wf-thumb {
-  width: 52px;
-  height: 52px;
-  border-radius: var(--radius-sm);
-  background: var(--surfaces-base-high-contrast);
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--icons-muted);
-}
-
-/* ─── ORNAMENTAL DIVIDER ────────────────────────────────────────── */
-.wf-ornament {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-1) var(--space-4);
-  color: var(--typography-muted);
-  opacity: 0.5;
-}
-.wf-ornament::before,
-.wf-ornament::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border-default);
-}
-.wf-ornament-text {
-  font-size: var(--text-xs);
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-}
-
-/* ─── DESKTOP: SIDEBAR (AdaptiveNavShell) ───────────────────────── */
-.wf-sidebar {
-  width: 240px;
-  background: var(--surface-elevated);
-  border-right: 1px solid var(--border-muted);
-  display: flex;
-  flex-direction: column;
-  padding: var(--space-4) 0;
-  flex-shrink: 0;
-}
-.wf-sidebar-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-4);
-  font-size: var(--text-body-md);
-  font-weight: var(--weight-medium);
-  color: var(--typography-secondary);
-  cursor: pointer;
-  transition: background var(--duration-fast);
-}
-.wf-sidebar-item.active {
-  background: var(--surfaces-base-low-contrast);
-  color: var(--typography-primary);
-  font-weight: var(--weight-semibold);
-}
-.wf-sidebar-item:hover:not(.active) {
-  background: var(--surfaces-base-low-contrast);
-}
-
-/* ─── DESKTOP/TABLET: SPLIT VIEW (AdaptiveSplitView) ────────────── */
-.wf-split-view {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-}
-.wf-split-list {
-  width: 320px;
-  border-right: 1px solid var(--border-muted);
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  flex-shrink: 0;
-}
-.wf-split-detail {
-  flex: 1;
-  overflow-y: auto;
-}
-
-/* ─── ANNOTATION (variation label) ──────────────────────────────── */
-.wf-annotation {
-  font-size: var(--text-xs);
-  color: var(--typography-muted);
-  border-left: 2px solid var(--border-strong);
-  padding-left: var(--space-2);
-  margin-top: var(--space-1);
-  font-style: italic;
-}
-
-/* ─── VARIATION NAVIGATION ──────────────────────────────────────── */
-.wf-variation-strip {
-  display: flex;
-  gap: 4px;
-  padding: var(--space-4) var(--space-4) 0;
-  justify-content: center;
-}
-.wf-variation-tab {
-  padding: 6px 18px;
-  border-radius: var(--radius-full);
-  font-size: 13px;
-  font-weight: var(--weight-medium);
-  cursor: pointer;
-  border: 1.5px solid rgba(255,255,255,0.15);
-  background: transparent;
-  color: rgba(255,255,255,0.45);
-  font-family: var(--font-body);
-  transition: all var(--duration-fast);
-  text-decoration: none;
-}
-.wf-variation-tab.active {
-  background: white;
-  color: #1A1A1A;
-  border-color: white;
-}
-
-/* ─── INDEX GRID ────────────────────────────────────────────────── */
-.wf-index-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
-  padding: var(--space-6);
-}
-.wf-index-card {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px;
-  overflow: hidden;
-  cursor: pointer;
-  text-decoration: none;
-  color: rgba(255,255,255,0.85);
-  transition: transform var(--duration-normal) var(--ease-out),
-              box-shadow var(--duration-normal) var(--ease-out);
-}
-.wf-index-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 48px rgba(0,0,0,0.3);
-}
-.wf-index-thumb {
-  height: 140px;
-  background: rgba(255,255,255,0.03);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--text-sm);
-  color: rgba(255,255,255,0.3);
-}
-.wf-index-label {
-  padding: 12px 14px 2px;
-  font-size: 14px;
-  font-weight: var(--weight-semibold);
-}
-.wf-index-sub {
-  padding: 0 14px 12px;
-  font-size: var(--text-xs);
-  color: rgba(255,255,255,0.4);
-}
-
-/* ─── UTILITY CLASSES ───────────────────────────────────────────── */
-.wf-spacer { flex: 1; }
-.wf-flex { display: flex; }
-.wf-items-center { align-items: center; }
-.wf-justify-between { justify-content: space-between; }
-.wf-gap-1 { gap: var(--space-1); }
-.wf-gap-2 { gap: var(--space-2); }
-.wf-gap-3 { gap: var(--space-3); }
-.wf-gap-4 { gap: var(--space-4); }
-.wf-flex-1 { flex: 1; }
-.wf-truncate {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 ```
+docs/wireframes/_wireframe.css   ← must exist (shipped with repo)
+```
+
+If the file is missing (e.g., user deleted it), copy it from the template repo or re-run `/new-project`.
+**Do NOT regenerate the CSS inline** — always use the static file.
 
 ---
 
@@ -1618,6 +445,163 @@ This makes each card a distinct artboard for `/send-to-figma` capture.
 
 ---
 
+## Phase 4c: Generate — Canvas View (`--all` mode only)
+
+When `mode` is `all`, generate a single-page zoomable canvas after all individual variation files have been written. This phase does **not** run for single-screen or iterate modes.
+
+### File: `docs/wireframes/canvas.html`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wireframes — Canvas</title>
+  <link rel="stylesheet" href="_wireframe.css" />
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="wf-canvas">
+
+  <!-- Zoom toolbar — fixed bottom-center -->
+  <div class="wf-canvas-toolbar">
+    <button data-action="zoom-out" title="Zoom out (−)">−</button>
+    <span class="wf-zoom-display">100%</span>
+    <button data-action="zoom-in" title="Zoom in (+)">+</button>
+    <div class="wf-toolbar-sep"></div>
+    <button data-action="fit" title="Fit all (1)">Fit</button>
+    <button data-action="reset" title="Reset to 100% (0)">1:1</button>
+  </div>
+
+  <!-- Transformable surface -->
+  <div class="wf-canvas-surface" id="surface">
+    <div class="wf-canvas-grid">
+
+      <!-- Repeat one .wf-artboard-wrapper per variation file -->
+      <div class="wf-artboard-wrapper">
+        <div class="wf-phone">
+          <div class="wf-status-bar">
+            <span class="wf-status-time">9:41</span>
+            <div class="wf-dynamic-island"></div>
+            <div class="wf-status-icons">
+              <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="6" width="3" height="6" rx="1" fill="currentColor"/><rect x="4.5" y="4" width="3" height="8" rx="1" fill="currentColor"/><rect x="9" y="2" width="3" height="10" rx="1" fill="currentColor"/></svg>
+              <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" stroke-opacity="0.35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><path d="M23 4v4a2 2 0 0 0 0-4z" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+          <div class="wf-screen">
+            <!-- SCREEN CONTENT from this variation -->
+          </div>
+        </div>
+        <div class="wf-artboard-label"><HumanTitle></div>
+        <div class="wf-artboard-sublabel">V<N>: <VN Short Title></div>
+      </div>
+
+      <!-- ... more artboard wrappers ... -->
+
+    </div>
+  </div>
+
+  <script>
+  (() => {
+    const surface = document.getElementById('surface');
+    const body = document.body;
+    const zoomDisplay = document.querySelector('.wf-zoom-display');
+    let zoom = 1, panX = 0, panY = 0;
+    let isDragging = false, dragStartX = 0, dragStartY = 0, panStartX = 0, panStartY = 0;
+    const ZOOM_MIN = 0.15, ZOOM_MAX = 3;
+
+    function apply() {
+      surface.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
+      zoomDisplay.textContent = Math.round(zoom * 100) + '%';
+    }
+
+    // --- Wheel zoom toward cursor ---
+    body.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const delta = -e.deltaY * 0.001;
+      const newZoom = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, zoom * (1 + delta)));
+      const rect = body.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      panX = mx - (mx - panX) * (newZoom / zoom);
+      panY = my - (my - panY) * (newZoom / zoom);
+      zoom = newZoom;
+      apply();
+    }, { passive: false });
+
+    // --- Mouse drag to pan ---
+    body.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.wf-canvas-toolbar')) return;
+      isDragging = true;
+      dragStartX = e.clientX; dragStartY = e.clientY;
+      panStartX = panX; panStartY = panY;
+      body.classList.add('grabbing');
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      panX = panStartX + (e.clientX - dragStartX);
+      panY = panStartY + (e.clientY - dragStartY);
+      apply();
+    });
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+      body.classList.remove('grabbing');
+    });
+
+    // --- Toolbar actions ---
+    document.querySelector('.wf-canvas-toolbar').addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const action = btn.dataset.action;
+      if (action === 'zoom-in') zoom = Math.min(ZOOM_MAX, zoom + 0.25);
+      if (action === 'zoom-out') zoom = Math.max(ZOOM_MIN, zoom - 0.25);
+      if (action === 'reset') { zoom = 1; panX = 0; panY = 0; }
+      if (action === 'fit') fitAll();
+      apply();
+    });
+
+    // --- Keyboard shortcuts ---
+    window.addEventListener('keydown', (e) => {
+      if (e.key === '+' || e.key === '=') { zoom = Math.min(ZOOM_MAX, zoom + 0.25); apply(); }
+      if (e.key === '-') { zoom = Math.max(ZOOM_MIN, zoom - 0.25); apply(); }
+      if (e.key === '0') { zoom = 1; panX = 0; panY = 0; apply(); }
+      if (e.key === '1') { fitAll(); apply(); }
+    });
+
+    // --- Fit all artboards in viewport ---
+    function fitAll() {
+      const grid = surface.querySelector('.wf-canvas-grid');
+      if (!grid) return;
+      const sw = grid.scrollWidth, sh = grid.scrollHeight;
+      const vw = window.innerWidth, vh = window.innerHeight;
+      zoom = Math.min(vw / sw, vh / sh, 1) * 0.92;
+      panX = (vw - sw * zoom) / 2;
+      panY = (vh - sh * zoom) / 2;
+    }
+
+    // Auto-fit on load
+    fitAll();
+    apply();
+  })();
+  </script>
+
+</body>
+</html>
+```
+
+### Content generation rules
+
+- **For each variation file** (sorted by screen flow order, then variation number):
+  extract the phone frame content (everything inside `.wf-screen`) from the already-generated `<kebab>-v<N>.html` file.
+- Wrap in `.wf-artboard-wrapper` → `.wf-phone` (with status bar + dynamic island) → `.wf-screen` (content).
+- Add `.wf-artboard-label` with the screen's human title and `.wf-artboard-sublabel` with `V<N>: <Short Title>`.
+- **No** `.wf-prototype-nav`, `.wf-variation-strip`, or page headers — artboards sit directly on the canvas.
+- The canvas grid auto-wraps based on viewport width (via `auto-fill, minmax(440px, 1fr)`).
+- Include the same `<!-- COMPONENT-MANIFEST -->` comment at the end of the file,
+  merged from all individual variation manifests.
+
+---
+
 ## Phase 4b: Generate — Figma CLI
 
 **Skip-Figma check:** If `pipeline.json` exists at the project root and `flags.skip_figma` is `true`, skip this entire phase (treat as `output_format = html`). Also skip if `--html` flag was passed explicitly.
@@ -1671,9 +655,13 @@ Files:
   docs/wireframes/<kebab>-v1.html
   docs/wireframes/<kebab>-v2.html
   docs/wireframes/<kebab>-v3.html
+  docs/wireframes/canvas.html        ← only in --all mode
 
 ### Open in browser:
 open docs/wireframes/<kebab>-v1.html
+
+### Open canvas view (--all mode):
+open docs/wireframes/canvas.html
 
 ### Send to Figma:
 /send-to-figma docs/wireframes
@@ -1804,6 +792,11 @@ Before marking generation complete, verify:
 - [ ] All buttons are pill-shaped (`.wf-btn` uses `border-radius: var(--radius-full)`)
 - [ ] Spacing uses semantic tokens (`--space-*`) not arbitrary pixel values
 - [ ] If `--responsive`, iPad/desktop frames are present with appropriate layout patterns
+- [ ] If `--all`, `canvas.html` generated with all artboards on a flat grid
+- [ ] Canvas: every variation file has a corresponding `.wf-artboard-wrapper` on the canvas
+- [ ] Canvas: zoom+pan JS works (scroll to zoom, drag to pan, toolbar buttons)
+- [ ] Canvas: artboard labels show screen name + variation title below each frame
+- [ ] Canvas: auto-fits all artboards in viewport on initial load
 
 ---
 

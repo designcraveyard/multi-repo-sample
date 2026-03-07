@@ -1,5 +1,5 @@
 import SwiftUI
-import PhosphorSwift
+// PhosphorSlim — no import needed (compiled into target)
 
 struct ContentView: View {
     var body: some View {

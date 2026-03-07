@@ -177,6 +177,14 @@ Write `docs/design/stylescapes/_stylescape.css` with these sections:
 .ss-hero .ss-narrative { /* 2-sentence description */ }
 ```
 
+### Bento Grid Layout
+
+Each stylescape board uses a CSS Grid bento layout instead of linear sections:
+- Variable-sized cards arranged in a responsive grid
+- Card types: palette, typography sample, shape/radius, component styling, screen mockups, AI assets, icon set preview
+- Number of cards varies by candidate complexity (typically 8-12)
+- Per-candidate themed backgrounds — each board uses the candidate's own base color as background
+
 ### Mood Board Grid
 ```css
 /* --- Grid --- */
@@ -418,6 +426,15 @@ Structure the mood board with these tiles (order and span may vary per candidate
 11. **Motion tile** (`.ss-tile`): CSS keyframe animation demonstrating motion personality
 12. **Descriptors** (`.ss-descriptors`): Style descriptor phrases as pill-shaped tags
 
+### Fresh Screen Mockups (not dummy)
+
+Design 4-5 key screens per candidate using the candidate's full visual language:
+- Empty state, list page, detail page, form with inputs, card layout
+- Use the candidate's colors, typography, radius, shadows
+- Real content from app-brief (not lorem ipsum where possible)
+- Rendered in phone device frames
+- Component styling previews: show 3-4 key components (Button, InputField, Card, Chip) styled with the candidate's tokens
+
 ### BODY — Part B: Applied Examples
 
 ```html
@@ -426,7 +443,7 @@ Structure the mood board with these tiles (order and span may vary per candidate
 </div>
 
 <div class="ss-applied-grid">
-  <!-- 2-3 phone frames side by side -->
+  <!-- 4-5 phone frames side by side -->
   <div>
     <div class="ss-phone" style="background: var(--neutral-50);">
       <div class="ss-phone-status-bar">...</div>
@@ -614,6 +631,21 @@ Vary the gradient angle and color stops per tile to create visual diversity:
 - Illustration: radial-gradient, brand-100 center → brand-500 edge
 - Icon grid: `180deg`, neutral-100 → neutral-300 (subtle)
 - Texture: conic-gradient, brand-100 → brand-200 → neutral-100 → brand-100
+
+---
+
+### AI-Generated Assets
+
+Leverage `asset-gen` plugin (`gpt-image-1`) for illustrations, textures, gradients:
+- Assets integrated into bento cards (not separate mood board images)
+- Each asset designed to reinforce the candidate's visual language
+- Use `--no-images` flag for CSS gradient placeholders when API unavailable
+
+### CSS Resource
+
+The stylescape CSS lives at `.claude/skills/stylescape/stylescape.css`.
+Copy to `docs/design/stylescapes/_stylescape.css` on first run.
+Includes bento grid system, per-candidate color theming, device frames.
 
 ---
 

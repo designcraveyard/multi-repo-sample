@@ -47,9 +47,11 @@ Also include:
 - Data flow (API → ViewModel → View)
 - Navigation wiring needed
 
-**Rule:** Every UI element in the screen MUST use a component from `docs/components.md`. If a component doesn't exist for what the screen needs, flag it as a gap and either:
-1. Use the closest existing component with a `// TODO: replace with <ideal component>` note
-2. Note it for `/complex-component` creation before building this screen
+**Rule:** Every UI element MUST use a component from `docs/components.md`. If a required component doesn't exist:
+1. **STOP** and tell the user: "Component `<Name>` is needed but doesn't exist in the registry. Run `/complex-component <Name>` first to build it."
+2. Do NOT continue with a placeholder, TODO, or flag-and-proceed approach
+3. After the component is built and added to `docs/components.md`, resume feature implementation
+4. Exception: if the missing component is trivial (a simple wrapper), ask the user if they want to proceed with inline code or build the component first
 
 Ask user to confirm or adjust.
 
