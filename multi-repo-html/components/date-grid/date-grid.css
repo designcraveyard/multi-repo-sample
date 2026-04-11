@@ -148,13 +148,19 @@
    ============================================================================= */
 
 .ds-date-grid {
-  display:          inline-flex;
+  display:          flex;
   align-items:      stretch;
   overflow:         hidden;
   border-radius:    12px;
   background-color: var(--surfaces-base-low-contrast);  /* Trough background */
   padding:          4px;
   gap:              0;
+}
+
+/* Each date item fills equal space inside the grid */
+.ds-date-grid > .ds-date-item {
+  flex: 1;
+  min-width: 0;
 }
 
 /* Prev/next week arrow buttons */
