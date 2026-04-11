@@ -1,0 +1,139 @@
+/* =============================================================================
+   switch.css — Switch Component
+   Design system: bubbles-kit (Figma: Switch)
+   Synced from: multi-repo-nextjs/app/components/Switch/Switch.tsx
+
+   Platform paths:
+     Web    → multi-repo-nextjs/app/components/Switch/Switch.tsx
+     iOS    → multi-repo-ios/Components/Switch/AppSwitch.swift
+     Android→ multi-repo-android/ui/components/AppSwitch.kt
+
+   Variant axis:
+     state    → off | on (use .on modifier)
+     disabled → on | off (use .disabled modifier)
+
+   Implementation note:
+     In React, the track is a <button role="switch" aria-checked=...>.
+     In static HTML, we use modifier classes (.on, .disabled) on .ds-switch
+     for purely visual representation with no JavaScript required.
+
+   Structure:
+     .ds-switch              — outer container row (inline-flex, gap)
+       .ds-switch-track      — the oval track (44×24px)
+         .ds-switch-thumb    — the white circular knob (20×20px)
+       .ds-switch-label      — optional text label
+
+   Usage:
+     <!-- Off -->
+     <div class="ds-switch">
+       <div class="ds-switch-track">
+         <div class="ds-switch-thumb"></div>
+       </div>
+       <span class="ds-switch-label">Enable notifications</span>
+     </div>
+     <!-- On -->
+     <div class="ds-switch on">
+       <div class="ds-switch-track"><div class="ds-switch-thumb"></div></div>
+     </div>
+     <!-- Disabled off -->
+     <div class="ds-switch disabled">…</div>
+
+   Token layer: ALL colours reference --surfaces-*, --typography-*
+   from tokens/semantic.css. Never hardcode hex values.
+   ============================================================================= */
+
+
+/* =============================================================================
+   WRAPPER — outer container row
+   ============================================================================= */
+
+.ds-switch {
+  display:     inline-flex;
+  align-items: center;
+  gap:         8px;        /* --space-2 between track and label */
+  cursor:      pointer;
+  font-family: var(--font-sans);  /* Geist */
+}
+
+/* Disabled: 50% opacity, cursor */
+.ds-switch.disabled {
+  opacity:        0.5;
+  cursor:         not-allowed;
+  pointer-events: none;
+}
+
+
+/* =============================================================================
+   TRACK — the oval pill that the thumb slides inside
+   Figma: w-11 (44px) h-6 (24px), border-2 border-transparent
+   Off: surfaces-base-low-contrast bg
+   On:  surfaces-brand-interactive bg
+   ============================================================================= */
+
+.ds-switch-track {
+  position:        relative;
+  flex-shrink:     0;
+  width:           44px;      /* w-11 = 44px */
+  height:          24px;      /* h-6  = 24px */
+  border-radius:   var(--radius-full);     /* Full pill */
+  border:          2px solid transparent; /* 2px transparent border (matches React) */
+
+  /* Off state: low-contrast bg */
+  background-color: var(--surfaces-base-low-contrast);
+
+  transition: background-color 200ms ease-in-out;
+}
+
+/* Track hover — off state only */
+.ds-switch:not(.on):not(.disabled):hover .ds-switch-track {
+  background-color: var(--surfaces-base-low-contrast-hover);
+}
+
+/* Track — On state: brand bg */
+.ds-switch.on .ds-switch-track {
+  background-color: var(--surfaces-brand-interactive);  /* Zinc-950 / zinc-50 */
+}
+
+/* Track hover — on state */
+.ds-switch.on:not(.disabled):hover .ds-switch-track {
+  background-color: var(--surfaces-brand-interactive-hover);
+}
+
+
+/* =============================================================================
+   THUMB — the white circle that slides left (off) → right (on)
+   Figma: w-5 h-5 (20×20px), bg=surfaces-base-primary, shadow-sm
+   Off:  translate-x-0 (left side)
+   On:   translate-x-5 (right side, 20px slide)
+   ============================================================================= */
+
+.ds-switch-thumb {
+  position:         absolute;
+  top:              0;
+  left:             0;       /* Off: flush to left edge (inside 2px border) */
+  width:            20px;    /* w-5 = 20px */
+  height:           20px;    /* h-5 = 20px */
+  border-radius:    var(--radius-full);
+  background-color: var(--surfaces-base-primary);  /* White / black */
+  box-shadow:       0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+
+  transition: transform 200ms ease-in-out;
+}
+
+/* Thumb — On state: slides to the right by 20px (track width - thumb width - border*2 = 44-20-4=20) */
+.ds-switch.on .ds-switch-thumb {
+  transform: translateX(20px);   /* translate-x-5 = 20px */
+}
+
+
+/* =============================================================================
+   LABEL — optional text beside the switch
+   Body/Md, primary color.
+   ============================================================================= */
+
+.ds-switch-label {
+  font-size:   var(--typography-body-md-size);    /* 14px */
+  line-height: var(--typography-body-md-leading); /* 20px */
+  font-weight: var(--typography-body-md-weight);  /* 400 */
+  color:       var(--typography-primary);          /* Zinc-950 / zinc-50 */
+}

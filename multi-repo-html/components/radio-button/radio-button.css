@@ -1,0 +1,141 @@
+/* =============================================================================
+   radio-button.css — RadioButton + RadioGroup Components
+   Design system: bubbles-kit (Figma: RadioButton)
+   Synced from: multi-repo-nextjs/app/components/RadioButton/RadioButton.tsx
+
+   Platform paths:
+     Web    → multi-repo-nextjs/app/components/RadioButton/RadioButton.tsx
+     iOS    → multi-repo-ios/Components/RadioButton/AppRadioButton.swift
+     Android→ multi-repo-android/ui/components/AppRadioButton.kt
+
+   Variant axis:
+     state    → unselected | selected (use .selected modifier)
+     disabled → on | off (use .disabled modifier)
+
+   Implementation note:
+     In React, the native <input type="radio"> is sr-only (visually hidden).
+     In static HTML, we use modifier classes (.selected, .disabled) on the wrapper
+     for purely visual representation with no JavaScript required.
+
+   Structure:
+     .ds-radio                — outer <label> row (inline-flex, gap)
+       .ds-radio-circle       — custom 20×20px circle
+         (inner dot — only shown when .selected)
+       .ds-radio-label        — optional text label
+     .ds-radio-group          — wraps multiple .ds-radio in a column
+
+   Usage:
+     <!-- Unselected -->
+     <label class="ds-radio">
+       <span class="ds-radio-circle"></span>
+       <span class="ds-radio-label">Option A</span>
+     </label>
+     <!-- Selected -->
+     <label class="ds-radio selected">
+       <span class="ds-radio-circle">
+         <span class="ds-radio-dot"></span>
+       </span>
+       <span class="ds-radio-label">Option B</span>
+     </label>
+     <!-- Group -->
+     <div class="ds-radio-group" role="radiogroup">
+       …radio buttons…
+     </div>
+
+   Token layer: ALL colours reference --surfaces-*, --typography-*, --border-*
+   from tokens/semantic.css. Never hardcode hex values.
+   ============================================================================= */
+
+
+/* =============================================================================
+   WRAPPER — label row
+   ============================================================================= */
+
+.ds-radio {
+  display:     inline-flex;
+  align-items: center;
+  gap:         8px;          /* --space-2 between circle and label */
+  cursor:      pointer;
+  user-select: none;
+  font-family: var(--font-sans);  /* Geist */
+}
+
+/* Disabled: 50% opacity, no pointer events */
+.ds-radio.disabled {
+  opacity:        0.5;
+  cursor:         not-allowed;
+  pointer-events: none;
+}
+
+
+/* =============================================================================
+   CIRCLE — custom 20×20px radio control
+   Unselected: transparent bg, border-default border.
+   Selected: brand-interactive bg + border.
+   Hover (unselected only): border turns brand.
+   ============================================================================= */
+
+.ds-radio-circle {
+  position:        relative;
+  flex-shrink:     0;
+  width:           20px;
+  height:          20px;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  border-radius:   var(--radius-full);   /* Full circle */
+  border:          2px solid var(--border-default);    /* Zinc-300 / zinc-600 */
+  background-color: transparent;
+  transition:      border-color     150ms ease-out,
+                   background-color 150ms ease-out;
+}
+
+/* Hover — unselected only: border turns brand */
+.ds-radio:not(.selected):not(.disabled):hover .ds-radio-circle {
+  border-color: var(--border-brand);   /* Zinc-950 / zinc-50 */
+}
+
+/* Selected state */
+.ds-radio.selected .ds-radio-circle {
+  border-color:     var(--surfaces-brand-interactive);   /* Brand border */
+  background-color: var(--surfaces-brand-interactive);   /* Brand fill */
+}
+
+
+/* =============================================================================
+   INNER DOT — 8×8px centered dot (selected only)
+   Uses on-brand-primary color (white/black) to contrast with brand bg.
+   ============================================================================= */
+
+.ds-radio-dot {
+  width:            8px;          /* w-2 = 8px */
+  height:           8px;          /* h-2 = 8px */
+  border-radius:    var(--radius-full);
+  background-color: var(--typography-on-brand-primary);  /* White / black */
+}
+
+
+/* =============================================================================
+   LABEL TEXT — optional text beside the radio
+   Body/Md, primary color.
+   ============================================================================= */
+
+.ds-radio-label {
+  font-size:   var(--typography-body-md-size);    /* 14px */
+  line-height: var(--typography-body-md-leading); /* 20px */
+  font-weight: var(--typography-body-md-weight);  /* 400 */
+  color:       var(--typography-primary);          /* Zinc-950 / zinc-50 */
+}
+
+
+/* =============================================================================
+   RADIO GROUP — column of radio buttons
+   Figma: flex-col, gap-3 (12px) between items.
+   role="radiogroup" on the container.
+   ============================================================================= */
+
+.ds-radio-group {
+  display:        flex;
+  flex-direction: column;
+  gap:            12px;   /* --space-3 = 12px */
+}

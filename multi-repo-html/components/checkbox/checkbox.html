@@ -1,0 +1,149 @@
+<!--
+  checkbox.html — Checkbox Component Variants
+  Design system: bubbles-kit
+  Synced from: multi-repo-nextjs/app/components/Checkbox/Checkbox.tsx
+
+  STATIC VISUAL REPRESENTATION — no JavaScript.
+  Modifier classes (.checked, .indeterminate, .disabled) control visual states.
+
+  data-component="Checkbox" | data-state="{state}" | data-disabled="true|false"
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkbox — Variants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../tokens/primitives.css" />
+  <link rel="stylesheet" href="../../tokens/semantic.css" />
+  <link rel="stylesheet" href="../../tokens/spacing.css" />
+  <link rel="stylesheet" href="../../tokens/radius.css" />
+  <link rel="stylesheet" href="checkbox.css" />
+  <style>
+    body { font-family: 'Geist', sans-serif; background: var(--surfaces-base-primary); padding: 32px; }
+    .section { margin-bottom: 32px; }
+    .section-title { font-size: 11px; font-weight: 600; color: var(--typography-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+    .stack { display: flex; flex-direction: column; gap: 12px; }
+    .row { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+  <!-- ALL STATES — with label -->
+  <div class="section">
+    <div class="section-title">All States — With Label</div>
+    <div class="stack">
+
+      <!-- Unchecked -->
+      <label class="ds-checkbox" data-component="Checkbox" data-state="unchecked" data-disabled="false">
+        <span class="ds-checkbox-box" aria-hidden="true"></span>
+        <span class="ds-checkbox-label">Unchecked</span>
+      </label>
+
+      <!-- Checked -->
+      <label class="ds-checkbox checked" data-component="Checkbox" data-state="checked" data-disabled="false">
+        <span class="ds-checkbox-box" aria-hidden="true">
+          <!-- Checkmark SVG — path D="M2 6L5 9L10 3" -->
+          <span class="ds-checkbox-mark">
+            <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </span>
+        <span class="ds-checkbox-label">Checked</span>
+      </label>
+
+      <!-- Indeterminate (dash) -->
+      <label class="ds-checkbox indeterminate" data-component="Checkbox" data-state="indeterminate" data-disabled="false">
+        <span class="ds-checkbox-box" aria-hidden="true">
+          <!-- Indeterminate dash SVG -->
+          <span class="ds-checkbox-mark">
+            <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M2.5 6H9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+        </span>
+        <span class="ds-checkbox-label">Indeterminate</span>
+      </label>
+
+    </div>
+  </div>
+
+  <!-- DISABLED STATES -->
+  <div class="section">
+    <div class="section-title">Disabled States</div>
+    <div class="stack">
+
+      <!-- Disabled unchecked -->
+      <label class="ds-checkbox disabled" data-component="Checkbox" data-state="unchecked" data-disabled="true">
+        <span class="ds-checkbox-box" aria-hidden="true"></span>
+        <span class="ds-checkbox-label">Disabled unchecked</span>
+      </label>
+
+      <!-- Disabled checked -->
+      <label class="ds-checkbox checked disabled" data-component="Checkbox" data-state="checked" data-disabled="true">
+        <span class="ds-checkbox-box" aria-hidden="true">
+          <span class="ds-checkbox-mark">
+            <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </span>
+        <span class="ds-checkbox-label">Disabled checked</span>
+      </label>
+
+      <!-- Disabled indeterminate -->
+      <label class="ds-checkbox indeterminate disabled" data-component="Checkbox" data-state="indeterminate" data-disabled="true">
+        <span class="ds-checkbox-box" aria-hidden="true">
+          <span class="ds-checkbox-mark">
+            <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M2.5 6H9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+        </span>
+        <span class="ds-checkbox-label">Disabled indeterminate</span>
+      </label>
+
+    </div>
+  </div>
+
+  <!-- WITHOUT LABEL — box only -->
+  <div class="section">
+    <div class="section-title">Without Label (box only)</div>
+    <div class="row">
+
+      <label class="ds-checkbox" data-component="Checkbox" data-state="unchecked">
+        <span class="ds-checkbox-box" aria-hidden="true"></span>
+      </label>
+
+      <label class="ds-checkbox checked" data-component="Checkbox" data-state="checked">
+        <span class="ds-checkbox-box" aria-hidden="true">
+          <span class="ds-checkbox-mark">
+            <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </span>
+      </label>
+
+      <label class="ds-checkbox indeterminate" data-component="Checkbox" data-state="indeterminate">
+        <span class="ds-checkbox-box" aria-hidden="true">
+          <span class="ds-checkbox-mark">
+            <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M2.5 6H9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+        </span>
+      </label>
+
+    </div>
+  </div>
+
+</body>
+</html>

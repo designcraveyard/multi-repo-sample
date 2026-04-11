@@ -1,0 +1,191 @@
+<!--
+  icon-button.html — IconButton Component Variants
+  Design system: bubbles-kit (Figma node 76:208)
+  Synced from: multi-repo-nextjs/app/components/IconButton/IconButton.tsx
+
+  Renders all 6 types × 3 sizes + disabled state.
+  Icon placeholder: small inline SVG square (replace with actual Phosphor icon).
+  data-component="IconButton" | data-variant="{type}" | data-size="{size}" | data-state="{state}"
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IconButton — Variants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../tokens/primitives.css" />
+  <link rel="stylesheet" href="../../tokens/semantic.css" />
+  <link rel="stylesheet" href="../../tokens/spacing.css" />
+  <link rel="stylesheet" href="../../tokens/radius.css" />
+  <link rel="stylesheet" href="icon-button.css" />
+  <style>
+    body { font-family: 'Geist', sans-serif; background: var(--surfaces-base-primary); padding: 32px; }
+    .section { margin-bottom: 32px; }
+    .section-title { font-size: 11px; font-weight: 600; color: var(--typography-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+    .row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+
+  <!-- PRIMARY — All 3 sizes -->
+  <div class="section">
+    <div class="section-title">Primary</div>
+    <div class="row">
+      <button class="ds-icon-button primary lg" aria-label="Action"
+        data-component="IconButton" data-variant="primary" data-size="lg">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button primary md" aria-label="Action"
+        data-component="IconButton" data-variant="primary" data-size="md">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button primary sm" aria-label="Action"
+        data-component="IconButton" data-variant="primary" data-size="sm">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <!-- Hover state -->
+      <button class="ds-icon-button primary lg hover" aria-label="Action"
+        data-component="IconButton" data-variant="primary" data-size="lg" data-state="hover">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <!-- Pressed state -->
+      <button class="ds-icon-button primary lg pressed" aria-label="Action"
+        data-component="IconButton" data-variant="primary" data-size="lg" data-state="pressed">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <!-- Disabled -->
+      <button class="ds-icon-button primary lg disabled" aria-label="Action" disabled
+        data-component="IconButton" data-variant="primary" data-size="lg" data-state="disabled">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- SECONDARY -->
+  <div class="section">
+    <div class="section-title">Secondary</div>
+    <div class="row">
+      <button class="ds-icon-button secondary lg" aria-label="Action"
+        data-component="IconButton" data-variant="secondary" data-size="lg">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button secondary md" aria-label="Action"
+        data-component="IconButton" data-variant="secondary" data-size="md">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button secondary sm" aria-label="Action"
+        data-component="IconButton" data-variant="secondary" data-size="sm">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button secondary lg hover" aria-label="Action"
+        data-component="IconButton" data-variant="secondary" data-size="lg" data-state="hover">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button secondary lg disabled" disabled aria-label="Action"
+        data-component="IconButton" data-variant="secondary" data-size="lg" data-state="disabled">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- TERTIARY -->
+  <div class="section">
+    <div class="section-title">Tertiary (outlined)</div>
+    <div class="row">
+      <button class="ds-icon-button tertiary lg" aria-label="Action"
+        data-component="IconButton" data-variant="tertiary" data-size="lg">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button tertiary md" aria-label="Action"
+        data-component="IconButton" data-variant="tertiary" data-size="md">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button tertiary sm" aria-label="Action"
+        data-component="IconButton" data-variant="tertiary" data-size="sm">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button tertiary lg hover" aria-label="Action"
+        data-component="IconButton" data-variant="tertiary" data-size="lg" data-state="hover">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button tertiary lg disabled" disabled aria-label="Action"
+        data-component="IconButton" data-variant="tertiary" data-size="lg" data-state="disabled">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- QUARTERNARY (ghost) -->
+  <div class="section">
+    <div class="section-title">Quarternary (ghost)</div>
+    <div class="row">
+      <button class="ds-icon-button quarternary lg" aria-label="Action"
+        data-component="IconButton" data-variant="quarternary" data-size="lg">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button quarternary md" aria-label="Action"
+        data-component="IconButton" data-variant="quarternary" data-size="md">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button quarternary sm" aria-label="Action"
+        data-component="IconButton" data-variant="quarternary" data-size="sm">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button quarternary lg hover" aria-label="Action"
+        data-component="IconButton" data-variant="quarternary" data-size="lg" data-state="hover">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="section">
+    <div class="section-title">Success</div>
+    <div class="row">
+      <button class="ds-icon-button success lg" aria-label="Confirm"
+        data-component="IconButton" data-variant="success" data-size="lg">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button success md" aria-label="Confirm"
+        data-component="IconButton" data-variant="success" data-size="md">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button success sm" aria-label="Confirm"
+        data-component="IconButton" data-variant="success" data-size="sm">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button success lg hover" aria-label="Confirm"
+        data-component="IconButton" data-variant="success" data-size="lg" data-state="hover">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- DANGER -->
+  <div class="section">
+    <div class="section-title">Danger</div>
+    <div class="row">
+      <button class="ds-icon-button danger lg" aria-label="Delete"
+        data-component="IconButton" data-variant="danger" data-size="lg">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button danger md" aria-label="Delete"
+        data-component="IconButton" data-variant="danger" data-size="md">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button danger sm" aria-label="Delete"
+        data-component="IconButton" data-variant="danger" data-size="sm">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button class="ds-icon-button danger lg hover" aria-label="Delete"
+        data-component="IconButton" data-variant="danger" data-size="lg" data-state="hover">
+        <span class="ds-icon-placeholder" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+
+</body>
+</html>

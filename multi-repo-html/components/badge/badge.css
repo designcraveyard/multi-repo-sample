@@ -1,0 +1,174 @@
+/* =============================================================================
+   badge.css — Badge Component
+   Design system: bubbles-kit (Figma node 87:1071 — Badge component set)
+   Synced from: multi-repo-nextjs/app/components/Badge/Badge.tsx
+
+   Platform paths:
+     Web    → multi-repo-nextjs/app/components/Badge/Badge.tsx
+     iOS    → multi-repo-ios/Components/Badge/AppBadge.swift
+     Android→ multi-repo-android/ui/components/AppBadge.kt
+
+   Variant axis:
+     type   → brand | success | error | accent
+     size   → tiny(6px dot) | sm(14px) | number(14px) | md(16px)
+     subtle → on | off (default: off = solid)
+
+   Total Figma combinations: Size × Subtle × Type = 4 × 2 × 4 = 32
+
+   Usage:
+     <!-- Tiny dot (no text) -->
+     <span class="ds-badge brand tiny" data-component="Badge" data-variant="brand" data-size="tiny"></span>
+     <!-- Small text badge -->
+     <span class="ds-badge brand sm">New</span>
+     <!-- Numeric count -->
+     <span class="ds-badge brand number">5</span>
+     <!-- Medium (default) -->
+     <span class="ds-badge brand md">Beta</span>
+     <!-- Subtle variants -->
+     <span class="ds-badge success md subtle">Active</span>
+
+   Token layer: ALL colours reference --surfaces-*, --typography-* from tokens/semantic.css.
+   ============================================================================= */
+
+
+/* =============================================================================
+   BASE — shared shape, font-family, display
+   ============================================================================= */
+
+.ds-badge {
+  display:         inline-flex;
+  align-items:     center;
+  justify-content: center;
+  border-radius:   var(--radius-full);  /* Pill shape — Figma cornerRadius=2000 */
+  flex-shrink:     0;                   /* Don't compress in flex rows */
+  user-select:     none;                /* Non-interactive text */
+  white-space:     nowrap;              /* Keep label on one line */
+  font-family:     var(--font-sans);    /* Geist */
+}
+
+
+/* =============================================================================
+   SIZE — TINY
+   Renders as a 6×6px colored dot with no text. Used as notification indicator.
+   Figma: 6px circle, no label.
+   ============================================================================= */
+
+.ds-badge.tiny {
+  width:  6px;
+  height: 6px;
+  padding: 0;          /* No padding — it's just a dot */
+  /* Text content is hidden/ignored for tiny dots */
+  font-size: 0;
+  line-height: 0;
+}
+
+
+/* =============================================================================
+   SIZE — SM + NUMBER
+   Both are 14px height, compact padding, badge-sm font (10px/600).
+   "number" is the same visual size as "sm", just named separately in Figma.
+   ============================================================================= */
+
+.ds-badge.sm,
+.ds-badge.number {
+  height:    14px;
+  min-width: 14px;
+  padding:   0 4px;    /* 4px horizontal padding */
+  font-size:   var(--typography-badge-sm-size);     /* 10px */
+  line-height: var(--typography-badge-sm-leading);  /* 14px */
+  font-weight: var(--typography-badge-sm-weight);   /* 600 */
+}
+
+
+/* =============================================================================
+   SIZE — MD (default)
+   16px height, standard horizontal padding, badge-md font (11px/600).
+   ============================================================================= */
+
+.ds-badge.md {
+  height:    16px;
+  min-width: 16px;
+  padding:   0 6px;    /* 6px horizontal padding */
+  font-size:   var(--typography-badge-md-size);     /* 11px */
+  line-height: var(--typography-badge-md-leading);  /* 16px */
+  font-weight: var(--typography-badge-md-weight);   /* 600 */
+}
+
+
+/* =============================================================================
+   TYPE — BRAND (SOLID)
+   Solid brand-interactive background, on-brand-primary text.
+   Figma: Surfaces/BrandInteractive bg, Typography/OnBrandPrimary text
+   ============================================================================= */
+
+.ds-badge.brand {
+  background-color: var(--surfaces-brand-interactive);  /* Zinc-950 / zinc-50 */
+  color:            var(--typography-on-brand-primary); /* White / black */
+}
+
+
+/* =============================================================================
+   TYPE — SUCCESS (SOLID)
+   Solid green background.
+   Figma: Surfaces/SuccessSolid bg, Typography/OnBrandPrimary text
+   ============================================================================= */
+
+.ds-badge.success {
+  background-color: var(--surfaces-success-solid);      /* Green-600 / green-300 */
+  color:            var(--typography-on-brand-primary);
+}
+
+
+/* =============================================================================
+   TYPE — ERROR (SOLID)
+   Solid red background.
+   Figma: Surfaces/ErrorSolid bg, Typography/OnBrandPrimary text
+   ============================================================================= */
+
+.ds-badge.error {
+  background-color: var(--surfaces-error-solid);        /* Red-600 / red-300 */
+  color:            var(--typography-on-brand-primary);
+}
+
+
+/* =============================================================================
+   TYPE — ACCENT (SOLID)
+   Solid accent/purple background.
+   Figma: Surfaces/AccentPrimary bg, Typography/OnBrandPrimary text
+   ============================================================================= */
+
+.ds-badge.accent {
+  background-color: var(--surfaces-accent-primary);     /* Purple primary */
+  color:            var(--typography-on-brand-primary);
+}
+
+
+/* =============================================================================
+   SUBTLE MODIFIER — applies to all types
+   Low-contrast (tinted) background instead of solid. Text shifts to semantic color.
+   Add .subtle alongside the type class: <span class="ds-badge brand md subtle">
+   ============================================================================= */
+
+/* Brand subtle — low-contrast brand bg, brand text */
+.ds-badge.brand.subtle {
+  background-color: var(--surfaces-brand-interactive-low-contrast);  /* Zinc-200 / zinc-800 */
+  color:            var(--typography-brand);                           /* Zinc-950 / zinc-50 */
+}
+
+/* Success subtle — tinted green bg, success text */
+.ds-badge.success.subtle {
+  background-color: var(--surfaces-success-subtle);   /* Light green tint */
+  color:            var(--typography-success);         /* Green text */
+}
+
+/* Error subtle — tinted red bg, error text */
+.ds-badge.error.subtle {
+  background-color: var(--surfaces-error-subtle);     /* Light red tint */
+  color:            var(--typography-error);           /* Red text */
+}
+
+/* Accent subtle — tinted accent bg, accent text */
+.ds-badge.accent.subtle {
+  background-color: var(--surfaces-accent-low-contrast);  /* Light purple tint */
+  color:            var(--typography-accent);              /* Accent text */
+}

@@ -1,0 +1,221 @@
+<!--
+  date-grid.html — DateItem + DateGrid Component Variants
+  Design system: bubbles-kit (Figma node 93:4399 + 95:2791)
+  Synced from: multi-repo-nextjs/app/components/DateGrid/DateGrid.tsx
+
+  Renders:
+  - DateItem: inactive | active | today-inactive | today-active
+  - DateGrid: 7-cell week strip with Wednesday active + Thursday today
+
+  data-component="DateItem"|"DateGrid" | data-state="{state}"
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DateGrid — Variants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../tokens/primitives.css" />
+  <link rel="stylesheet" href="../../tokens/semantic.css" />
+  <link rel="stylesheet" href="../../tokens/spacing.css" />
+  <link rel="stylesheet" href="../../tokens/radius.css" />
+  <link rel="stylesheet" href="date-grid.css" />
+  <style>
+    body { font-family: 'Geist', sans-serif; background: var(--surfaces-base-primary); padding: 32px; }
+    .section { margin-bottom: 40px; }
+    .section-title { font-size: 11px; font-weight: 600; color: var(--typography-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+    .row { display: flex; align-items: flex-start; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .col-label { font-size: 10px; color: var(--typography-muted); text-align: center; margin-top: 4px; }
+    .col { display: flex; flex-direction: column; align-items: center; }
+  </style>
+</head>
+<body>
+
+  <!-- DATE ITEM — 4 individual states -->
+  <div class="section">
+    <div class="section-title">DateItem — Individual States</div>
+    <div class="row">
+
+      <!-- Inactive, not today -->
+      <div class="col">
+        <button class="ds-date-item" role="gridcell" aria-selected="false"
+          data-component="DateItem" data-state="inactive">
+          <span class="ds-date-abbr">MON</span>
+          <span class="ds-date-num">08</span>
+          <span class="ds-date-dot invisible" aria-hidden="true"></span>
+        </button>
+        <div class="col-label">inactive</div>
+      </div>
+
+      <!-- Active, not today -->
+      <div class="col">
+        <button class="ds-date-item active" role="gridcell" aria-selected="true"
+          data-component="DateItem" data-state="active">
+          <span class="ds-date-abbr">TUE</span>
+          <span class="ds-date-num">09</span>
+          <span class="ds-date-dot invisible" aria-hidden="true"></span>
+        </button>
+        <div class="col-label">active</div>
+      </div>
+
+      <!-- Today, not active (shows brand dot) -->
+      <div class="col">
+        <button class="ds-date-item" role="gridcell" aria-selected="false"
+          data-component="DateItem" data-state="today">
+          <span class="ds-date-abbr">WED</span>
+          <span class="ds-date-num">10</span>
+          <span class="ds-date-dot" aria-hidden="true"></span>
+          <!-- Dot visible: brand color -->
+        </button>
+        <div class="col-label">today</div>
+      </div>
+
+      <!-- Today + active (dot becomes primary/white) -->
+      <div class="col">
+        <button class="ds-date-item active" role="gridcell" aria-selected="true"
+          data-component="DateItem" data-state="today-active">
+          <span class="ds-date-abbr">THU</span>
+          <span class="ds-date-num">11</span>
+          <span class="ds-date-dot" aria-hidden="true"></span>
+          <!-- Dot visible: primary (white on card) -->
+        </button>
+        <div class="col-label">today+active</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DATE GRID — full 7-day week strip -->
+  <div class="section">
+    <div class="section-title">DateGrid — Week Strip (Wed selected, Thu = today)</div>
+
+    <div class="ds-date-grid" role="grid" aria-label="Week date selector"
+      data-component="DateGrid" data-variant="week-strip" style="max-width: 480px;">
+
+      <!-- Previous week button -->
+      <button class="ds-date-grid-arrow" aria-label="Previous week">
+        <span class="ds-arrow-icon" aria-hidden="true">&#8249;</span>
+      </button>
+
+      <!-- 7-day row — role="row" wraps the cells -->
+      <div class="ds-date-grid-row" role="row">
+
+        <!-- Sunday — inactive -->
+        <button class="ds-date-item" role="gridcell" aria-selected="false"
+          data-component="DateItem" data-state="inactive">
+          <span class="ds-date-abbr">SUN</span>
+          <span class="ds-date-num">07</span>
+          <span class="ds-date-dot invisible" aria-hidden="true"></span>
+        </button>
+
+        <!-- Monday — inactive -->
+        <button class="ds-date-item" role="gridcell" aria-selected="false"
+          data-component="DateItem" data-state="inactive">
+          <span class="ds-date-abbr">MON</span>
+          <span class="ds-date-num">08</span>
+          <span class="ds-date-dot invisible" aria-hidden="true"></span>
+        </button>
+
+        <!-- Tuesday — inactive -->
+        <button class="ds-date-item" role="gridcell" aria-selected="false"
+          data-component="DateItem" data-state="inactive">
+          <span class="ds-date-abbr">TUE</span>
+          <span class="ds-date-num">09</span>
+          <span class="ds-date-dot invisible" aria-hidden="true"></span>
+        </button>
+
+        <!-- Wednesday — ACTIVE (selected) -->
+        <button class="ds-date-item active" role="gridcell" aria-selected="true"
+          data-component="DateItem" data-state="active">
+          <span class="ds-date-abbr">WED</span>
+          <span class="ds-date-num">10</span>
+          <span class="ds-date-dot invisible" aria-hidden="true"></span>
+        </button>
+
+        <!-- Thursday — TODAY (brand dot) -->
+        <button class="ds-date-item" role="gridcell" aria-selected="false"
+          data-component="DateItem" data-state="today">
+          <span class="ds-date-abbr">THU</span>
+          <span class="ds-date-num">11</span>
+          <span class="ds-date-dot" aria-hidden="true"></span>
+        </button>
+
+        <!-- Friday — inactive -->
+        <button class="ds-date-item" role="gridcell" aria-selected="false"
+          data-component="DateItem" data-state="inactive">
+          <span class="ds-date-abbr">FRI</span>
+          <span class="ds-date-num">12</span>
+          <span class="ds-date-dot invisible" aria-hidden="true"></span>
+        </button>
+
+        <!-- Saturday — inactive -->
+        <button class="ds-date-item" role="gridcell" aria-selected="false"
+          data-component="DateItem" data-state="inactive">
+          <span class="ds-date-abbr">SAT</span>
+          <span class="ds-date-num">13</span>
+          <span class="ds-date-dot invisible" aria-hidden="true"></span>
+        </button>
+
+      </div>
+
+      <!-- Next week button -->
+      <button class="ds-date-grid-arrow" aria-label="Next week">
+        <span class="ds-arrow-icon" aria-hidden="true">&#8250;</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- DATE GRID — today active variant (today is also selected) -->
+  <div class="section">
+    <div class="section-title">DateGrid — Today is Active</div>
+
+    <div class="ds-date-grid" role="grid" aria-label="Week date selector"
+      data-component="DateGrid" data-variant="week-strip-today-active" style="max-width: 480px;">
+
+      <button class="ds-date-grid-arrow" aria-label="Previous week">
+        <span class="ds-arrow-icon" aria-hidden="true">&#8249;</span>
+      </button>
+
+      <div class="ds-date-grid-row" role="row">
+        <button class="ds-date-item" role="gridcell" aria-selected="false">
+          <span class="ds-date-abbr">SUN</span><span class="ds-date-num">07</span>
+          <span class="ds-date-dot invisible" aria-hidden="true"></span>
+        </button>
+        <button class="ds-date-item" role="gridcell" aria-selected="false">
+          <span class="ds-date-abbr">MON</span><span class="ds-date-num">08</span>
+          <span class="ds-date-dot invisible" aria-hidden="true"></span>
+        </button>
+        <button class="ds-date-item" role="gridcell" aria-selected="false">
+          <span class="ds-date-abbr">TUE</span><span class="ds-date-num">09</span>
+          <span class="ds-date-dot invisible" aria-hidden="true"></span>
+        </button>
+        <button class="ds-date-item" role="gridcell" aria-selected="false">
+          <span class="ds-date-abbr">WED</span><span class="ds-date-num">10</span>
+          <span class="ds-date-dot invisible" aria-hidden="true"></span>
+        </button>
+        <!-- Thursday = today AND active — dot becomes primary (white) -->
+        <button class="ds-date-item active" role="gridcell" aria-selected="true">
+          <span class="ds-date-abbr">THU</span><span class="ds-date-num">11</span>
+          <span class="ds-date-dot" aria-hidden="true"></span>
+        </button>
+        <button class="ds-date-item" role="gridcell" aria-selected="false">
+          <span class="ds-date-abbr">FRI</span><span class="ds-date-num">12</span>
+          <span class="ds-date-dot invisible" aria-hidden="true"></span>
+        </button>
+        <button class="ds-date-item" role="gridcell" aria-selected="false">
+          <span class="ds-date-abbr">SAT</span><span class="ds-date-num">13</span>
+          <span class="ds-date-dot invisible" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <button class="ds-date-grid-arrow" aria-label="Next week">
+        <span class="ds-arrow-icon" aria-hidden="true">&#8250;</span>
+      </button>
+    </div>
+  </div>
+
+</body>
+</html>

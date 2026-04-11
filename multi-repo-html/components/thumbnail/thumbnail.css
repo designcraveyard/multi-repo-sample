@@ -1,0 +1,150 @@
+/* =============================================================================
+   thumbnail.css — Thumbnail Component
+   Design system: bubbles-kit (Figma node 82:1235 — Thumbnail component set)
+   Synced from: multi-repo-nextjs/app/components/Thumbnail/Thumbnail.tsx
+
+   Platform paths:
+     Web    → multi-repo-nextjs/app/components/Thumbnail/Thumbnail.tsx
+     iOS    → multi-repo-ios/Components/Thumbnail/AppThumbnail.swift
+     Android→ multi-repo-android/ui/components/AppThumbnail.kt
+
+   Variant axis:
+     size    → xs(32px) | sm(40px) | md(48px) | lg(64px) | xl(80px) | xxl(96px)
+     rounded → on (circle) | off (radius-sm square, default)
+
+   Usage:
+     <!-- Image thumbnail, square -->
+     <div class="ds-thumbnail md" role="img" aria-label="User photo">
+       <!-- Use <img> for real images or the .ds-thumbnail-placeholder bg fills in -->
+     </div>
+     <!-- Circle avatar -->
+     <div class="ds-thumbnail md rounded" role="img" aria-label="Avatar"></div>
+     <!-- With initials -->
+     <div class="ds-thumbnail md rounded" role="img" aria-label="AB">
+       <span class="ds-thumbnail-initials">AB</span>
+     </div>
+
+   Token layer: ALL colours reference --surfaces-*, --typography-*
+   from tokens/semantic.css. Never hardcode hex values.
+   ============================================================================= */
+
+
+/* =============================================================================
+   BASE — container, background, overflow
+   The thumbnail is always a square with overflow:hidden so images clip to shape.
+   When no image is present, the bg color + silhouette/initials fill the space.
+   ============================================================================= */
+
+.ds-thumbnail {
+  position:        relative;
+  display:         inline-flex;
+  align-items:     center;
+  justify-content: center;
+  flex-shrink:     0;
+  overflow:        hidden;
+
+  /* Placeholder background — shows when no image is provided */
+  background-color: var(--surfaces-base-low-contrast);  /* Zinc-100 / zinc-900 */
+
+  /* Default shape: rounded-sm square (overridden by .rounded) */
+  border-radius: var(--radius-sm);
+}
+
+/* Circle / avatar shape */
+.ds-thumbnail.rounded {
+  border-radius: var(--radius-full);   /* Perfect circle */
+}
+
+/* Image fill — when <img> is the direct child */
+.ds-thumbnail > img {
+  width:       100%;
+  height:      100%;
+  object-fit:  cover;   /* Fill and clip without letterboxing */
+  display:     block;
+}
+
+
+/* =============================================================================
+   SIZES
+   Figma: xs=32 · sm=40 · md=48 · lg=64 · xl=80 · xxl=96
+   ============================================================================= */
+
+/* Extra small — 32×32px */
+.ds-thumbnail.xs {
+  width:  32px;
+  height: 32px;
+}
+.ds-thumbnail.xs .ds-thumbnail-initials { font-size: 11px; }
+
+/* Small — 40×40px */
+.ds-thumbnail.sm {
+  width:  40px;
+  height: 40px;
+}
+.ds-thumbnail.sm .ds-thumbnail-initials { font-size: 13px; }
+
+/* Medium — 48×48px (default Figma size) */
+.ds-thumbnail.md {
+  width:  48px;
+  height: 48px;
+}
+.ds-thumbnail.md .ds-thumbnail-initials { font-size: 15px; }
+
+/* Large — 64×64px */
+.ds-thumbnail.lg {
+  width:  64px;
+  height: 64px;
+}
+.ds-thumbnail.lg .ds-thumbnail-initials { font-size: 18px; }
+
+/* Extra large — 80×80px */
+.ds-thumbnail.xl {
+  width:  80px;
+  height: 80px;
+}
+.ds-thumbnail.xl .ds-thumbnail-initials { font-size: 22px; }
+
+/* Double extra large — 96×96px */
+.ds-thumbnail.xxl {
+  width:  96px;
+  height: 96px;
+}
+.ds-thumbnail.xxl .ds-thumbnail-initials { font-size: 28px; }
+
+
+/* =============================================================================
+   INITIALS — centered text fallback when no image
+   ============================================================================= */
+
+.ds-thumbnail-initials {
+  font-family: var(--font-sans);   /* Geist */
+  font-weight: 500;
+  line-height: 1;
+  color:       var(--typography-secondary);
+  user-select: none;
+}
+
+
+/* =============================================================================
+   SILHOUETTE — SVG person icon placeholder
+   Sized at 60% of the container, centered. Used when no src or children.
+   ============================================================================= */
+
+.ds-thumbnail-silhouette {
+  width:  60%;
+  height: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--typography-muted);
+}
+
+/* The placeholder gray block (used in HTML snippets instead of SVG) */
+.ds-thumbnail-placeholder-bg {
+  width:       100%;
+  height:      100%;
+  background:  var(--surfaces-base-low-contrast);
+  display:     flex;
+  align-items: center;
+  justify-content: center;
+}

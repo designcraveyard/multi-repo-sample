@@ -1,0 +1,208 @@
+/* =============================================================================
+   toast.css — Toast Component
+   Design system: bubbles-kit (Figma node 108:4229 — Toast Message)
+   Synced from: multi-repo-nextjs/app/components/Toast/Toast.tsx
+
+   Platform paths:
+     Web    → multi-repo-nextjs/app/components/Toast/Toast.tsx
+     iOS    → multi-repo-ios/Components/Toast/AppToast.swift
+     Android→ multi-repo-android/ui/components/AppToast.kt
+
+   Variant axis:
+     variant → default | info | success | warning | error
+
+   Key design decisions:
+     - ALL variants use the SAME inverse surface (dark bg in light mode, light in dark mode)
+     - Only the STATUS ICON color changes per variant
+     - Text is always inverse-primary / inverse-secondary on the dark surface
+     - Pill shape (rounded-full) with left padding heavier than right (pl-5 pr-3)
+     - Action button uses 20% opacity white bg pill
+
+   Structure:
+     .ds-toast              — outer pill container (inverse bg)
+       .ds-toast-icon       — leading status icon (color varies by variant)
+       .ds-toast-content    — flex-1 text area
+         .ds-toast-message  — primary text (body-sm-em)
+         .ds-toast-desc     — secondary text (body-sm)
+       .ds-toast-action     — optional action pill button
+       .ds-toast-dismiss    — optional × dismiss button
+
+   Usage:
+     <div class="ds-toast default" role="alert">
+       <span class="ds-toast-icon">…</span>
+       <div class="ds-toast-content">
+         <p class="ds-toast-message">File saved</p>
+       </div>
+     </div>
+
+   Token layer: ALL colours reference --surfaces-*, --typography-*, --icons-*
+   from tokens/semantic.css. Never hardcode hex values.
+   ============================================================================= */
+
+
+/* =============================================================================
+   BASE — inverse surface pill, flex row
+   ============================================================================= */
+
+.ds-toast {
+  display:          flex;
+  align-items:      center;
+  gap:              12px;         /* 12px between icon / content / action / dismiss */
+  width:            100%;
+
+  /* Pill shape — full radius like a large button */
+  padding:          12px 12px 12px 20px;  /* pl-5 pr-3 py-3 — heavier left for icon rhythm */
+  border-radius:    var(--radius-full);   /* Pill */
+
+  /* Inverse surface — dark in light mode, light in dark mode */
+  background-color: var(--surfaces-inverse-primary);  /* Zinc-950 / zinc-50 */
+  border:           1px solid transparent;             /* Reserved for future border variants */
+
+  font-family: var(--font-sans);  /* Geist */
+}
+
+
+/* =============================================================================
+   ICON SLOT — leading status indicator icon
+   Base color is inverse-primary (white in light mode). Variant overrides for
+   success/warning/error use semantic icon colors.
+   ============================================================================= */
+
+.ds-toast-icon {
+  flex-shrink: 0;
+  display:     flex;
+  align-items: center;
+  justify-content: center;
+  width:       16px;
+  height:      16px;
+  color:       var(--icons-inverse-primary);  /* White in light mode (default/info) */
+}
+
+/* Icon placeholder — a small circle representing the status icon */
+.ds-toast-icon .ds-toast-icon-placeholder {
+  width:         14px;
+  height:        14px;
+  border-radius: 50%;
+  background:    currentColor;
+}
+
+
+/* =============================================================================
+   VARIANT — icon color overrides
+   Background stays inverse-primary for all variants. Only icon color differs.
+   ============================================================================= */
+
+/* Default / Info — inverse-primary icon (white/black) */
+.ds-toast.default .ds-toast-icon,
+.ds-toast.info    .ds-toast-icon {
+  color: var(--icons-inverse-primary);
+}
+
+/* Success — green icon */
+.ds-toast.success .ds-toast-icon {
+  color: var(--icons-success);    /* Green token */
+}
+
+/* Warning — warning/amber icon */
+.ds-toast.warning .ds-toast-icon {
+  color: var(--icons-warning);    /* Yellow/amber token */
+}
+
+/* Error — red icon */
+.ds-toast.error .ds-toast-icon {
+  color: var(--icons-error);      /* Red token */
+}
+
+
+/* =============================================================================
+   CONTENT — primary message + optional description
+   ============================================================================= */
+
+.ds-toast-content {
+  flex:    1;
+  min-width: 0;   /* Allow text to truncate in narrow viewports */
+}
+
+/* Primary message — Body/SmEmphasized, inverse-primary text */
+.ds-toast-message {
+  margin:      0;
+  font-size:   var(--typography-body-sm-em-size);    /* 12px */
+  line-height: var(--typography-body-sm-em-leading); /* 16px */
+  font-weight: var(--typography-body-sm-em-weight);  /* 500 */
+  color:       var(--typography-inverse-primary);    /* White in light mode */
+}
+
+/* Optional secondary description — Body/Sm, inverse-secondary text */
+.ds-toast-desc {
+  margin:      2px 0 0;
+  font-size:   var(--typography-body-sm-size);       /* 12px */
+  line-height: var(--typography-body-sm-leading);    /* 16px */
+  font-weight: var(--typography-body-sm-weight);     /* 400 */
+  color:       var(--typography-inverse-secondary);  /* Muted on inverse surface */
+}
+
+
+/* =============================================================================
+   ACTION BUTTON — optional pill inside the toast
+   Uses 20% opacity white background — a frosted-glass capsule feel.
+   Figma: 20% opacity fill, inverse-primary text, rounded-full.
+   ============================================================================= */
+
+.ds-toast-action {
+  flex-shrink: 0;
+  padding:     4px 12px;
+  border-radius: var(--radius-full);
+  border:      none;
+  cursor:      pointer;
+
+  /* 20% opacity overlay on the inverse surface */
+  background-color: rgba(255, 255, 255, 0.2);   /* Light bg in light mode */
+  color:            var(--typography-inverse-primary);
+
+  font-family: var(--font-sans);
+  font-size:   var(--typography-cta-sm-size);    /* 12px */
+  line-height: var(--typography-cta-sm-leading); /* 16px */
+  font-weight: var(--typography-cta-sm-weight);  /* 600 */
+
+  transition: background-color 150ms ease-out;
+}
+
+.ds-toast-action:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+
+/* =============================================================================
+   DISMISS BUTTON — optional × icon to close the toast
+   Small icon button, 60% opacity at rest, full opacity on hover.
+   ============================================================================= */
+
+.ds-toast-dismiss {
+  flex-shrink: 0;
+  display:     flex;
+  align-items: center;
+  justify-content: center;
+  padding:     4px;
+  border-radius: var(--radius-full);
+  border:      none;
+  background:  transparent;
+  cursor:      pointer;
+  color:       var(--typography-inverse-primary);
+  opacity:     0.6;
+  transition:  opacity 150ms ease-out;
+}
+
+.ds-toast-dismiss:hover {
+  opacity: 1;
+}
+
+/* Dismiss icon placeholder — small × shape */
+.ds-toast-dismiss-icon {
+  width:  16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+}

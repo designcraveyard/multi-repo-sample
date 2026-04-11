@@ -1,0 +1,129 @@
+<!--
+  label.html — Label Component Variants
+  Design system: bubbles-kit (Figma node 82:1401)
+  Synced from: multi-repo-nextjs/app/components/Label/Label.tsx
+
+  Renders all 4 types × 3 sizes = 12 combinations.
+  data-component="Label" | data-variant="{type}" | data-size="{size}"
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Label — Variants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../tokens/primitives.css" />
+  <link rel="stylesheet" href="../../tokens/semantic.css" />
+  <link rel="stylesheet" href="../../tokens/spacing.css" />
+  <link rel="stylesheet" href="../../tokens/radius.css" />
+  <link rel="stylesheet" href="label.css" />
+  <style>
+    body { font-family: 'Geist', sans-serif; background: var(--surfaces-base-primary); padding: 32px; }
+    .section { margin-bottom: 32px; }
+    .section-title { font-size: 11px; font-weight: 600; color: var(--typography-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+    .row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+    .row-label { font-size: 11px; color: var(--typography-muted); width: 120px; flex-shrink: 0; }
+    /* Tiny icon placeholder for label icon slots */
+    .icon-sq { display: inline-block; width: 100%; height: 100%; border-radius: 2px; background: currentColor; opacity: 0.7; }
+  </style>
+</head>
+<body>
+
+  <!-- SECONDARY ACTION — all 3 sizes -->
+  <div class="section">
+    <div class="section-title">Secondary Action</div>
+    <div class="row">
+      <!-- sm: text only -->
+      <div class="ds-label sm secondary-action"
+        data-component="Label" data-variant="secondaryAction" data-size="sm">
+        Tag
+      </div>
+      <!-- md: text only -->
+      <div class="ds-label md secondary-action"
+        data-component="Label" data-variant="secondaryAction" data-size="md">
+        Tag
+      </div>
+      <!-- lg: text only -->
+      <div class="ds-label lg secondary-action"
+        data-component="Label" data-variant="secondaryAction" data-size="lg">
+        Tag
+      </div>
+    </div>
+    <!-- With leading icon -->
+    <div class="row">
+      <div class="ds-label md secondary-action"
+        data-component="Label" data-variant="secondaryAction" data-size="md">
+        <span class="ds-label-icon" aria-hidden="true"><span class="icon-sq"></span></span>
+        With Icon
+      </div>
+      <!-- With trailing icon -->
+      <div class="ds-label md secondary-action"
+        data-component="Label" data-variant="secondaryAction" data-size="md">
+        Trailing
+        <span class="ds-label-icon" aria-hidden="true"><span class="icon-sq"></span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRIMARY ACTION — all 3 sizes -->
+  <div class="section">
+    <div class="section-title">Primary Action</div>
+    <div class="row">
+      <div class="ds-label sm primary-action"
+        data-component="Label" data-variant="primaryAction" data-size="sm">
+        Primary
+      </div>
+      <div class="ds-label md primary-action"
+        data-component="Label" data-variant="primaryAction" data-size="md">
+        Primary
+      </div>
+      <div class="ds-label lg primary-action"
+        data-component="Label" data-variant="primaryAction" data-size="lg">
+        Primary
+      </div>
+    </div>
+  </div>
+
+  <!-- BRAND INTERACTIVE — all 3 sizes -->
+  <div class="section">
+    <div class="section-title">Brand Interactive</div>
+    <div class="row">
+      <div class="ds-label sm brand-interactive"
+        data-component="Label" data-variant="brandInteractive" data-size="sm">
+        Brand
+      </div>
+      <div class="ds-label md brand-interactive"
+        data-component="Label" data-variant="brandInteractive" data-size="md">
+        Brand
+      </div>
+      <div class="ds-label lg brand-interactive"
+        data-component="Label" data-variant="brandInteractive" data-size="lg">
+        Brand
+      </div>
+    </div>
+  </div>
+
+  <!-- INFORMATION — all 3 sizes -->
+  <div class="section">
+    <div class="section-title">Information</div>
+    <div class="row">
+      <div class="ds-label sm information"
+        data-component="Label" data-variant="information" data-size="sm">
+        Draft
+      </div>
+      <div class="ds-label md information"
+        data-component="Label" data-variant="information" data-size="md">
+        Draft
+      </div>
+      <div class="ds-label lg information"
+        data-component="Label" data-variant="information" data-size="lg">
+        Draft
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

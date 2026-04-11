@@ -1,0 +1,255 @@
+/* =============================================================================
+   input-field.css — InputField + TextField Components
+   Design system: bubbles-kit (Figma node 90:3753 / 90:3525)
+   Synced from: multi-repo-nextjs/app/components/InputField/InputField.tsx
+
+   Platform paths:
+     Web    → multi-repo-nextjs/app/components/InputField/InputField.tsx
+     iOS    → multi-repo-ios/Components/InputField/AppInputField.swift
+     Android→ multi-repo-android/ui/components/AppInputField.kt
+
+   Variant axis:
+     state → default | focus | filled | success | warning | error | disabled
+     type  → single-line (.ds-input-field) | multiline (.ds-text-field)
+
+   Structure:
+     .ds-input-wrapper             — outer label + input column
+       .ds-input-label             — floating label above input
+       .ds-input-row               — flex row: slots + input (the pill/card)
+         .ds-input-slot            — leading/trailing label or icon slot
+         .ds-input-separator       — 1px vertical line between slot and input
+         input / textarea          — native element
+       .ds-input-hint              — helper text below
+
+   Usage:
+     <!-- Default -->
+     <div class="ds-input-wrapper">
+       <label class="ds-input-label">Email</label>
+       <div class="ds-input-row default"><input class="ds-input-el" placeholder="you@example.com"></div>
+     </div>
+     <!-- Error -->
+     <div class="ds-input-wrapper">
+       <label class="ds-input-label">Email</label>
+       <div class="ds-input-row error"><input class="ds-input-el" value="bad@"></div>
+       <p class="ds-input-hint error">Invalid email address</p>
+     </div>
+     <!-- TextField (multiline) -->
+     <div class="ds-input-wrapper">
+       <label class="ds-input-label">Bio</label>
+       <div class="ds-text-field default"><textarea class="ds-input-el" rows="4"></textarea></div>
+     </div>
+
+   Token layer: ALL colours reference --surfaces-*, --typography-*, --border-*
+   from tokens/semantic.css. Never hardcode hex values.
+   ============================================================================= */
+
+
+/* =============================================================================
+   WRAPPER — column layout for label + input row + hint
+   ============================================================================= */
+
+.ds-input-wrapper {
+  display:        flex;
+  flex-direction: column;
+  gap:            4px;           /* 4px gap: label↕row↕hint */
+  width:          100%;
+  font-family:    var(--font-sans);  /* Geist */
+}
+
+
+/* =============================================================================
+   LABEL — floating label above the input
+   Figma: Body/SmEmphasized (12px/500), Typography/Secondary color
+   ============================================================================= */
+
+.ds-input-label {
+  font-size:   var(--typography-body-sm-em-size);    /* 12px */
+  line-height: var(--typography-body-sm-em-leading); /* 16px */
+  font-weight: var(--typography-body-sm-em-weight);  /* 500 */
+  color:       var(--typography-secondary);           /* Zinc-600 / zinc-400 */
+}
+
+
+/* =============================================================================
+   INPUT ROW — the pill/card that wraps the actual input + slots
+   Figma: bg=surfaces-base-low-contrast, px=16px, py=14px, radius=12px
+   ============================================================================= */
+
+.ds-input-row {
+  display:          flex;
+  align-items:      stretch;         /* Slots stretch full height */
+  gap:              8px;             /* 8px between slot / sep / input */
+  width:            100%;
+  padding:          14px 16px;       /* Figma: py-3.5 px-4 */
+  border-radius:    12px;            /* Fixed radius — non-responsive */
+  background-color: var(--surfaces-base-low-contrast);  /* Zinc-100 / zinc-900 */
+  border:           1px solid transparent;               /* Reserve space — colored by state */
+  transition:       border-color 150ms ease-out;
+}
+
+/* TextField (multiline) uses the same card but no items:stretch */
+.ds-text-field {
+  width:            100%;
+  padding:          14px 16px;
+  border-radius:    12px;
+  background-color: var(--surfaces-base-low-contrast);
+  border:           1px solid transparent;
+  transition:       border-color 150ms ease-out;
+}
+
+
+/* =============================================================================
+   STATES — border color per validation state
+   Applied as modifier on .ds-input-row or .ds-text-field
+   ============================================================================= */
+
+/* Default: transparent border at rest, active border on focus */
+.ds-input-row.default,
+.ds-text-field.default {
+  border-color: transparent;
+}
+
+/* Focus: active border (simulated via .focus class in static HTML) */
+.ds-input-row.focus,
+.ds-text-field.focus {
+  border-color: var(--border-active);   /* Zinc-950 / zinc-50 */
+}
+
+/* Filled: active border (value present, field focused or blurred) */
+.ds-input-row.filled,
+.ds-text-field.filled {
+  border-color: var(--border-active);
+}
+
+/* Success */
+.ds-input-row.success,
+.ds-text-field.success {
+  border-color: var(--border-success);  /* Green */
+}
+
+/* Warning */
+.ds-input-row.warning,
+.ds-text-field.warning {
+  border-color: var(--border-warning);  /* Yellow/amber */
+}
+
+/* Error */
+.ds-input-row.error,
+.ds-text-field.error {
+  border-color: var(--border-error);    /* Red */
+}
+
+/* Disabled: 50% opacity, no interaction */
+.ds-input-row.disabled,
+.ds-text-field.disabled {
+  opacity:        0.5;
+  cursor:         not-allowed;
+  pointer-events: none;
+}
+
+
+/* =============================================================================
+   NATIVE INPUT ELEMENT
+   Inherits bg from the row container (transparent). Outline: none removes the
+   browser focus ring (replaced by the row's border).
+   ============================================================================= */
+
+.ds-input-el {
+  flex:        1;
+  min-width:   0;                /* Allow text to shrink below content size */
+  background:  transparent;
+  border:      none;
+  outline:     none;
+  align-self:  center;
+
+  /* Body/Md font */
+  font-family: var(--font-sans);
+  font-size:   var(--typography-body-md-size);    /* 14px */
+  line-height: var(--typography-body-md-leading); /* 20px */
+  font-weight: var(--typography-body-md-weight);  /* 400 */
+  color:       var(--typography-primary);
+
+  /* Placeholder */
+  &::placeholder {
+    color: var(--typography-muted);
+  }
+}
+
+/* Textarea specific: no resize handle, full width */
+textarea.ds-input-el {
+  width:   100%;
+  resize:  none;
+  display: block;
+}
+
+
+/* =============================================================================
+   SLOT — leading/trailing label or icon area
+   Sits inside .ds-input-row, centered vertically.
+   ============================================================================= */
+
+.ds-input-slot {
+  flex-shrink: 0;
+  display:     flex;
+  align-items: center;
+  color:       var(--icons-muted);   /* Default muted icon color */
+}
+
+/* Icon size within slots */
+.ds-input-slot svg,
+.ds-input-slot .ds-slot-icon {
+  width:  20px;
+  height: 20px;
+}
+
+
+/* =============================================================================
+   SEPARATOR — 1px vertical line between slot content and input text area
+   Figma: bg=surfaces-base-high-contrast, self-stretch
+   ============================================================================= */
+
+.ds-input-separator {
+  width:            1px;
+  align-self:       stretch;         /* Full height of the row */
+  flex-shrink:      0;
+  background-color: var(--surfaces-base-high-contrast);  /* Zinc-300 / zinc-700 */
+}
+
+
+/* =============================================================================
+   STATE ICON — trailing icon for success/warning/error states
+   Auto-injected by React component when state != default and no trailing content.
+   ============================================================================= */
+
+.ds-input-state-icon {
+  flex-shrink: 0;
+  width:       20px;
+  height:      20px;
+  align-self:  center;
+  display:     flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* State icon colors */
+.ds-input-row.success .ds-input-state-icon { color: var(--icons-success); }
+.ds-input-row.warning .ds-input-state-icon { color: var(--icons-warning); }
+.ds-input-row.error   .ds-input-state-icon { color: var(--icons-error); }
+
+
+/* =============================================================================
+   HINT — helper / validation text below the input
+   Figma: Caption/Md (11px/400), color varies by state
+   ============================================================================= */
+
+.ds-input-hint {
+  font-size:   var(--typography-caption-md-size);    /* 11px */
+  line-height: var(--typography-caption-md-leading); /* 16px */
+  font-weight: var(--typography-caption-md-weight);  /* 400 */
+}
+
+/* Hint colors by state */
+.ds-input-hint.default { color: var(--typography-muted); }
+.ds-input-hint.success { color: var(--typography-success); }
+.ds-input-hint.warning { color: var(--typography-warning); }
+.ds-input-hint.error   { color: var(--typography-error); }

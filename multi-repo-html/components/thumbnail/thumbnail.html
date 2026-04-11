@@ -1,0 +1,168 @@
+<!--
+  thumbnail.html — Thumbnail Component Variants
+  Design system: bubbles-kit (Figma node 82:1235)
+  Synced from: multi-repo-nextjs/app/components/Thumbnail/Thumbnail.tsx
+
+  Renders all 6 sizes × 2 shape variants (square + circle) = 12.
+  Plus initials and image (faked via bg) fallback examples.
+
+  data-component="Thumbnail" | data-size="{size}" | data-state="square|rounded"
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thumbnail — Variants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../tokens/primitives.css" />
+  <link rel="stylesheet" href="../../tokens/semantic.css" />
+  <link rel="stylesheet" href="../../tokens/spacing.css" />
+  <link rel="stylesheet" href="../../tokens/radius.css" />
+  <link rel="stylesheet" href="thumbnail.css" />
+  <style>
+    body { font-family: 'Geist', sans-serif; background: var(--surfaces-base-primary); padding: 32px; }
+    .section { margin-bottom: 32px; }
+    .section-title { font-size: 11px; font-weight: 600; color: var(--typography-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+    .row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+    .col-label { font-size: 10px; color: var(--typography-muted); text-align: center; margin-top: 4px; }
+    .col { display: flex; flex-direction: column; align-items: center; }
+    /* Fake image background gradient to simulate a loaded image */
+    .fake-img { background: linear-gradient(135deg, var(--surfaces-base-low-contrast) 0%, var(--border-default) 100%); }
+  </style>
+</head>
+<body>
+
+  <!-- SQUARE (rounded=off) — all 6 sizes, no image (placeholder bg) -->
+  <div class="section">
+    <div class="section-title">Square (rounded=off) — Placeholder</div>
+    <div class="row">
+      <div class="col">
+        <div class="ds-thumbnail xs" role="img" aria-label="Placeholder"
+          data-component="Thumbnail" data-size="xs" data-state="square"></div>
+        <div class="col-label">xs 32</div>
+      </div>
+      <div class="col">
+        <div class="ds-thumbnail sm" role="img" aria-label="Placeholder"
+          data-component="Thumbnail" data-size="sm" data-state="square"></div>
+        <div class="col-label">sm 40</div>
+      </div>
+      <div class="col">
+        <div class="ds-thumbnail md" role="img" aria-label="Placeholder"
+          data-component="Thumbnail" data-size="md" data-state="square"></div>
+        <div class="col-label">md 48</div>
+      </div>
+      <div class="col">
+        <div class="ds-thumbnail lg" role="img" aria-label="Placeholder"
+          data-component="Thumbnail" data-size="lg" data-state="square"></div>
+        <div class="col-label">lg 64</div>
+      </div>
+      <div class="col">
+        <div class="ds-thumbnail xl" role="img" aria-label="Placeholder"
+          data-component="Thumbnail" data-size="xl" data-state="square"></div>
+        <div class="col-label">xl 80</div>
+      </div>
+      <div class="col">
+        <div class="ds-thumbnail xxl" role="img" aria-label="Placeholder"
+          data-component="Thumbnail" data-size="xxl" data-state="square"></div>
+        <div class="col-label">xxl 96</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CIRCLE (rounded=on) — all 6 sizes, no image -->
+  <div class="section">
+    <div class="section-title">Circle (rounded=on) — Placeholder</div>
+    <div class="row">
+      <div class="col">
+        <div class="ds-thumbnail xs rounded" role="img" aria-label="Avatar"
+          data-component="Thumbnail" data-size="xs" data-state="rounded"></div>
+        <div class="col-label">xs</div>
+      </div>
+      <div class="col">
+        <div class="ds-thumbnail sm rounded" role="img" aria-label="Avatar"
+          data-component="Thumbnail" data-size="sm" data-state="rounded"></div>
+        <div class="col-label">sm</div>
+      </div>
+      <div class="col">
+        <div class="ds-thumbnail md rounded" role="img" aria-label="Avatar"
+          data-component="Thumbnail" data-size="md" data-state="rounded"></div>
+        <div class="col-label">md</div>
+      </div>
+      <div class="col">
+        <div class="ds-thumbnail lg rounded" role="img" aria-label="Avatar"
+          data-component="Thumbnail" data-size="lg" data-state="rounded"></div>
+        <div class="col-label">lg</div>
+      </div>
+      <div class="col">
+        <div class="ds-thumbnail xl rounded" role="img" aria-label="Avatar"
+          data-component="Thumbnail" data-size="xl" data-state="rounded"></div>
+        <div class="col-label">xl</div>
+      </div>
+      <div class="col">
+        <div class="ds-thumbnail xxl rounded" role="img" aria-label="Avatar"
+          data-component="Thumbnail" data-size="xxl" data-state="rounded"></div>
+        <div class="col-label">xxl</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WITH INITIALS — circle, md/lg/xxl -->
+  <div class="section">
+    <div class="section-title">With Initials (fallback content)</div>
+    <div class="row">
+      <div class="col">
+        <div class="ds-thumbnail md rounded" role="img" aria-label="Alex B"
+          data-component="Thumbnail" data-size="md" data-state="rounded">
+          <span class="ds-thumbnail-initials">AB</span>
+        </div>
+        <div class="col-label">md</div>
+      </div>
+      <div class="col">
+        <div class="ds-thumbnail lg rounded" role="img" aria-label="Chris D"
+          data-component="Thumbnail" data-size="lg" data-state="rounded">
+          <span class="ds-thumbnail-initials">CD</span>
+        </div>
+        <div class="col-label">lg</div>
+      </div>
+      <div class="col">
+        <div class="ds-thumbnail xxl rounded" role="img" aria-label="Eva F"
+          data-component="Thumbnail" data-size="xxl" data-state="rounded">
+          <span class="ds-thumbnail-initials">EF</span>
+        </div>
+        <div class="col-label">xxl</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIMULATED IMAGE — fake gradient as image fill -->
+  <div class="section">
+    <div class="section-title">With Image (simulated)</div>
+    <div class="row">
+      <div class="col">
+        <div class="ds-thumbnail md fake-img" role="img" aria-label="Photo"
+          data-component="Thumbnail" data-size="md" data-state="square"></div>
+        <div class="col-label">square</div>
+      </div>
+      <div class="col">
+        <div class="ds-thumbnail md rounded fake-img" role="img" aria-label="Photo"
+          data-component="Thumbnail" data-size="md" data-state="rounded"></div>
+        <div class="col-label">circle</div>
+      </div>
+      <div class="col">
+        <div class="ds-thumbnail lg fake-img" role="img" aria-label="Photo"
+          data-component="Thumbnail" data-size="lg" data-state="square"></div>
+        <div class="col-label">lg square</div>
+      </div>
+      <div class="col">
+        <div class="ds-thumbnail xl rounded fake-img" role="img" aria-label="Photo"
+          data-component="Thumbnail" data-size="xl" data-state="rounded"></div>
+        <div class="col-label">xl circle</div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

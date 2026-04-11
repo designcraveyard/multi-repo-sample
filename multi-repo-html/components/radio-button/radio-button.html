@@ -1,0 +1,133 @@
+<!--
+  radio-button.html — RadioButton + RadioGroup Component Variants
+  Design system: bubbles-kit
+  Synced from: multi-repo-nextjs/app/components/RadioButton/RadioButton.tsx
+
+  STATIC VISUAL REPRESENTATION — no JavaScript.
+  Modifier classes (.selected, .disabled) on .ds-radio control visual states.
+  Inner dot (.ds-radio-dot) is only included in the HTML when selected.
+
+  data-component="RadioButton"|"RadioGroup" | data-state="selected|unselected" | data-disabled="true|false"
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RadioButton — Variants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../tokens/primitives.css" />
+  <link rel="stylesheet" href="../../tokens/semantic.css" />
+  <link rel="stylesheet" href="../../tokens/spacing.css" />
+  <link rel="stylesheet" href="../../tokens/radius.css" />
+  <link rel="stylesheet" href="radio-button.css" />
+  <style>
+    body { font-family: 'Geist', sans-serif; background: var(--surfaces-base-primary); padding: 32px; }
+    .section { margin-bottom: 32px; }
+    .section-title { font-size: 11px; font-weight: 600; color: var(--typography-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+    .stack { display: flex; flex-direction: column; gap: 12px; }
+    .row { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+  <!-- ALL STATES — with label -->
+  <div class="section">
+    <div class="section-title">All States — With Label</div>
+    <div class="stack">
+
+      <!-- Unselected -->
+      <label class="ds-radio" data-component="RadioButton" data-state="unselected" data-disabled="false">
+        <span class="ds-radio-circle" aria-hidden="true"></span>
+        <!-- No dot — unselected -->
+        <span class="ds-radio-label">Option A</span>
+      </label>
+
+      <!-- Selected -->
+      <label class="ds-radio selected" data-component="RadioButton" data-state="selected" data-disabled="false">
+        <span class="ds-radio-circle" aria-hidden="true">
+          <span class="ds-radio-dot"></span>
+          <!-- Inner dot visible — selected -->
+        </span>
+        <span class="ds-radio-label">Option B</span>
+      </label>
+
+    </div>
+  </div>
+
+  <!-- DISABLED STATES -->
+  <div class="section">
+    <div class="section-title">Disabled States</div>
+    <div class="stack">
+
+      <!-- Disabled unselected -->
+      <label class="ds-radio disabled" data-component="RadioButton" data-state="unselected" data-disabled="true">
+        <span class="ds-radio-circle" aria-hidden="true"></span>
+        <span class="ds-radio-label">Disabled unselected</span>
+      </label>
+
+      <!-- Disabled selected -->
+      <label class="ds-radio selected disabled" data-component="RadioButton" data-state="selected" data-disabled="true">
+        <span class="ds-radio-circle" aria-hidden="true">
+          <span class="ds-radio-dot"></span>
+        </span>
+        <span class="ds-radio-label">Disabled selected</span>
+      </label>
+
+    </div>
+  </div>
+
+  <!-- WITHOUT LABEL — circle only -->
+  <div class="section">
+    <div class="section-title">Without Label (circle only)</div>
+    <div class="row">
+
+      <label class="ds-radio" data-component="RadioButton" data-state="unselected" aria-label="Option 1">
+        <span class="ds-radio-circle" aria-hidden="true"></span>
+      </label>
+
+      <label class="ds-radio selected" data-component="RadioButton" data-state="selected" aria-label="Option 2">
+        <span class="ds-radio-circle" aria-hidden="true">
+          <span class="ds-radio-dot"></span>
+        </span>
+      </label>
+
+    </div>
+  </div>
+
+  <!-- RADIO GROUP — typical usage pattern -->
+  <div class="section">
+    <div class="section-title">RadioGroup (single-select group)</div>
+
+    <div class="ds-radio-group" role="radiogroup" aria-label="Subscription plan"
+      data-component="RadioGroup">
+
+      <label class="ds-radio" data-component="RadioButton" data-state="unselected">
+        <span class="ds-radio-circle" aria-hidden="true"></span>
+        <span class="ds-radio-label">Free — 5 projects, 100MB storage</span>
+      </label>
+
+      <label class="ds-radio selected" data-component="RadioButton" data-state="selected">
+        <span class="ds-radio-circle" aria-hidden="true">
+          <span class="ds-radio-dot"></span>
+        </span>
+        <span class="ds-radio-label">Pro — Unlimited projects, 10GB storage</span>
+      </label>
+
+      <label class="ds-radio" data-component="RadioButton" data-state="unselected">
+        <span class="ds-radio-circle" aria-hidden="true"></span>
+        <span class="ds-radio-label">Team — Everything in Pro + collaboration</span>
+      </label>
+
+      <label class="ds-radio disabled" data-component="RadioButton" data-state="unselected" data-disabled="true">
+        <span class="ds-radio-circle" aria-hidden="true"></span>
+        <span class="ds-radio-label">Enterprise — Contact sales</span>
+      </label>
+
+    </div>
+  </div>
+
+</body>
+</html>
