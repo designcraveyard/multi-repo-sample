@@ -3,2739 +3,606 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HTML Design System — Component Sheet</title>
+  <title>Component Showcase — HTML Design System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../design-system.css">
   <style>
-    /* Reference page layout — NOT part of the design system */
+    /* Page-level layout — NOT part of the DS */
     *, *::before, *::after { box-sizing: border-box; }
-    body { margin: 0; background: var(--surfaces-base-low-contrast); font-family: var(--font-sans); }
-    .ref-page { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
-    .ref-header { margin-bottom: 48px; }
-    .ref-header h1 { font-size: 32px; font-weight: 700; color: var(--typography-primary); margin: 0 0 8px; }
-    .ref-header p { font-size: 14px; color: var(--typography-secondary); margin: 0 0 16px; }
-    .ref-header-links { display: flex; gap: 16px; }
-    .ref-header-links a { font-size: 13px; color: var(--typography-accent); text-decoration: none; }
-    .ref-header-links a:hover { text-decoration: underline; }
-    .ref-nav { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-bottom: 32px; padding: 16px 20px; background: var(--surfaces-base-primary); border-radius: var(--radius-md); border: 1px solid var(--border-default); }
-    .ref-nav-title { width: 100%; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--typography-muted); margin-bottom: 4px; }
-    .ref-nav a { font-size: 13px; color: var(--typography-accent); text-decoration: none; }
-    .ref-nav a:hover { text-decoration: underline; }
-    .ref-section { margin-bottom: 48px; padding: 24px; background: var(--surfaces-base-primary); border-radius: var(--radius-lg); border: 1px solid var(--border-default); }
-    .ref-section-title { font-size: 20px; font-weight: 700; color: var(--typography-primary); padding-bottom: 12px; border-bottom: 1px solid var(--border-default); margin: 0 0 16px; display: flex; align-items: baseline; gap: 12px; }
-    .ref-section-badge { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--typography-muted); background: var(--surfaces-base-high-contrast); padding: 2px 8px; border-radius: var(--radius-full); }
-    .ref-meta { font-size: 11px; color: var(--typography-muted); font-family: var(--font-mono); background: var(--surfaces-base-low-contrast); padding: 6px 10px; border-radius: var(--radius-xs); margin-bottom: 20px; line-height: 1.8; }
-    .ref-patterns-heading { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--typography-muted); margin: 48px 0 16px; }
-    /* Dark mode toggle */
+    body { margin: 0; background: var(--surfaces-base-primary); font-family: var(--font-sans); }
+    .page { max-width: 672px; margin: 0 auto; padding: 48px 24px; display: flex; flex-direction: column; gap: 48px; }
+    .page-header { display: flex; flex-direction: column; gap: 4px; }
+    .page-header h1 { font-size: 24px; font-weight: 600; color: var(--typography-brand); margin: 0; }
+    .page-header p { font-size: 14px; color: var(--typography-muted); margin: 0; }
+    .page-header-links { display: flex; gap: 16px; margin-top: 8px; }
+    .page-header-links a { font-size: 13px; color: var(--typography-accent); text-decoration: none; }
+    .page-header-links a:hover { text-decoration: underline; }
+    .section { display: flex; flex-direction: column; gap: 16px; }
+    .section-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--typography-muted); margin: 0; }
+    .row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+    .stack { display: flex; flex-direction: column; gap: 12px; }
+    .label-text { font-size: 10px; color: var(--typography-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .sub-label { font-size: 12px; color: var(--typography-muted); margin: 0 0 4px; }
+    /* icon placeholder for IconButton demos */
+    .icon-ph { width: 20px; height: 20px; display: inline-block; background: currentColor; border-radius: 3px; opacity: 0.7; }
+    .icon-ph.sm { width: 16px; height: 16px; }
+    .icon-ph.lg { width: 24px; height: 24px; }
+    /* dark mode toggle */
     .dark-toggle { position: fixed; top: 16px; right: 16px; z-index: 100; padding: 8px 16px; border-radius: 9999px; border: 1px solid var(--border-default); background: var(--surfaces-base-primary); color: var(--typography-primary); cursor: pointer; font-size: 13px; font-family: var(--font-sans); box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: background 0.15s; }
     .dark-toggle:hover { background: var(--surfaces-base-low-contrast); }
+    /* divider demo helpers */
+    .divider-demo-text { font-size: 14px; color: var(--typography-primary); margin: 0; }
+    /* thumbnail placeholder */
+    .thumb-bg { background: var(--surfaces-base-high-contrast); }
   </style>
 </head>
 <body>
 
-<button class="dark-toggle">🌙 Dark</button>
+<button class="dark-toggle" onclick="document.documentElement.classList.toggle('dark')">🌙 Dark</button>
 
-<div class="ref-page">
+<div class="page">
 
-  <div class="ref-header">
-    <h1>Component Sheet</h1>
-    <p>All components and patterns from the <strong>bubbles-kit</strong> design system — every variant rendered at a glance.</p>
-    <div class="ref-header-links">
+  <!-- ── Header ─────────────────────────────────────────────────────────────── -->
+  <div class="page-header">
+    <h1>Component Showcase</h1>
+    <p>Live preview of all design-system components.</p>
+    <div class="page-header-links">
       <a href="tokens.html">Token Reference →</a>
       <a href="design-tools.html">Design Tools →</a>
     </div>
   </div>
 
-  <nav class="ref-nav">
-    <div class="ref-nav-title">Components</div>
-    <a href="#badge">Badge</a>
-    <a href="#button">Button</a>
-    <a href="#checkbox">Checkbox</a>
-    <a href="#chip">Chip</a>
-    <a href="#date-grid">Date Grid</a>
-    <a href="#divider">Divider</a>
-    <a href="#icon-button">Icon Button</a>
-    <a href="#input-field">Input Field</a>
-    <a href="#label">Label</a>
-    <a href="#radio-button">Radio Button</a>
-    <a href="#segment-control-bar">Segment Control Bar</a>
-    <a href="#switch">Switch</a>
-    <a href="#tabs">Tabs</a>
-    <a href="#thumbnail">Thumbnail</a>
-    <a href="#toast">Toast</a>
-    <div class="ref-nav-title" style="margin-top:8px">Patterns</div>
-    <a href="#list-item">List Item</a>
-    <a href="#step-indicator">Step Indicator</a>
-    <a href="#stepper">Stepper</a>
-    <a href="#text-block">Text Block</a>
-  </nav>
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       BUTTON
+       ═════════════════════════════════════════════════════════════════════════ -->
 
-  <!-- ========== BADGE ========== -->
-  <section class="ref-section" id="badge">
-    <h2 class="ref-section-title">Badge <span class="ref-section-badge">component</span></h2>
-    <div class="ref-meta">Web: app/components/Badge/Badge.tsx · iOS: Components/Badge/AppBadge.swift · Android: ui/components/AppBadge.kt</div>
-
-
-  <!-- SOLID — all types × all sizes -->
   <div class="section">
-    <div class="section-title">Solid (subtle=off)</div>
-
-    <!-- Brand -->
+    <h2 class="section-title">Button — Variants</h2>
     <div class="row">
-      <span class="row-label">Brand</span>
-      <!-- tiny: dot-only, no text -->
-      <span class="ds-badge brand tiny"
-        data-component="Badge" data-variant="brand" data-size="tiny"></span>
-      <span class="ds-badge brand sm"
-        data-component="Badge" data-variant="brand" data-size="sm">New</span>
-      <span class="ds-badge brand number"
-        data-component="Badge" data-variant="brand" data-size="number">42</span>
-      <span class="ds-badge brand md"
-        data-component="Badge" data-variant="brand" data-size="md">Brand</span>
-    </div>
-
-    <!-- Success -->
-    <div class="row">
-      <span class="row-label">Success</span>
-      <span class="ds-badge success tiny"
-        data-component="Badge" data-variant="success" data-size="tiny"></span>
-      <span class="ds-badge success sm"
-        data-component="Badge" data-variant="success" data-size="sm">Done</span>
-      <span class="ds-badge success number"
-        data-component="Badge" data-variant="success" data-size="number">3</span>
-      <span class="ds-badge success md"
-        data-component="Badge" data-variant="success" data-size="md">Active</span>
-    </div>
-
-    <!-- Error -->
-    <div class="row">
-      <span class="row-label">Error</span>
-      <span class="ds-badge error tiny"
-        data-component="Badge" data-variant="error" data-size="tiny"></span>
-      <span class="ds-badge error sm"
-        data-component="Badge" data-variant="error" data-size="sm">Error</span>
-      <span class="ds-badge error number"
-        data-component="Badge" data-variant="error" data-size="number">9</span>
-      <span class="ds-badge error md"
-        data-component="Badge" data-variant="error" data-size="md">Failed</span>
-    </div>
-
-    <!-- Accent -->
-    <div class="row">
-      <span class="row-label">Accent</span>
-      <span class="ds-badge accent tiny"
-        data-component="Badge" data-variant="accent" data-size="tiny"></span>
-      <span class="ds-badge accent sm"
-        data-component="Badge" data-variant="accent" data-size="sm">Pro</span>
-      <span class="ds-badge accent number"
-        data-component="Badge" data-variant="accent" data-size="number">7</span>
-      <span class="ds-badge accent md"
-        data-component="Badge" data-variant="accent" data-size="md">Premium</span>
+      <button class="ds-button primary lg" data-component="Button" data-variant="primary" data-size="lg">Primary</button>
+      <button class="ds-button secondary lg" data-component="Button" data-variant="secondary" data-size="lg">Secondary</button>
+      <button class="ds-button tertiary lg" data-component="Button" data-variant="tertiary" data-size="lg">Tertiary</button>
+      <button class="ds-button success lg" data-component="Button" data-variant="success" data-size="lg">Success</button>
+      <button class="ds-button danger lg" data-component="Button" data-variant="danger" data-size="lg">Danger</button>
     </div>
   </div>
 
-  <!-- SUBTLE — all types × md size -->
   <div class="section">
-    <div class="section-title">Subtle (subtle=on)</div>
-
+    <h2 class="section-title">Button — Sizes</h2>
     <div class="row">
-      <span class="row-label">Brand</span>
-      <span class="ds-badge brand sm subtle"
-        data-component="Badge" data-variant="brand" data-size="sm" data-state="subtle">New</span>
-      <span class="ds-badge brand number subtle"
-        data-component="Badge" data-variant="brand" data-size="number" data-state="subtle">12</span>
-      <span class="ds-badge brand md subtle"
-        data-component="Badge" data-variant="brand" data-size="md" data-state="subtle">Brand</span>
-    </div>
-
-    <div class="row">
-      <span class="row-label">Success</span>
-      <span class="ds-badge success sm subtle"
-        data-component="Badge" data-variant="success" data-size="sm" data-state="subtle">Done</span>
-      <span class="ds-badge success number subtle"
-        data-component="Badge" data-variant="success" data-size="number" data-state="subtle">3</span>
-      <span class="ds-badge success md subtle"
-        data-component="Badge" data-variant="success" data-size="md" data-state="subtle">Active</span>
-    </div>
-
-    <div class="row">
-      <span class="row-label">Error</span>
-      <span class="ds-badge error sm subtle"
-        data-component="Badge" data-variant="error" data-size="sm" data-state="subtle">Error</span>
-      <span class="ds-badge error number subtle"
-        data-component="Badge" data-variant="error" data-size="number" data-state="subtle">9</span>
-      <span class="ds-badge error md subtle"
-        data-component="Badge" data-variant="error" data-size="md" data-state="subtle">Failed</span>
-    </div>
-
-    <div class="row">
-      <span class="row-label">Accent</span>
-      <span class="ds-badge accent sm subtle"
-        data-component="Badge" data-variant="accent" data-size="sm" data-state="subtle">Pro</span>
-      <span class="ds-badge accent number subtle"
-        data-component="Badge" data-variant="accent" data-size="number" data-state="subtle">7</span>
-      <span class="ds-badge accent md subtle"
-        data-component="Badge" data-variant="accent" data-size="md" data-state="subtle">Premium</span>
+      <button class="ds-button primary lg" data-component="Button" data-variant="primary" data-size="lg">Large</button>
+      <button class="ds-button primary md" data-component="Button" data-variant="primary" data-size="md">Medium</button>
+      <button class="ds-button primary sm" data-component="Button" data-variant="primary" data-size="sm">Small</button>
     </div>
   </div>
 
-
-  </section>
-
-  <!-- ========== BUTTON ========== -->
-  <section class="ref-section" id="button">
-    <h2 class="ref-section-title">Button <span class="ref-section-badge">component</span></h2>
-    <div class="ref-meta">Web: app/components/Button/Button.tsx · iOS: Components/Button/AppButton.swift · Android: ui/components/AppButton.kt</div>
-
-
-
-<!-- =========================================================================
-     PRIMARY
-     Solid brand fill — highest emphasis CTA.
-     ========================================================================= -->
-
-<div class="section">
-  <h2>Primary — Sizes</h2>
-  <div class="row">
-
-    <!-- Primary / Large / Default -->
-    <button class="ds-button primary lg"
-      data-component="Button"
-      data-variant="primary"
-      data-size="lg">
-      Primary Large
-    </button>
-
-    <!-- Primary / Medium / Default -->
-    <button class="ds-button primary md"
-      data-component="Button"
-      data-variant="primary"
-      data-size="md">
-      Primary Medium
-    </button>
-
-    <!-- Primary / Small / Default -->
-    <button class="ds-button primary sm"
-      data-component="Button"
-      data-variant="primary"
-      data-size="sm">
-      Primary Small
-    </button>
-
-  </div>
-</div>
-
-<div class="section">
-  <h2>Primary — States (Medium)</h2>
-  <div class="row">
-
-    <!-- Primary / Medium / Hover -->
-    <button class="ds-button primary md hover"
-      data-component="Button"
-      data-variant="primary"
-      data-size="md"
-      data-state="hover">
-      Primary Hover
-    </button>
-
-    <!-- Primary / Medium / Pressed -->
-    <button class="ds-button primary md pressed"
-      data-component="Button"
-      data-variant="primary"
-      data-size="md"
-      data-state="pressed">
-      Primary Pressed
-    </button>
-
-    <!-- Primary / Medium / Disabled -->
-    <button class="ds-button primary md disabled"
-      data-component="Button"
-      data-variant="primary"
-      data-size="md"
-      data-state="disabled"
-      disabled>
-      Primary Disabled
-    </button>
-
-  </div>
-</div>
-
-
-<!-- =========================================================================
-     SECONDARY
-     Low-contrast tonal fill — medium emphasis action.
-     ========================================================================= -->
-
-<div class="section">
-  <h2>Secondary — Sizes</h2>
-  <div class="row">
-
-    <!-- Secondary / Large / Default -->
-    <button class="ds-button secondary lg"
-      data-component="Button"
-      data-variant="secondary"
-      data-size="lg">
-      Secondary Large
-    </button>
-
-    <!-- Secondary / Medium / Default -->
-    <button class="ds-button secondary md"
-      data-component="Button"
-      data-variant="secondary"
-      data-size="md">
-      Secondary Medium
-    </button>
-
-    <!-- Secondary / Small / Default -->
-    <button class="ds-button secondary sm"
-      data-component="Button"
-      data-variant="secondary"
-      data-size="sm">
-      Secondary Small
-    </button>
-
-  </div>
-</div>
-
-<div class="section">
-  <h2>Secondary — States (Medium)</h2>
-  <div class="row">
-
-    <!-- Secondary / Medium / Hover -->
-    <button class="ds-button secondary md hover"
-      data-component="Button"
-      data-variant="secondary"
-      data-size="md"
-      data-state="hover">
-      Secondary Hover
-    </button>
-
-    <!-- Secondary / Medium / Pressed -->
-    <button class="ds-button secondary md pressed"
-      data-component="Button"
-      data-variant="secondary"
-      data-size="md"
-      data-state="pressed">
-      Secondary Pressed
-    </button>
-
-    <!-- Secondary / Medium / Disabled -->
-    <button class="ds-button secondary md disabled"
-      data-component="Button"
-      data-variant="secondary"
-      data-size="md"
-      data-state="disabled"
-      disabled>
-      Secondary Disabled
-    </button>
-
-  </div>
-</div>
-
-
-<!-- =========================================================================
-     TERTIARY
-     Outlined with brand border — lowest emphasis action.
-     ========================================================================= -->
-
-<div class="section">
-  <h2>Tertiary — Sizes</h2>
-  <div class="row">
-
-    <!-- Tertiary / Large / Default -->
-    <button class="ds-button tertiary lg"
-      data-component="Button"
-      data-variant="tertiary"
-      data-size="lg">
-      Tertiary Large
-    </button>
-
-    <!-- Tertiary / Medium / Default -->
-    <button class="ds-button tertiary md"
-      data-component="Button"
-      data-variant="tertiary"
-      data-size="md">
-      Tertiary Medium
-    </button>
-
-    <!-- Tertiary / Small / Default -->
-    <button class="ds-button tertiary sm"
-      data-component="Button"
-      data-variant="tertiary"
-      data-size="sm">
-      Tertiary Small
-    </button>
-
-  </div>
-</div>
-
-<div class="section">
-  <h2>Tertiary — States (Medium)</h2>
-  <div class="row">
-
-    <!-- Tertiary / Medium / Hover -->
-    <button class="ds-button tertiary md hover"
-      data-component="Button"
-      data-variant="tertiary"
-      data-size="md"
-      data-state="hover">
-      Tertiary Hover
-    </button>
-
-    <!-- Tertiary / Medium / Pressed -->
-    <button class="ds-button tertiary md pressed"
-      data-component="Button"
-      data-variant="tertiary"
-      data-size="md"
-      data-state="pressed">
-      Tertiary Pressed
-    </button>
-
-    <!-- Tertiary / Medium / Disabled -->
-    <button class="ds-button tertiary md disabled"
-      data-component="Button"
-      data-variant="tertiary"
-      data-size="md"
-      data-state="disabled"
-      disabled>
-      Tertiary Disabled
-    </button>
-
-  </div>
-</div>
-
-
-<!-- =========================================================================
-     SUCCESS
-     Solid green fill — confirmation and positive actions.
-     ========================================================================= -->
-
-<div class="section">
-  <h2>Success — Sizes</h2>
-  <div class="row">
-
-    <!-- Success / Large / Default -->
-    <button class="ds-button success lg"
-      data-component="Button"
-      data-variant="success"
-      data-size="lg">
-      Success Large
-    </button>
-
-    <!-- Success / Medium / Default -->
-    <button class="ds-button success md"
-      data-component="Button"
-      data-variant="success"
-      data-size="md">
-      Success Medium
-    </button>
-
-    <!-- Success / Small / Default -->
-    <button class="ds-button success sm"
-      data-component="Button"
-      data-variant="success"
-      data-size="sm">
-      Success Small
-    </button>
-
-  </div>
-</div>
-
-<div class="section">
-  <h2>Success — States (Medium)</h2>
-  <div class="row">
-
-    <!-- Success / Medium / Hover -->
-    <button class="ds-button success md hover"
-      data-component="Button"
-      data-variant="success"
-      data-size="md"
-      data-state="hover">
-      Success Hover
-    </button>
-
-    <!-- Success / Medium / Pressed -->
-    <button class="ds-button success md pressed"
-      data-component="Button"
-      data-variant="success"
-      data-size="md"
-      data-state="pressed">
-      Success Pressed
-    </button>
-
-    <!-- Success / Medium / Disabled -->
-    <button class="ds-button success md disabled"
-      data-component="Button"
-      data-variant="success"
-      data-size="md"
-      data-state="disabled"
-      disabled>
-      Success Disabled
-    </button>
-
-  </div>
-</div>
-
-
-<!-- =========================================================================
-     DANGER
-     Solid red fill — destructive and irreversible actions.
-     ========================================================================= -->
-
-<div class="section">
-  <h2>Danger — Sizes</h2>
-  <div class="row">
-
-    <!-- Danger / Large / Default -->
-    <button class="ds-button danger lg"
-      data-component="Button"
-      data-variant="danger"
-      data-size="lg">
-      Danger Large
-    </button>
-
-    <!-- Danger / Medium / Default -->
-    <button class="ds-button danger md"
-      data-component="Button"
-      data-variant="danger"
-      data-size="md">
-      Danger Medium
-    </button>
-
-    <!-- Danger / Small / Default -->
-    <button class="ds-button danger sm"
-      data-component="Button"
-      data-variant="danger"
-      data-size="sm">
-      Danger Small
-    </button>
-
-  </div>
-</div>
-
-<div class="section">
-  <h2>Danger — States (Medium)</h2>
-  <div class="row">
-
-    <!-- Danger / Medium / Hover -->
-    <button class="ds-button danger md hover"
-      data-component="Button"
-      data-variant="danger"
-      data-size="md"
-      data-state="hover">
-      Danger Hover
-    </button>
-
-    <!-- Danger / Medium / Pressed -->
-    <button class="ds-button danger md pressed"
-      data-component="Button"
-      data-variant="danger"
-      data-size="md"
-      data-state="pressed">
-      Danger Pressed
-    </button>
-
-    <!-- Danger / Medium / Disabled -->
-    <button class="ds-button danger md disabled"
-      data-component="Button"
-      data-variant="danger"
-      data-size="md"
-      data-state="disabled"
-      disabled>
-      Danger Disabled
-    </button>
-
-  </div>
-</div>
-
-
-
-  </section>
-
-  <!-- ========== CHECKBOX ========== -->
-  <section class="ref-section" id="checkbox">
-    <h2 class="ref-section-title">Checkbox <span class="ref-section-badge">component</span></h2>
-    <div class="ref-meta">Web: app/components/Checkbox/Checkbox.tsx · iOS: Components/Checkbox/AppCheckbox.swift · Android: ui/components/AppCheckbox.kt</div>
-
-
-  <!-- ALL STATES — with label -->
   <div class="section">
-    <div class="section-title">All States — With Label</div>
-    <div class="stack">
-
-      <!-- Unchecked -->
-      <label class="ds-checkbox" data-component="Checkbox" data-state="unchecked" data-disabled="false">
-        <span class="ds-checkbox-box" aria-hidden="true"></span>
-        <span class="ds-checkbox-label">Unchecked</span>
-      </label>
-
-      <!-- Checked -->
-      <label class="ds-checkbox checked" data-component="Checkbox" data-state="checked" data-disabled="false">
-        <span class="ds-checkbox-box" aria-hidden="true">
-          <!-- Checkmark SVG — path D="M2 6L5 9L10 3" -->
-          <span class="ds-checkbox-mark">
-            <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
-              <path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-        </span>
-        <span class="ds-checkbox-label">Checked</span>
-      </label>
-
-      <!-- Indeterminate (dash) -->
-      <label class="ds-checkbox indeterminate" data-component="Checkbox" data-state="indeterminate" data-disabled="false">
-        <span class="ds-checkbox-box" aria-hidden="true">
-          <!-- Indeterminate dash SVG -->
-          <span class="ds-checkbox-mark">
-            <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
-              <path d="M2.5 6H9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </span>
-        </span>
-        <span class="ds-checkbox-label">Indeterminate</span>
-      </label>
-
+    <h2 class="section-title">Button — States</h2>
+    <div class="row">
+      <button class="ds-button primary md disabled" data-component="Button" data-variant="primary" data-size="md" data-state="disabled" disabled>Disabled</button>
+      <button class="ds-button danger md disabled" data-component="Button" data-variant="danger" data-size="md" data-state="disabled" disabled>Disabled</button>
+      <button class="ds-button tertiary md disabled" data-component="Button" data-variant="tertiary" data-size="md" data-state="disabled" disabled>Disabled</button>
     </div>
   </div>
 
-  <!-- DISABLED STATES -->
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       ICON BUTTON
+       ═════════════════════════════════════════════════════════════════════════ -->
+
   <div class="section">
-    <div class="section-title">Disabled States</div>
-    <div class="stack">
-
-      <!-- Disabled unchecked -->
-      <label class="ds-checkbox disabled" data-component="Checkbox" data-state="unchecked" data-disabled="true">
-        <span class="ds-checkbox-box" aria-hidden="true"></span>
-        <span class="ds-checkbox-label">Disabled unchecked</span>
-      </label>
-
-      <!-- Disabled checked -->
-      <label class="ds-checkbox checked disabled" data-component="Checkbox" data-state="checked" data-disabled="true">
-        <span class="ds-checkbox-box" aria-hidden="true">
-          <span class="ds-checkbox-mark">
-            <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
-              <path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-        </span>
-        <span class="ds-checkbox-label">Disabled checked</span>
-      </label>
-
-      <!-- Disabled indeterminate -->
-      <label class="ds-checkbox indeterminate disabled" data-component="Checkbox" data-state="indeterminate" data-disabled="true">
-        <span class="ds-checkbox-box" aria-hidden="true">
-          <span class="ds-checkbox-mark">
-            <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
-              <path d="M2.5 6H9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </span>
-        </span>
-        <span class="ds-checkbox-label">Disabled indeterminate</span>
-      </label>
-
+    <h2 class="section-title">IconButton — Variants</h2>
+    <div class="row">
+      <button class="ds-icon-button primary md" data-component="IconButton" data-variant="primary" data-size="md" aria-label="Like"><span class="icon-ph"></span></button>
+      <button class="ds-icon-button secondary md" data-component="IconButton" data-variant="secondary" data-size="md" aria-label="Save"><span class="icon-ph"></span></button>
+      <button class="ds-icon-button tertiary md" data-component="IconButton" data-variant="tertiary" data-size="md" aria-label="Share"><span class="icon-ph"></span></button>
+      <button class="ds-icon-button quarternary md" data-component="IconButton" data-variant="quarternary" data-size="md" aria-label="More"><span class="icon-ph"></span></button>
+      <button class="ds-icon-button success md" data-component="IconButton" data-variant="success" data-size="md" aria-label="Confirm"><span class="icon-ph"></span></button>
+      <button class="ds-icon-button danger md" data-component="IconButton" data-variant="danger" data-size="md" aria-label="Delete"><span class="icon-ph"></span></button>
     </div>
   </div>
 
-  <!-- WITHOUT LABEL — box only -->
   <div class="section">
-    <div class="section-title">Without Label (box only)</div>
+    <h2 class="section-title">IconButton — Sizes</h2>
     <div class="row">
-
-      <label class="ds-checkbox" data-component="Checkbox" data-state="unchecked">
-        <span class="ds-checkbox-box" aria-hidden="true"></span>
-      </label>
-
-      <label class="ds-checkbox checked" data-component="Checkbox" data-state="checked">
-        <span class="ds-checkbox-box" aria-hidden="true">
-          <span class="ds-checkbox-mark">
-            <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
-              <path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-        </span>
-      </label>
-
-      <label class="ds-checkbox indeterminate" data-component="Checkbox" data-state="indeterminate">
-        <span class="ds-checkbox-box" aria-hidden="true">
-          <span class="ds-checkbox-mark">
-            <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
-              <path d="M2.5 6H9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </span>
-        </span>
-      </label>
-
+      <button class="ds-icon-button primary lg" data-component="IconButton" data-variant="primary" data-size="lg" aria-label="Large"><span class="icon-ph lg"></span></button>
+      <button class="ds-icon-button primary md" data-component="IconButton" data-variant="primary" data-size="md" aria-label="Medium"><span class="icon-ph"></span></button>
+      <button class="ds-icon-button primary sm" data-component="IconButton" data-variant="primary" data-size="sm" aria-label="Small"><span class="icon-ph sm"></span></button>
     </div>
   </div>
 
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       BADGE
+       ═════════════════════════════════════════════════════════════════════════ -->
 
-  </section>
-
-  <!-- ========== CHIP ========== -->
-  <section class="ref-section" id="chip">
-    <h2 class="ref-section-title">Chip <span class="ref-section-badge">component</span></h2>
-    <div class="ref-meta">Web: app/components/Chip/Chip.tsx · iOS: Components/Chip/AppChip.swift · Android: ui/components/AppChip.kt</div>
-
-
-  <!-- CHIP TABS — all 3 sizes, inactive + active -->
   <div class="section">
-    <div class="section-title">Chip Tabs</div>
-
+    <h2 class="section-title">Badge — Solid</h2>
     <div class="row">
-      <span class="row-label">Small</span>
-      <button class="ds-chip chip-tabs sm" role="tab" aria-selected="false"
-        data-component="Chip" data-variant="chipTabs" data-size="sm" data-state="inactive">
-        Inactive
-      </button>
-      <button class="ds-chip chip-tabs sm active" role="tab" aria-selected="true"
-        data-component="Chip" data-variant="chipTabs" data-size="sm" data-state="active">
-        Active
-      </button>
-    </div>
-
-    <div class="row">
-      <span class="row-label">Medium</span>
-      <button class="ds-chip chip-tabs md" role="tab" aria-selected="false"
-        data-component="Chip" data-variant="chipTabs" data-size="md" data-state="inactive">
-        Inbox
-      </button>
-      <button class="ds-chip chip-tabs md active" role="tab" aria-selected="true"
-        data-component="Chip" data-variant="chipTabs" data-size="md" data-state="active">
-        Sent
-      </button>
-      <button class="ds-chip chip-tabs md" role="tab" aria-selected="false"
-        data-component="Chip" data-variant="chipTabs" data-size="md" data-state="inactive">
-        Archived
-      </button>
-    </div>
-
-    <div class="row">
-      <span class="row-label">Large</span>
-      <button class="ds-chip chip-tabs lg" role="tab" aria-selected="false"
-        data-component="Chip" data-variant="chipTabs" data-size="lg" data-state="inactive">
-        All
-      </button>
-      <button class="ds-chip chip-tabs lg active" role="tab" aria-selected="true"
-        data-component="Chip" data-variant="chipTabs" data-size="lg" data-state="active">
-        Following
-      </button>
+      <span class="ds-badge brand md" data-component="Badge" data-variant="brand" data-size="md">Brand</span>
+      <span class="ds-badge success md" data-component="Badge" data-variant="success" data-size="md">Success</span>
+      <span class="ds-badge error md" data-component="Badge" data-variant="error" data-size="md">Error</span>
+      <span class="ds-badge accent md" data-component="Badge" data-variant="accent" data-size="md">Accent</span>
     </div>
   </div>
 
-  <!-- FILTERS — all 3 sizes, inactive + active -->
   <div class="section">
-    <div class="section-title">Filters</div>
-
+    <h2 class="section-title">Badge — Subtle</h2>
     <div class="row">
-      <span class="row-label">Small</span>
-      <button class="ds-chip filters sm" aria-pressed="false"
-        data-component="Chip" data-variant="filters" data-size="sm" data-state="inactive">
-        Price
-      </button>
-      <button class="ds-chip filters sm active" aria-pressed="true"
-        data-component="Chip" data-variant="filters" data-size="sm" data-state="active">
-        Recent
-      </button>
-    </div>
-
-    <div class="row">
-      <span class="row-label">Medium</span>
-      <button class="ds-chip filters md" aria-pressed="false"
-        data-component="Chip" data-variant="filters" data-size="md" data-state="inactive">
-        Design
-      </button>
-      <button class="ds-chip filters md active" aria-pressed="true"
-        data-component="Chip" data-variant="filters" data-size="md" data-state="active">
-        Engineering
-      </button>
-      <button class="ds-chip filters md" aria-pressed="false"
-        data-component="Chip" data-variant="filters" data-size="md" data-state="inactive">
-        Marketing
-      </button>
-    </div>
-
-    <div class="row">
-      <span class="row-label">Large</span>
-      <button class="ds-chip filters lg" aria-pressed="false"
-        data-component="Chip" data-variant="filters" data-size="lg" data-state="inactive">
-        Remote
-      </button>
-      <button class="ds-chip filters lg active" aria-pressed="true"
-        data-component="Chip" data-variant="filters" data-size="lg" data-state="active">
-        Full-time
-      </button>
+      <span class="ds-badge brand md subtle" data-component="Badge" data-variant="brand" data-size="md" data-state="subtle">Brand</span>
+      <span class="ds-badge success md subtle" data-component="Badge" data-variant="success" data-size="md" data-state="subtle">Success</span>
+      <span class="ds-badge error md subtle" data-component="Badge" data-variant="error" data-size="md" data-state="subtle">Error</span>
+      <span class="ds-badge accent md subtle" data-component="Badge" data-variant="accent" data-size="md" data-state="subtle">Accent</span>
     </div>
   </div>
 
-  <!-- SEGMENT CONTROL — all 3 sizes, inside track container -->
   <div class="section">
-    <div class="section-title">Segment Control (inside track)</div>
-
+    <h2 class="section-title">Badge — Number / Tiny</h2>
     <div class="row">
-      <span class="row-label">Small</span>
-      <!-- Wrap in track container to provide the trough background -->
-      <div class="segment-track">
-        <button class="ds-chip segment-control sm active" role="radio" aria-checked="true"
-          data-component="Chip" data-variant="segmentControl" data-size="sm" data-state="active">
-          Day
-        </button>
-        <button class="ds-chip segment-control sm" role="radio" aria-checked="false"
-          data-component="Chip" data-variant="segmentControl" data-size="sm" data-state="inactive">
-          Week
-        </button>
-        <button class="ds-chip segment-control sm" role="radio" aria-checked="false"
-          data-component="Chip" data-variant="segmentControl" data-size="sm" data-state="inactive">
-          Month
-        </button>
-      </div>
-    </div>
-
-    <div class="row">
-      <span class="row-label">Medium</span>
-      <div class="segment-track">
-        <button class="ds-chip segment-control md active" role="radio" aria-checked="true"
-          data-component="Chip" data-variant="segmentControl" data-size="md" data-state="active">
-          List
-        </button>
-        <button class="ds-chip segment-control md" role="radio" aria-checked="false"
-          data-component="Chip" data-variant="segmentControl" data-size="md" data-state="inactive">
-          Board
-        </button>
-        <button class="ds-chip segment-control md" role="radio" aria-checked="false"
-          data-component="Chip" data-variant="segmentControl" data-size="md" data-state="inactive">
-          Calendar
-        </button>
-      </div>
-    </div>
-
-    <div class="row">
-      <span class="row-label">Large</span>
-      <div class="segment-track">
-        <button class="ds-chip segment-control lg active" role="radio" aria-checked="true"
-          data-component="Chip" data-variant="segmentControl" data-size="lg" data-state="active">
-          Overview
-        </button>
-        <button class="ds-chip segment-control lg" role="radio" aria-checked="false"
-          data-component="Chip" data-variant="segmentControl" data-size="lg" data-state="inactive">
-          Details
-        </button>
-      </div>
+      <span class="ds-badge brand number" data-component="Badge" data-variant="brand" data-size="number">3</span>
+      <span class="ds-badge error number" data-component="Badge" data-variant="error" data-size="number">12</span>
+      <span class="ds-badge success number" data-component="Badge" data-variant="success" data-size="number">99</span>
+      <span class="ds-badge brand tiny" data-component="Badge" data-variant="brand" data-size="tiny"></span>
+      <span class="ds-badge error tiny" data-component="Badge" data-variant="error" data-size="tiny"></span>
+      <span class="ds-badge success tiny" data-component="Badge" data-variant="success" data-size="tiny"></span>
     </div>
   </div>
 
-  <!-- DISABLED STATE -->
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       CHIP
+       ═════════════════════════════════════════════════════════════════════════ -->
+
   <div class="section">
-    <div class="section-title">Disabled</div>
+    <h2 class="section-title">Chip — ChipTabs</h2>
     <div class="row">
-      <button class="ds-chip chip-tabs md disabled" disabled
-        data-component="Chip" data-variant="chipTabs" data-size="md" data-state="disabled">
-        Disabled Tab
-      </button>
-      <button class="ds-chip filters md disabled" disabled
-        data-component="Chip" data-variant="filters" data-size="md" data-state="disabled">
-        Disabled Filter
-      </button>
+      <button class="ds-chip chipTabs active" data-component="Chip" data-variant="chipTabs" data-state="active">Design</button>
+      <button class="ds-chip chipTabs" data-component="Chip" data-variant="chipTabs">Code</button>
+      <button class="ds-chip chipTabs" data-component="Chip" data-variant="chipTabs">Product</button>
     </div>
   </div>
 
-
-  </section>
-
-  <!-- ========== DATE GRID ========== -->
-  <section class="ref-section" id="date-grid">
-    <h2 class="ref-section-title">Date Grid <span class="ref-section-badge">component</span></h2>
-    <div class="ref-meta">Web: app/components/DateGrid/DateGrid.tsx · iOS: Components/DateGrid/AppDateGrid.swift · Android: ui/components/AppDateGrid.kt</div>
-
-
-  <!-- DATE ITEM — 4 individual states -->
   <div class="section">
-    <div class="section-title">DateItem — Individual States</div>
+    <h2 class="section-title">Chip — Filters</h2>
     <div class="row">
-
-      <!-- Inactive, not today -->
-      <div class="col">
-        <button class="ds-date-item" role="gridcell" aria-selected="false"
-          data-component="DateItem" data-state="inactive">
-          <span class="ds-date-abbr">MON</span>
-          <span class="ds-date-num">08</span>
-          <span class="ds-date-dot invisible" aria-hidden="true"></span>
-        </button>
-        <div class="col-label">inactive</div>
-      </div>
-
-      <!-- Active, not today -->
-      <div class="col">
-        <button class="ds-date-item active" role="gridcell" aria-selected="true"
-          data-component="DateItem" data-state="active">
-          <span class="ds-date-abbr">TUE</span>
-          <span class="ds-date-num">09</span>
-          <span class="ds-date-dot invisible" aria-hidden="true"></span>
-        </button>
-        <div class="col-label">active</div>
-      </div>
-
-      <!-- Today, not active (shows brand dot) -->
-      <div class="col">
-        <button class="ds-date-item" role="gridcell" aria-selected="false"
-          data-component="DateItem" data-state="today">
-          <span class="ds-date-abbr">WED</span>
-          <span class="ds-date-num">10</span>
-          <span class="ds-date-dot" aria-hidden="true"></span>
-          <!-- Dot visible: brand color -->
-        </button>
-        <div class="col-label">today</div>
-      </div>
-
-      <!-- Today + active (dot becomes primary/white) -->
-      <div class="col">
-        <button class="ds-date-item active" role="gridcell" aria-selected="true"
-          data-component="DateItem" data-state="today-active">
-          <span class="ds-date-abbr">THU</span>
-          <span class="ds-date-num">11</span>
-          <span class="ds-date-dot" aria-hidden="true"></span>
-          <!-- Dot visible: primary (white on card) -->
-        </button>
-        <div class="col-label">today+active</div>
-      </div>
-
+      <button class="ds-chip filters active" data-component="Chip" data-variant="filters" data-state="active">Bold</button>
+      <button class="ds-chip filters" data-component="Chip" data-variant="filters">Italic</button>
+      <button class="ds-chip filters" data-component="Chip" data-variant="filters">Underline</button>
     </div>
   </div>
 
-  <!-- DATE GRID — full 7-day week strip -->
   <div class="section">
-    <div class="section-title">DateGrid — Week Strip (Wed selected, Thu = today)</div>
-
-    <div class="ds-date-grid" role="grid" aria-label="Week date selector"
-      data-component="DateGrid" data-variant="week-strip" style="max-width: 480px;">
-
-      <!-- Previous week button -->
-      <button class="ds-date-grid-arrow" aria-label="Previous week">
-        <span class="ds-arrow-icon" aria-hidden="true">&#8249;</span>
-      </button>
-
-      <!-- 7-day row — role="row" wraps the cells -->
-      <div class="ds-date-grid-row" role="row">
-
-        <!-- Sunday — inactive -->
-        <button class="ds-date-item" role="gridcell" aria-selected="false"
-          data-component="DateItem" data-state="inactive">
-          <span class="ds-date-abbr">SUN</span>
-          <span class="ds-date-num">07</span>
-          <span class="ds-date-dot invisible" aria-hidden="true"></span>
-        </button>
-
-        <!-- Monday — inactive -->
-        <button class="ds-date-item" role="gridcell" aria-selected="false"
-          data-component="DateItem" data-state="inactive">
-          <span class="ds-date-abbr">MON</span>
-          <span class="ds-date-num">08</span>
-          <span class="ds-date-dot invisible" aria-hidden="true"></span>
-        </button>
-
-        <!-- Tuesday — inactive -->
-        <button class="ds-date-item" role="gridcell" aria-selected="false"
-          data-component="DateItem" data-state="inactive">
-          <span class="ds-date-abbr">TUE</span>
-          <span class="ds-date-num">09</span>
-          <span class="ds-date-dot invisible" aria-hidden="true"></span>
-        </button>
-
-        <!-- Wednesday — ACTIVE (selected) -->
-        <button class="ds-date-item active" role="gridcell" aria-selected="true"
-          data-component="DateItem" data-state="active">
-          <span class="ds-date-abbr">WED</span>
-          <span class="ds-date-num">10</span>
-          <span class="ds-date-dot invisible" aria-hidden="true"></span>
-        </button>
-
-        <!-- Thursday — TODAY (brand dot) -->
-        <button class="ds-date-item" role="gridcell" aria-selected="false"
-          data-component="DateItem" data-state="today">
-          <span class="ds-date-abbr">THU</span>
-          <span class="ds-date-num">11</span>
-          <span class="ds-date-dot" aria-hidden="true"></span>
-        </button>
-
-        <!-- Friday — inactive -->
-        <button class="ds-date-item" role="gridcell" aria-selected="false"
-          data-component="DateItem" data-state="inactive">
-          <span class="ds-date-abbr">FRI</span>
-          <span class="ds-date-num">12</span>
-          <span class="ds-date-dot invisible" aria-hidden="true"></span>
-        </button>
-
-        <!-- Saturday — inactive -->
-        <button class="ds-date-item" role="gridcell" aria-selected="false"
-          data-component="DateItem" data-state="inactive">
-          <span class="ds-date-abbr">SAT</span>
-          <span class="ds-date-num">13</span>
-          <span class="ds-date-dot invisible" aria-hidden="true"></span>
-        </button>
-
-      </div>
-
-      <!-- Next week button -->
-      <button class="ds-date-grid-arrow" aria-label="Next week">
-        <span class="ds-arrow-icon" aria-hidden="true">&#8250;</span>
-      </button>
+    <h2 class="section-title">Chip — Disabled</h2>
+    <div class="row">
+      <button class="ds-chip chipTabs active disabled" data-component="Chip" data-variant="chipTabs" data-state="disabled" disabled>Active + disabled</button>
+      <button class="ds-chip filters disabled" data-component="Chip" data-variant="filters" data-state="disabled" disabled>Inactive + disabled</button>
     </div>
   </div>
 
-  <!-- DATE GRID — today active variant (today is also selected) -->
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       TABS
+       ═════════════════════════════════════════════════════════════════════════ -->
+
   <div class="section">
-    <div class="section-title">DateGrid — Today is Active</div>
-
-    <div class="ds-date-grid" role="grid" aria-label="Week date selector"
-      data-component="DateGrid" data-variant="week-strip-today-active" style="max-width: 480px;">
-
-      <button class="ds-date-grid-arrow" aria-label="Previous week">
-        <span class="ds-arrow-icon" aria-hidden="true">&#8249;</span>
-      </button>
-
-      <div class="ds-date-grid-row" role="row">
-        <button class="ds-date-item" role="gridcell" aria-selected="false">
-          <span class="ds-date-abbr">SUN</span><span class="ds-date-num">07</span>
-          <span class="ds-date-dot invisible" aria-hidden="true"></span>
-        </button>
-        <button class="ds-date-item" role="gridcell" aria-selected="false">
-          <span class="ds-date-abbr">MON</span><span class="ds-date-num">08</span>
-          <span class="ds-date-dot invisible" aria-hidden="true"></span>
-        </button>
-        <button class="ds-date-item" role="gridcell" aria-selected="false">
-          <span class="ds-date-abbr">TUE</span><span class="ds-date-num">09</span>
-          <span class="ds-date-dot invisible" aria-hidden="true"></span>
-        </button>
-        <button class="ds-date-item" role="gridcell" aria-selected="false">
-          <span class="ds-date-abbr">WED</span><span class="ds-date-num">10</span>
-          <span class="ds-date-dot invisible" aria-hidden="true"></span>
-        </button>
-        <!-- Thursday = today AND active — dot becomes primary (white) -->
-        <button class="ds-date-item active" role="gridcell" aria-selected="true">
-          <span class="ds-date-abbr">THU</span><span class="ds-date-num">11</span>
-          <span class="ds-date-dot" aria-hidden="true"></span>
-        </button>
-        <button class="ds-date-item" role="gridcell" aria-selected="false">
-          <span class="ds-date-abbr">FRI</span><span class="ds-date-num">12</span>
-          <span class="ds-date-dot invisible" aria-hidden="true"></span>
-        </button>
-        <button class="ds-date-item" role="gridcell" aria-selected="false">
-          <span class="ds-date-abbr">SAT</span><span class="ds-date-num">13</span>
-          <span class="ds-date-dot invisible" aria-hidden="true"></span>
-        </button>
-      </div>
-
-      <button class="ds-date-grid-arrow" aria-label="Next week">
-        <span class="ds-arrow-icon" aria-hidden="true">&#8250;</span>
-      </button>
+    <h2 class="section-title">Tabs</h2>
+    <div class="ds-tabs" data-component="Tabs" role="tablist">
+      <button class="ds-tab active" role="tab" aria-selected="true" data-component="Tabs" data-state="active">Design</button>
+      <button class="ds-tab" role="tab" aria-selected="false" data-component="Tabs">Code</button>
+      <button class="ds-tab" role="tab" aria-selected="false" data-component="Tabs">Preview</button>
     </div>
   </div>
 
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       SEGMENT CONTROL BAR
+       ═════════════════════════════════════════════════════════════════════════ -->
 
-  </section>
-
-  <!-- ========== DIVIDER ========== -->
-  <section class="ref-section" id="divider">
-    <h2 class="ref-section-title">Divider <span class="ref-section-badge">component</span></h2>
-    <div class="ref-meta">Web: app/components/Divider/Divider.tsx · iOS: Components/Divider/AppDivider.swift · Android: ui/components/AppDivider.kt</div>
-
-
-  <!-- ROW DIVIDER — horizontal hairline -->
   <div class="section">
-    <div class="section-title">Row Divider (hairline)</div>
+    <h2 class="section-title">SegmentControlBar — Segment</h2>
+    <div class="ds-segment-control-bar segmentControl" data-component="SegmentControlBar" data-variant="segmentControl" role="group">
+      <button class="ds-segment-item active" data-state="active" aria-pressed="true">Week</button>
+      <button class="ds-segment-item">Month</button>
+      <button class="ds-segment-item">Year</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">SegmentControlBar — Chips</h2>
+    <div class="ds-segment-control-bar chips" data-component="SegmentControlBar" data-variant="chips" role="group">
+      <button class="ds-segment-item active" data-state="active" aria-pressed="true">All</button>
+      <button class="ds-segment-item">Design</button>
+      <button class="ds-segment-item">Code</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       DIVIDER
+       ═════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="section">
+    <h2 class="section-title">Divider</h2>
     <div class="stack">
       <div>
-        <div class="sub-label">Plain (between content blocks)</div>
-        <div class="demo-block">List item above</div>
-        <hr class="ds-divider row" role="separator"
-          data-component="Divider" data-variant="row" data-state="horizontal">
-        <div class="demo-block">List item below</div>
+        <p class="sub-label">Row (default)</p>
+        <p class="divider-demo-text">Item A</p>
+        <hr class="ds-divider row" data-component="Divider" data-variant="row" style="margin: 8px 0;">
+        <p class="divider-demo-text">Item B</p>
+        <hr class="ds-divider row" data-component="Divider" data-variant="row" style="margin: 8px 0;">
+        <p class="divider-demo-text">Item C</p>
       </div>
-    </div>
-  </div>
-
-  <!-- SECTION DIVIDER — thick bar -->
-  <div class="section">
-    <div class="section-title">Section Divider (thick)</div>
-    <div class="stack">
       <div>
-        <div class="sub-label">Between page sections</div>
-        <div class="demo-block">Section A content</div>
-        <hr class="ds-divider section" role="separator"
-          data-component="Divider" data-variant="section" data-state="horizontal">
-        <div class="demo-block">Section B content</div>
+        <p class="sub-label">Section</p>
+        <hr class="ds-divider section" data-component="Divider" data-variant="section">
       </div>
-    </div>
-  </div>
-
-  <!-- SECTION WITH LABEL — two lines flanking text -->
-  <div class="section">
-    <div class="section-title">Section with Label</div>
-    <div class="stack">
       <div>
-        <div class="sub-label">OR divider (auth screens)</div>
-        <div class="ds-divider section" role="separator"
-          data-component="Divider" data-variant="section" data-state="labeled">
-          <span class="ds-divider-line"></span>
-          <span class="ds-divider-label">OR</span>
-          <span class="ds-divider-line"></span>
+        <p class="sub-label">Labeled</p>
+        <div class="ds-divider-labeled" data-component="Divider" data-variant="labeled">
+          <hr class="ds-divider section"><span class="ds-divider-label">or</span><hr class="ds-divider section">
         </div>
       </div>
       <div>
-        <div class="sub-label">Custom label text</div>
-        <div class="ds-divider row" role="separator"
-          data-component="Divider" data-variant="row" data-state="labeled">
-          <span class="ds-divider-line"></span>
-          <span class="ds-divider-label">Continue with</span>
-          <span class="ds-divider-line"></span>
+        <p class="sub-label">Vertical</p>
+        <div class="row" style="height:24px;">
+          <span class="divider-demo-text">Left</span>
+          <div class="ds-divider vertical" data-component="Divider" data-variant="vertical" style="height:100%;"></div>
+          <span class="divider-demo-text">Right</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- VERTICAL DIVIDERS — inside a flex row -->
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       TOAST
+       ═════════════════════════════════════════════════════════════════════════ -->
+
   <div class="section">
-    <div class="section-title">Vertical Dividers</div>
-
-    <div class="sub-label">Row weight (muted, hairline)</div>
-    <div class="demo-row">
-      <div class="demo-block">Column A</div>
-      <span class="ds-divider row vertical" role="separator" aria-orientation="vertical"
-        data-component="Divider" data-variant="row" data-state="vertical"></span>
-      <div class="demo-block">Column B</div>
-      <span class="ds-divider row vertical" role="separator" aria-orientation="vertical"
-        data-component="Divider" data-variant="row" data-state="vertical"></span>
-      <div class="demo-block">Column C</div>
-    </div>
-
-    <div class="sub-label" style="margin-top: 16px;">Section weight (slightly bolder)</div>
-    <div class="demo-row">
-      <div class="demo-block">Left</div>
-      <span class="ds-divider section vertical" role="separator" aria-orientation="vertical"
-        data-component="Divider" data-variant="section" data-state="vertical"></span>
-      <div class="demo-block">Right</div>
-    </div>
-  </div>
-
-
-  </section>
-
-  <!-- ========== ICON BUTTON ========== -->
-  <section class="ref-section" id="icon-button">
-    <h2 class="ref-section-title">Icon Button <span class="ref-section-badge">component</span></h2>
-    <div class="ref-meta">Web: app/components/IconButton/IconButton.tsx · iOS: Components/IconButton/AppIconButton.swift · Android: ui/components/AppIconButton.kt</div>
-
-
-  <!-- PRIMARY — All 3 sizes -->
-  <div class="section">
-    <div class="section-title">Primary</div>
-    <div class="row">
-      <button class="ds-icon-button primary lg" aria-label="Action"
-        data-component="IconButton" data-variant="primary" data-size="lg">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button primary md" aria-label="Action"
-        data-component="IconButton" data-variant="primary" data-size="md">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button primary sm" aria-label="Action"
-        data-component="IconButton" data-variant="primary" data-size="sm">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <!-- Hover state -->
-      <button class="ds-icon-button primary lg hover" aria-label="Action"
-        data-component="IconButton" data-variant="primary" data-size="lg" data-state="hover">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <!-- Pressed state -->
-      <button class="ds-icon-button primary lg pressed" aria-label="Action"
-        data-component="IconButton" data-variant="primary" data-size="lg" data-state="pressed">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <!-- Disabled -->
-      <button class="ds-icon-button primary lg disabled" aria-label="Action" disabled
-        data-component="IconButton" data-variant="primary" data-size="lg" data-state="disabled">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-    </div>
-  </div>
-
-  <!-- SECONDARY -->
-  <div class="section">
-    <div class="section-title">Secondary</div>
-    <div class="row">
-      <button class="ds-icon-button secondary lg" aria-label="Action"
-        data-component="IconButton" data-variant="secondary" data-size="lg">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button secondary md" aria-label="Action"
-        data-component="IconButton" data-variant="secondary" data-size="md">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button secondary sm" aria-label="Action"
-        data-component="IconButton" data-variant="secondary" data-size="sm">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button secondary lg hover" aria-label="Action"
-        data-component="IconButton" data-variant="secondary" data-size="lg" data-state="hover">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button secondary lg disabled" disabled aria-label="Action"
-        data-component="IconButton" data-variant="secondary" data-size="lg" data-state="disabled">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-    </div>
-  </div>
-
-  <!-- TERTIARY -->
-  <div class="section">
-    <div class="section-title">Tertiary (outlined)</div>
-    <div class="row">
-      <button class="ds-icon-button tertiary lg" aria-label="Action"
-        data-component="IconButton" data-variant="tertiary" data-size="lg">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button tertiary md" aria-label="Action"
-        data-component="IconButton" data-variant="tertiary" data-size="md">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button tertiary sm" aria-label="Action"
-        data-component="IconButton" data-variant="tertiary" data-size="sm">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button tertiary lg hover" aria-label="Action"
-        data-component="IconButton" data-variant="tertiary" data-size="lg" data-state="hover">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button tertiary lg disabled" disabled aria-label="Action"
-        data-component="IconButton" data-variant="tertiary" data-size="lg" data-state="disabled">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-    </div>
-  </div>
-
-  <!-- QUARTERNARY (ghost) -->
-  <div class="section">
-    <div class="section-title">Quarternary (ghost)</div>
-    <div class="row">
-      <button class="ds-icon-button quarternary lg" aria-label="Action"
-        data-component="IconButton" data-variant="quarternary" data-size="lg">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button quarternary md" aria-label="Action"
-        data-component="IconButton" data-variant="quarternary" data-size="md">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button quarternary sm" aria-label="Action"
-        data-component="IconButton" data-variant="quarternary" data-size="sm">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button quarternary lg hover" aria-label="Action"
-        data-component="IconButton" data-variant="quarternary" data-size="lg" data-state="hover">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-    </div>
-  </div>
-
-  <!-- SUCCESS -->
-  <div class="section">
-    <div class="section-title">Success</div>
-    <div class="row">
-      <button class="ds-icon-button success lg" aria-label="Confirm"
-        data-component="IconButton" data-variant="success" data-size="lg">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button success md" aria-label="Confirm"
-        data-component="IconButton" data-variant="success" data-size="md">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button success sm" aria-label="Confirm"
-        data-component="IconButton" data-variant="success" data-size="sm">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button success lg hover" aria-label="Confirm"
-        data-component="IconButton" data-variant="success" data-size="lg" data-state="hover">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-    </div>
-  </div>
-
-  <!-- DANGER -->
-  <div class="section">
-    <div class="section-title">Danger</div>
-    <div class="row">
-      <button class="ds-icon-button danger lg" aria-label="Delete"
-        data-component="IconButton" data-variant="danger" data-size="lg">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button danger md" aria-label="Delete"
-        data-component="IconButton" data-variant="danger" data-size="md">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button danger sm" aria-label="Delete"
-        data-component="IconButton" data-variant="danger" data-size="sm">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-      <button class="ds-icon-button danger lg hover" aria-label="Delete"
-        data-component="IconButton" data-variant="danger" data-size="lg" data-state="hover">
-        <span class="ds-icon-placeholder" aria-hidden="true"></span>
-      </button>
-    </div>
-  </div>
-
-
-  </section>
-
-  <!-- ========== INPUT FIELD ========== -->
-  <section class="ref-section" id="input-field">
-    <h2 class="ref-section-title">Input Field <span class="ref-section-badge">component</span></h2>
-    <div class="ref-meta">Web: app/components/InputField/InputField.tsx · iOS: Components/InputField/AppInputField.swift · Android: ui/components/AppInputField.kt</div>
-
-
-  <!-- SINGLE-LINE INPUT — all 7 states -->
-  <div class="section">
-    <div class="section-title">InputField — All States</div>
+    <h2 class="section-title">Toast</h2>
     <div class="stack">
-
-      <!-- Default (no border at rest) -->
-      <div class="ds-input-wrapper" data-component="InputField" data-state="default">
-        <label class="ds-input-label" for="input-default">Email</label>
-        <div class="ds-input-row default">
-          <input class="ds-input-el" id="input-default" type="email" placeholder="you@example.com" />
-        </div>
+      <div class="ds-toast default" data-component="Toast" data-variant="default">Settings saved</div>
+      <div class="ds-toast success" data-component="Toast" data-variant="success">
+        <span class="ds-toast-message">Upload complete!</span>
+        <span class="ds-toast-description">Your file is ready to share.</span>
       </div>
-
-      <!-- Focus (active border — simulated via .focus class) -->
-      <div class="ds-input-wrapper" data-component="InputField" data-state="focus">
-        <label class="ds-input-label" for="input-focus">Email</label>
-        <div class="ds-input-row focus">
-          <input class="ds-input-el" id="input-focus" type="email" placeholder="Focused…" />
-        </div>
+      <div class="ds-toast warning" data-component="Toast" data-variant="warning">
+        <span class="ds-toast-message">Connection unstable</span>
+        <button class="ds-toast-action">Retry</button>
       </div>
-
-      <!-- Filled (has value, active border) -->
-      <div class="ds-input-wrapper" data-component="InputField" data-state="filled">
-        <label class="ds-input-label" for="input-filled">Email</label>
-        <div class="ds-input-row filled">
-          <input class="ds-input-el" id="input-filled" type="email" value="john@example.com" />
-        </div>
+      <div class="ds-toast error" data-component="Toast" data-variant="error">
+        <span class="ds-toast-message">Failed to save</span>
+        <span class="ds-toast-description">Check your connection.</span>
       </div>
-
-      <!-- Success -->
-      <div class="ds-input-wrapper" data-component="InputField" data-state="success">
-        <label class="ds-input-label" for="input-success">Email</label>
-        <div class="ds-input-row success">
-          <input class="ds-input-el" id="input-success" type="email" value="valid@example.com" />
-          <!-- Trailing state icon (check circle placeholder) -->
-          <span class="ds-input-state-icon" aria-hidden="true">
-            <span class="state-icon-sq"></span>
-          </span>
-        </div>
-        <p class="ds-input-hint success">Email looks good!</p>
+      <div class="ds-toast info" data-component="Toast" data-variant="info">
+        <span class="ds-toast-message">New update available</span>
+        <button class="ds-toast-action">Update now</button>
       </div>
-
-      <!-- Warning -->
-      <div class="ds-input-wrapper" data-component="InputField" data-state="warning">
-        <label class="ds-input-label" for="input-warning">Username</label>
-        <div class="ds-input-row warning">
-          <input class="ds-input-el" id="input-warning" type="text" value="user_123" />
-          <span class="ds-input-state-icon" aria-hidden="true">
-            <span class="state-icon-sq"></span>
-          </span>
-        </div>
-        <p class="ds-input-hint warning">Username is taken — try another</p>
-      </div>
-
-      <!-- Error -->
-      <div class="ds-input-wrapper" data-component="InputField" data-state="error">
-        <label class="ds-input-label" for="input-error">Email</label>
-        <div class="ds-input-row error">
-          <input class="ds-input-el" id="input-error" type="email" value="notanemail" aria-invalid="true" />
-          <span class="ds-input-state-icon" aria-hidden="true">
-            <span class="state-icon-sq"></span>
-          </span>
-        </div>
-        <p class="ds-input-hint error">Please enter a valid email address</p>
-      </div>
-
-      <!-- Disabled -->
-      <div class="ds-input-wrapper" data-component="InputField" data-state="disabled">
-        <label class="ds-input-label" for="input-disabled">Email</label>
-        <div class="ds-input-row disabled">
-          <input class="ds-input-el" id="input-disabled" type="email" value="readonly@example.com" disabled />
-        </div>
-      </div>
-
     </div>
   </div>
 
-  <!-- WITH LEADING/TRAILING SLOTS -->
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       LABEL
+       ═════════════════════════════════════════════════════════════════════════ -->
+
   <div class="section">
-    <div class="section-title">InputField — With Slots</div>
+    <h2 class="section-title">Label — Sizes × Types</h2>
     <div class="stack">
-
-      <!-- Leading icon only -->
-      <div class="ds-input-wrapper" data-component="InputField" data-state="default">
-        <label class="ds-input-label" for="input-leading-icon">Search</label>
-        <div class="ds-input-row default">
-          <span class="ds-input-slot" aria-hidden="true"><span class="slot-icon-sq"></span></span>
-          <input class="ds-input-el" id="input-leading-icon" type="search" placeholder="Search…" />
+      <div>
+        <p class="sub-label">sm</p>
+        <div class="row">
+          <span class="ds-label sm secondaryAction" data-component="Label" data-size="sm" data-variant="secondaryAction">Secondary</span>
+          <span class="ds-label sm primaryAction" data-component="Label" data-size="sm" data-variant="primaryAction">Primary</span>
+          <span class="ds-label sm brandInteractive" data-component="Label" data-size="sm" data-variant="brandInteractive">Brand</span>
+          <span class="ds-label sm information" data-component="Label" data-size="sm" data-variant="information">Info</span>
         </div>
       </div>
-
-      <!-- Leading label slot + separator -->
-      <div class="ds-input-wrapper" data-component="InputField" data-state="default">
-        <label class="ds-input-label" for="input-leading-label">Amount</label>
-        <div class="ds-input-row default">
-          <span class="ds-input-slot">USD</span>
-          <div class="ds-input-separator"></div>
-          <input class="ds-input-el" id="input-leading-label" type="number" placeholder="0.00" />
+      <div>
+        <p class="sub-label">md</p>
+        <div class="row">
+          <span class="ds-label md secondaryAction" data-component="Label" data-size="md" data-variant="secondaryAction">Secondary</span>
+          <span class="ds-label md primaryAction" data-component="Label" data-size="md" data-variant="primaryAction">Primary</span>
+          <span class="ds-label md brandInteractive" data-component="Label" data-size="md" data-variant="brandInteractive">Brand</span>
+          <span class="ds-label md information" data-component="Label" data-size="md" data-variant="information">Info</span>
         </div>
       </div>
-
-      <!-- Trailing label slot + separator -->
-      <div class="ds-input-wrapper" data-component="InputField" data-state="default">
-        <label class="ds-input-label" for="input-trailing-label">Weight</label>
-        <div class="ds-input-row default">
-          <input class="ds-input-el" id="input-trailing-label" type="number" placeholder="0" />
-          <div class="ds-input-separator"></div>
-          <span class="ds-input-slot">kg</span>
+      <div>
+        <p class="sub-label">lg</p>
+        <div class="row">
+          <span class="ds-label lg secondaryAction" data-component="Label" data-size="lg" data-variant="secondaryAction">Secondary</span>
+          <span class="ds-label lg primaryAction" data-component="Label" data-size="lg" data-variant="primaryAction">Primary</span>
+          <span class="ds-label lg brandInteractive" data-component="Label" data-size="lg" data-variant="brandInteractive">Brand</span>
+          <span class="ds-label lg information" data-component="Label" data-size="lg" data-variant="information">Info</span>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- TEXTFIELD (multiline) — all states -->
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       INPUT FIELD
+       ═════════════════════════════════════════════════════════════════════════ -->
+
   <div class="section">
-    <div class="section-title">TextField (multiline) — All States</div>
+    <h2 class="section-title">Input Field — States</h2>
     <div class="stack">
-
-      <!-- Default -->
-      <div class="ds-input-wrapper" data-component="TextField" data-state="default">
-        <label class="ds-input-label" for="tf-default">Bio</label>
-        <div class="ds-text-field default">
-          <textarea class="ds-input-el" id="tf-default" rows="3" placeholder="Tell us about yourself…"></textarea>
-        </div>
+      <div class="ds-input-field" data-component="InputField" data-state="default">
+        <label class="ds-input-label">Name</label>
+        <input class="ds-input" type="text" placeholder="Enter your name">
       </div>
-
-      <!-- Focus -->
-      <div class="ds-input-wrapper" data-component="TextField" data-state="focus">
-        <label class="ds-input-label" for="tf-focus">Bio</label>
-        <div class="ds-text-field focus">
-          <textarea class="ds-input-el" id="tf-focus" rows="3" placeholder="Focused state…"></textarea>
-        </div>
+      <div class="ds-input-field success" data-component="InputField" data-state="success">
+        <label class="ds-input-label">Email</label>
+        <input class="ds-input" type="email" value="user@example.com">
+        <span class="ds-input-helper success">Looks good!</span>
       </div>
-
-      <!-- Error -->
-      <div class="ds-input-wrapper" data-component="TextField" data-state="error">
-        <label class="ds-input-label" for="tf-error">Notes</label>
-        <div class="ds-text-field error">
-          <textarea class="ds-input-el" id="tf-error" rows="3" aria-invalid="true">Too short</textarea>
-        </div>
-        <p class="ds-input-hint error">Notes must be at least 20 characters</p>
+      <div class="ds-input-field error" data-component="InputField" data-state="error">
+        <label class="ds-input-label">Username</label>
+        <input class="ds-input" type="text" value="ab">
+        <span class="ds-input-helper error">Must be at least 3 characters</span>
       </div>
-
-      <!-- Disabled -->
-      <div class="ds-input-wrapper" data-component="TextField" data-state="disabled">
-        <label class="ds-input-label" for="tf-disabled">Notes</label>
-        <div class="ds-text-field disabled">
-          <textarea class="ds-input-el" id="tf-disabled" rows="3" disabled>Read-only content…</textarea>
-        </div>
+      <div class="ds-input-field warning" data-component="InputField" data-state="warning">
+        <label class="ds-input-label">Password</label>
+        <input class="ds-input" type="password" value="short">
+        <span class="ds-input-helper warning">Consider a stronger password</span>
       </div>
-
-    </div>
-  </div>
-
-
-  </section>
-
-  <!-- ========== LABEL ========== -->
-  <section class="ref-section" id="label">
-    <h2 class="ref-section-title">Label <span class="ref-section-badge">component</span></h2>
-    <div class="ref-meta">Web: app/components/Label/Label.tsx · iOS: Components/Label/AppLabel.swift · Android: ui/components/AppLabel.kt</div>
-
-
-  <!-- SECONDARY ACTION — all 3 sizes -->
-  <div class="section">
-    <div class="section-title">Secondary Action</div>
-    <div class="row">
-      <!-- sm: text only -->
-      <div class="ds-label sm secondary-action"
-        data-component="Label" data-variant="secondaryAction" data-size="sm">
-        Tag
-      </div>
-      <!-- md: text only -->
-      <div class="ds-label md secondary-action"
-        data-component="Label" data-variant="secondaryAction" data-size="md">
-        Tag
-      </div>
-      <!-- lg: text only -->
-      <div class="ds-label lg secondary-action"
-        data-component="Label" data-variant="secondaryAction" data-size="lg">
-        Tag
-      </div>
-    </div>
-    <!-- With leading icon -->
-    <div class="row">
-      <div class="ds-label md secondary-action"
-        data-component="Label" data-variant="secondaryAction" data-size="md">
-        <span class="ds-label-icon" aria-hidden="true"><span class="icon-sq"></span></span>
-        With Icon
-      </div>
-      <!-- With trailing icon -->
-      <div class="ds-label md secondary-action"
-        data-component="Label" data-variant="secondaryAction" data-size="md">
-        Trailing
-        <span class="ds-label-icon" aria-hidden="true"><span class="icon-sq"></span></span>
+      <div class="ds-input-field disabled" data-component="InputField" data-state="disabled">
+        <label class="ds-input-label">Locked Field</label>
+        <input class="ds-input" type="text" placeholder="Disabled" disabled>
       </div>
     </div>
   </div>
 
-  <!-- PRIMARY ACTION — all 3 sizes -->
   <div class="section">
-    <div class="section-title">Primary Action</div>
-    <div class="row">
-      <div class="ds-label sm primary-action"
-        data-component="Label" data-variant="primaryAction" data-size="sm">
-        Primary
-      </div>
-      <div class="ds-label md primary-action"
-        data-component="Label" data-variant="primaryAction" data-size="md">
-        Primary
-      </div>
-      <div class="ds-label lg primary-action"
-        data-component="Label" data-variant="primaryAction" data-size="lg">
-        Primary
-      </div>
-    </div>
-  </div>
-
-  <!-- BRAND INTERACTIVE — all 3 sizes -->
-  <div class="section">
-    <div class="section-title">Brand Interactive</div>
-    <div class="row">
-      <div class="ds-label sm brand-interactive"
-        data-component="Label" data-variant="brandInteractive" data-size="sm">
-        Brand
-      </div>
-      <div class="ds-label md brand-interactive"
-        data-component="Label" data-variant="brandInteractive" data-size="md">
-        Brand
-      </div>
-      <div class="ds-label lg brand-interactive"
-        data-component="Label" data-variant="brandInteractive" data-size="lg">
-        Brand
-      </div>
-    </div>
-  </div>
-
-  <!-- INFORMATION — all 3 sizes -->
-  <div class="section">
-    <div class="section-title">Information</div>
-    <div class="row">
-      <div class="ds-label sm information"
-        data-component="Label" data-variant="information" data-size="sm">
-        Draft
-      </div>
-      <div class="ds-label md information"
-        data-component="Label" data-variant="information" data-size="md">
-        Draft
-      </div>
-      <div class="ds-label lg information"
-        data-component="Label" data-variant="information" data-size="lg">
-        Draft
-      </div>
-    </div>
-  </div>
-
-
-  </section>
-
-  <!-- ========== RADIO BUTTON ========== -->
-  <section class="ref-section" id="radio-button">
-    <h2 class="ref-section-title">Radio Button <span class="ref-section-badge">component</span></h2>
-    <div class="ref-meta">Web: app/components/RadioButton/RadioButton.tsx · iOS: Components/RadioButton/AppRadioButton.swift · Android: ui/components/AppRadioButton.kt</div>
-
-
-  <!-- ALL STATES — with label -->
-  <div class="section">
-    <div class="section-title">All States — With Label</div>
+    <h2 class="section-title">Input Field — Slots</h2>
     <div class="stack">
-
-      <!-- Unselected -->
-      <label class="ds-radio" data-component="RadioButton" data-state="unselected" data-disabled="false">
-        <span class="ds-radio-circle" aria-hidden="true"></span>
-        <!-- No dot — unselected -->
-        <span class="ds-radio-label">Option A</span>
-      </label>
-
-      <!-- Selected -->
-      <label class="ds-radio selected" data-component="RadioButton" data-state="selected" data-disabled="false">
-        <span class="ds-radio-circle" aria-hidden="true">
-          <span class="ds-radio-dot"></span>
-          <!-- Inner dot visible — selected -->
-        </span>
-        <span class="ds-radio-label">Option B</span>
-      </label>
-
-    </div>
-  </div>
-
-  <!-- DISABLED STATES -->
-  <div class="section">
-    <div class="section-title">Disabled States</div>
-    <div class="stack">
-
-      <!-- Disabled unselected -->
-      <label class="ds-radio disabled" data-component="RadioButton" data-state="unselected" data-disabled="true">
-        <span class="ds-radio-circle" aria-hidden="true"></span>
-        <span class="ds-radio-label">Disabled unselected</span>
-      </label>
-
-      <!-- Disabled selected -->
-      <label class="ds-radio selected disabled" data-component="RadioButton" data-state="selected" data-disabled="true">
-        <span class="ds-radio-circle" aria-hidden="true">
-          <span class="ds-radio-dot"></span>
-        </span>
-        <span class="ds-radio-label">Disabled selected</span>
-      </label>
-
-    </div>
-  </div>
-
-  <!-- WITHOUT LABEL — circle only -->
-  <div class="section">
-    <div class="section-title">Without Label (circle only)</div>
-    <div class="row">
-
-      <label class="ds-radio" data-component="RadioButton" data-state="unselected" aria-label="Option 1">
-        <span class="ds-radio-circle" aria-hidden="true"></span>
-      </label>
-
-      <label class="ds-radio selected" data-component="RadioButton" data-state="selected" aria-label="Option 2">
-        <span class="ds-radio-circle" aria-hidden="true">
-          <span class="ds-radio-dot"></span>
-        </span>
-      </label>
-
-    </div>
-  </div>
-
-  <!-- RADIO GROUP — typical usage pattern -->
-  <div class="section">
-    <div class="section-title">RadioGroup (single-select group)</div>
-
-    <div class="ds-radio-group" role="radiogroup" aria-label="Subscription plan"
-      data-component="RadioGroup">
-
-      <label class="ds-radio" data-component="RadioButton" data-state="unselected">
-        <span class="ds-radio-circle" aria-hidden="true"></span>
-        <span class="ds-radio-label">Free — 5 projects, 100MB storage</span>
-      </label>
-
-      <label class="ds-radio selected" data-component="RadioButton" data-state="selected">
-        <span class="ds-radio-circle" aria-hidden="true">
-          <span class="ds-radio-dot"></span>
-        </span>
-        <span class="ds-radio-label">Pro — Unlimited projects, 10GB storage</span>
-      </label>
-
-      <label class="ds-radio" data-component="RadioButton" data-state="unselected">
-        <span class="ds-radio-circle" aria-hidden="true"></span>
-        <span class="ds-radio-label">Team — Everything in Pro + collaboration</span>
-      </label>
-
-      <label class="ds-radio disabled" data-component="RadioButton" data-state="unselected" data-disabled="true">
-        <span class="ds-radio-circle" aria-hidden="true"></span>
-        <span class="ds-radio-label">Enterprise — Contact sales</span>
-      </label>
-
-    </div>
-  </div>
-
-
-  </section>
-
-  <!-- ========== SEGMENT CONTROL BAR ========== -->
-  <section class="ref-section" id="segment-control-bar">
-    <h2 class="ref-section-title">Segment Control Bar <span class="ref-section-badge">component</span></h2>
-    <div class="ref-meta">Web: app/components/SegmentControlBar/SegmentControlBar.tsx · iOS: Components/SegmentControlBar/AppSegmentControlBar.swift · Android: ui/components/AppSegmentControlBar.kt</div>
-
-
-  <!-- SEGMENT CONTROL — all 3 sizes, first item active -->
-  <div class="section">
-    <div class="section-title">Segment Control (sliding thumb)</div>
-
-    <!-- Small -->
-    <div class="row">
-      <span class="row-label">Small</span>
-      <div class="ds-segment-bar segment-control sm" role="radiogroup"
-        data-component="SegmentControlBar" data-variant="segmentControl" data-size="sm">
-        <!-- Thumb positioned under first item (left=4, approx width=38px) -->
-        <div class="ds-segment-thumb" style="left:4px; width:38px; top:4px; bottom:4px;"></div>
-        <button class="ds-segment-item sm active" role="radio" aria-checked="true">Day</button>
-        <button class="ds-segment-item sm" role="radio" aria-checked="false">Week</button>
-        <button class="ds-segment-item sm" role="radio" aria-checked="false">Month</button>
-      </div>
-    </div>
-
-    <!-- Medium -->
-    <div class="row">
-      <span class="row-label">Medium</span>
-      <div class="ds-segment-bar segment-control md" role="radiogroup"
-        data-component="SegmentControlBar" data-variant="segmentControl" data-size="md">
-        <div class="ds-segment-thumb" style="left:4px; width:53px; top:4px; bottom:4px;"></div>
-        <button class="ds-segment-item md active" role="radio" aria-checked="true">List</button>
-        <button class="ds-segment-item md" role="radio" aria-checked="false">Board</button>
-        <button class="ds-segment-item md" role="radio" aria-checked="false">Calendar</button>
-      </div>
-    </div>
-
-    <!-- Large -->
-    <div class="row">
-      <span class="row-label">Large</span>
-      <div class="ds-segment-bar segment-control lg" role="radiogroup"
-        data-component="SegmentControlBar" data-variant="segmentControl" data-size="lg">
-        <div class="ds-segment-thumb" style="left:4px; width:90px; top:4px; bottom:4px;"></div>
-        <button class="ds-segment-item lg active" role="radio" aria-checked="true">Overview</button>
-        <button class="ds-segment-item lg" role="radio" aria-checked="false">Details</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- CHIPS — all 3 sizes -->
-  <div class="section">
-    <div class="section-title">Chips (tab-style row)</div>
-
-    <div class="row">
-      <span class="row-label">Small</span>
-      <div class="ds-segment-bar chips sm" role="radiogroup"
-        data-component="SegmentControlBar" data-variant="chips" data-size="sm">
-        <button class="ds-segment-item sm active" role="radio" aria-checked="true">All</button>
-        <button class="ds-segment-item sm" role="radio" aria-checked="false">Design</button>
-        <button class="ds-segment-item sm" role="radio" aria-checked="false">Code</button>
-      </div>
-    </div>
-
-    <div class="row">
-      <span class="row-label">Medium</span>
-      <div class="ds-segment-bar chips md" role="radiogroup"
-        data-component="SegmentControlBar" data-variant="chips" data-size="md">
-        <button class="ds-segment-item md active" role="radio" aria-checked="true">All</button>
-        <button class="ds-segment-item md" role="radio" aria-checked="false">Active</button>
-        <button class="ds-segment-item md" role="radio" aria-checked="false">Archived</button>
-      </div>
-    </div>
-
-    <div class="row">
-      <span class="row-label">Large</span>
-      <div class="ds-segment-bar chips lg" role="radiogroup"
-        data-component="SegmentControlBar" data-variant="chips" data-size="lg">
-        <button class="ds-segment-item lg active" role="radio" aria-checked="true">Trending</button>
-        <button class="ds-segment-item lg" role="radio" aria-checked="false">Latest</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- FILTERS — all 3 sizes (multi-select) -->
-  <div class="section">
-    <div class="section-title">Filters (bordered, multi-select)</div>
-
-    <div class="row">
-      <span class="row-label">Small</span>
-      <div class="ds-segment-bar filters sm" role="group"
-        data-component="SegmentControlBar" data-variant="filters" data-size="sm">
-        <button class="ds-segment-item sm active" role="checkbox" aria-checked="true">Remote</button>
-        <button class="ds-segment-item sm active" role="checkbox" aria-checked="true">Full-time</button>
-        <button class="ds-segment-item sm" role="checkbox" aria-checked="false">Contract</button>
-      </div>
-    </div>
-
-    <div class="row">
-      <span class="row-label">Medium</span>
-      <div class="ds-segment-bar filters md" role="group"
-        data-component="SegmentControlBar" data-variant="filters" data-size="md">
-        <button class="ds-segment-item md" role="checkbox" aria-checked="false">Design</button>
-        <button class="ds-segment-item md active" role="checkbox" aria-checked="true">Engineering</button>
-        <button class="ds-segment-item md" role="checkbox" aria-checked="false">Marketing</button>
-      </div>
-    </div>
-
-    <div class="row">
-      <span class="row-label">Large</span>
-      <div class="ds-segment-bar filters lg" role="group"
-        data-component="SegmentControlBar" data-variant="filters" data-size="lg">
-        <button class="ds-segment-item lg active" role="checkbox" aria-checked="true">2024</button>
-        <button class="ds-segment-item lg" role="checkbox" aria-checked="false">2023</button>
-        <button class="ds-segment-item lg" role="checkbox" aria-checked="false">2022</button>
-      </div>
-    </div>
-  </div>
-
-
-  </section>
-
-  <!-- ========== SWITCH ========== -->
-  <section class="ref-section" id="switch">
-    <h2 class="ref-section-title">Switch <span class="ref-section-badge">component</span></h2>
-    <div class="ref-meta">Web: app/components/Switch/Switch.tsx · iOS: Components/Switch/AppSwitch.swift · Android: ui/components/AppSwitch.kt</div>
-
-
-  <!-- ALL STATES — with label -->
-  <div class="section">
-    <div class="section-title">All States — With Label</div>
-    <div class="stack">
-
-      <!-- Off -->
-      <div class="ds-switch" role="switch" aria-checked="false"
-        data-component="Switch" data-state="off" data-disabled="false">
-        <div class="ds-switch-track">
-          <div class="ds-switch-thumb"></div>
+      <div class="ds-input-field" data-component="InputField" data-variant="leadingIcon">
+        <label class="ds-input-label">Search</label>
+        <div class="ds-input-wrapper">
+          <span class="ds-input-leading-icon"><span class="icon-ph sm"></span></span>
+          <input class="ds-input has-leading" type="text" placeholder="Search…">
         </div>
-        <span class="ds-switch-label">Enable notifications</span>
       </div>
-
-      <!-- On -->
-      <div class="ds-switch on" role="switch" aria-checked="true"
-        data-component="Switch" data-state="on" data-disabled="false">
-        <div class="ds-switch-track">
-          <div class="ds-switch-thumb"></div>
+      <div class="ds-input-field" data-component="InputField" data-variant="trailingIcon">
+        <label class="ds-input-label">Password</label>
+        <div class="ds-input-wrapper">
+          <input class="ds-input has-trailing" type="password" placeholder="••••••••">
+          <span class="ds-input-trailing-icon"><span class="icon-ph sm"></span></span>
         </div>
-        <span class="ds-switch-label">Enable notifications</span>
       </div>
-
+      <div class="ds-input-field" data-component="InputField" data-variant="bothIcons">
+        <label class="ds-input-label">Amount</label>
+        <div class="ds-input-wrapper">
+          <span class="ds-input-leading-icon"><span class="icon-ph sm"></span></span>
+          <input class="ds-input has-leading has-trailing" type="text" placeholder="0.00">
+          <span class="ds-input-trailing-icon"><span class="icon-ph sm"></span></span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- DISABLED STATES -->
   <div class="section">
-    <div class="section-title">Disabled States</div>
-    <div class="stack">
+    <h2 class="section-title">Input Field — TextField</h2>
+    <div class="ds-input-field" data-component="TextField">
+      <label class="ds-input-label">Bio</label>
+      <textarea class="ds-input ds-textarea" rows="3" placeholder="Tell us about yourself…"></textarea>
+    </div>
+  </div>
 
-      <!-- Disabled off -->
-      <div class="ds-switch disabled" role="switch" aria-checked="false" aria-disabled="true"
-        data-component="Switch" data-state="off" data-disabled="true">
-        <div class="ds-switch-track">
-          <div class="ds-switch-thumb"></div>
-        </div>
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       THUMBNAIL
+       ═════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="section">
+    <h2 class="section-title">Thumbnail — Sizes</h2>
+    <div class="row" style="align-items: flex-end;">
+      <div class="ds-thumbnail xs thumb-bg" data-component="Thumbnail" data-size="xs"></div>
+      <div class="ds-thumbnail sm thumb-bg" data-component="Thumbnail" data-size="sm"></div>
+      <div class="ds-thumbnail md thumb-bg" data-component="Thumbnail" data-size="md"></div>
+      <div class="ds-thumbnail lg thumb-bg" data-component="Thumbnail" data-size="lg"></div>
+      <div class="ds-thumbnail xl thumb-bg" data-component="Thumbnail" data-size="xl"></div>
+      <div class="ds-thumbnail xxl thumb-bg" data-component="Thumbnail" data-size="xxl"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Thumbnail — Rounded</h2>
+    <div class="row">
+      <div class="ds-thumbnail sm rounded thumb-bg" data-component="Thumbnail" data-size="sm" data-variant="rounded"></div>
+      <div class="ds-thumbnail md rounded thumb-bg" data-component="Thumbnail" data-size="md" data-variant="rounded"></div>
+      <div class="ds-thumbnail lg rounded thumb-bg" data-component="Thumbnail" data-size="lg" data-variant="rounded"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       DATE GRID
+       ═════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="section">
+    <h2 class="section-title">DateGrid</h2>
+    <div class="ds-date-grid" data-component="DateGrid">
+      <div class="ds-date-cell" data-component="DateGrid" data-state="default"><span class="ds-date-day">Mon</span><span class="ds-date-num">7</span></div>
+      <div class="ds-date-cell active" data-component="DateGrid" data-state="active"><span class="ds-date-day">Tue</span><span class="ds-date-num">8</span></div>
+      <div class="ds-date-cell active" data-component="DateGrid" data-state="active"><span class="ds-date-day">Wed</span><span class="ds-date-num">9</span></div>
+      <div class="ds-date-cell today" data-component="DateGrid" data-state="today"><span class="ds-date-day">Thu</span><span class="ds-date-num">10</span></div>
+      <div class="ds-date-cell" data-component="DateGrid" data-state="default"><span class="ds-date-day">Fri</span><span class="ds-date-num">11</span></div>
+      <div class="ds-date-cell" data-component="DateGrid" data-state="default"><span class="ds-date-day">Sat</span><span class="ds-date-num">12</span></div>
+      <div class="ds-date-cell" data-component="DateGrid" data-state="default"><span class="ds-date-day">Sun</span><span class="ds-date-num">13</span></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       CHECKBOX
+       ═════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="section">
+    <h2 class="section-title">Checkbox</h2>
+    <div class="stack">
+      <label class="ds-checkbox-wrapper" data-component="Checkbox" data-state="unchecked">
+        <input type="checkbox" class="ds-checkbox"> Unchecked
+      </label>
+      <label class="ds-checkbox-wrapper" data-component="Checkbox" data-state="checked">
+        <input type="checkbox" class="ds-checkbox" checked> Checked
+      </label>
+      <label class="ds-checkbox-wrapper" data-component="Checkbox" data-state="indeterminate">
+        <input type="checkbox" class="ds-checkbox ds-checkbox-indeterminate"> Indeterminate
+      </label>
+      <label class="ds-checkbox-wrapper" data-component="Checkbox" data-state="disabled">
+        <input type="checkbox" class="ds-checkbox" disabled> Disabled
+      </label>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       SWITCH
+       ═════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="section">
+    <h2 class="section-title">Switch</h2>
+    <div class="stack">
+      <label class="ds-switch-wrapper" data-component="Switch" data-state="off">
+        <input type="checkbox" class="ds-switch-input" role="switch">
+        <span class="ds-switch-track"><span class="ds-switch-thumb"></span></span>
+        <span class="ds-switch-label">Off</span>
+      </label>
+      <label class="ds-switch-wrapper" data-component="Switch" data-state="on">
+        <input type="checkbox" class="ds-switch-input" role="switch" checked>
+        <span class="ds-switch-track"><span class="ds-switch-thumb"></span></span>
+        <span class="ds-switch-label">On</span>
+      </label>
+      <label class="ds-switch-wrapper" data-component="Switch" data-state="disabled-off">
+        <input type="checkbox" class="ds-switch-input" role="switch" disabled>
+        <span class="ds-switch-track"><span class="ds-switch-thumb"></span></span>
         <span class="ds-switch-label">Disabled off</span>
-      </div>
-
-      <!-- Disabled on -->
-      <div class="ds-switch on disabled" role="switch" aria-checked="true" aria-disabled="true"
-        data-component="Switch" data-state="on" data-disabled="true">
-        <div class="ds-switch-track">
-          <div class="ds-switch-thumb"></div>
-        </div>
+      </label>
+      <label class="ds-switch-wrapper" data-component="Switch" data-state="disabled-on">
+        <input type="checkbox" class="ds-switch-input" role="switch" checked disabled>
+        <span class="ds-switch-track"><span class="ds-switch-thumb"></span></span>
         <span class="ds-switch-label">Disabled on</span>
-      </div>
-
+      </label>
     </div>
   </div>
 
-  <!-- WITHOUT LABEL — track only -->
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       RADIO BUTTON
+       ═════════════════════════════════════════════════════════════════════════ -->
+
   <div class="section">
-    <div class="section-title">Without Label (track only)</div>
-    <div class="row">
-
-      <!-- Off — no label -->
-      <div class="ds-switch" role="switch" aria-checked="false" aria-label="Setting off"
-        data-component="Switch" data-state="off">
-        <div class="ds-switch-track">
-          <div class="ds-switch-thumb"></div>
-        </div>
-      </div>
-
-      <!-- On — no label -->
-      <div class="ds-switch on" role="switch" aria-checked="true" aria-label="Setting on"
-        data-component="Switch" data-state="on">
-        <div class="ds-switch-track">
-          <div class="ds-switch-thumb"></div>
-        </div>
-      </div>
-
+    <h2 class="section-title">RadioButton</h2>
+    <div class="stack" role="radiogroup" data-component="RadioButton">
+      <label class="ds-radio-wrapper" data-component="RadioButton" data-state="selected">
+        <input type="radio" class="ds-radio" name="demo-radio" value="email" checked> Email
+      </label>
+      <label class="ds-radio-wrapper" data-component="RadioButton" data-state="unselected">
+        <input type="radio" class="ds-radio" name="demo-radio" value="sms"> SMS
+      </label>
+      <label class="ds-radio-wrapper" data-component="RadioButton" data-state="unselected">
+        <input type="radio" class="ds-radio" name="demo-radio" value="push"> Push notification
+      </label>
     </div>
   </div>
 
-  <!-- SETTINGS LIST — typical usage pattern -->
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       TEXT BLOCK (pattern)
+       ═════════════════════════════════════════════════════════════════════════ -->
+
   <div class="section">
-    <div class="section-title">Typical Settings Usage</div>
+    <h2 class="section-title">TextBlock</h2>
     <div class="stack">
-
-      <div class="ds-switch on" role="switch" aria-checked="true"
-        data-component="Switch" data-state="on">
-        <div class="ds-switch-track"><div class="ds-switch-thumb"></div></div>
-        <span class="ds-switch-label">Push notifications</span>
+      <div class="ds-text-block" data-component="TextBlock">
+        <span class="ds-text-block-eyebrow">Getting started</span>
+        <h3 class="ds-text-block-heading">Build faster with components</h3>
+        <p class="ds-text-block-body">A consistent design system reduces decision fatigue and speeds up development across every platform.</p>
       </div>
-
-      <div class="ds-switch" role="switch" aria-checked="false"
-        data-component="Switch" data-state="off">
-        <div class="ds-switch-track"><div class="ds-switch-thumb"></div></div>
-        <span class="ds-switch-label">Email digest</span>
+      <div class="ds-text-block" data-component="TextBlock">
+        <h3 class="ds-text-block-heading">Heading only</h3>
+        <p class="ds-text-block-body">No eyebrow, just heading and body copy.</p>
       </div>
-
-      <div class="ds-switch on" role="switch" aria-checked="true"
-        data-component="Switch" data-state="on">
-        <div class="ds-switch-track"><div class="ds-switch-thumb"></div></div>
-        <span class="ds-switch-label">Dark mode</span>
-      </div>
-
-      <div class="ds-switch disabled" role="switch" aria-checked="false" aria-disabled="true"
-        data-component="Switch" data-state="off" data-disabled="true">
-        <div class="ds-switch-track"><div class="ds-switch-thumb"></div></div>
-        <span class="ds-switch-label">Beta features (unavailable on free plan)</span>
-      </div>
-
     </div>
   </div>
 
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       STEP INDICATOR (pattern)
+       ═════════════════════════════════════════════════════════════════════════ -->
 
-  </section>
-
-  <!-- ========== TABS ========== -->
-  <section class="ref-section" id="tabs">
-    <h2 class="ref-section-title">Tabs <span class="ref-section-badge">component</span></h2>
-    <div class="ref-meta">Web: app/components/Tabs/Tabs.tsx · iOS: Components/Tabs/AppTabs.swift · Android: ui/components/AppTabs.kt</div>
-
-
-  <!-- SMALL — text only, 3 tabs, middle active -->
   <div class="section">
-    <div class="section-title">Small (sm)</div>
-    <div class="ds-tab-bar" role="tablist" aria-label="Navigation"
-      data-component="Tabs" data-variant="tab-bar" data-size="sm">
-      <button class="ds-tab sm" role="tab" aria-selected="false" tabindex="-1"
-        data-component="Tab" data-state="inactive">
-        Home
-      </button>
-      <button class="ds-tab sm active" role="tab" aria-selected="true" tabindex="0"
-        data-component="Tab" data-state="active">
-        Profile
-      </button>
-      <button class="ds-tab sm" role="tab" aria-selected="false" tabindex="-1"
-        data-component="Tab" data-state="inactive">
-        Settings
-      </button>
-      <!-- Indicator positioned under "Profile" (approx 40px from left, ~57px wide) -->
-      <div class="ds-tab-indicator" style="left:40px; width:57px;"></div>
-    </div>
-  </div>
-
-  <!-- MEDIUM — text only, 4 tabs, first active -->
-  <div class="section">
-    <div class="section-title">Medium (md) — default</div>
-    <div class="ds-tab-bar" role="tablist" aria-label="Navigation"
-      data-component="Tabs" data-variant="tab-bar" data-size="md">
-      <button class="ds-tab md active" role="tab" aria-selected="true" tabindex="0"
-        data-component="Tab" data-state="active">
-        Overview
-      </button>
-      <button class="ds-tab md" role="tab" aria-selected="false" tabindex="-1"
-        data-component="Tab" data-state="inactive">
-        Activity
-      </button>
-      <button class="ds-tab md" role="tab" aria-selected="false" tabindex="-1"
-        data-component="Tab" data-state="inactive">
-        Members
-      </button>
-      <button class="ds-tab md" role="tab" aria-selected="false" tabindex="-1"
-        data-component="Tab" data-state="inactive">
-        Settings
-      </button>
-      <!-- Indicator positioned under "Overview" (0px from left, ~88px wide) -->
-      <div class="ds-tab-indicator" style="left:0px; width:88px;"></div>
-    </div>
-  </div>
-
-  <!-- LARGE — text only -->
-  <div class="section">
-    <div class="section-title">Large (lg)</div>
-    <div class="ds-tab-bar" role="tablist" aria-label="Navigation"
-      data-component="Tabs" data-variant="tab-bar" data-size="lg">
-      <button class="ds-tab lg" role="tab" aria-selected="false" tabindex="-1"
-        data-component="Tab" data-state="inactive">
-        Posts
-      </button>
-      <button class="ds-tab lg active" role="tab" aria-selected="true" tabindex="0"
-        data-component="Tab" data-state="active">
-        Replies
-      </button>
-      <button class="ds-tab lg" role="tab" aria-selected="false" tabindex="-1"
-        data-component="Tab" data-state="inactive">
-        Media
-      </button>
-      <!-- Indicator under "Replies" (approx 72px from left, ~76px wide) -->
-      <div class="ds-tab-indicator" style="left:72px; width:76px;"></div>
-    </div>
-  </div>
-
-  <!-- MEDIUM WITH ICONS -->
-  <div class="section">
-    <div class="section-title">Medium with icons</div>
-    <div class="ds-tab-bar" role="tablist" aria-label="Navigation"
-      data-component="Tabs" data-variant="tab-bar" data-size="md">
-      <button class="ds-tab md active" role="tab" aria-selected="true" tabindex="0"
-        data-component="Tab" data-state="active">
-        <span class="ds-tab-icon" aria-hidden="true"><span class="icon-sq"></span></span>
-        Home
-      </button>
-      <button class="ds-tab md" role="tab" aria-selected="false" tabindex="-1"
-        data-component="Tab" data-state="inactive">
-        <span class="ds-tab-icon" aria-hidden="true"><span class="icon-sq"></span></span>
-        Explore
-      </button>
-      <button class="ds-tab md" role="tab" aria-selected="false" tabindex="-1"
-        data-component="Tab" data-state="inactive">
-        <span class="ds-tab-icon" aria-hidden="true"><span class="icon-sq"></span></span>
-        Profile
-      </button>
-      <!-- Indicator under "Home" -->
-      <div class="ds-tab-indicator" style="left:0px; width:72px;"></div>
-    </div>
-  </div>
-
-
-  </section>
-
-  <!-- ========== THUMBNAIL ========== -->
-  <section class="ref-section" id="thumbnail">
-    <h2 class="ref-section-title">Thumbnail <span class="ref-section-badge">component</span></h2>
-    <div class="ref-meta">Web: app/components/Thumbnail/Thumbnail.tsx · iOS: Components/Thumbnail/AppThumbnail.swift · Android: ui/components/AppThumbnail.kt</div>
-
-
-  <!-- SQUARE (rounded=off) — all 6 sizes, no image (placeholder bg) -->
-  <div class="section">
-    <div class="section-title">Square (rounded=off) — Placeholder</div>
+    <h2 class="section-title">StepIndicator</h2>
     <div class="row">
-      <div class="col">
-        <div class="ds-thumbnail xs" role="img" aria-label="Placeholder"
-          data-component="Thumbnail" data-size="xs" data-state="square"></div>
-        <div class="col-label">xs 32</div>
+      <div class="ds-step-indicator incomplete" data-component="StepIndicator" data-state="incomplete">
+        <span class="ds-step-dot"></span>
+        <span class="ds-step-label">Incomplete</span>
       </div>
-      <div class="col">
-        <div class="ds-thumbnail sm" role="img" aria-label="Placeholder"
-          data-component="Thumbnail" data-size="sm" data-state="square"></div>
-        <div class="col-label">sm 40</div>
-      </div>
-      <div class="col">
-        <div class="ds-thumbnail md" role="img" aria-label="Placeholder"
-          data-component="Thumbnail" data-size="md" data-state="square"></div>
-        <div class="col-label">md 48</div>
-      </div>
-      <div class="col">
-        <div class="ds-thumbnail lg" role="img" aria-label="Placeholder"
-          data-component="Thumbnail" data-size="lg" data-state="square"></div>
-        <div class="col-label">lg 64</div>
-      </div>
-      <div class="col">
-        <div class="ds-thumbnail xl" role="img" aria-label="Placeholder"
-          data-component="Thumbnail" data-size="xl" data-state="square"></div>
-        <div class="col-label">xl 80</div>
-      </div>
-      <div class="col">
-        <div class="ds-thumbnail xxl" role="img" aria-label="Placeholder"
-          data-component="Thumbnail" data-size="xxl" data-state="square"></div>
-        <div class="col-label">xxl 96</div>
+      <div class="ds-step-indicator completed" data-component="StepIndicator" data-state="completed">
+        <span class="ds-step-dot"></span>
+        <span class="ds-step-label">Completed</span>
       </div>
     </div>
   </div>
 
-  <!-- CIRCLE (rounded=on) — all 6 sizes, no image -->
-  <div class="section">
-    <div class="section-title">Circle (rounded=on) — Placeholder</div>
-    <div class="row">
-      <div class="col">
-        <div class="ds-thumbnail xs rounded" role="img" aria-label="Avatar"
-          data-component="Thumbnail" data-size="xs" data-state="rounded"></div>
-        <div class="col-label">xs</div>
-      </div>
-      <div class="col">
-        <div class="ds-thumbnail sm rounded" role="img" aria-label="Avatar"
-          data-component="Thumbnail" data-size="sm" data-state="rounded"></div>
-        <div class="col-label">sm</div>
-      </div>
-      <div class="col">
-        <div class="ds-thumbnail md rounded" role="img" aria-label="Avatar"
-          data-component="Thumbnail" data-size="md" data-state="rounded"></div>
-        <div class="col-label">md</div>
-      </div>
-      <div class="col">
-        <div class="ds-thumbnail lg rounded" role="img" aria-label="Avatar"
-          data-component="Thumbnail" data-size="lg" data-state="rounded"></div>
-        <div class="col-label">lg</div>
-      </div>
-      <div class="col">
-        <div class="ds-thumbnail xl rounded" role="img" aria-label="Avatar"
-          data-component="Thumbnail" data-size="xl" data-state="rounded"></div>
-        <div class="col-label">xl</div>
-      </div>
-      <div class="col">
-        <div class="ds-thumbnail xxl rounded" role="img" aria-label="Avatar"
-          data-component="Thumbnail" data-size="xxl" data-state="rounded"></div>
-        <div class="col-label">xxl</div>
-      </div>
-    </div>
-  </div>
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       STEPPER (pattern)
+       ═════════════════════════════════════════════════════════════════════════ -->
 
-  <!-- WITH INITIALS — circle, md/lg/xxl -->
   <div class="section">
-    <div class="section-title">With Initials (fallback content)</div>
-    <div class="row">
-      <div class="col">
-        <div class="ds-thumbnail md rounded" role="img" aria-label="Alex B"
-          data-component="Thumbnail" data-size="md" data-state="rounded">
-          <span class="ds-thumbnail-initials">AB</span>
+    <h2 class="section-title">Stepper</h2>
+    <div class="ds-stepper" data-component="Stepper">
+      <div class="ds-stepper-step completed" data-state="completed">
+        <div class="ds-stepper-indicator"><span class="ds-stepper-check">✓</span></div>
+        <div class="ds-stepper-content">
+          <span class="ds-stepper-label">Account created</span>
         </div>
-        <div class="col-label">md</div>
       </div>
-      <div class="col">
-        <div class="ds-thumbnail lg rounded" role="img" aria-label="Chris D"
-          data-component="Thumbnail" data-size="lg" data-state="rounded">
-          <span class="ds-thumbnail-initials">CD</span>
+      <div class="ds-stepper-step active" data-state="active">
+        <div class="ds-stepper-indicator"><span class="ds-stepper-num">2</span></div>
+        <div class="ds-stepper-content">
+          <span class="ds-stepper-label">Verify email</span>
+          <span class="ds-stepper-sublabel">Check your inbox</span>
         </div>
-        <div class="col-label">lg</div>
       </div>
-      <div class="col">
-        <div class="ds-thumbnail xxl rounded" role="img" aria-label="Eva F"
-          data-component="Thumbnail" data-size="xxl" data-state="rounded">
-          <span class="ds-thumbnail-initials">EF</span>
+      <div class="ds-stepper-step incomplete" data-state="incomplete">
+        <div class="ds-stepper-indicator"><span class="ds-stepper-num">3</span></div>
+        <div class="ds-stepper-content">
+          <span class="ds-stepper-label">Set up profile</span>
         </div>
-        <div class="col-label">xxl</div>
       </div>
     </div>
   </div>
 
-  <!-- SIMULATED IMAGE — fake gradient as image fill -->
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       LIST ITEM (pattern)
+       ═════════════════════════════════════════════════════════════════════════ -->
+
   <div class="section">
-    <div class="section-title">With Image (simulated)</div>
-    <div class="row">
-      <div class="col">
-        <div class="ds-thumbnail md fake-img" role="img" aria-label="Photo"
-          data-component="Thumbnail" data-size="md" data-state="square"></div>
-        <div class="col-label">square</div>
-      </div>
-      <div class="col">
-        <div class="ds-thumbnail md rounded fake-img" role="img" aria-label="Photo"
-          data-component="Thumbnail" data-size="md" data-state="rounded"></div>
-        <div class="col-label">circle</div>
-      </div>
-      <div class="col">
-        <div class="ds-thumbnail lg fake-img" role="img" aria-label="Photo"
-          data-component="Thumbnail" data-size="lg" data-state="square"></div>
-        <div class="col-label">lg square</div>
-      </div>
-      <div class="col">
-        <div class="ds-thumbnail xl rounded fake-img" role="img" aria-label="Photo"
-          data-component="Thumbnail" data-size="xl" data-state="rounded"></div>
-        <div class="col-label">xl circle</div>
-      </div>
-    </div>
-  </div>
-
-
-  </section>
-
-  <!-- ========== TOAST ========== -->
-  <section class="ref-section" id="toast">
-    <h2 class="ref-section-title">Toast <span class="ref-section-badge">component</span></h2>
-    <div class="ref-meta">Web: app/components/Toast/Toast.tsx · iOS: Components/Toast/AppToast.swift · Android: ui/components/AppToast.kt</div>
-
-
-  <!-- ALL 5 VARIANTS — message only -->
-  <div class="section">
-    <div class="section-title">All Variants — Message Only</div>
+    <h2 class="section-title">ListItem</h2>
     <div class="stack">
-
-      <!-- Default -->
-      <div class="ds-toast default" role="alert" aria-live="polite"
-        data-component="Toast" data-variant="default">
-        <span class="ds-toast-icon" aria-hidden="true">
-          <span class="ds-toast-icon-placeholder"></span>
-        </span>
-        <div class="ds-toast-content">
-          <p class="ds-toast-message">Changes saved successfully</p>
+      <div class="ds-list-item" data-component="ListItem">
+        <div class="ds-thumbnail sm thumb-bg" data-component="Thumbnail" data-size="sm"></div>
+        <div class="ds-list-item-content">
+          <span class="ds-list-item-title">Project Alpha</span>
+          <span class="ds-list-item-subtitle">Updated 2 hours ago</span>
         </div>
+        <span class="ds-badge brand sm" data-component="Badge" data-variant="brand" data-size="sm">New</span>
       </div>
-
-      <!-- Info -->
-      <div class="ds-toast info" role="alert" aria-live="polite"
-        data-component="Toast" data-variant="info">
-        <span class="ds-toast-icon" aria-hidden="true">
-          <span class="ds-toast-icon-placeholder"></span>
-        </span>
-        <div class="ds-toast-content">
-          <p class="ds-toast-message">Your session will expire in 5 minutes</p>
+      <div class="ds-list-item" data-component="ListItem">
+        <span class="icon-ph"></span>
+        <div class="ds-list-item-content">
+          <span class="ds-list-item-title">Notifications</span>
+          <span class="ds-list-item-subtitle">3 unread messages</span>
         </div>
-      </div>
-
-      <!-- Success -->
-      <div class="ds-toast success" role="alert" aria-live="polite"
-        data-component="Toast" data-variant="success">
-        <span class="ds-toast-icon" aria-hidden="true">
-          <span class="ds-toast-icon-placeholder"></span>
-        </span>
-        <div class="ds-toast-content">
-          <p class="ds-toast-message">File uploaded successfully</p>
-        </div>
-      </div>
-
-      <!-- Warning -->
-      <div class="ds-toast warning" role="alert" aria-live="polite"
-        data-component="Toast" data-variant="warning">
-        <span class="ds-toast-icon" aria-hidden="true">
-          <span class="ds-toast-icon-placeholder"></span>
-        </span>
-        <div class="ds-toast-content">
-          <p class="ds-toast-message">Storage almost full — 90% used</p>
-        </div>
-      </div>
-
-      <!-- Error -->
-      <div class="ds-toast error" role="alert" aria-live="polite"
-        data-component="Toast" data-variant="error">
-        <span class="ds-toast-icon" aria-hidden="true">
-          <span class="ds-toast-icon-placeholder"></span>
-        </span>
-        <div class="ds-toast-content">
-          <p class="ds-toast-message">Upload failed — please try again</p>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- WITH DESCRIPTION -->
-  <div class="section">
-    <div class="section-title">With Description</div>
-    <div class="stack">
-
-      <div class="ds-toast success" role="alert"
-        data-component="Toast" data-variant="success">
-        <span class="ds-toast-icon" aria-hidden="true">
-          <span class="ds-toast-icon-placeholder"></span>
-        </span>
-        <div class="ds-toast-content">
-          <p class="ds-toast-message">Account created</p>
-          <p class="ds-toast-desc">Welcome to the platform! Check your email to verify.</p>
-        </div>
-      </div>
-
-      <div class="ds-toast error" role="alert"
-        data-component="Toast" data-variant="error">
-        <span class="ds-toast-icon" aria-hidden="true">
-          <span class="ds-toast-icon-placeholder"></span>
-        </span>
-        <div class="ds-toast-content">
-          <p class="ds-toast-message">Connection error</p>
-          <p class="ds-toast-desc">Could not reach the server. Check your network.</p>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- WITH ACTION BUTTON -->
-  <div class="section">
-    <div class="section-title">With Action Button</div>
-    <div class="stack">
-
-      <div class="ds-toast default" role="alert"
-        data-component="Toast" data-variant="default">
-        <span class="ds-toast-icon" aria-hidden="true">
-          <span class="ds-toast-icon-placeholder"></span>
-        </span>
-        <div class="ds-toast-content">
-          <p class="ds-toast-message">Item deleted</p>
-        </div>
-        <button class="ds-toast-action">Undo</button>
-      </div>
-
-      <div class="ds-toast warning" role="alert"
-        data-component="Toast" data-variant="warning">
-        <span class="ds-toast-icon" aria-hidden="true">
-          <span class="ds-toast-icon-placeholder"></span>
-        </span>
-        <div class="ds-toast-content">
-          <p class="ds-toast-message">Free plan limit reached</p>
-        </div>
-        <button class="ds-toast-action">Upgrade</button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- WITH DISMISS BUTTON -->
-  <div class="section">
-    <div class="section-title">With Dismiss Button</div>
-    <div class="stack">
-
-      <div class="ds-toast info" role="alert"
-        data-component="Toast" data-variant="info">
-        <span class="ds-toast-icon" aria-hidden="true">
-          <span class="ds-toast-icon-placeholder"></span>
-        </span>
-        <div class="ds-toast-content">
-          <p class="ds-toast-message">New update available</p>
-          <p class="ds-toast-desc">Refresh to apply the latest changes.</p>
-        </div>
-        <button class="ds-toast-action">Refresh</button>
-        <button class="ds-toast-dismiss" aria-label="Dismiss notification">
-          <span class="ds-toast-dismiss-icon" aria-hidden="true">✕</span>
-        </button>
-      </div>
-
-    </div>
-  </div>
-
-
-  </section>
-
-  <div class="ref-patterns-heading">Patterns</div>
-
-  <!-- ========== LIST ITEM (PATTERN) ========== -->
-  <section class="ref-section" id="list-item">
-    <h2 class="ref-section-title">List Item <span class="ref-section-badge">pattern</span></h2>
-    <div class="ref-meta">Web: app/components/ListItem/ListItem.tsx · iOS: Components/ListItem/AppListItem.swift · Android: ui/patterns/AppListItem.kt</div>
-<!--
-  ListItem — Pattern Snippet
-  Figma: bubbles-kit › "ListItem"
-
-  Horizontal row composing Thumbnail + TextBlock + optional trailing
-  action (Button | IconButton | Badge).
-
-  Requires: list-item.css + text-block.css + semantic.css
-  Also reference: thumbnail.css, badge.css, button.css, icon-button.css
--->
-
-<!-- ============================================================
-     Variant 1: Thumbnail + text + trailing badge
-     ============================================================ -->
-<div class="ds-list-item"
-     data-component="ListItem"
-     data-variant="thumbnail-text-badge">
-  <div class="ds-list-item-row">
-    <!-- Leading: thumbnail -->
-    <div class="ds-list-item-leading">
-      <div class="ds-thumbnail md"
-           data-component="Thumbnail"
-           data-size="md"
-           style="width:40px;height:40px;border-radius:var(--radius-md);overflow:hidden;background-color:var(--surfaces-base-high-contrast);">
-        <img src="https://picsum.photos/seed/book/40/40" alt="Ayurveda Books" width="40" height="40" style="display:block;width:100%;height:100%;object-fit:cover;">
-      </div>
-    </div>
-    <!-- Content: text block -->
-    <div class="ds-list-item-content">
-      <div class="ds-text-block" data-component="TextBlock">
-        <div class="ds-text-block-header">
-          <p class="ds-text-block-title">Ayurveda Books</p>
-          <p class="ds-text-block-subtext">bought for Anjali at airport</p>
-        </div>
-      </div>
-    </div>
-    <!-- Trailing: badge -->
-    <div class="ds-list-item-trailing">
-      <span class="ds-badge sm brand"
-            data-component="Badge"
-            data-variant="brand"
-            data-size="sm"
-            style="display:inline-flex;align-items:center;padding:2px 8px;border-radius:var(--radius-full);background-color:var(--surfaces-brand-interactive-low-contrast);color:var(--typography-brand);font-size:var(--typography-cta-sm-size);font-weight:var(--typography-cta-sm-weight);">
-        New
-      </span>
-    </div>
-  </div>
-</div>
-
-<!-- ============================================================
-     Variant 2: Icon placeholder + text + trailing button
-     ============================================================ -->
-<div class="ds-list-item"
-     data-component="ListItem"
-     data-variant="icon-text-button">
-  <div class="ds-list-item-row">
-    <!-- Leading: icon placeholder (40×40 surface) -->
-    <div class="ds-list-item-leading">
-      <div class="ds-thumbnail md"
-           data-component="Thumbnail"
-           data-size="md"
-           style="width:40px;height:40px;border-radius:var(--radius-md);background-color:var(--surfaces-base-high-contrast);display:flex;align-items:center;justify-content:center;">
-        <!-- Phosphor "BookOpen" icon, 20px -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" fill="var(--icons-secondary)" aria-hidden="true">
-          <path d="M232,48H176a40,40,0,0,0-48,0H72A16,16,0,0,0,56,64V192a16,16,0,0,0,16,16H232a16,16,0,0,0,16-16V64A16,16,0,0,0,232,48Zm-56,0a24,24,0,0,1,24,24H152a24,24,0,0,1,24-24ZM72,64h48.26A39.82,39.82,0,0,0,120,72v16H72ZM232,192H72V104h48V88h16v16h48V88h16v16h32Z"/>
-        </svg>
-      </div>
-    </div>
-    <!-- Content: text block -->
-    <div class="ds-list-item-content">
-      <div class="ds-text-block" data-component="TextBlock">
-        <div class="ds-text-block-header">
-          <p class="ds-text-block-title">Trip Planning</p>
-          <p class="ds-text-block-subtext">Bali · March 2025</p>
-        </div>
-      </div>
-    </div>
-    <!-- Trailing: button -->
-    <div class="ds-list-item-trailing">
-      <button class="ds-button secondary sm"
-              data-component="Button"
-              data-variant="secondary"
-              data-size="sm">
-        Edit
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ============================================================
-     Variant 3: Text only + trailing icon button
-     ============================================================ -->
-<div class="ds-list-item"
-     data-component="ListItem"
-     data-variant="text-icon-button">
-  <div class="ds-list-item-row">
-    <!-- No leading slot -->
-    <!-- Content: text block -->
-    <div class="ds-list-item-content">
-      <div class="ds-text-block" data-component="TextBlock">
-        <div class="ds-text-block-header">
-          <p class="ds-text-block-title">Inbox</p>
-          <p class="ds-text-block-subtext">12 unread messages</p>
-        </div>
-      </div>
-    </div>
-    <!-- Trailing: icon button (DotsThree / more options) -->
-    <div class="ds-list-item-trailing">
-      <button class="ds-icon-button secondary sm"
-              data-component="IconButton"
-              data-variant="secondary"
-              data-size="sm"
-              aria-label="More options"
-              style="width:28px;height:28px;border-radius:var(--radius-full);border:none;background-color:var(--surfaces-brand-interactive-low-contrast);display:flex;align-items:center;justify-content:center;cursor:pointer;">
-        <!-- Phosphor "DotsThreeVertical" icon, 16px -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" fill="var(--icons-primary)" aria-hidden="true">
-          <path d="M128,96a16,16,0,1,0,16,16A16,16,0,0,0,128,96Zm0-56a16,16,0,1,0,16,16A16,16,0,0,0,128,40Zm0,112a16,16,0,1,0,16,16A16,16,0,0,0,128,152Z"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ============================================================
-     Variant 4: Thumbnail + text + trailing error badge + divider
-     ============================================================ -->
-<div class="ds-list-item"
-     data-component="ListItem"
-     data-variant="thumbnail-text-error-badge-divider">
-  <div class="ds-list-item-row">
-    <!-- Leading: thumbnail -->
-    <div class="ds-list-item-leading">
-      <div class="ds-thumbnail md"
-           data-component="Thumbnail"
-           data-size="md"
-           style="width:40px;height:40px;border-radius:var(--radius-md);overflow:hidden;background-color:var(--surfaces-base-high-contrast);">
-        <img src="https://picsum.photos/seed/mail/40/40" alt="Newsletter" width="40" height="40" style="display:block;width:100%;height:100%;object-fit:cover;">
-      </div>
-    </div>
-    <!-- Content: text block -->
-    <div class="ds-list-item-content">
-      <div class="ds-text-block" data-component="TextBlock">
-        <div class="ds-text-block-header">
-          <p class="ds-text-block-title">Newsletter</p>
-          <p class="ds-text-block-subtext">3 failed sends</p>
-        </div>
-      </div>
-    </div>
-    <!-- Trailing: error badge -->
-    <div class="ds-list-item-trailing">
-      <span class="ds-badge sm error"
-            data-component="Badge"
-            data-variant="error"
-            data-size="sm"
-            style="display:inline-flex;align-items:center;padding:2px 8px;border-radius:var(--radius-full);background-color:var(--surfaces-error-subtle);color:var(--typography-error);font-size:var(--typography-cta-sm-size);font-weight:var(--typography-cta-sm-weight);">
-        3
-      </span>
-    </div>
-  </div>
-  <!-- Bottom divider -->
-  <div class="ds-list-item-divider"
-       data-component="Divider"
-       aria-hidden="true">
-  </div>
-</div>
-
-  </section>
-
-  <!-- ========== STEP INDICATOR (PATTERN) ========== -->
-  <section class="ref-section" id="step-indicator">
-    <h2 class="ref-section-title">Step Indicator <span class="ref-section-badge">pattern</span></h2>
-    <div class="ref-meta">Web: app/components/StepIndicator/StepIndicator.tsx · iOS: Components/StepIndicator/AppStepIndicator.swift · Android: ui/patterns/AppStepIndicator.kt</div>
-<!--
-  StepIndicator — Pattern Snippet
-  Figma: bubbles-kit › node 108:9891 "StepIndicator"
-
-  12×12 circular dot representing a single step in a timeline.
-    - Incomplete: hollow circle with border-default stroke
-    - Completed:  solid success fill + white checkmark
-
-  Include step-indicator.css (and semantic.css) to render.
--->
-
-<!-- ============================================================
-     State 1: Incomplete (default)
-     Hollow circle — step not yet done
-     ============================================================ -->
-<div class="ds-step-indicator"
-     data-component="StepIndicator"
-     data-variant="incomplete"
-     data-state="incomplete"
-     aria-label="Step incomplete">
-</div>
-
-<!-- ============================================================
-     State 2: Completed
-     Solid green fill with white checkmark — step finished
-     ============================================================ -->
-<div class="ds-step-indicator completed"
-     data-component="StepIndicator"
-     data-variant="completed"
-     data-state="completed"
-     aria-label="Step completed">
-  <!-- Inline checkmark SVG — Phosphor "Check" Bold, 8px -->
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="8"
-    height="8"
-    viewBox="0 0 256 256"
-    fill="var(--icons-white)"
-    aria-hidden="true">
-    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/>
-  </svg>
-</div>
-
-  </section>
-
-  <!-- ========== STEPPER (PATTERN) ========== -->
-  <section class="ref-section" id="stepper">
-    <h2 class="ref-section-title">Stepper <span class="ref-section-badge">pattern</span></h2>
-    <div class="ref-meta">Web: app/components/Stepper/Stepper.tsx · iOS: Components/Stepper/AppStepper.swift · Android: ui/patterns/AppStepper.kt</div>
-<!--
-  Stepper — Pattern Snippet
-  Figma: bubbles-kit › node 108:4357 "TimelineStepper"
-
-  Vertical timeline composing StepIndicator + TextBlock per step,
-  with connector lines between steps.
-
-  Requires: stepper.css + step-indicator.css + text-block.css + semantic.css
--->
-
-<!-- ============================================================
-     3-step stepper: 2 completed + 1 incomplete
-     ============================================================ -->
-<div class="ds-stepper"
-     data-component="Stepper"
-     data-variant="default">
-
-  <!-- Step 1: Completed -->
-  <div class="ds-stepper-step">
-    <div class="ds-stepper-track">
-      <!-- StepIndicator: completed -->
-      <div class="ds-step-indicator completed"
-           data-component="StepIndicator"
-           data-state="completed"
-           aria-label="Step completed">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="8"
-          height="8"
-          viewBox="0 0 256 256"
-          fill="var(--icons-white)"
-          aria-hidden="true">
-          <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/>
-        </svg>
-      </div>
-      <!-- Connector to next step -->
-      <div class="ds-stepper-connector" aria-hidden="true"></div>
-    </div>
-    <div class="ds-stepper-content">
-      <div class="ds-text-block" data-component="TextBlock">
-        <div class="ds-text-block-header">
-          <p class="ds-text-block-title">Ordered</p>
-          <p class="ds-text-block-subtext">Mar 1, 2025</p>
-        </div>
+        <button class="ds-button secondary sm" data-component="Button" data-variant="secondary" data-size="sm">View</button>
       </div>
     </div>
   </div>
 
-  <!-- Step 2: Completed -->
-  <div class="ds-stepper-step">
-    <div class="ds-stepper-track">
-      <!-- StepIndicator: completed -->
-      <div class="ds-step-indicator completed"
-           data-component="StepIndicator"
-           data-state="completed"
-           aria-label="Step completed">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="8"
-          height="8"
-          viewBox="0 0 256 256"
-          fill="var(--icons-white)"
-          aria-hidden="true">
-          <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/>
-        </svg>
-      </div>
-      <!-- Connector to next step -->
-      <div class="ds-stepper-connector" aria-hidden="true"></div>
-    </div>
-    <div class="ds-stepper-content">
-      <div class="ds-text-block" data-component="TextBlock">
-        <div class="ds-text-block-header">
-          <p class="ds-text-block-title">Shipped</p>
-          <p class="ds-text-block-subtext">Mar 3, 2025</p>
-        </div>
-        <p class="ds-text-block-body">Your order has left the warehouse and is on its way.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Step 3: Incomplete (last — no connector) -->
-  <div class="ds-stepper-step">
-    <div class="ds-stepper-track">
-      <!-- StepIndicator: incomplete -->
-      <div class="ds-step-indicator"
-           data-component="StepIndicator"
-           data-state="incomplete"
-           aria-label="Step incomplete">
-      </div>
-      <!-- No connector on last step -->
-    </div>
-    <div class="ds-stepper-content">
-      <div class="ds-text-block" data-component="TextBlock">
-        <div class="ds-text-block-header">
-          <p class="ds-text-block-title">Delivered</p>
-          <p class="ds-text-block-subtext">Arriving Mar 5, 2025</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-  </section>
-
-  <!-- ========== TEXT BLOCK (PATTERN) ========== -->
-  <section class="ref-section" id="text-block">
-    <h2 class="ref-section-title">Text Block <span class="ref-section-badge">pattern</span></h2>
-    <div class="ref-meta">Web: app/components/TextBlock/TextBlock.tsx · iOS: Components/TextBlock/AppTextBlock.swift · Android: ui/patterns/AppTextBlock.kt</div>
-<!--
-  TextBlock — Pattern Snippet
-  Figma: bubbles-kit › node 84:789 "TextBlock"
-
-  A vertical typography stack with up to 5 optional slots:
-  overline → title → subtext → body → metadata
-
-  All variations shown below. Include text-block.css (and semantic.css) to render.
--->
-
-<!-- ============================================================
-     Variant 1: Title only (minimal)
-     ============================================================ -->
-<div class="ds-text-block"
-     data-component="TextBlock"
-     data-variant="title-only">
-  <div class="ds-text-block-header">
-    <p class="ds-text-block-title">Ayurveda Books</p>
-  </div>
-</div>
-
-<!-- ============================================================
-     Variant 2: Title + subtext
-     ============================================================ -->
-<div class="ds-text-block"
-     data-component="TextBlock"
-     data-variant="title-subtext">
-  <div class="ds-text-block-header">
-    <p class="ds-text-block-title">Ayurveda Books</p>
-    <p class="ds-text-block-subtext">bought for Anjali at airport</p>
-  </div>
-</div>
-
-<!-- ============================================================
-     Variant 3: Overline + title + subtext (full header group)
-     ============================================================ -->
-<div class="ds-text-block"
-     data-component="TextBlock"
-     data-variant="overline-title-subtext">
-  <div class="ds-text-block-header">
-    <p class="ds-text-block-overline">Recent</p>
-    <p class="ds-text-block-title">Trip to Bali</p>
-    <p class="ds-text-block-subtext">March 2025 · 12 days</p>
-  </div>
-</div>
-
-<!-- ============================================================
-     Variant 4: Title + body copy
-     ============================================================ -->
-<div class="ds-text-block"
-     data-component="TextBlock"
-     data-variant="title-body">
-  <div class="ds-text-block-header">
-    <p class="ds-text-block-title">Trip Planning Notes</p>
-  </div>
-  <p class="ds-text-block-body">
-    Shortlisted three hotels near the rice terraces. Need to confirm
-    transport from the airport and book the cooking class in Ubud.
-  </p>
-</div>
-
-<!-- ============================================================
-     Variant 5: Full — all 5 slots
-     ============================================================ -->
-<div class="ds-text-block"
-     data-component="TextBlock"
-     data-variant="full">
-  <div class="ds-text-block-header">
-    <p class="ds-text-block-overline">Recent</p>
-    <p class="ds-text-block-title">Trip to Bali</p>
-    <p class="ds-text-block-subtext">March 2025 · 12 days</p>
-  </div>
-  <p class="ds-text-block-body">
-    Shortlisted three hotels near the rice terraces. Need to confirm
-    transport from the airport and book the cooking class in Ubud.
-  </p>
-  <p class="ds-text-block-metadata">Posted 2d ago</p>
-</div>
-
-<!-- ============================================================
-     Variant 6: Title + metadata (no header group, minimal)
-     ============================================================ -->
-<div class="ds-text-block"
-     data-component="TextBlock"
-     data-variant="title-metadata">
-  <div class="ds-text-block-header">
-    <p class="ds-text-block-title">Morning Routine</p>
-  </div>
-  <p class="ds-text-block-metadata">Last updated yesterday</p>
-</div>
-
-  </section>
-
-</div><!-- /ref-page -->
+</div><!-- /.page -->
 
 <script>
-  document.querySelector('.dark-toggle')?.addEventListener('click', function() {
-    const html = document.documentElement;
-    if (html.style.colorScheme === 'dark') {
-      html.style.colorScheme = 'light';
-      this.textContent = '\u{1F319} Dark';
-    } else {
-      html.style.colorScheme = 'dark';
-      this.textContent = '\u2600\uFE0F Light';
-    }
+  // Dark mode toggle persists across page loads
+  const toggle = document.querySelector('.dark-toggle');
+  const html = document.documentElement;
+  const stored = localStorage.getItem('ds-dark');
+  if (stored === '1') html.classList.add('dark');
+  toggle.textContent = html.classList.contains('dark') ? '☀️ Light' : '🌙 Dark';
+  toggle.addEventListener('click', () => {
+    html.classList.toggle('dark');
+    const isDark = html.classList.contains('dark');
+    localStorage.setItem('ds-dark', isDark ? '1' : '0');
+    toggle.textContent = isDark ? '☀️ Light' : '🌙 Dark';
   });
 </script>
+
 </body>
 </html>
