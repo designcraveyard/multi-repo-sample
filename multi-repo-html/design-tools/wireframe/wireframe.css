@@ -1,0 +1,278 @@
+/* =============================================================================
+   wireframe.css — Placeholder Blocks & Skeleton UI
+   Design tool: HTML design system only (no platform counterpart)
+
+   Purpose:
+     Lo-fi wireframe elements for layout planning, user flows, and
+     annotated presentations. Intentionally desaturated and generic
+     to avoid implying final visual design.
+
+   Classes:
+     .ds-wireframe-nav                   — top navigation bar
+       .ds-wireframe-nav-logo            — logo placeholder
+       .ds-wireframe-nav-item            — navigation link placeholder
+     .ds-wireframe-tab-bar               — bottom tab bar (mobile)
+       .ds-wireframe-tab-item            — single tab (icon + label)
+     .ds-wireframe-placeholder           — image/content placeholder block
+       .sm  → 80px   .md  → 160px
+       .lg  → 240px  .full → 100% width
+     .ds-wireframe-text                  — horizontal text line bars
+       .heading — wider/thicker line     .body — thinner varying lines
+     .ds-wireframe-skeleton              — animated shimmer loading block
+
+   Token layer: ALL colours reference --wireframe-* and --skeleton-*
+   from tokens/design-tools.css. Never hardcode hex values.
+   ============================================================================= */
+
+
+/* =============================================================================
+   NAV BAR — top navigation with logo + nav item placeholders
+   ============================================================================= */
+
+.ds-wireframe-nav {
+  display:          flex;
+  align-items:      center;
+  justify-content:  space-between;
+  padding:          0 24px;
+  height:           56px;                           /* Standard nav height */
+  background-color: var(--wireframe-surface);       /* White */
+  border-bottom:    1px solid var(--wireframe-border); /* Separator line */
+  flex-shrink:      0;
+}
+
+/* Logo area — rectangular placeholder */
+.ds-wireframe-nav-logo {
+  width:            80px;
+  height:           20px;
+  background:       var(--wireframe-placeholder);   /* Gray block */
+  border-radius:    4px;
+  flex-shrink:      0;
+}
+
+/* Nav link area — group of item placeholders */
+.ds-wireframe-nav-items {
+  display:  flex;
+  align-items: center;
+  gap:      24px;
+}
+
+/* Single nav link placeholder */
+.ds-wireframe-nav-item {
+  width:         60px;
+  height:        14px;
+  background:    var(--wireframe-placeholder);
+  border-radius: 3px;
+}
+
+/* Active nav item — slightly darker */
+.ds-wireframe-nav-item.active {
+  background: var(--wireframe-accent);
+}
+
+/* Right-side actions area */
+.ds-wireframe-nav-actions {
+  display:  flex;
+  align-items: center;
+  gap:      12px;
+}
+
+/* Icon placeholder in nav actions */
+.ds-wireframe-nav-icon {
+  width:         24px;
+  height:        24px;
+  background:    var(--wireframe-placeholder);
+  border-radius: 50%;
+}
+
+/* Avatar placeholder in nav actions */
+.ds-wireframe-nav-avatar {
+  width:         32px;
+  height:        32px;
+  background:    var(--wireframe-accent);
+  border-radius: 50%;
+}
+
+
+/* =============================================================================
+   TAB BAR — bottom navigation for mobile wireframes
+   ============================================================================= */
+
+.ds-wireframe-tab-bar {
+  display:          flex;
+  align-items:      stretch;
+  justify-content:  space-around;
+  height:           64px;                           /* Standard mobile tab height */
+  background-color: var(--wireframe-surface);
+  border-top:       1px solid var(--wireframe-border);
+  padding-bottom:   8px;                            /* Bottom safe area stub */
+  flex-shrink:      0;
+}
+
+/* Individual tab */
+.ds-wireframe-tab-item {
+  flex:           1;
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  justify-content: center;
+  gap:            4px;
+  padding-top:    8px;
+}
+
+/* Tab icon placeholder */
+.ds-wireframe-tab-item-icon {
+  width:         24px;
+  height:        24px;
+  background:    var(--wireframe-placeholder);
+  border-radius: 6px;
+}
+
+/* Active tab icon — highlighted */
+.ds-wireframe-tab-item.active .ds-wireframe-tab-item-icon {
+  background: var(--wireframe-accent);
+}
+
+/* Tab label placeholder */
+.ds-wireframe-tab-item-label {
+  width:         36px;
+  height:        8px;
+  background:    var(--wireframe-placeholder);
+  border-radius: 2px;
+}
+
+/* Active tab label — slightly darker */
+.ds-wireframe-tab-item.active .ds-wireframe-tab-item-label {
+  background: var(--wireframe-accent);
+}
+
+
+/* =============================================================================
+   PLACEHOLDER BLOCK — gray rectangle for images, hero areas, cards
+   ============================================================================= */
+
+.ds-wireframe-placeholder {
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  background-color: var(--wireframe-placeholder);   /* #E2E8F0 light */
+  border-radius:    8px;
+  width:            100%;                           /* Default full-width */
+  color:            var(--wireframe-text);
+  font-family:      var(--font-sans);
+  font-size:        12px;
+  font-weight:      500;
+}
+
+/* Size variants — height only; width stays 100% unless overridden */
+.ds-wireframe-placeholder.sm   { height: 80px; }   /* Avatar, icon, small media */
+.ds-wireframe-placeholder.md   { height: 160px; }  /* Card image, thumbnail */
+.ds-wireframe-placeholder.lg   { height: 240px; }  /* Hero image, map, chart */
+.ds-wireframe-placeholder.full { height: 100%; }   /* Full-height column fill */
+
+/* Optional: show dimension label inside the block */
+.ds-wireframe-placeholder .ds-wireframe-placeholder-label {
+  font-family:   var(--font-mono);
+  font-size:     11px;
+  color:         var(--wireframe-text);
+  user-select:   none;
+}
+
+/* Cross-hair icon inside placeholder (SVG drawn via CSS gradient) */
+.ds-wireframe-placeholder::before {
+  content:      "";
+  display:      block;
+  width:        24px;
+  height:       24px;
+  border:       2px solid var(--wireframe-text);
+  border-radius: 50%;
+  opacity:      0.40;
+  margin-right: 8px;
+  flex-shrink:  0;
+}
+
+
+/* =============================================================================
+   TEXT LINES — horizontal bars simulating text content
+   ============================================================================= */
+
+/* Base text line */
+.ds-wireframe-text {
+  display:       block;
+  height:        10px;
+  background:    var(--wireframe-placeholder);
+  border-radius: 3px;
+  width:         100%;
+}
+
+/* Heading line — wider (90%), taller (16px), bolder visual weight */
+.ds-wireframe-text.heading {
+  height: 20px;
+  width:  90%;
+}
+
+/* Body line — thinner, full width */
+.ds-wireframe-text.body {
+  height: 10px;
+  width:  100%;
+}
+
+/* Short body line — 70% width (simulates line-break) */
+.ds-wireframe-text.body.short {
+  width: 70%;
+}
+
+/* Caption line — very thin, 55% width */
+.ds-wireframe-text.caption {
+  height: 8px;
+  width:  55%;
+}
+
+/* Stack of text lines helper — wraps multiple .ds-wireframe-text rows */
+.ds-wireframe-text-block {
+  display:        flex;
+  flex-direction: column;
+  gap:            8px;
+  width:          100%;
+}
+
+
+/* =============================================================================
+   SKELETON — animated shimmer loading placeholder
+   ============================================================================= */
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }   /* Start shimmer off-left */
+  100% { background-position:  200% center; }   /* End shimmer off-right */
+}
+
+.ds-wireframe-skeleton {
+  display:    block;
+  width:      100%;
+  height:     100%;
+  min-height: 16px;                              /* Fallback if no height set */
+  border-radius: 6px;
+
+  /* Gradient: base → shimmer highlight → base (sliding left-to-right) */
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base)    0%,
+    var(--skeleton-shimmer) 40%,
+    var(--skeleton-base)    80%
+  );
+  background-size:     200% 100%;               /* Wide enough to slide across */
+  animation:           shimmer 1.6s ease-in-out infinite;
+}
+
+/* Skeleton size variants */
+.ds-wireframe-skeleton.sm   { height: 12px; }
+.ds-wireframe-skeleton.md   { height: 20px; }
+.ds-wireframe-skeleton.lg   { height: 40px; }
+.ds-wireframe-skeleton.card { height: 160px; }
+.ds-wireframe-skeleton.avatar {
+  width:  40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.ds-wireframe-skeleton.circle {
+  border-radius: 50%;
+}

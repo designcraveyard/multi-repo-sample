@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slide Layouts — Design Tools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../design-system.css" />
+  <style>
+    body {
+      background: #0F172A;
+      padding: 40px;
+      font-family: var(--font-sans);
+    }
+    .demo-section {
+      margin-bottom: 60px;
+    }
+    .demo-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748B;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    /* Scale slides to ~50% for preview — caller can override for full-size export */
+    .slide-scale-wrap {
+      display:        inline-block;
+      width:          calc(var(--slide-width) * 0.5);
+      height:         calc(var(--slide-height) * 0.5);
+      overflow:       visible;
+    }
+    .slide-scaled {
+      transform:        scale(0.5);
+      transform-origin: top left;
+      display:          inline-block;
+    }
+    /* Placeholder content blocks inside slides */
+    .slide-placeholder-img {
+      background:    #E2E8F0;
+      border-radius: 12px;
+      flex:          1;
+      min-height:    200px;
+      display:       flex;
+      align-items:   center;
+      justify-content: center;
+      color:         #94A3B8;
+      font-size:     14px;
+      font-weight:   500;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       TITLE SLIDE
+       ============================================================ -->
+  <div class="demo-section">
+    <div class="demo-label">Title Slide</div>
+    <div class="slide-scale-wrap">
+      <div class="slide-scaled">
+        <div class="ds-slide title-slide"
+             data-component="SlideLayout"
+             data-variant="title-slide">
+          <p class="ds-slide-eyebrow">Product Overview · 2026</p>
+          <h1 class="ds-slide-title">Build faster, ship smarter.</h1>
+          <p class="ds-slide-subtitle">Cross-platform design system for iOS, Android, and Web</p>
+          <div class="ds-slide-number">01 / 04</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       CONTENT SLIDE
+       ============================================================ -->
+  <div class="demo-section">
+    <div class="demo-label">Content Slide</div>
+    <div class="slide-scale-wrap">
+      <div class="slide-scaled">
+        <div class="ds-slide content-slide"
+             data-component="SlideLayout"
+             data-variant="content-slide">
+          <h2 class="ds-slide-title">Design token architecture</h2>
+          <div class="ds-slide-content-area">
+            <p class="ds-slide-body">
+              Tokens flow from a single Figma source through two layers —
+              primitives and semantics — to all three platforms simultaneously.
+              A change in Figma propagates to CSS variables, Swift extensions,
+              and Kotlin objects in a single sync pass.
+            </p>
+            <p class="ds-slide-body">
+              The design-tool token layer extends this with wireframe, annotation,
+              device, and slide-specific values that never enter the production app.
+            </p>
+            <div class="slide-placeholder-img">Diagram placeholder</div>
+          </div>
+          <div class="ds-slide-number">02 / 04</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SPLIT SLIDE
+       ============================================================ -->
+  <div class="demo-section">
+    <div class="demo-label">Split Slide</div>
+    <div class="slide-scale-wrap">
+      <div class="slide-scaled">
+        <div class="ds-slide split-slide"
+             data-component="SlideLayout"
+             data-variant="split-slide">
+          <!-- Left column -->
+          <div class="ds-slide-column">
+            <p class="ds-slide-eyebrow">Before</p>
+            <h2 class="ds-slide-title">Manual token management</h2>
+            <p class="ds-slide-body">
+              Designers and engineers maintained separate color systems.
+              Every platform had its own naming convention and drift was constant.
+            </p>
+          </div>
+          <!-- Right column -->
+          <div class="ds-slide-column">
+            <p class="ds-slide-eyebrow">After</p>
+            <h2 class="ds-slide-title">Automated token sync</h2>
+            <p class="ds-slide-body">
+              One source of truth in Figma. Run a single command to propagate
+              to CSS, Swift, and Kotlin. Zero drift, guaranteed parity.
+            </p>
+          </div>
+          <div class="ds-slide-number">03 / 04</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       GRID SLIDE
+       ============================================================ -->
+  <div class="demo-section">
+    <div class="demo-label">Grid Slide</div>
+    <div class="slide-scale-wrap">
+      <div class="slide-scaled">
+        <div class="ds-slide grid-slide"
+             data-component="SlideLayout"
+             data-variant="grid-slide">
+          <div class="ds-slide-grid-header">
+            <h2 class="ds-slide-title">Four pillars of quality</h2>
+          </div>
+          <div class="ds-slide-grid">
+            <div class="ds-slide-block">
+              <h3 class="ds-slide-block-title">Accessibility</h3>
+              <p class="ds-slide-block-body">WCAG AA on every screen. Dynamic Type, VoiceOver, and TalkBack support baked in.</p>
+            </div>
+            <div class="ds-slide-block">
+              <h3 class="ds-slide-block-title">Performance</h3>
+              <p class="ds-slide-block-body">Sub-100ms interactions. Lazy loading, skeleton states, and optimistic UI throughout.</p>
+            </div>
+            <div class="ds-slide-block">
+              <h3 class="ds-slide-block-title">Parity</h3>
+              <p class="ds-slide-block-body">Every feature ships on all three platforms simultaneously with shared spec docs.</p>
+            </div>
+            <div class="ds-slide-block">
+              <h3 class="ds-slide-block-title">Consistency</h3>
+              <p class="ds-slide-block-body">Two-layer design tokens ensure identical color, spacing, and radius across platforms.</p>
+            </div>
+          </div>
+          <div class="ds-slide-number">04 / 04</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
