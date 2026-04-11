@@ -1,0 +1,144 @@
+/* =============================================================
+   Design System — Barrel Import
+   ──────────────────────────────
+   Imports all token and component files in dependency order.
+   Use this single file to get the complete design system.
+
+   Import order:
+     1. Tokens (primitives → semantic → typography → spacing → radius → design-tools)
+     2. Base styles (reset, box-sizing, font defaults)
+     3. Components (atomic UI components)
+     4. Patterns (multi-component compositions)
+     5. Design tools (device frames, annotations, wireframe, slides)
+
+   For cherry-picking, import individual files directly instead.
+   ============================================================= */
+
+/* === 1. Tokens === */
+@import "tokens/primitives.css";
+@import "tokens/semantic.css";
+@import "tokens/typography.css";
+@import "tokens/spacing.css";
+@import "tokens/radius.css";
+@import "tokens/design-tools.css";
+
+/* === 1b. Base Reset & Defaults ===
+   Minimal reset for standalone HTML files. Sets box-sizing,
+   font family, and base colors from semantic tokens. */
+
+/* --- Box model reset --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Document defaults --- */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--typography-body-md-size);
+  line-height: var(--typography-body-md-leading);
+  color: var(--typography-primary);
+  background-color: var(--surfaces-base-primary);
+}
+
+/* === 1c. Utility Classes ===
+   Minimal set of single-purpose helpers — layout, text, and misc.
+   Mirror common Tailwind patterns for use in standalone HTML files. */
+
+/* --- Flex / grid --- */
+.flex            { display: flex; }                             /* flex container */
+.flex-col        { flex-direction: column; }                   /* stack children vertically */
+.flex-row        { flex-direction: row; }                      /* stack children horizontally */
+.flex-wrap       { flex-wrap: wrap; }                          /* allow children to wrap */
+.flex-1          { flex: 1 1 0%; }                             /* grow to fill available space */
+.flex-shrink-0   { flex-shrink: 0; }                           /* prevent shrinking */
+.items-center    { align-items: center; }                      /* cross-axis center */
+.items-start     { align-items: flex-start; }                  /* cross-axis start */
+.items-end       { align-items: flex-end; }                    /* cross-axis end */
+.items-stretch   { align-items: stretch; }                     /* cross-axis stretch (default) */
+.justify-center  { justify-content: center; }                  /* main-axis center */
+.justify-between { justify-content: space-between; }           /* push children apart */
+.justify-start   { justify-content: flex-start; }              /* main-axis start */
+.justify-end     { justify-content: flex-end; }                /* main-axis end */
+.inline-flex     { display: inline-flex; }                     /* inline flex container */
+.grid            { display: grid; }                            /* grid container */
+.hidden          { display: none; }                            /* hide element completely */
+
+/* --- Width / height --- */
+.w-full          { width: 100%; }                              /* full parent width */
+.h-full          { height: 100%; }                             /* full parent height */
+.min-w-0         { min-width: 0; }                             /* allow flex children to shrink below content size */
+.max-w-screen    { max-width: 100vw; }                         /* cap at viewport width */
+
+/* --- Text --- */
+.text-center     { text-align: center; }                       /* center-align text */
+.text-left       { text-align: left; }                         /* left-align text */
+.text-right      { text-align: right; }                        /* right-align text */
+.whitespace-nowrap { white-space: nowrap; }                    /* prevent text wrapping */
+.truncate        { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } /* single-line ellipsis */
+.select-none     { user-select: none; }                        /* disable text selection */
+
+/* --- Misc --- */
+.rounded-full    { border-radius: 9999px; }                    /* pill / circle shape */
+.rounded-xl      { border-radius: var(--radius-xl); }          /* extra-large corner radius */
+.rounded-lg      { border-radius: var(--radius-lg); }          /* large corner radius */
+.rounded-md      { border-radius: var(--radius-md); }          /* medium corner radius */
+.rounded-sm      { border-radius: var(--radius-sm); }          /* small corner radius */
+.rounded-xs      { border-radius: var(--radius-xs); }          /* extra-small corner radius */
+.shadow-sm       { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }        /* subtle shadow */
+.shadow-md       { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); } /* medium shadow */
+.opacity-50      { opacity: 0.5; }                             /* half opacity (disabled state) */
+.cursor-pointer  { cursor: pointer; }                          /* pointer hand cursor */
+.cursor-not-allowed { cursor: not-allowed; }                   /* blocked / disabled cursor */
+.transition-colors {                                           /* animate color/bg/border changes */
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+.sr-only {                                                     /* visually hidden, accessible to screen readers */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* === 2. Components === */
+@import "components/button/button.css";
+@import "components/icon-button/icon-button.css";
+@import "components/badge/badge.css";
+@import "components/label/label.css";
+@import "components/chip/chip.css";
+@import "components/tabs/tabs.css";
+@import "components/segment-control-bar/segment-control-bar.css";
+@import "components/thumbnail/thumbnail.css";
+@import "components/input-field/input-field.css";
+@import "components/toast/toast.css";
+@import "components/date-grid/date-grid.css";
+@import "components/divider/divider.css";
+@import "components/checkbox/checkbox.css";
+@import "components/switch/switch.css";
+@import "components/radio-button/radio-button.css";
+
+/* === 3. Patterns === */
+@import "patterns/text-block/text-block.css";
+@import "patterns/step-indicator/step-indicator.css";
+@import "patterns/stepper/stepper.css";
+@import "patterns/list-item/list-item.css";
+
+/* === 4. Design Tools === */
+@import "design-tools/device-frames/device-frames.css";
+@import "design-tools/annotations/annotations.css";
+@import "design-tools/slide-layouts/slide-layouts.css";
+@import "design-tools/wireframe/wireframe.css";
