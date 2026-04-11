@@ -86,7 +86,9 @@
 }
 
 .ds-segment-bar.segment-control .ds-segment-item.active {
-  color: var(--typography-primary);  /* Active text becomes primary */
+  color:            var(--typography-primary);  /* Active text becomes primary */
+  background-color: var(--surfaces-base-primary);  /* White card behind active */
+  box-shadow:       0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1);
 }
 
 .ds-segment-bar.segment-control .ds-segment-item:not(.active):hover {

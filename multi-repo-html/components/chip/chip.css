@@ -41,6 +41,12 @@
   white-space:     nowrap;
   border:          none;                  /* Default; overridden for filters type */
   font-family:     var(--font-sans);      /* Geist */
+  /* Default size (md) when no explicit size class */
+  padding:         8px 16px;
+  gap:             8px;
+  font-size:       var(--typography-cta-sm-size);     /* 12px */
+  line-height:     var(--typography-cta-sm-leading);  /* 16px */
+  font-weight:     var(--typography-cta-sm-weight);   /* 600 */
   transition:      background-color 150ms ease-out,
                    color            150ms ease-out,
                    border-color     150ms ease-out,
