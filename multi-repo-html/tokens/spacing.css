@@ -1,0 +1,172 @@
+/*
+ * spacing.css — Spacing Design Tokens
+ * =====================================
+ * Source of truth: multi-repo-nextjs/app/globals.css (lines ~320–333)
+ * Mirrors the Tailwind spacing scale wired in globals.css.
+ *
+ * Scale: 4px base unit × multiplier (t-shirt sizes omitted in favour of
+ * numeric keys that match Tailwind's default scale).
+ *
+ *   Token      Value    Tailwind equiv
+ *   ────────── ──────── ──────────────
+ *   --space-1    4px    p-1 / gap-1
+ *   --space-2    8px    p-2 / gap-2
+ *   --space-3   12px    p-3 / gap-3
+ *   --space-4   16px    p-4 / gap-4   ← default field padding
+ *   --space-5   20px    p-5 / gap-5
+ *   --space-6   24px    p-6 / gap-6   ← mobile screen padding
+ *   --space-8   32px    p-8 / gap-8   ← desktop section gap
+ *   --space-10  40px    p-10 / gap-10 ← desktop screen padding
+ *   --space-12  48px    p-12 / gap-12
+ *   --space-16  64px    p-16 / gap-16
+ *   --space-20  80px    p-20 / gap-20
+ *   --space-24  96px    p-24 / gap-24
+ *
+ * Usage — via utility class:
+ *   <div class="p-6 gap-4">…</div>
+ *   <section class="py-10 px-6">…</section>
+ *
+ * Usage — via custom property in component CSS:
+ *   padding: var(--space-6);
+ *   gap: var(--space-4);
+ */
+
+/* ── Custom Properties ───────────────────────────────────────────────────── */
+:root {
+
+  /* 4px base unit — every step is a multiple of 4 */
+  --space-1:   4px;   /* Micro: icon gap, tight inline spacing          */
+  --space-2:   8px;   /* XS: dense list row gap, tag padding            */
+  --space-3:  12px;   /* SM: field internal padding, compact card gap   */
+  --space-4:  16px;   /* MD: standard field padding, list item gap      */
+  --space-5:  20px;   /* LG: button padding, medium component gap       */
+  --space-6:  24px;   /* XL: mobile screen horizontal padding           */
+  --space-8:  32px;   /* 2XL: card padding, between-section gap mobile  */
+  --space-10: 40px;   /* 3XL: desktop screen horizontal padding         */
+  --space-12: 48px;   /* 4XL: large section spacing                     */
+  --space-16: 64px;   /* 5XL: page-level section gap mobile             */
+  --space-20: 80px;   /* 6XL: page-level section gap desktop            */
+  --space-24: 96px;   /* 7XL: hero vertical padding                     */
+
+}
+
+
+/* ── Utility Classes ─────────────────────────────────────────────────────── */
+/*
+ * Naming mirrors Tailwind's utility API so muscle memory transfers.
+ * Classes cover values 1–12 (the inner-UI range).
+ * Values 16, 20, 24 are intentionally omitted from utilities —
+ * use custom properties directly for those large-scale layout values.
+ *
+ * Generated shorthand classes (all-sides):
+ *   .p-*  padding          .m-*  margin
+ *
+ * Axis classes:
+ *   .px-* padding inline   .mx-*  margin inline
+ *   .py-* padding block    .my-*  margin block
+ *
+ * Directional:
+ *   .mt-* margin-top       .mb-*  margin-bottom
+ *
+ * Flex/Grid gap:
+ *   .gap-*
+ */
+
+/* -- Padding (all sides) --------------------------------------------------- */
+.p-1  { padding: var(--space-1);  }
+.p-2  { padding: var(--space-2);  }
+.p-3  { padding: var(--space-3);  }
+.p-4  { padding: var(--space-4);  }
+.p-5  { padding: var(--space-5);  }
+.p-6  { padding: var(--space-6);  }
+.p-8  { padding: var(--space-8);  }
+.p-10 { padding: var(--space-10); }
+.p-12 { padding: var(--space-12); }
+
+/* -- Padding inline (horizontal) ------------------------------------------- */
+.px-1  { padding-inline: var(--space-1);  }
+.px-2  { padding-inline: var(--space-2);  }
+.px-3  { padding-inline: var(--space-3);  }
+.px-4  { padding-inline: var(--space-4);  }
+.px-5  { padding-inline: var(--space-5);  }
+.px-6  { padding-inline: var(--space-6);  }
+.px-8  { padding-inline: var(--space-8);  }
+.px-10 { padding-inline: var(--space-10); }
+.px-12 { padding-inline: var(--space-12); }
+
+/* -- Padding block (vertical) ---------------------------------------------- */
+.py-1  { padding-block: var(--space-1);  }
+.py-2  { padding-block: var(--space-2);  }
+.py-3  { padding-block: var(--space-3);  }
+.py-4  { padding-block: var(--space-4);  }
+.py-5  { padding-block: var(--space-5);  }
+.py-6  { padding-block: var(--space-6);  }
+.py-8  { padding-block: var(--space-8);  }
+.py-10 { padding-block: var(--space-10); }
+.py-12 { padding-block: var(--space-12); }
+
+/* -- Margin (all sides) ---------------------------------------------------- */
+.m-1  { margin: var(--space-1);  }
+.m-2  { margin: var(--space-2);  }
+.m-3  { margin: var(--space-3);  }
+.m-4  { margin: var(--space-4);  }
+.m-5  { margin: var(--space-5);  }
+.m-6  { margin: var(--space-6);  }
+.m-8  { margin: var(--space-8);  }
+.m-10 { margin: var(--space-10); }
+.m-12 { margin: var(--space-12); }
+
+/* -- Margin top ------------------------------------------------------------ */
+.mt-1  { margin-top: var(--space-1);  }
+.mt-2  { margin-top: var(--space-2);  }
+.mt-3  { margin-top: var(--space-3);  }
+.mt-4  { margin-top: var(--space-4);  }
+.mt-5  { margin-top: var(--space-5);  }
+.mt-6  { margin-top: var(--space-6);  }
+.mt-8  { margin-top: var(--space-8);  }
+.mt-10 { margin-top: var(--space-10); }
+.mt-12 { margin-top: var(--space-12); }
+
+/* -- Margin bottom --------------------------------------------------------- */
+.mb-1  { margin-bottom: var(--space-1);  }
+.mb-2  { margin-bottom: var(--space-2);  }
+.mb-3  { margin-bottom: var(--space-3);  }
+.mb-4  { margin-bottom: var(--space-4);  }
+.mb-5  { margin-bottom: var(--space-5);  }
+.mb-6  { margin-bottom: var(--space-6);  }
+.mb-8  { margin-bottom: var(--space-8);  }
+.mb-10 { margin-bottom: var(--space-10); }
+.mb-12 { margin-bottom: var(--space-12); }
+
+/* -- Margin inline (horizontal) -------------------------------------------- */
+.mx-1  { margin-inline: var(--space-1);  }
+.mx-2  { margin-inline: var(--space-2);  }
+.mx-3  { margin-inline: var(--space-3);  }
+.mx-4  { margin-inline: var(--space-4);  }
+.mx-5  { margin-inline: var(--space-5);  }
+.mx-6  { margin-inline: var(--space-6);  }
+.mx-8  { margin-inline: var(--space-8);  }
+.mx-10 { margin-inline: var(--space-10); }
+.mx-12 { margin-inline: var(--space-12); }
+
+/* -- Margin block (vertical) ----------------------------------------------- */
+.my-1  { margin-block: var(--space-1);  }
+.my-2  { margin-block: var(--space-2);  }
+.my-3  { margin-block: var(--space-3);  }
+.my-4  { margin-block: var(--space-4);  }
+.my-5  { margin-block: var(--space-5);  }
+.my-6  { margin-block: var(--space-6);  }
+.my-8  { margin-block: var(--space-8);  }
+.my-10 { margin-block: var(--space-10); }
+.my-12 { margin-block: var(--space-12); }
+
+/* -- Gap (flex / grid) ----------------------------------------------------- */
+.gap-1  { gap: var(--space-1);  }
+.gap-2  { gap: var(--space-2);  }
+.gap-3  { gap: var(--space-3);  }
+.gap-4  { gap: var(--space-4);  }
+.gap-5  { gap: var(--space-5);  }
+.gap-6  { gap: var(--space-6);  }
+.gap-8  { gap: var(--space-8);  }
+.gap-10 { gap: var(--space-10); }
+.gap-12 { gap: var(--space-12); }
