@@ -1,0 +1,137 @@
+/* =============================================================================
+   list-item.css — ListItem Pattern
+   Design system: bubbles-kit (Figma — "ListItem")
+   Synced from: multi-repo-nextjs/app/components/patterns/ListItem/ListItem.tsx
+
+   Platform paths:
+     Web    → multi-repo-nextjs/app/components/patterns/ListItem/ListItem.tsx
+     iOS    → multi-repo-ios/Components/Patterns/AppListItem.swift
+     Android→ multi-repo-android/ui/patterns/AppListItem.kt
+
+   Composition: horizontal row composing Thumbnail + TextBlock + optional trailing
+   action (Button | IconButton | Badge | Radio | Checkbox | Switch).
+
+   Slots:
+     .ds-list-item-leading  — thumbnail or icon area (flex-shrink: 0)
+     .ds-list-item-content  — text content area (flex-1, min-w-0)
+     .ds-list-item-trailing — action area: badge / button / icon-button (flex-shrink: 0)
+     .ds-list-item-divider  — optional horizontal row divider at bottom
+
+   Composed child components (referenced by class name for scoped overrides):
+     .ds-thumbnail    — see components/thumbnail/thumbnail.css
+     .ds-text-block   — see patterns/text-block/text-block.css
+     .ds-button       — see components/button/button.css
+     .ds-icon-button  — see components/icon-button/icon-button.css
+     .ds-badge        — see components/badge/badge.css
+     .ds-divider      — see components/divider/divider.css
+
+   Usage:
+     <!-- With thumbnail + text + trailing badge -->
+     <div class="ds-list-item" data-component="ListItem">
+       <div class="ds-list-item-leading">
+         <div class="ds-thumbnail md" data-component="Thumbnail">...</div>
+       </div>
+       <div class="ds-list-item-content">
+         <div class="ds-text-block" data-component="TextBlock">...</div>
+       </div>
+       <div class="ds-list-item-trailing">
+         <div class="ds-badge sm brand" data-component="Badge">3</div>
+       </div>
+     </div>
+
+   Token layer: ALL colours reference --surfaces-*, --typography-*, --border-*
+   from tokens/semantic.css. Never hardcode hex values.
+   ============================================================================= */
+
+
+/* =============================================================================
+   BASE — full-width container wrapping the row + optional divider
+   ============================================================================= */
+
+.ds-list-item {
+  width: 100%;
+}
+
+
+/* =============================================================================
+   ROW — flex row containing leading / content / trailing slots
+   ============================================================================= */
+
+.ds-list-item-row {
+  display:     flex;
+  gap:         var(--space-3);   /* 12px — horizontal gap between all slots */
+  align-items: flex-start;       /* Top-align by default; trailing self-centers */
+  width:       100%;
+}
+
+
+/* =============================================================================
+   LEADING SLOT — thumbnail or icon area
+   Never grows or shrinks — strictly sized by its child component.
+   ============================================================================= */
+
+.ds-list-item-leading {
+  flex-shrink: 0;   /* Never compress the leading asset */
+  flex-grow:   0;
+}
+
+
+/* =============================================================================
+   CONTENT SLOT — TextBlock area
+   Grows to fill all remaining horizontal space.
+   min-width: 0 allows text truncation inside a flex child.
+   ============================================================================= */
+
+.ds-list-item-content {
+  flex:      1;
+  min-width: 0;   /* Allow text to truncate rather than overflow the row */
+}
+
+
+/* =============================================================================
+   TRAILING SLOT — action area (badge / button / icon-button)
+   Self-centers vertically so the action aligns to the visual midpoint of the row.
+   Never grows — sized by its child component.
+   ============================================================================= */
+
+.ds-list-item-trailing {
+  flex-shrink: 0;
+  flex-grow:   0;
+  display:     flex;
+  align-items: center;
+  align-self:  center;   /* Vertical centre regardless of content height */
+}
+
+
+/* =============================================================================
+   DIVIDER — optional horizontal rule below the row
+   Adds top margin to match --space-3 gap convention from the React source.
+   ============================================================================= */
+
+.ds-list-item-divider {
+  margin-top: var(--space-3);   /* 12px — spacing above divider line */
+  height:     1px;
+  width:      100%;
+  background-color: var(--border-default);   /* Neutral divider stroke */
+}
+
+
+/* =============================================================================
+   CHILD COMPONENT OVERRIDES
+   Scoped adjustments for atomic components rendered inside a list item.
+   ============================================================================= */
+
+/* Thumbnail inside list item — no override needed; size controlled by .ds-thumbnail.md */
+.ds-list-item .ds-thumbnail {
+  display: block;
+}
+
+/* TextBlock inside content slot — already full-width by default */
+.ds-list-item .ds-text-block {
+  width: 100%;
+}
+
+/* Badge in trailing — vertically centred by parent .ds-list-item-trailing */
+.ds-list-item .ds-badge {
+  white-space: nowrap;   /* Prevent badge label from wrapping */
+}

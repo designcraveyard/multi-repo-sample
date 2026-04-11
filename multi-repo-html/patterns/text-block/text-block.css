@@ -1,0 +1,140 @@
+/* =============================================================================
+   text-block.css — TextBlock Pattern
+   Design system: bubbles-kit (Figma node 84:789 — "TextBlock")
+   Synced from: multi-repo-nextjs/app/components/patterns/TextBlock/TextBlock.tsx
+
+   Platform paths:
+     Web    → multi-repo-nextjs/app/components/patterns/TextBlock/TextBlock.tsx
+     iOS    → multi-repo-ios/Components/Patterns/AppTextBlock.swift
+     Android→ multi-repo-android/ui/patterns/AppTextBlock.kt
+
+   Composition: typography-only vertical stack with up to 5 optional slots:
+     overline → title → subtext → body → metadata
+
+   Slots:
+     .ds-text-block-header   — wrapper for overline/title/subtext (tighter gap)
+     .ds-text-block-overline — Badge/Small style, all-caps, muted
+     .ds-text-block-title    — Body/LargeEmphasized, primary color
+     .ds-text-block-subtext  — Body/Small, muted color
+     .ds-text-block-body     — Body/Medium, secondary color
+     .ds-text-block-metadata — Caption/Small, muted color
+
+   Usage:
+     <div class="ds-text-block" data-component="TextBlock">
+       <div class="ds-text-block-header">
+         <p class="ds-text-block-overline">RECENT</p>
+         <p class="ds-text-block-title">Trip to Bali</p>
+         <p class="ds-text-block-subtext">Some notes here</p>
+       </div>
+       <p class="ds-text-block-body">Body copy here</p>
+       <p class="ds-text-block-metadata">Posted 2d ago</p>
+     </div>
+
+   Token layer: ALL colours reference --surfaces-*, --typography-*, --border-*
+   from tokens/semantic.css. Never hardcode hex values.
+   ============================================================================= */
+
+
+/* =============================================================================
+   BASE — outer flex column container
+   Outer gap between header group, body, and metadata.
+   ============================================================================= */
+
+.ds-text-block {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-2);   /* 8px — outer gap between sections */
+  align-items:    flex-start;
+  width:          100%;
+}
+
+
+/* =============================================================================
+   HEADER GROUP — overline / title / subtext
+   Uses a tighter inner gap (--space-1) matching the React source.
+   ============================================================================= */
+
+.ds-text-block-header {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-1);   /* 4px — tighter gap inside header group */
+  align-items:    flex-start;
+  width:          100%;
+}
+
+
+/* =============================================================================
+   OVERLINE — Badge/Small style, all-caps, muted
+   Figma: typography-overline-sm-* tokens
+   ============================================================================= */
+
+.ds-text-block-overline {
+  width:          100%;
+  text-transform: uppercase;
+  font-size:      var(--typography-overline-sm-size);
+  line-height:    var(--typography-overline-sm-leading);
+  font-weight:    var(--typography-overline-sm-weight);
+  letter-spacing: var(--typography-overline-sm-tracking);
+  color:          var(--typography-muted);
+  margin:         0;
+}
+
+
+/* =============================================================================
+   TITLE — Body/LargeEmphasized, primary color
+   Figma: typography-body-lg-em-* tokens
+   ============================================================================= */
+
+.ds-text-block-title {
+  width:       100%;
+  font-size:   var(--typography-body-lg-em-size);
+  line-height: var(--typography-body-lg-em-leading);
+  font-weight: var(--typography-body-lg-em-weight);
+  color:       var(--typography-primary);
+  margin:      0;
+}
+
+
+/* =============================================================================
+   SUBTEXT — Body/Small, muted color (secondary line below title)
+   Figma: typography-body-sm-* tokens
+   ============================================================================= */
+
+.ds-text-block-subtext {
+  width:       100%;
+  font-size:   var(--typography-body-sm-size);
+  line-height: var(--typography-body-sm-leading);
+  font-weight: var(--typography-body-sm-weight);
+  color:       var(--typography-muted);
+  margin:      0;
+}
+
+
+/* =============================================================================
+   BODY — Body/Medium, secondary color
+   Figma: typography-body-md-* tokens
+   ============================================================================= */
+
+.ds-text-block-body {
+  width:       100%;
+  font-size:   var(--typography-body-md-size);
+  line-height: var(--typography-body-md-leading);
+  font-weight: var(--typography-body-md-weight);
+  color:       var(--typography-secondary);
+  margin:      0;
+}
+
+
+/* =============================================================================
+   METADATA — Caption/Small, muted color (footnote / timestamp)
+   Figma: typography-caption-sm-* tokens
+   ============================================================================= */
+
+.ds-text-block-metadata {
+  width:       100%;
+  font-size:   var(--typography-caption-sm-size);
+  line-height: var(--typography-caption-sm-leading);
+  font-weight: var(--typography-caption-sm-weight);
+  color:       var(--typography-muted);
+  margin:      0;
+}

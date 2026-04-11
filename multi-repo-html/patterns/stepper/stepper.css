@@ -1,0 +1,120 @@
+/* =============================================================================
+   stepper.css — Stepper Pattern
+   Design system: bubbles-kit (Figma node 108:4357 — "TimelineStepper")
+   Synced from: multi-repo-nextjs/app/components/patterns/Stepper/Stepper.tsx
+
+   Platform paths:
+     Web    → multi-repo-nextjs/app/components/patterns/Stepper/Stepper.tsx
+     iOS    → multi-repo-ios/Components/Patterns/AppStepper.swift
+     Android→ multi-repo-android/ui/patterns/AppStepper.kt
+
+   Composition: TextBlock + StepIndicator per step, with vertical connector lines.
+     .ds-stepper           — outer flex column container
+     .ds-stepper-step      — single step row (track column + content column)
+     .ds-stepper-track     — left column: StepIndicator dot + connector line
+     .ds-stepper-connector — vertical line connecting this step to the next
+     .ds-stepper-content   — right column: TextBlock content, padded bottom (non-last)
+
+   Composed child components:
+     .ds-step-indicator    — see patterns/step-indicator/step-indicator.css
+     .ds-text-block        — see patterns/text-block/text-block.css
+
+   Usage:
+     <div class="ds-stepper" data-component="Stepper">
+       <div class="ds-stepper-step">
+         <div class="ds-stepper-track">
+           <div class="ds-step-indicator completed">...</div>
+           <div class="ds-stepper-connector"></div>
+         </div>
+         <div class="ds-stepper-content">
+           <div class="ds-text-block">...</div>
+         </div>
+       </div>
+       <!-- last step: no connector, no bottom padding on content -->
+     </div>
+
+   Token layer: ALL colours reference --surfaces-*, --typography-*, --border-*
+   from tokens/semantic.css. Never hardcode hex values.
+   ============================================================================= */
+
+
+/* =============================================================================
+   CONTAINER — vertical stack of step rows
+   ============================================================================= */
+
+.ds-stepper {
+  display:        flex;
+  flex-direction: column;
+  width:          100%;
+}
+
+
+/* =============================================================================
+   STEP ROW — flex row: track column (left) + content column (right)
+   ============================================================================= */
+
+.ds-stepper-step {
+  display:     flex;
+  gap:         var(--space-6);   /* 24px — horizontal gap between track and content */
+  align-items: flex-start;
+  min-height:  0;
+}
+
+
+/* =============================================================================
+   TRACK COLUMN — StepIndicator dot + connector line
+   Width fixed at 12px (dot width) so track never grows.
+   pt-space-2 aligns the dot with the first line of title text.
+   ============================================================================= */
+
+.ds-stepper-track {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            var(--space-2);   /* 8px — gap between dot and connector */
+  padding-top:    var(--space-2);   /* 8px — align dot to text baseline */
+  align-self:     stretch;          /* Stretch to full step height */
+  width:          12px;             /* Fixed: matches .ds-step-indicator size */
+  flex-shrink:    0;
+}
+
+
+/* =============================================================================
+   CONNECTOR LINE — vertical bar linking this step to the next
+   Flex-1 fills remaining track height. Hidden on last step (no element rendered).
+   ============================================================================= */
+
+.ds-stepper-connector {
+  flex:             1;                                   /* Fill remaining vertical space */
+  width:            2px;                                 /* Thin vertical line */
+  min-height:       0;                                   /* Allow shrink in short steps */
+  border-radius:    var(--radius-full);                  /* Pill ends */
+  background-color: var(--surfaces-base-high-contrast);  /* Neutral-200 light / dark */
+}
+
+
+/* =============================================================================
+   CONTENT COLUMN — TextBlock, grows to fill available width
+   Non-last steps get bottom padding to create visual breathing room.
+   ============================================================================= */
+
+.ds-stepper-content {
+  flex:      1;
+  min-width: 0;  /* Prevent text overflow breaking flex layout */
+}
+
+/* Add bottom padding between steps — applied to all except the last */
+.ds-stepper-step:not(:last-child) .ds-stepper-content {
+  padding-bottom: var(--space-6);  /* 24px — matches gap between step rows */
+}
+
+
+/* =============================================================================
+   CHILD COMPONENT OVERRIDES
+   Scoped styles for composed components inside the stepper context.
+   ============================================================================= */
+
+/* StepIndicator inside track — no additional overrides needed (inherits fully) */
+.ds-stepper-track .ds-step-indicator {
+  flex-shrink: 0;  /* Reinforce: dot never shrinks inside track column */
+}
