@@ -7,56 +7,54 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link rel="stylesheet" href="../design-system.css">
   <style>
-    /* Page-level layout — NOT part of the DS */
-    *, *::before, *::after { box-sizing: border-box; }
-    body { margin: 0; background: var(--surfaces-base-primary); font-family: var(--font-sans); }
-    .page { max-width: 672px; margin: 0 auto; padding: 48px 24px; display: flex; flex-direction: column; gap: 48px; }
-    .page-header { display: flex; flex-direction: column; gap: 4px; }
-    .page-header h1 { font-size: 24px; font-weight: 600; color: var(--typography-brand); margin: 0; }
-    .page-header p { font-size: 14px; color: var(--typography-muted); margin: 0; }
-    .page-header-links { display: flex; gap: 16px; margin-top: 8px; }
-    .page-header-links a { font-size: 13px; color: var(--typography-accent); text-decoration: none; }
-    .page-header-links a:hover { text-decoration: underline; }
-    .section { display: flex; flex-direction: column; gap: 16px; }
-    .section-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--typography-muted); margin: 0; }
+    body { margin: 0; background: var(--surfaces-base-primary); font-family: var(--font-sans); color: var(--typography-primary); }
+    .page { max-width: 640px; margin: 0 auto; padding: 48px 24px; display: flex; flex-direction: column; gap: 40px; }
+    .page-header h1 { font-size: 24px; font-weight: 600; color: var(--typography-brand); margin: 0 0 4px; }
+    .page-header p { font-size: 14px; color: var(--typography-muted); margin: 0 0 8px; }
+    .page-header nav { display: flex; gap: 16px; }
+    .page-header nav a { font-size: 13px; color: var(--typography-accent); text-decoration: none; }
+    .page-header nav a:hover { text-decoration: underline; }
+    .section { display: flex; flex-direction: column; gap: 12px; }
+    .section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--typography-muted); margin: 0; }
     .row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
     .stack { display: flex; flex-direction: column; gap: 12px; }
-    .label-text { font-size: 10px; color: var(--typography-muted); text-transform: uppercase; letter-spacing: 0.08em; }
-    .sub-label { font-size: 12px; color: var(--typography-muted); margin: 0 0 4px; }
-    /* icon placeholder for IconButton demos */
-    .icon-ph { width: 20px; height: 20px; display: inline-block; background: currentColor; border-radius: 3px; opacity: 0.7; }
-    .icon-ph.sm { width: 16px; height: 16px; }
-    .icon-ph.lg { width: 24px; height: 24px; }
-    /* dark mode toggle */
-    .dark-toggle { position: fixed; top: 16px; right: 16px; z-index: 100; padding: 8px 16px; border-radius: 9999px; border: 1px solid var(--border-default); background: var(--surfaces-base-primary); color: var(--typography-primary); cursor: pointer; font-size: 13px; font-family: var(--font-sans); box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: background 0.15s; }
-    .dark-toggle:hover { background: var(--surfaces-base-low-contrast); }
-    /* divider demo helpers */
-    .divider-demo-text { font-size: 14px; color: var(--typography-primary); margin: 0; }
-    /* thumbnail placeholder */
-    .thumb-bg { background: var(--surfaces-base-high-contrast); }
+    .sub-label { font-size: 10px; color: var(--typography-muted); text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 4px; }
+    .demo-text { font-size: 14px; color: var(--typography-primary); margin: 0; }
+    .dark-toggle { position: fixed; top: 16px; right: 16px; z-index: 100; padding: 8px 16px; border-radius: 9999px; border: 1px solid var(--border-default); background: var(--surfaces-base-primary); color: var(--typography-primary); cursor: pointer; font-size: 13px; font-family: var(--font-sans); box-shadow: 0 2px 8px rgba(0,0,0,.08); }
   </style>
 </head>
 <body>
 
-<button class="dark-toggle" onclick="document.documentElement.classList.toggle('dark')">🌙 Dark</button>
+<button class="dark-toggle" id="dark-toggle">🌙 Dark</button>
+<script>
+  const dt = document.getElementById('dark-toggle');
+  dt.addEventListener('click', () => {
+    const cs = document.documentElement.style.colorScheme;
+    if (cs === 'dark') {
+      document.documentElement.style.colorScheme = 'light';
+      dt.textContent = '🌙 Dark';
+    } else {
+      document.documentElement.style.colorScheme = 'dark';
+      dt.textContent = '☀️ Light';
+    }
+  });
+</script>
 
 <div class="page">
 
-  <!-- ── Header ─────────────────────────────────────────────────────────────── -->
   <div class="page-header">
     <h1>Component Showcase</h1>
     <p>Live preview of all design-system components.</p>
-    <div class="page-header-links">
+    <nav>
       <a href="tokens.html">Token Reference →</a>
       <a href="design-tools.html">Design Tools →</a>
-    </div>
+    </nav>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       BUTTON
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── Button ─────────────────────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">Button — Variants</h2>
@@ -81,124 +79,139 @@
   <div class="section">
     <h2 class="section-title">Button — States</h2>
     <div class="row">
-      <button class="ds-button primary md disabled" data-component="Button" data-variant="primary" data-size="md" data-state="disabled" disabled>Disabled</button>
-      <button class="ds-button danger md disabled" data-component="Button" data-variant="danger" data-size="md" data-state="disabled" disabled>Disabled</button>
-      <button class="ds-button tertiary md disabled" data-component="Button" data-variant="tertiary" data-size="md" data-state="disabled" disabled>Disabled</button>
+      <button class="ds-button primary md disabled" disabled data-component="Button" data-variant="primary" data-state="disabled">Disabled</button>
+      <button class="ds-button danger md disabled" disabled data-component="Button" data-variant="danger" data-state="disabled">Disabled</button>
+      <button class="ds-button tertiary md disabled" disabled data-component="Button" data-variant="tertiary" data-state="disabled">Disabled</button>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       ICON BUTTON
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── IconButton ─────────────────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">IconButton — Variants</h2>
     <div class="row">
-      <button class="ds-icon-button primary md" data-component="IconButton" data-variant="primary" data-size="md" aria-label="Like"><span class="icon-ph"></span></button>
-      <button class="ds-icon-button secondary md" data-component="IconButton" data-variant="secondary" data-size="md" aria-label="Save"><span class="icon-ph"></span></button>
-      <button class="ds-icon-button tertiary md" data-component="IconButton" data-variant="tertiary" data-size="md" aria-label="Share"><span class="icon-ph"></span></button>
-      <button class="ds-icon-button quarternary md" data-component="IconButton" data-variant="quarternary" data-size="md" aria-label="More"><span class="icon-ph"></span></button>
-      <button class="ds-icon-button success md" data-component="IconButton" data-variant="success" data-size="md" aria-label="Confirm"><span class="icon-ph"></span></button>
-      <button class="ds-icon-button danger md" data-component="IconButton" data-variant="danger" data-size="md" aria-label="Delete"><span class="icon-ph"></span></button>
+      <button class="ds-icon-button primary md" data-component="IconButton" data-variant="primary" aria-label="Like"><i class="ph-fill ph-heart"></i></button>
+      <button class="ds-icon-button secondary md" data-component="IconButton" data-variant="secondary" aria-label="Save"><i class="ph ph-bookmark-simple"></i></button>
+      <button class="ds-icon-button tertiary md" data-component="IconButton" data-variant="tertiary" aria-label="Share"><i class="ph ph-share-network"></i></button>
+      <button class="ds-icon-button quarternary md" data-component="IconButton" data-variant="quarternary" aria-label="More"><i class="ph ph-dots-three"></i></button>
+      <button class="ds-icon-button success md" data-component="IconButton" data-variant="success" aria-label="Confirm"><i class="ph ph-check"></i></button>
+      <button class="ds-icon-button danger md" data-component="IconButton" data-variant="danger" aria-label="Delete"><i class="ph ph-trash"></i></button>
     </div>
   </div>
 
   <div class="section">
     <h2 class="section-title">IconButton — Sizes</h2>
     <div class="row">
-      <button class="ds-icon-button primary lg" data-component="IconButton" data-variant="primary" data-size="lg" aria-label="Large"><span class="icon-ph lg"></span></button>
-      <button class="ds-icon-button primary md" data-component="IconButton" data-variant="primary" data-size="md" aria-label="Medium"><span class="icon-ph"></span></button>
-      <button class="ds-icon-button primary sm" data-component="IconButton" data-variant="primary" data-size="sm" aria-label="Small"><span class="icon-ph sm"></span></button>
+      <button class="ds-icon-button primary lg" data-component="IconButton" data-size="lg" aria-label="Fav"><i class="ph ph-star"></i></button>
+      <button class="ds-icon-button primary md" data-component="IconButton" data-size="md" aria-label="Fav"><i class="ph ph-star"></i></button>
+      <button class="ds-icon-button primary sm" data-component="IconButton" data-size="sm" aria-label="Fav"><i class="ph ph-star"></i></button>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       BADGE
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── Icons ──────────────────────────────────────────────────── -->
+
+  <div class="section">
+    <h2 class="section-title">Icons — Sizes</h2>
+    <div class="row">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><i class="ph ph-house" style="font-size:12px;color:var(--icons-primary)"></i><span style="font-size:10px;color:var(--typography-muted)">xs</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><i class="ph ph-house" style="font-size:16px;color:var(--icons-primary)"></i><span style="font-size:10px;color:var(--typography-muted)">sm</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><i class="ph ph-house" style="font-size:20px;color:var(--icons-primary)"></i><span style="font-size:10px;color:var(--typography-muted)">md</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><i class="ph ph-house" style="font-size:24px;color:var(--icons-primary)"></i><span style="font-size:10px;color:var(--typography-muted)">lg</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><i class="ph ph-house" style="font-size:32px;color:var(--icons-primary)"></i><span style="font-size:10px;color:var(--typography-muted)">xl</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Icons — Weights</h2>
+    <div class="row">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><i class="ph-thin ph-heart" style="font-size:24px;color:var(--icons-primary)"></i><span style="font-size:10px;color:var(--typography-muted)">thin</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><i class="ph-light ph-heart" style="font-size:24px;color:var(--icons-primary)"></i><span style="font-size:10px;color:var(--typography-muted)">light</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><i class="ph ph-heart" style="font-size:24px;color:var(--icons-primary)"></i><span style="font-size:10px;color:var(--typography-muted)">regular</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><i class="ph-bold ph-heart" style="font-size:24px;color:var(--icons-primary)"></i><span style="font-size:10px;color:var(--typography-muted)">bold</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><i class="ph-fill ph-heart" style="font-size:24px;color:var(--icons-primary)"></i><span style="font-size:10px;color:var(--typography-muted)">fill</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><i class="ph-duotone ph-heart" style="font-size:24px;color:var(--icons-primary)"></i><span style="font-size:10px;color:var(--typography-muted)">duotone</span></div>
+    </div>
+  </div>
+
+  <!-- ── Badge ──────────────────────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">Badge — Solid</h2>
     <div class="row">
-      <span class="ds-badge brand md" data-component="Badge" data-variant="brand" data-size="md">Brand</span>
-      <span class="ds-badge success md" data-component="Badge" data-variant="success" data-size="md">Success</span>
-      <span class="ds-badge error md" data-component="Badge" data-variant="error" data-size="md">Error</span>
-      <span class="ds-badge accent md" data-component="Badge" data-variant="accent" data-size="md">Accent</span>
+      <span class="ds-badge brand md" data-component="Badge" data-variant="brand">Brand</span>
+      <span class="ds-badge success md" data-component="Badge" data-variant="success">Success</span>
+      <span class="ds-badge error md" data-component="Badge" data-variant="error">Error</span>
+      <span class="ds-badge accent md" data-component="Badge" data-variant="accent">Accent</span>
     </div>
   </div>
 
   <div class="section">
     <h2 class="section-title">Badge — Subtle</h2>
     <div class="row">
-      <span class="ds-badge brand md subtle" data-component="Badge" data-variant="brand" data-size="md" data-state="subtle">Brand</span>
-      <span class="ds-badge success md subtle" data-component="Badge" data-variant="success" data-size="md" data-state="subtle">Success</span>
-      <span class="ds-badge error md subtle" data-component="Badge" data-variant="error" data-size="md" data-state="subtle">Error</span>
-      <span class="ds-badge accent md subtle" data-component="Badge" data-variant="accent" data-size="md" data-state="subtle">Accent</span>
+      <span class="ds-badge brand md subtle" data-component="Badge" data-variant="brand">Brand</span>
+      <span class="ds-badge success md subtle" data-component="Badge" data-variant="success">Success</span>
+      <span class="ds-badge error md subtle" data-component="Badge" data-variant="error">Error</span>
+      <span class="ds-badge accent md subtle" data-component="Badge" data-variant="accent">Accent</span>
     </div>
   </div>
 
   <div class="section">
     <h2 class="section-title">Badge — Number / Tiny</h2>
     <div class="row">
-      <span class="ds-badge brand number" data-component="Badge" data-variant="brand" data-size="number">3</span>
-      <span class="ds-badge error number" data-component="Badge" data-variant="error" data-size="number">12</span>
-      <span class="ds-badge success number" data-component="Badge" data-variant="success" data-size="number">99</span>
-      <span class="ds-badge brand tiny" data-component="Badge" data-variant="brand" data-size="tiny"></span>
-      <span class="ds-badge error tiny" data-component="Badge" data-variant="error" data-size="tiny"></span>
-      <span class="ds-badge success tiny" data-component="Badge" data-variant="success" data-size="tiny"></span>
+      <span class="ds-badge brand number" data-component="Badge" data-size="number">3</span>
+      <span class="ds-badge error number" data-component="Badge" data-size="number">12</span>
+      <span class="ds-badge success number" data-component="Badge" data-size="number">99</span>
+      <span class="ds-badge brand tiny" data-component="Badge" data-size="tiny"></span>
+      <span class="ds-badge error tiny" data-component="Badge" data-size="tiny"></span>
+      <span class="ds-badge success tiny" data-component="Badge" data-size="tiny"></span>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       CHIP
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── Chip ───────────────────────────────────────────────────── -->
 
   <div class="section">
-    <h2 class="section-title">Chip — ChipTabs</h2>
+    <h2 class="section-title">Chip — ChipTabs (single-select)</h2>
     <div class="row">
-      <button class="ds-chip chipTabs active" data-component="Chip" data-variant="chipTabs" data-state="active">Design</button>
-      <button class="ds-chip chipTabs" data-component="Chip" data-variant="chipTabs">Code</button>
-      <button class="ds-chip chipTabs" data-component="Chip" data-variant="chipTabs">Product</button>
+      <button class="ds-chip chip-tabs md active" data-component="Chip" data-variant="chipTabs">Design</button>
+      <button class="ds-chip chip-tabs md" data-component="Chip" data-variant="chipTabs">Code</button>
+      <button class="ds-chip chip-tabs md" data-component="Chip" data-variant="chipTabs">Product</button>
     </div>
   </div>
 
   <div class="section">
-    <h2 class="section-title">Chip — Filters</h2>
+    <h2 class="section-title">Chip — Filters (multi-select)</h2>
     <div class="row">
-      <button class="ds-chip filters active" data-component="Chip" data-variant="filters" data-state="active">Bold</button>
-      <button class="ds-chip filters" data-component="Chip" data-variant="filters">Italic</button>
-      <button class="ds-chip filters" data-component="Chip" data-variant="filters">Underline</button>
+      <button class="ds-chip filters md active" data-component="Chip" data-variant="filters">Bold</button>
+      <button class="ds-chip filters md" data-component="Chip" data-variant="filters">Italic</button>
+      <button class="ds-chip filters md" data-component="Chip" data-variant="filters">Underline</button>
     </div>
   </div>
 
   <div class="section">
     <h2 class="section-title">Chip — Disabled</h2>
     <div class="row">
-      <button class="ds-chip chipTabs active disabled" data-component="Chip" data-variant="chipTabs" data-state="disabled" disabled>Active + disabled</button>
-      <button class="ds-chip filters disabled" data-component="Chip" data-variant="filters" data-state="disabled" disabled>Inactive + disabled</button>
+      <button class="ds-chip chip-tabs md active disabled" disabled data-component="Chip" data-variant="chipTabs" data-state="disabled">Active + disabled</button>
+      <button class="ds-chip filters md disabled" disabled data-component="Chip" data-variant="filters" data-state="disabled">Inactive + disabled</button>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       TABS
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── Tabs ───────────────────────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">Tabs</h2>
-    <div class="ds-tabs" data-component="Tabs" role="tablist">
-      <button class="ds-tab active" role="tab" aria-selected="true" data-component="Tabs" data-state="active">Design</button>
-      <button class="ds-tab" role="tab" aria-selected="false" data-component="Tabs">Code</button>
-      <button class="ds-tab" role="tab" aria-selected="false" data-component="Tabs">Preview</button>
+    <div class="ds-tab-bar" role="tablist" data-component="Tabs">
+      <button class="ds-tab active" role="tab" aria-selected="true">Design</button>
+      <button class="ds-tab" role="tab" aria-selected="false">Code</button>
+      <button class="ds-tab" role="tab" aria-selected="false">Preview</button>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       SEGMENT CONTROL BAR
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── SegmentControlBar ──────────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">SegmentControlBar — Segment</h2>
-    <div class="ds-segment-control-bar segmentControl" data-component="SegmentControlBar" data-variant="segmentControl" role="group">
-      <button class="ds-segment-item active" data-state="active" aria-pressed="true">Week</button>
+    <div class="ds-segment-bar segment-control" data-component="SegmentControlBar" data-variant="segmentControl">
+      <button class="ds-segment-item active">Week</button>
       <button class="ds-segment-item">Month</button>
       <button class="ds-segment-item">Year</button>
     </div>
@@ -206,169 +219,161 @@
 
   <div class="section">
     <h2 class="section-title">SegmentControlBar — Chips</h2>
-    <div class="ds-segment-control-bar chips" data-component="SegmentControlBar" data-variant="chips" role="group">
-      <button class="ds-segment-item active" data-state="active" aria-pressed="true">All</button>
+    <div class="ds-segment-bar chips" data-component="SegmentControlBar" data-variant="chips">
+      <button class="ds-segment-item active">All</button>
       <button class="ds-segment-item">Design</button>
       <button class="ds-segment-item">Code</button>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       DIVIDER
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── Divider ────────────────────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">Divider</h2>
     <div class="stack">
       <div>
         <p class="sub-label">Row (default)</p>
-        <p class="divider-demo-text">Item A</p>
-        <hr class="ds-divider row" data-component="Divider" data-variant="row" style="margin: 8px 0;">
-        <p class="divider-demo-text">Item B</p>
-        <hr class="ds-divider row" data-component="Divider" data-variant="row" style="margin: 8px 0;">
-        <p class="divider-demo-text">Item C</p>
+        <p class="demo-text">Item A</p>
+        <div class="ds-divider row" data-component="Divider" data-variant="row" style="margin:8px 0"></div>
+        <p class="demo-text">Item B</p>
+        <div class="ds-divider row" data-component="Divider" data-variant="row" style="margin:8px 0"></div>
+        <p class="demo-text">Item C</p>
       </div>
       <div>
         <p class="sub-label">Section</p>
-        <hr class="ds-divider section" data-component="Divider" data-variant="section">
+        <div class="ds-divider section" data-component="Divider" data-variant="section"></div>
       </div>
       <div>
         <p class="sub-label">Labeled</p>
-        <div class="ds-divider-labeled" data-component="Divider" data-variant="labeled">
-          <hr class="ds-divider section"><span class="ds-divider-label">or</span><hr class="ds-divider section">
+        <div class="ds-divider section" data-component="Divider" data-variant="section" style="display:flex;align-items:center;gap:12px;">
+          <span class="ds-divider-line" style="flex:1;height:1px;background:var(--border-default)"></span>
+          <span class="ds-divider-label">or</span>
+          <span class="ds-divider-line" style="flex:1;height:1px;background:var(--border-default)"></span>
         </div>
       </div>
       <div>
         <p class="sub-label">Vertical</p>
         <div class="row" style="height:24px;">
-          <span class="divider-demo-text">Left</span>
-          <div class="ds-divider vertical" data-component="Divider" data-variant="vertical" style="height:100%;"></div>
-          <span class="divider-demo-text">Right</span>
+          <span class="demo-text">Left</span>
+          <span class="ds-divider vertical row" data-component="Divider" data-variant="vertical"></span>
+          <span class="demo-text">Right</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       TOAST
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── Toast ──────────────────────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">Toast</h2>
     <div class="stack">
-      <div class="ds-toast default" data-component="Toast" data-variant="default">Settings saved</div>
+      <div class="ds-toast default" data-component="Toast" data-variant="default">
+        <span class="ds-toast-icon"><i class="ph-fill ph-info" style="font-size:16px"></i></span>
+        <div class="ds-toast-content"><span class="ds-toast-message">Settings saved</span></div>
+      </div>
       <div class="ds-toast success" data-component="Toast" data-variant="success">
-        <span class="ds-toast-message">Upload complete!</span>
-        <span class="ds-toast-description">Your file is ready to share.</span>
+        <span class="ds-toast-icon"><i class="ph-fill ph-check-circle" style="font-size:16px"></i></span>
+        <div class="ds-toast-content"><span class="ds-toast-message">Upload complete!</span><span class="ds-toast-desc">Your file is ready to share.</span></div>
       </div>
       <div class="ds-toast warning" data-component="Toast" data-variant="warning">
-        <span class="ds-toast-message">Connection unstable</span>
+        <span class="ds-toast-icon"><i class="ph-fill ph-warning-circle" style="font-size:16px"></i></span>
+        <div class="ds-toast-content"><span class="ds-toast-message">Connection unstable</span></div>
         <button class="ds-toast-action">Retry</button>
       </div>
       <div class="ds-toast error" data-component="Toast" data-variant="error">
-        <span class="ds-toast-message">Failed to save</span>
-        <span class="ds-toast-description">Check your connection.</span>
+        <span class="ds-toast-icon"><i class="ph-fill ph-x-circle" style="font-size:16px"></i></span>
+        <div class="ds-toast-content"><span class="ds-toast-message">Failed to save</span><span class="ds-toast-desc">Check your connection.</span></div>
       </div>
       <div class="ds-toast info" data-component="Toast" data-variant="info">
-        <span class="ds-toast-message">New update available</span>
+        <span class="ds-toast-icon"><i class="ph-fill ph-info" style="font-size:16px"></i></span>
+        <div class="ds-toast-content"><span class="ds-toast-message">New update available</span></div>
         <button class="ds-toast-action">Update now</button>
       </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       LABEL
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── Label ──────────────────────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">Label — Sizes × Types</h2>
     <div class="stack">
-      <div>
-        <p class="sub-label">sm</p>
-        <div class="row">
-          <span class="ds-label sm secondaryAction" data-component="Label" data-size="sm" data-variant="secondaryAction">Secondary</span>
-          <span class="ds-label sm primaryAction" data-component="Label" data-size="sm" data-variant="primaryAction">Primary</span>
-          <span class="ds-label sm brandInteractive" data-component="Label" data-size="sm" data-variant="brandInteractive">Brand</span>
-          <span class="ds-label sm information" data-component="Label" data-size="sm" data-variant="information">Info</span>
-        </div>
-      </div>
-      <div>
-        <p class="sub-label">md</p>
-        <div class="row">
-          <span class="ds-label md secondaryAction" data-component="Label" data-size="md" data-variant="secondaryAction">Secondary</span>
-          <span class="ds-label md primaryAction" data-component="Label" data-size="md" data-variant="primaryAction">Primary</span>
-          <span class="ds-label md brandInteractive" data-component="Label" data-size="md" data-variant="brandInteractive">Brand</span>
-          <span class="ds-label md information" data-component="Label" data-size="md" data-variant="information">Info</span>
-        </div>
-      </div>
-      <div>
-        <p class="sub-label">lg</p>
-        <div class="row">
-          <span class="ds-label lg secondaryAction" data-component="Label" data-size="lg" data-variant="secondaryAction">Secondary</span>
-          <span class="ds-label lg primaryAction" data-component="Label" data-size="lg" data-variant="primaryAction">Primary</span>
-          <span class="ds-label lg brandInteractive" data-component="Label" data-size="lg" data-variant="brandInteractive">Brand</span>
-          <span class="ds-label lg information" data-component="Label" data-size="lg" data-variant="information">Info</span>
-        </div>
-      </div>
+      <div><p class="sub-label">sm</p><div class="row">
+        <span class="ds-label sm secondary-action" data-component="Label" data-variant="secondaryAction" data-size="sm">Secondary</span>
+        <span class="ds-label sm primary-action" data-component="Label" data-variant="primaryAction" data-size="sm">Primary</span>
+        <span class="ds-label sm brand-interactive" data-component="Label" data-variant="brandInteractive" data-size="sm">Brand</span>
+        <span class="ds-label sm information" data-component="Label" data-variant="information" data-size="sm">Info</span>
+      </div></div>
+      <div><p class="sub-label">md</p><div class="row">
+        <span class="ds-label md secondary-action" data-component="Label" data-variant="secondaryAction" data-size="md">Secondary</span>
+        <span class="ds-label md primary-action" data-component="Label" data-variant="primaryAction" data-size="md">Primary</span>
+        <span class="ds-label md brand-interactive" data-component="Label" data-variant="brandInteractive" data-size="md">Brand</span>
+        <span class="ds-label md information" data-component="Label" data-variant="information" data-size="md">Info</span>
+      </div></div>
+      <div><p class="sub-label">lg</p><div class="row">
+        <span class="ds-label lg secondary-action" data-component="Label" data-variant="secondaryAction" data-size="lg">Secondary</span>
+        <span class="ds-label lg primary-action" data-component="Label" data-variant="primaryAction" data-size="lg">Primary</span>
+        <span class="ds-label lg brand-interactive" data-component="Label" data-variant="brandInteractive" data-size="lg">Brand</span>
+        <span class="ds-label lg information" data-component="Label" data-variant="information" data-size="lg">Info</span>
+      </div></div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       INPUT FIELD
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── InputField ─────────────────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">Input Field — States</h2>
     <div class="stack">
-      <div class="ds-input-field" data-component="InputField" data-state="default">
-        <label class="ds-input-label">Name</label>
-        <input class="ds-input" type="text" placeholder="Enter your name">
+      <div class="ds-input-wrapper" data-component="InputField">
+        <label class="ds-input-label">Full Name</label>
+        <div class="ds-input-row default">
+          <input class="ds-input-el" type="text" placeholder="Enter your name">
+        </div>
       </div>
-      <div class="ds-input-field success" data-component="InputField" data-state="success">
+      <div class="ds-input-wrapper" data-component="InputField" data-state="success">
         <label class="ds-input-label">Email</label>
-        <input class="ds-input" type="email" value="user@example.com">
-        <span class="ds-input-helper success">Looks good!</span>
+        <div class="ds-input-row success">
+          <input class="ds-input-el" type="email" value="user@example.com">
+        </div>
+        <span class="ds-input-hint" style="font-size:12px;color:var(--typography-success)">Looks good!</span>
       </div>
-      <div class="ds-input-field error" data-component="InputField" data-state="error">
+      <div class="ds-input-wrapper" data-component="InputField" data-state="error">
         <label class="ds-input-label">Username</label>
-        <input class="ds-input" type="text" value="ab">
-        <span class="ds-input-helper error">Must be at least 3 characters</span>
+        <div class="ds-input-row error">
+          <input class="ds-input-el" type="text" value="ab">
+        </div>
+        <span class="ds-input-hint" style="font-size:12px;color:var(--typography-error)">Must be at least 3 characters</span>
       </div>
-      <div class="ds-input-field warning" data-component="InputField" data-state="warning">
+      <div class="ds-input-wrapper" data-component="InputField" data-state="warning">
         <label class="ds-input-label">Password</label>
-        <input class="ds-input" type="password" value="short">
-        <span class="ds-input-helper warning">Consider a stronger password</span>
+        <div class="ds-input-row warning">
+          <input class="ds-input-el" type="password" value="short">
+        </div>
+        <span class="ds-input-hint" style="font-size:12px;color:var(--typography-warning)">Consider a stronger password</span>
       </div>
-      <div class="ds-input-field disabled" data-component="InputField" data-state="disabled">
+      <div class="ds-input-wrapper" data-component="InputField" data-state="disabled">
         <label class="ds-input-label">Locked Field</label>
-        <input class="ds-input" type="text" placeholder="Disabled" disabled>
+        <div class="ds-input-row disabled">
+          <input class="ds-input-el" type="text" value="Disabled" disabled>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="section">
-    <h2 class="section-title">Input Field — Slots</h2>
+    <h2 class="section-title">Input Field — Icon Slots</h2>
     <div class="stack">
-      <div class="ds-input-field" data-component="InputField" data-variant="leadingIcon">
+      <div class="ds-input-wrapper" data-component="InputField">
         <label class="ds-input-label">Search</label>
-        <div class="ds-input-wrapper">
-          <span class="ds-input-leading-icon"><span class="icon-ph sm"></span></span>
-          <input class="ds-input has-leading" type="text" placeholder="Search…">
+        <div class="ds-input-row default">
+          <span class="ds-input-slot"><i class="ph ph-magnifying-glass" style="font-size:20px;color:var(--icons-muted)"></i></span>
+          <input class="ds-input-el" type="text" placeholder="Search…">
         </div>
       </div>
-      <div class="ds-input-field" data-component="InputField" data-variant="trailingIcon">
+      <div class="ds-input-wrapper" data-component="InputField">
         <label class="ds-input-label">Password</label>
-        <div class="ds-input-wrapper">
-          <input class="ds-input has-trailing" type="password" placeholder="••••••••">
-          <span class="ds-input-trailing-icon"><span class="icon-ph sm"></span></span>
-        </div>
-      </div>
-      <div class="ds-input-field" data-component="InputField" data-variant="bothIcons">
-        <label class="ds-input-label">Amount</label>
-        <div class="ds-input-wrapper">
-          <span class="ds-input-leading-icon"><span class="icon-ph sm"></span></span>
-          <input class="ds-input has-leading has-trailing" type="text" placeholder="0.00">
-          <span class="ds-input-trailing-icon"><span class="icon-ph sm"></span></span>
+        <div class="ds-input-row default">
+          <input class="ds-input-el" type="password" placeholder="••••••••">
+          <span class="ds-input-slot"><i class="ph ph-eye" style="font-size:20px;color:var(--icons-muted)"></i></span>
         </div>
       </div>
     </div>
@@ -376,233 +381,216 @@
 
   <div class="section">
     <h2 class="section-title">Input Field — TextField</h2>
-    <div class="ds-input-field" data-component="TextField">
+    <div class="ds-input-wrapper" data-component="InputField">
       <label class="ds-input-label">Bio</label>
-      <textarea class="ds-input ds-textarea" rows="3" placeholder="Tell us about yourself…"></textarea>
+      <textarea class="ds-text-field default" rows="3" placeholder="Tell us about yourself…" style="width:100%;resize:vertical;font-family:var(--font-sans);font-size:var(--typography-body-md-size);color:var(--typography-primary);background:var(--surfaces-base-low-contrast);border:1px solid transparent;border-radius:var(--radius-md);padding:14px 16px;outline:none;"></textarea>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       THUMBNAIL
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── Thumbnail ──────────────────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">Thumbnail — Sizes</h2>
-    <div class="row" style="align-items: flex-end;">
-      <div class="ds-thumbnail xs thumb-bg" data-component="Thumbnail" data-size="xs"></div>
-      <div class="ds-thumbnail sm thumb-bg" data-component="Thumbnail" data-size="sm"></div>
-      <div class="ds-thumbnail md thumb-bg" data-component="Thumbnail" data-size="md"></div>
-      <div class="ds-thumbnail lg thumb-bg" data-component="Thumbnail" data-size="lg"></div>
-      <div class="ds-thumbnail xl thumb-bg" data-component="Thumbnail" data-size="xl"></div>
-      <div class="ds-thumbnail xxl thumb-bg" data-component="Thumbnail" data-size="xxl"></div>
+    <div class="row" style="align-items:flex-end;">
+      <div class="ds-thumbnail xs" data-component="Thumbnail" data-size="xs" style="background:var(--surfaces-base-high-contrast)"></div>
+      <div class="ds-thumbnail sm" data-component="Thumbnail" data-size="sm" style="background:var(--surfaces-base-high-contrast)"></div>
+      <div class="ds-thumbnail md" data-component="Thumbnail" data-size="md" style="background:var(--surfaces-base-high-contrast)"></div>
+      <div class="ds-thumbnail lg" data-component="Thumbnail" data-size="lg" style="background:var(--surfaces-base-high-contrast)"></div>
+      <div class="ds-thumbnail xl" data-component="Thumbnail" data-size="xl" style="background:var(--surfaces-base-high-contrast)"></div>
+      <div class="ds-thumbnail xxl" data-component="Thumbnail" data-size="xxl" style="background:var(--surfaces-base-high-contrast)"></div>
     </div>
   </div>
 
   <div class="section">
     <h2 class="section-title">Thumbnail — Rounded</h2>
     <div class="row">
-      <div class="ds-thumbnail sm rounded thumb-bg" data-component="Thumbnail" data-size="sm" data-variant="rounded"></div>
-      <div class="ds-thumbnail md rounded thumb-bg" data-component="Thumbnail" data-size="md" data-variant="rounded"></div>
-      <div class="ds-thumbnail lg rounded thumb-bg" data-component="Thumbnail" data-size="lg" data-variant="rounded"></div>
+      <div class="ds-thumbnail md rounded" data-component="Thumbnail" data-size="md" style="background:var(--surfaces-base-high-contrast)"></div>
+      <div class="ds-thumbnail lg rounded" data-component="Thumbnail" data-size="lg" style="background:var(--surfaces-base-high-contrast)"></div>
+      <div class="ds-thumbnail xl rounded" data-component="Thumbnail" data-size="xl" style="background:var(--surfaces-base-high-contrast)"></div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       DATE GRID
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── DateGrid ───────────────────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">DateGrid</h2>
     <div class="ds-date-grid" data-component="DateGrid">
-      <div class="ds-date-cell" data-component="DateGrid" data-state="default"><span class="ds-date-day">Mon</span><span class="ds-date-num">7</span></div>
-      <div class="ds-date-cell active" data-component="DateGrid" data-state="active"><span class="ds-date-day">Tue</span><span class="ds-date-num">8</span></div>
-      <div class="ds-date-cell active" data-component="DateGrid" data-state="active"><span class="ds-date-day">Wed</span><span class="ds-date-num">9</span></div>
-      <div class="ds-date-cell today" data-component="DateGrid" data-state="today"><span class="ds-date-day">Thu</span><span class="ds-date-num">10</span></div>
-      <div class="ds-date-cell" data-component="DateGrid" data-state="default"><span class="ds-date-day">Fri</span><span class="ds-date-num">11</span></div>
-      <div class="ds-date-cell" data-component="DateGrid" data-state="default"><span class="ds-date-day">Sat</span><span class="ds-date-num">12</span></div>
-      <div class="ds-date-cell" data-component="DateGrid" data-state="default"><span class="ds-date-day">Sun</span><span class="ds-date-num">13</span></div>
+      <div class="ds-date-item" data-component="DateGrid"><span class="ds-date-abbr">Mon</span><span class="ds-date-num">7</span><span class="ds-date-dot invisible"></span></div>
+      <div class="ds-date-item active" data-component="DateGrid"><span class="ds-date-abbr">Tue</span><span class="ds-date-num">8</span><span class="ds-date-dot"></span></div>
+      <div class="ds-date-item active" data-component="DateGrid"><span class="ds-date-abbr">Wed</span><span class="ds-date-num">9</span><span class="ds-date-dot"></span></div>
+      <div class="ds-date-item" data-component="DateGrid"><span class="ds-date-abbr">Thu</span><span class="ds-date-num">10</span><span class="ds-date-dot invisible"></span></div>
+      <div class="ds-date-item" data-component="DateGrid"><span class="ds-date-abbr">Fri</span><span class="ds-date-num">11</span><span class="ds-date-dot invisible"></span></div>
+      <div class="ds-date-item" data-component="DateGrid"><span class="ds-date-abbr">Sat</span><span class="ds-date-num">12</span><span class="ds-date-dot invisible"></span></div>
+      <div class="ds-date-item" data-component="DateGrid"><span class="ds-date-abbr">Sun</span><span class="ds-date-num">13</span><span class="ds-date-dot invisible"></span></div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       CHECKBOX
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── Checkbox ───────────────────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">Checkbox</h2>
     <div class="stack">
-      <label class="ds-checkbox-wrapper" data-component="Checkbox" data-state="unchecked">
-        <input type="checkbox" class="ds-checkbox"> Unchecked
-      </label>
-      <label class="ds-checkbox-wrapper" data-component="Checkbox" data-state="checked">
-        <input type="checkbox" class="ds-checkbox" checked> Checked
-      </label>
-      <label class="ds-checkbox-wrapper" data-component="Checkbox" data-state="indeterminate">
-        <input type="checkbox" class="ds-checkbox ds-checkbox-indeterminate"> Indeterminate
-      </label>
-      <label class="ds-checkbox-wrapper" data-component="Checkbox" data-state="disabled">
-        <input type="checkbox" class="ds-checkbox" disabled> Disabled
-      </label>
+      <div class="ds-checkbox" data-component="Checkbox" data-state="unchecked">
+        <span class="ds-checkbox-box"></span>
+        <span class="ds-checkbox-label">Unchecked</span>
+      </div>
+      <div class="ds-checkbox checked" data-component="Checkbox" data-state="checked">
+        <span class="ds-checkbox-box"><span class="ds-checkbox-mark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+        <span class="ds-checkbox-label">Checked</span>
+      </div>
+      <div class="ds-checkbox indeterminate" data-component="Checkbox" data-state="indeterminate">
+        <span class="ds-checkbox-box"><span class="ds-checkbox-mark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6H9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></span>
+        <span class="ds-checkbox-label">Indeterminate</span>
+      </div>
+      <div class="ds-checkbox disabled" data-component="Checkbox" data-state="disabled">
+        <span class="ds-checkbox-box"></span>
+        <span class="ds-checkbox-label">Disabled</span>
+      </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       SWITCH
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── Switch ─────────────────────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">Switch</h2>
     <div class="stack">
-      <label class="ds-switch-wrapper" data-component="Switch" data-state="off">
-        <input type="checkbox" class="ds-switch-input" role="switch">
+      <div class="ds-switch" data-component="Switch" data-state="off">
         <span class="ds-switch-track"><span class="ds-switch-thumb"></span></span>
         <span class="ds-switch-label">Off</span>
-      </label>
-      <label class="ds-switch-wrapper" data-component="Switch" data-state="on">
-        <input type="checkbox" class="ds-switch-input" role="switch" checked>
+      </div>
+      <div class="ds-switch on" data-component="Switch" data-state="on">
         <span class="ds-switch-track"><span class="ds-switch-thumb"></span></span>
         <span class="ds-switch-label">On</span>
-      </label>
-      <label class="ds-switch-wrapper" data-component="Switch" data-state="disabled-off">
-        <input type="checkbox" class="ds-switch-input" role="switch" disabled>
+      </div>
+      <div class="ds-switch disabled" data-component="Switch" data-state="disabled">
         <span class="ds-switch-track"><span class="ds-switch-thumb"></span></span>
         <span class="ds-switch-label">Disabled off</span>
-      </label>
-      <label class="ds-switch-wrapper" data-component="Switch" data-state="disabled-on">
-        <input type="checkbox" class="ds-switch-input" role="switch" checked disabled>
+      </div>
+      <div class="ds-switch on disabled" data-component="Switch" data-state="disabled">
         <span class="ds-switch-track"><span class="ds-switch-thumb"></span></span>
         <span class="ds-switch-label">Disabled on</span>
-      </label>
+      </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       RADIO BUTTON
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── RadioButton ────────────────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">RadioButton</h2>
-    <div class="stack" role="radiogroup" data-component="RadioButton">
-      <label class="ds-radio-wrapper" data-component="RadioButton" data-state="selected">
-        <input type="radio" class="ds-radio" name="demo-radio" value="email" checked> Email
-      </label>
-      <label class="ds-radio-wrapper" data-component="RadioButton" data-state="unselected">
-        <input type="radio" class="ds-radio" name="demo-radio" value="sms"> SMS
-      </label>
-      <label class="ds-radio-wrapper" data-component="RadioButton" data-state="unselected">
-        <input type="radio" class="ds-radio" name="demo-radio" value="push"> Push notification
-      </label>
+    <div class="ds-radio-group stack" data-component="RadioButton">
+      <div class="ds-radio selected" data-component="RadioButton" data-state="selected">
+        <span class="ds-radio-circle"><span class="ds-radio-dot"></span></span>
+        <span class="ds-radio-label">Email</span>
+      </div>
+      <div class="ds-radio" data-component="RadioButton" data-state="unselected">
+        <span class="ds-radio-circle"><span class="ds-radio-dot"></span></span>
+        <span class="ds-radio-label">SMS</span>
+      </div>
+      <div class="ds-radio" data-component="RadioButton" data-state="unselected">
+        <span class="ds-radio-circle"><span class="ds-radio-dot"></span></span>
+        <span class="ds-radio-label">Push notification</span>
+      </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       TEXT BLOCK (pattern)
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── TextBlock (pattern) ────────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">TextBlock</h2>
     <div class="stack">
       <div class="ds-text-block" data-component="TextBlock">
-        <span class="ds-text-block-eyebrow">Getting started</span>
-        <h3 class="ds-text-block-heading">Build faster with components</h3>
+        <span class="ds-text-block-overline">Getting started</span>
+        <div class="ds-text-block-header">
+          <span class="ds-text-block-title">Build faster with components</span>
+        </div>
         <p class="ds-text-block-body">A consistent design system reduces decision fatigue and speeds up development across every platform.</p>
       </div>
       <div class="ds-text-block" data-component="TextBlock">
-        <h3 class="ds-text-block-heading">Heading only</h3>
-        <p class="ds-text-block-body">No eyebrow, just heading and body copy.</p>
+        <div class="ds-text-block-header">
+          <span class="ds-text-block-title">Heading only</span>
+        </div>
+        <p class="ds-text-block-body">No overline, just heading and body copy.</p>
       </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       STEP INDICATOR (pattern)
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── StepIndicator (pattern) ────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">StepIndicator</h2>
-    <div class="row">
-      <div class="ds-step-indicator incomplete" data-component="StepIndicator" data-state="incomplete">
-        <span class="ds-step-dot"></span>
-        <span class="ds-step-label">Incomplete</span>
+    <div class="row" style="gap:16px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="ds-step-indicator" data-component="StepIndicator" data-state="incomplete"></div>
+        <span style="font-size:13px;color:var(--typography-secondary)">Incomplete</span>
       </div>
-      <div class="ds-step-indicator completed" data-component="StepIndicator" data-state="completed">
-        <span class="ds-step-dot"></span>
-        <span class="ds-step-label">Completed</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="ds-step-indicator completed" data-component="StepIndicator" data-state="completed"><svg width="8" height="8" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span style="font-size:13px;color:var(--typography-secondary)">Completed</span>
       </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       STEPPER (pattern)
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── Stepper (pattern) ──────────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">Stepper</h2>
     <div class="ds-stepper" data-component="Stepper">
-      <div class="ds-stepper-step completed" data-state="completed">
-        <div class="ds-stepper-indicator"><span class="ds-stepper-check">✓</span></div>
+      <div class="ds-stepper-step">
+        <div class="ds-stepper-track">
+          <div class="ds-step-indicator completed"><svg width="8" height="8" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="ds-stepper-connector"></div>
+        </div>
         <div class="ds-stepper-content">
-          <span class="ds-stepper-label">Account created</span>
+          <div class="ds-text-block"><div class="ds-text-block-header"><span class="ds-text-block-title">Account created</span></div></div>
         </div>
       </div>
-      <div class="ds-stepper-step active" data-state="active">
-        <div class="ds-stepper-indicator"><span class="ds-stepper-num">2</span></div>
+      <div class="ds-stepper-step">
+        <div class="ds-stepper-track">
+          <div class="ds-step-indicator">2</div>
+          <div class="ds-stepper-connector"></div>
+        </div>
         <div class="ds-stepper-content">
-          <span class="ds-stepper-label">Verify email</span>
-          <span class="ds-stepper-sublabel">Check your inbox</span>
+          <div class="ds-text-block"><div class="ds-text-block-header"><span class="ds-text-block-title">Verify email</span><span class="ds-text-block-subtext">Check your inbox</span></div></div>
         </div>
       </div>
-      <div class="ds-stepper-step incomplete" data-state="incomplete">
-        <div class="ds-stepper-indicator"><span class="ds-stepper-num">3</span></div>
+      <div class="ds-stepper-step">
+        <div class="ds-stepper-track">
+          <div class="ds-step-indicator">3</div>
+        </div>
         <div class="ds-stepper-content">
-          <span class="ds-stepper-label">Set up profile</span>
+          <div class="ds-text-block"><div class="ds-text-block-header"><span class="ds-text-block-title">Set up profile</span></div></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════
-       LIST ITEM (pattern)
-       ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- ── ListItem (pattern) ─────────────────────────────────────── -->
 
   <div class="section">
     <h2 class="section-title">ListItem</h2>
     <div class="stack">
       <div class="ds-list-item" data-component="ListItem">
-        <div class="ds-thumbnail sm thumb-bg" data-component="Thumbnail" data-size="sm"></div>
-        <div class="ds-list-item-content">
-          <span class="ds-list-item-title">Project Alpha</span>
-          <span class="ds-list-item-subtitle">Updated 2 hours ago</span>
+        <div class="ds-list-item-row">
+          <div class="ds-list-item-leading"><div class="ds-thumbnail sm" style="background:var(--surfaces-base-high-contrast)" data-component="Thumbnail" data-size="sm"></div></div>
+          <div class="ds-list-item-content">
+            <div class="ds-text-block"><div class="ds-text-block-header"><span class="ds-text-block-title">Project Alpha</span><span class="ds-text-block-subtext">Updated 2 hours ago</span></div></div>
+          </div>
+          <div class="ds-list-item-trailing"><span class="ds-badge brand sm" data-component="Badge" data-variant="brand" data-size="sm">New</span></div>
         </div>
-        <span class="ds-badge brand sm" data-component="Badge" data-variant="brand" data-size="sm">New</span>
       </div>
       <div class="ds-list-item" data-component="ListItem">
-        <span class="icon-ph"></span>
-        <div class="ds-list-item-content">
-          <span class="ds-list-item-title">Notifications</span>
-          <span class="ds-list-item-subtitle">3 unread messages</span>
+        <div class="ds-list-item-row">
+          <div class="ds-list-item-leading"><i class="ph ph-bell" style="font-size:20px;color:var(--icons-secondary)"></i></div>
+          <div class="ds-list-item-content">
+            <div class="ds-text-block"><div class="ds-text-block-header"><span class="ds-text-block-title">Notifications</span><span class="ds-text-block-subtext">3 unread messages</span></div></div>
+          </div>
+          <div class="ds-list-item-trailing"><button class="ds-button secondary sm" data-component="Button" data-variant="secondary" data-size="sm">View</button></div>
         </div>
-        <button class="ds-button secondary sm" data-component="Button" data-variant="secondary" data-size="sm">View</button>
       </div>
     </div>
   </div>
 
-</div><!-- /.page -->
-
-<script>
-  // Dark mode toggle persists across page loads
-  const toggle = document.querySelector('.dark-toggle');
-  const html = document.documentElement;
-  const stored = localStorage.getItem('ds-dark');
-  if (stored === '1') html.classList.add('dark');
-  toggle.textContent = html.classList.contains('dark') ? '☀️ Light' : '🌙 Dark';
-  toggle.addEventListener('click', () => {
-    html.classList.toggle('dark');
-    const isDark = html.classList.contains('dark');
-    localStorage.setItem('ds-dark', isDark ? '1' : '0');
-    toggle.textContent = isDark ? '☀️ Light' : '🌙 Dark';
-  });
-</script>
+</div>
 
 </body>
 </html>

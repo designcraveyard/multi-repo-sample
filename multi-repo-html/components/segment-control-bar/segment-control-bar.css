@@ -159,9 +159,17 @@
   cursor:          pointer;
   user-select:     none;
   white-space:     nowrap;
+  border:          none;
+  background:      transparent;
+  font-family:     var(--font-sans);
   transition:      background-color 150ms ease-out,
                    color            150ms ease-out,
                    border-color     150ms ease-out;
+  /* Default size (md) when no size class on parent */
+  padding:     6px 12px;
+  font-size:   var(--typography-cta-md-size);
+  line-height: var(--typography-cta-md-leading);
+  font-weight: var(--typography-cta-md-weight);
 }
 
 

@@ -148,11 +148,13 @@
    ============================================================================= */
 
 .ds-date-grid {
-  display:          flex;
+  display:          inline-flex;
   align-items:      stretch;
   overflow:         hidden;
   border-radius:    12px;
   background-color: var(--surfaces-base-low-contrast);  /* Trough background */
+  padding:          4px;
+  gap:              0;
 }
 
 /* Prev/next week arrow buttons */

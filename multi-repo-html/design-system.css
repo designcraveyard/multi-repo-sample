@@ -6,15 +6,18 @@
 
    Import order:
      1. Tokens (primitives → semantic → typography → spacing → radius → design-tools)
-     2. Base styles (reset, box-sizing, font defaults)
-     3. Components (atomic UI components)
-     4. Patterns (multi-component compositions)
-     5. Design tools (device frames, annotations, wireframe, slides)
+     2. Components (atomic UI components)
+     3. Patterns (multi-component compositions)
+     4. Design tools (device frames, annotations, wireframe, slides)
 
+   Base styles and utility classes are defined inline below the imports.
    For cherry-picking, import individual files directly instead.
    ============================================================= */
 
-/* === 1. Tokens === */
+/* === ALL @import rules MUST appear before any other CSS rules ===
+   Per CSS spec, @import after any non-@import rule is ignored. */
+
+/* --- 1. Tokens --- */
 @import "tokens/primitives.css";
 @import "tokens/semantic.css";
 @import "tokens/typography.css";
@@ -22,9 +25,42 @@
 @import "tokens/radius.css";
 @import "tokens/design-tools.css";
 
-/* === 1b. Base Reset & Defaults ===
+/* --- 2. Components --- */
+@import "components/button/button.css";
+@import "components/icon-button/icon-button.css";
+@import "components/badge/badge.css";
+@import "components/label/label.css";
+@import "components/chip/chip.css";
+@import "components/tabs/tabs.css";
+@import "components/segment-control-bar/segment-control-bar.css";
+@import "components/thumbnail/thumbnail.css";
+@import "components/input-field/input-field.css";
+@import "components/toast/toast.css";
+@import "components/date-grid/date-grid.css";
+@import "components/divider/divider.css";
+@import "components/checkbox/checkbox.css";
+@import "components/switch/switch.css";
+@import "components/radio-button/radio-button.css";
+
+/* --- 3. Patterns --- */
+@import "patterns/text-block/text-block.css";
+@import "patterns/step-indicator/step-indicator.css";
+@import "patterns/stepper/stepper.css";
+@import "patterns/list-item/list-item.css";
+
+/* --- 4. Design Tools --- */
+@import "design-tools/device-frames/device-frames.css";
+@import "design-tools/annotations/annotations.css";
+@import "design-tools/slide-layouts/slide-layouts.css";
+@import "design-tools/wireframe/wireframe.css";
+
+
+/* =============================================================
+   Base Reset & Defaults
+   ──────────────────────
    Minimal reset for standalone HTML files. Sets box-sizing,
-   font family, and base colors from semantic tokens. */
+   font family, and base colors from semantic tokens.
+   ============================================================= */
 
 /* --- Box model reset --- */
 *, *::before, *::after {
@@ -48,61 +84,65 @@ body {
   background-color: var(--surfaces-base-primary);
 }
 
-/* === 1c. Utility Classes ===
+
+/* =============================================================
+   Utility Classes
+   ────────────────
    Minimal set of single-purpose helpers — layout, text, and misc.
-   Mirror common Tailwind patterns for use in standalone HTML files. */
+   Mirror common Tailwind patterns for use in standalone HTML files.
+   ============================================================= */
 
 /* --- Flex / grid --- */
-.flex            { display: flex; }                             /* flex container */
-.flex-col        { flex-direction: column; }                   /* stack children vertically */
-.flex-row        { flex-direction: row; }                      /* stack children horizontally */
-.flex-wrap       { flex-wrap: wrap; }                          /* allow children to wrap */
-.flex-1          { flex: 1 1 0%; }                             /* grow to fill available space */
-.flex-shrink-0   { flex-shrink: 0; }                           /* prevent shrinking */
-.items-center    { align-items: center; }                      /* cross-axis center */
-.items-start     { align-items: flex-start; }                  /* cross-axis start */
-.items-end       { align-items: flex-end; }                    /* cross-axis end */
-.items-stretch   { align-items: stretch; }                     /* cross-axis stretch (default) */
-.justify-center  { justify-content: center; }                  /* main-axis center */
-.justify-between { justify-content: space-between; }           /* push children apart */
-.justify-start   { justify-content: flex-start; }              /* main-axis start */
-.justify-end     { justify-content: flex-end; }                /* main-axis end */
-.inline-flex     { display: inline-flex; }                     /* inline flex container */
-.grid            { display: grid; }                            /* grid container */
-.hidden          { display: none; }                            /* hide element completely */
+.flex            { display: flex; }
+.flex-col        { flex-direction: column; }
+.flex-row        { flex-direction: row; }
+.flex-wrap       { flex-wrap: wrap; }
+.flex-1          { flex: 1 1 0%; }
+.flex-shrink-0   { flex-shrink: 0; }
+.items-center    { align-items: center; }
+.items-start     { align-items: flex-start; }
+.items-end       { align-items: flex-end; }
+.items-stretch   { align-items: stretch; }
+.justify-center  { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-start   { justify-content: flex-start; }
+.justify-end     { justify-content: flex-end; }
+.inline-flex     { display: inline-flex; }
+.grid            { display: grid; }
+.hidden          { display: none; }
 
 /* --- Width / height --- */
-.w-full          { width: 100%; }                              /* full parent width */
-.h-full          { height: 100%; }                             /* full parent height */
-.min-w-0         { min-width: 0; }                             /* allow flex children to shrink below content size */
-.max-w-screen    { max-width: 100vw; }                         /* cap at viewport width */
+.w-full          { width: 100%; }
+.h-full          { height: 100%; }
+.min-w-0         { min-width: 0; }
+.max-w-screen    { max-width: 100vw; }
 
 /* --- Text --- */
-.text-center     { text-align: center; }                       /* center-align text */
-.text-left       { text-align: left; }                         /* left-align text */
-.text-right      { text-align: right; }                        /* right-align text */
-.whitespace-nowrap { white-space: nowrap; }                    /* prevent text wrapping */
-.truncate        { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } /* single-line ellipsis */
-.select-none     { user-select: none; }                        /* disable text selection */
+.text-center     { text-align: center; }
+.text-left       { text-align: left; }
+.text-right      { text-align: right; }
+.whitespace-nowrap { white-space: nowrap; }
+.truncate        { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.select-none     { user-select: none; }
 
 /* --- Misc --- */
-.rounded-full    { border-radius: 9999px; }                    /* pill / circle shape */
-.rounded-xl      { border-radius: var(--radius-xl); }          /* extra-large corner radius */
-.rounded-lg      { border-radius: var(--radius-lg); }          /* large corner radius */
-.rounded-md      { border-radius: var(--radius-md); }          /* medium corner radius */
-.rounded-sm      { border-radius: var(--radius-sm); }          /* small corner radius */
-.rounded-xs      { border-radius: var(--radius-xs); }          /* extra-small corner radius */
-.shadow-sm       { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }        /* subtle shadow */
-.shadow-md       { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); } /* medium shadow */
-.opacity-50      { opacity: 0.5; }                             /* half opacity (disabled state) */
-.cursor-pointer  { cursor: pointer; }                          /* pointer hand cursor */
-.cursor-not-allowed { cursor: not-allowed; }                   /* blocked / disabled cursor */
-.transition-colors {                                           /* animate color/bg/border changes */
+.rounded-full    { border-radius: 9999px; }
+.rounded-xl      { border-radius: var(--radius-xl); }
+.rounded-lg      { border-radius: var(--radius-lg); }
+.rounded-md      { border-radius: var(--radius-md); }
+.rounded-sm      { border-radius: var(--radius-sm); }
+.rounded-xs      { border-radius: var(--radius-xs); }
+.shadow-sm       { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
+.shadow-md       { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+.opacity-50      { opacity: 0.5; }
+.cursor-pointer  { cursor: pointer; }
+.cursor-not-allowed { cursor: not-allowed; }
+.transition-colors {
   transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
-.sr-only {                                                     /* visually hidden, accessible to screen readers */
+.sr-only {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -113,32 +153,3 @@ body {
   white-space: nowrap;
   border-width: 0;
 }
-
-/* === 2. Components === */
-@import "components/button/button.css";
-@import "components/icon-button/icon-button.css";
-@import "components/badge/badge.css";
-@import "components/label/label.css";
-@import "components/chip/chip.css";
-@import "components/tabs/tabs.css";
-@import "components/segment-control-bar/segment-control-bar.css";
-@import "components/thumbnail/thumbnail.css";
-@import "components/input-field/input-field.css";
-@import "components/toast/toast.css";
-@import "components/date-grid/date-grid.css";
-@import "components/divider/divider.css";
-@import "components/checkbox/checkbox.css";
-@import "components/switch/switch.css";
-@import "components/radio-button/radio-button.css";
-
-/* === 3. Patterns === */
-@import "patterns/text-block/text-block.css";
-@import "patterns/step-indicator/step-indicator.css";
-@import "patterns/stepper/stepper.css";
-@import "patterns/list-item/list-item.css";
-
-/* === 4. Design Tools === */
-@import "design-tools/device-frames/device-frames.css";
-@import "design-tools/annotations/annotations.css";
-@import "design-tools/slide-layouts/slide-layouts.css";
-@import "design-tools/wireframe/wireframe.css";

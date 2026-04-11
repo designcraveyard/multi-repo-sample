@@ -338,3 +338,98 @@
 
   }
 }
+
+/* =============================================================================
+   Dark mode via JavaScript toggle
+   Duplicates the @media block above for manual dark mode switching.
+   Toggle sets: document.documentElement.style.colorScheme = 'dark'
+   ============================================================================= */
+
+html[style*="color-scheme: dark"],
+html[style*="color-scheme:dark"] {
+    --surfaces-base-primary:               var(--color-base-black);
+    --surfaces-base-primary-hover:         var(--color-neutral-800);
+    --surfaces-base-primary-pressed:       var(--color-neutral-700);
+    --surfaces-base-low-contrast:          var(--color-neutral-900);
+    --surfaces-base-low-contrast-hover:    var(--color-neutral-800);
+    --surfaces-base-low-contrast-pressed:  var(--color-neutral-600);
+    --surfaces-base-high-contrast:         var(--color-neutral-800);
+    --surfaces-base-high-contrast-hover:   var(--color-neutral-600);
+    --surfaces-base-high-contrast-pressed: var(--color-neutral-500);
+    --surfaces-inverse-primary:               var(--color-base-white);
+    --surfaces-inverse-primary-hover:         var(--color-zinc-200);
+    --surfaces-inverse-primary-pressed:       var(--color-zinc-400);
+    --surfaces-inverse-low-contrast:          var(--color-neutral-100);
+    --surfaces-inverse-low-contrast-hover:    var(--color-neutral-200);
+    --surfaces-inverse-low-contrast-pressed:  var(--color-neutral-300);
+    --surfaces-inverse-high-contrast:         var(--color-neutral-200);
+    --surfaces-inverse-high-contrast-hover:   var(--color-neutral-300);
+    --surfaces-inverse-high-contrast-pressed: var(--color-neutral-200);
+    --surfaces-brand-interactive:                        var(--color-zinc-50);
+    --surfaces-brand-interactive-hover:                  var(--color-zinc-200);
+    --surfaces-brand-interactive-pressed:                var(--color-zinc-400);
+    --surfaces-brand-interactive-low-contrast:           var(--color-zinc-800);
+    --surfaces-brand-interactive-low-contrast-hover:     var(--color-zinc-700);
+    --surfaces-brand-interactive-low-contrast-pressed:   var(--color-zinc-600);
+    --surfaces-brand-interactive-high-contrast:          var(--color-zinc-700);
+    --surfaces-brand-interactive-high-contrast-hover:    var(--color-zinc-600);
+    --surfaces-brand-interactive-high-contrast-pressed:  var(--color-zinc-500);
+    --surfaces-accent-primary:               var(--color-indigo-400);
+    --surfaces-accent-primary-hover:         var(--color-indigo-300);
+    --surfaces-accent-primary-pressed:       var(--color-indigo-200);
+    --surfaces-accent-low-contrast:          var(--color-indigo-800);
+    --surfaces-accent-low-contrast-hover:    var(--color-indigo-700);
+    --surfaces-accent-low-contrast-pressed:  var(--color-indigo-600);
+    --surfaces-accent-high-contrast:         var(--color-indigo-700);
+    --surfaces-accent-high-contrast-hover:   var(--color-indigo-600);
+    --surfaces-accent-high-contrast-pressed: var(--color-indigo-500);
+    --surfaces-success-solid:          var(--color-green-300);
+    --surfaces-success-solid-hover:    var(--color-green-200);
+    --surfaces-success-solid-pressed:  var(--color-green-100);
+    --surfaces-success-subtle:         var(--color-green-950);
+    --surfaces-success-subtle-hover:   var(--color-green-900);
+    --surfaces-success-subtle-pressed: var(--color-green-800);
+    --surfaces-warning-solid:          var(--color-amber-300);
+    --surfaces-warning-solid-hover:    var(--color-amber-200);
+    --surfaces-warning-solid-pressed:  var(--color-amber-100);
+    --surfaces-warning-subtle:         var(--color-amber-950);
+    --surfaces-warning-subtle-hover:   var(--color-amber-900);
+    --surfaces-warning-subtle-pressed: var(--color-amber-800);
+    --surfaces-error-solid:          var(--color-red-300);
+    --surfaces-error-solid-hover:    var(--color-red-200);
+    --surfaces-error-solid-pressed:  var(--color-red-100);
+    --surfaces-error-subtle:         var(--color-red-950);
+    --surfaces-error-subtle-hover:   var(--color-red-900);
+    --surfaces-error-subtle-pressed: var(--color-red-800);
+    --typography-primary:           var(--color-neutral-50);
+    --typography-secondary:         var(--color-neutral-300);
+    --typography-muted:             var(--color-neutral-400);
+    --typography-inverse-primary:   var(--color-neutral-950);
+    --typography-inverse-secondary: var(--color-neutral-700);
+    --typography-inverse-muted:     var(--color-neutral-500);
+    --typography-brand:             var(--color-zinc-50);
+    --typography-on-brand-primary:  var(--color-base-black);
+    --typography-accent:            var(--color-indigo-300);
+    --typography-success:           var(--color-green-400);
+    --typography-warning:           var(--color-amber-400);
+    --typography-error:             var(--color-red-400);
+    --icons-primary:           var(--color-neutral-50);
+    --icons-secondary:         var(--color-neutral-400);
+    --icons-muted:             var(--color-neutral-700);
+    --icons-inverse-primary:   var(--color-neutral-950);
+    --icons-inverse-secondary: var(--color-neutral-600);
+    --icons-inverse-muted:     var(--color-neutral-400);
+    --icons-brand:             var(--color-zinc-50);
+    --icons-on-brand-primary:  var(--color-neutral-950);
+    --icons-accent:            var(--color-indigo-300);
+    --icons-success:           var(--color-green-400);
+    --icons-warning:           var(--color-amber-400);
+    --icons-error:             var(--color-red-400);
+    --border-brand:   var(--color-zinc-50);
+    --border-active:  var(--color-neutral-50);
+    --border-default: var(--color-neutral-800);
+    --border-muted:   var(--color-neutral-900);
+    --border-success: var(--color-green-300);
+    --border-warning: var(--color-amber-300);
+    --border-error:   var(--color-red-300);
+}

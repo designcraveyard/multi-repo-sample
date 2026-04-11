@@ -39,10 +39,11 @@
 
 .ds-tab-bar {
   position:       relative;
-  display:        inline-flex;
+  display:        flex;
   align-items:    flex-end;          /* Align tabs to bottom so indicator touches the border */
-  border-bottom:  1px solid var(--border-default);   /* Track line */
+  border-bottom:  2px solid var(--border-muted);     /* Track line */
   font-family:    var(--font-sans);  /* Geist */
+  width:          100%;
 }
 
 
@@ -68,6 +69,12 @@
 
   /* Inactive color — secondary text */
   color: var(--typography-secondary);   /* Zinc-600 / zinc-400 */
+
+  /* Default size (md) when no size class is applied */
+  padding:     8px 16px;
+  font-size:   var(--typography-cta-md-size);
+  line-height: var(--typography-cta-md-leading);
+  font-weight: var(--typography-cta-md-weight);
 }
 
 .ds-tab:hover {
@@ -75,9 +82,11 @@
   color:            var(--typography-primary);
 }
 
-/* Active tab — primary text, indicator shows below */
+/* Active tab — primary text, bottom border indicator */
 .ds-tab.active {
   color: var(--typography-primary);   /* Zinc-950 / zinc-50 */
+  border-bottom: 2px solid var(--surfaces-brand-interactive);
+  margin-bottom: -2px;  /* Overlap the tab-bar border */
 }
 
 

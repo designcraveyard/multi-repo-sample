@@ -50,21 +50,22 @@
    Uses <hr> when no label; uses <div> with flex when label is present.
    ============================================================================= */
 
-/* Plain horizontal — <hr> element */
-hr.ds-divider {
+/* Plain horizontal — <hr> or <div> element */
+hr.ds-divider,
+div.ds-divider:not(:has(.ds-divider-line)):not(.vertical) {
   border: none;  /* Remove browser default border */
   width:  100%;  /* Full width of parent */
   margin: 0;     /* Suppress default margin */
 }
 
 /* Row divider — 1px hairline */
-hr.ds-divider.row {
+.ds-divider.row:not(.vertical) {
   height:           1px;
   background-color: var(--border-muted);   /* Lightest border — zinc-200 / zinc-700 */
 }
 
 /* Section divider — 8px thick bar (Figma: h-2) */
-hr.ds-divider.section {
+.ds-divider.section:not(.vertical):not(:has(.ds-divider-line)) {
   height:           8px;
   background-color: var(--border-default);  /* Standard border — zinc-300 / zinc-600 */
 }
