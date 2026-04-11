@@ -1,0 +1,413 @@
+<!--
+  button.html — Button Component Variants
+  Design system: bubbles-kit (Figma node 229:3892 — _Button component set)
+  Synced from: multi-repo-nextjs/app/components/Button/Button.tsx
+
+  Platform paths:
+    Web    → multi-repo-nextjs/app/components/Button/Button.tsx
+    iOS    → multi-repo-ios/Components/Button/AppButton.swift
+    Android→ multi-repo-android/ui/components/AppButton.kt
+
+  Variant axes:
+    type  → primary | secondary | tertiary | success | danger
+    size  → sm | md | lg
+    state → (default) | hover | pressed | disabled
+
+  data-* attributes:
+    data-component  Registry name from docs/components.md
+    data-variant    Primary variant class (type)
+    data-size       Size variant class
+    data-state      Visual state when non-default; omit for default
+
+  Coverage: 5 types × (3 sizes default + 3 states at md) = 30 buttons
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Button — Design System</title>
+
+  <!-- Geist font — required by all HTML design system files -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet" />
+
+  <!-- Design system tokens + this component -->
+  <link rel="stylesheet" href="../../design-system.css" />
+  <link rel="stylesheet" href="button.css" />
+
+  <style>
+    /* Showcase layout only — not part of the component */
+    body        { font-family: var(--font-sans); background: var(--surfaces-base-low-contrast); padding: 40px; }
+    h2          { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--typography-muted); margin: 32px 0 12px; }
+    .row        { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .section    { margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+
+
+<!-- =========================================================================
+     PRIMARY
+     Solid brand fill — highest emphasis CTA.
+     ========================================================================= -->
+
+<div class="section">
+  <h2>Primary — Sizes</h2>
+  <div class="row">
+
+    <!-- Primary / Large / Default -->
+    <button class="ds-button primary lg"
+      data-component="Button"
+      data-variant="primary"
+      data-size="lg">
+      Primary Large
+    </button>
+
+    <!-- Primary / Medium / Default -->
+    <button class="ds-button primary md"
+      data-component="Button"
+      data-variant="primary"
+      data-size="md">
+      Primary Medium
+    </button>
+
+    <!-- Primary / Small / Default -->
+    <button class="ds-button primary sm"
+      data-component="Button"
+      data-variant="primary"
+      data-size="sm">
+      Primary Small
+    </button>
+
+  </div>
+</div>
+
+<div class="section">
+  <h2>Primary — States (Medium)</h2>
+  <div class="row">
+
+    <!-- Primary / Medium / Hover -->
+    <button class="ds-button primary md hover"
+      data-component="Button"
+      data-variant="primary"
+      data-size="md"
+      data-state="hover">
+      Primary Hover
+    </button>
+
+    <!-- Primary / Medium / Pressed -->
+    <button class="ds-button primary md pressed"
+      data-component="Button"
+      data-variant="primary"
+      data-size="md"
+      data-state="pressed">
+      Primary Pressed
+    </button>
+
+    <!-- Primary / Medium / Disabled -->
+    <button class="ds-button primary md disabled"
+      data-component="Button"
+      data-variant="primary"
+      data-size="md"
+      data-state="disabled"
+      disabled>
+      Primary Disabled
+    </button>
+
+  </div>
+</div>
+
+
+<!-- =========================================================================
+     SECONDARY
+     Low-contrast tonal fill — medium emphasis action.
+     ========================================================================= -->
+
+<div class="section">
+  <h2>Secondary — Sizes</h2>
+  <div class="row">
+
+    <!-- Secondary / Large / Default -->
+    <button class="ds-button secondary lg"
+      data-component="Button"
+      data-variant="secondary"
+      data-size="lg">
+      Secondary Large
+    </button>
+
+    <!-- Secondary / Medium / Default -->
+    <button class="ds-button secondary md"
+      data-component="Button"
+      data-variant="secondary"
+      data-size="md">
+      Secondary Medium
+    </button>
+
+    <!-- Secondary / Small / Default -->
+    <button class="ds-button secondary sm"
+      data-component="Button"
+      data-variant="secondary"
+      data-size="sm">
+      Secondary Small
+    </button>
+
+  </div>
+</div>
+
+<div class="section">
+  <h2>Secondary — States (Medium)</h2>
+  <div class="row">
+
+    <!-- Secondary / Medium / Hover -->
+    <button class="ds-button secondary md hover"
+      data-component="Button"
+      data-variant="secondary"
+      data-size="md"
+      data-state="hover">
+      Secondary Hover
+    </button>
+
+    <!-- Secondary / Medium / Pressed -->
+    <button class="ds-button secondary md pressed"
+      data-component="Button"
+      data-variant="secondary"
+      data-size="md"
+      data-state="pressed">
+      Secondary Pressed
+    </button>
+
+    <!-- Secondary / Medium / Disabled -->
+    <button class="ds-button secondary md disabled"
+      data-component="Button"
+      data-variant="secondary"
+      data-size="md"
+      data-state="disabled"
+      disabled>
+      Secondary Disabled
+    </button>
+
+  </div>
+</div>
+
+
+<!-- =========================================================================
+     TERTIARY
+     Outlined with brand border — lowest emphasis action.
+     ========================================================================= -->
+
+<div class="section">
+  <h2>Tertiary — Sizes</h2>
+  <div class="row">
+
+    <!-- Tertiary / Large / Default -->
+    <button class="ds-button tertiary lg"
+      data-component="Button"
+      data-variant="tertiary"
+      data-size="lg">
+      Tertiary Large
+    </button>
+
+    <!-- Tertiary / Medium / Default -->
+    <button class="ds-button tertiary md"
+      data-component="Button"
+      data-variant="tertiary"
+      data-size="md">
+      Tertiary Medium
+    </button>
+
+    <!-- Tertiary / Small / Default -->
+    <button class="ds-button tertiary sm"
+      data-component="Button"
+      data-variant="tertiary"
+      data-size="sm">
+      Tertiary Small
+    </button>
+
+  </div>
+</div>
+
+<div class="section">
+  <h2>Tertiary — States (Medium)</h2>
+  <div class="row">
+
+    <!-- Tertiary / Medium / Hover -->
+    <button class="ds-button tertiary md hover"
+      data-component="Button"
+      data-variant="tertiary"
+      data-size="md"
+      data-state="hover">
+      Tertiary Hover
+    </button>
+
+    <!-- Tertiary / Medium / Pressed -->
+    <button class="ds-button tertiary md pressed"
+      data-component="Button"
+      data-variant="tertiary"
+      data-size="md"
+      data-state="pressed">
+      Tertiary Pressed
+    </button>
+
+    <!-- Tertiary / Medium / Disabled -->
+    <button class="ds-button tertiary md disabled"
+      data-component="Button"
+      data-variant="tertiary"
+      data-size="md"
+      data-state="disabled"
+      disabled>
+      Tertiary Disabled
+    </button>
+
+  </div>
+</div>
+
+
+<!-- =========================================================================
+     SUCCESS
+     Solid green fill — confirmation and positive actions.
+     ========================================================================= -->
+
+<div class="section">
+  <h2>Success — Sizes</h2>
+  <div class="row">
+
+    <!-- Success / Large / Default -->
+    <button class="ds-button success lg"
+      data-component="Button"
+      data-variant="success"
+      data-size="lg">
+      Success Large
+    </button>
+
+    <!-- Success / Medium / Default -->
+    <button class="ds-button success md"
+      data-component="Button"
+      data-variant="success"
+      data-size="md">
+      Success Medium
+    </button>
+
+    <!-- Success / Small / Default -->
+    <button class="ds-button success sm"
+      data-component="Button"
+      data-variant="success"
+      data-size="sm">
+      Success Small
+    </button>
+
+  </div>
+</div>
+
+<div class="section">
+  <h2>Success — States (Medium)</h2>
+  <div class="row">
+
+    <!-- Success / Medium / Hover -->
+    <button class="ds-button success md hover"
+      data-component="Button"
+      data-variant="success"
+      data-size="md"
+      data-state="hover">
+      Success Hover
+    </button>
+
+    <!-- Success / Medium / Pressed -->
+    <button class="ds-button success md pressed"
+      data-component="Button"
+      data-variant="success"
+      data-size="md"
+      data-state="pressed">
+      Success Pressed
+    </button>
+
+    <!-- Success / Medium / Disabled -->
+    <button class="ds-button success md disabled"
+      data-component="Button"
+      data-variant="success"
+      data-size="md"
+      data-state="disabled"
+      disabled>
+      Success Disabled
+    </button>
+
+  </div>
+</div>
+
+
+<!-- =========================================================================
+     DANGER
+     Solid red fill — destructive and irreversible actions.
+     ========================================================================= -->
+
+<div class="section">
+  <h2>Danger — Sizes</h2>
+  <div class="row">
+
+    <!-- Danger / Large / Default -->
+    <button class="ds-button danger lg"
+      data-component="Button"
+      data-variant="danger"
+      data-size="lg">
+      Danger Large
+    </button>
+
+    <!-- Danger / Medium / Default -->
+    <button class="ds-button danger md"
+      data-component="Button"
+      data-variant="danger"
+      data-size="md">
+      Danger Medium
+    </button>
+
+    <!-- Danger / Small / Default -->
+    <button class="ds-button danger sm"
+      data-component="Button"
+      data-variant="danger"
+      data-size="sm">
+      Danger Small
+    </button>
+
+  </div>
+</div>
+
+<div class="section">
+  <h2>Danger — States (Medium)</h2>
+  <div class="row">
+
+    <!-- Danger / Medium / Hover -->
+    <button class="ds-button danger md hover"
+      data-component="Button"
+      data-variant="danger"
+      data-size="md"
+      data-state="hover">
+      Danger Hover
+    </button>
+
+    <!-- Danger / Medium / Pressed -->
+    <button class="ds-button danger md pressed"
+      data-component="Button"
+      data-variant="danger"
+      data-size="md"
+      data-state="pressed">
+      Danger Pressed
+    </button>
+
+    <!-- Danger / Medium / Disabled -->
+    <button class="ds-button danger md disabled"
+      data-component="Button"
+      data-variant="danger"
+      data-size="md"
+      data-state="disabled"
+      disabled>
+      Danger Disabled
+    </button>
+
+  </div>
+</div>
+
+
+</body>
+</html>
