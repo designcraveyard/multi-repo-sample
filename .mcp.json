@@ -2,31 +2,26 @@
   "mcpServers": {
     "playwright": {
       "command": "npx",
-      "args": ["@playwright/mcp@latest"],
+      "args": [
+        "@playwright/mcp@latest"
+      ],
       "env": {}
     },
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ],
       "env": {}
-    },
-    "supabase-bubbleskit": {
-      "type": "http",
-      "url": "https://mcp.supabase.com/mcp?project_ref=kqxiugkmkvymoegzxoye",
-      "headers": {
-        "Authorization": "Bearer ${SUPABASE_MCP_TOKEN}"
-      }
-    },
-    "mcp-server-profiles": {
-      "type": "http",
-      "url": "http://localhost:3001/mcp",
-      "headers": {
-        "Authorization": "Bearer ${GOOGLE_ID_TOKEN}"
-      }
     },
     "figma": {
       "type": "http",
       "url": "https://mcp.figma.com/mcp"
+    },
+    "supabase": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=kqxiugkmkvymoegzxoye"
     }
   }
 }

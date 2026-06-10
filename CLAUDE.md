@@ -126,6 +126,7 @@ Invoke these in any Claude session opened at the workspace root:
 | Git Push | `/git-push` | Commit and push all repos from workspace root |
 | New AI Agent | `/new-ai-agent <description>` | Scaffold AI agent config + tool handlers + UI |
 | Post-Session Review | `/post-session-review` | Guided checklist to update docs, skills, agents |
+| **Competitor Research** | **`/competitor-research`** | **Full competitor intelligence: App Store + Play Store metadata, live website flows (desktop + mobile), Mobbin/pageflows UI captures, review sentiment (iTunes RSS, google-play-scraper, Reddit/X), feature matrix, gap analysis → HTML gallery or Figma board. Cowork-optimised (all questions upfront, runs autonomously).** |
 | **MCP Server Builder** | | |
 | New MCP Server | `/new-mcp-server` | Scaffold a new MCP server from Supabase tables with auth |
 | **App Template Factory** | | |
@@ -246,11 +247,10 @@ All three platforms use Supabase Auth with an **auth gate** pattern — unauthen
 
 Run `/supabase-auth-setup` to configure providers.
 
-## ChatKit Integration (AI Assistant)
+## AI Assistant (OpenAI Agents SDK)
 
-All three platforms expose an AI assistant tab powered by OpenAI ChatKit. Web uses native ChatKit React at `/assistant`; iOS/Android use `AppWebView` loading the deployed ChatKit page.
+The canonical AI stack is the self-hosted agent graph (ChatKit removed 2026-06-10). Web: `lib/agents/` + `/api/chat` SSE + `/chat` UI + `/admin` config screens. iOS: native `ChatView` streaming the same `/api/chat` endpoint with a Supabase Bearer JWT. Lightweight AI services (transform/transcribe) run as JWT-protected Supabase Edge Functions (`supabase/functions/`), consumed by iOS `TransformService`/`TranscribeService` and the web `/api/ai/*` routes. The Pokémon domain is demo content — strip it when scaffolding a real app.
 
-**Config:** `chatkit.config.json` at workspace root. Run `/chatkit-setup` to configure interactively. Middleware excludes `/assistant-embed` and `/api/chatkit` from auth redirect.
 
 ## Cross-Platform Conventions
 
