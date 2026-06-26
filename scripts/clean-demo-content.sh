@@ -51,11 +51,7 @@ for PLATFORM_DIR in "$TARGET_DIR/${APP_SLUG}-ios" "$TARGET_DIR/${APP_SLUG}-web" 
     continue
   fi
 
-  # Remove demo views only (NOT the OpenAI service layer or Audio recorder)
-  find "$PLATFORM_DIR" -name "AssistantView.swift" -delete 2>/dev/null || true
-  rm -rf "$PLATFORM_DIR/app/assistant" 2>/dev/null || true
-  rm -rf "$PLATFORM_DIR/app/assistant-embed" 2>/dev/null || true
-  rm -rf "$PLATFORM_DIR/app/api/chatkit" 2>/dev/null || true
+  # Remove demo views only (NOT the OpenAI transform/transcribe UI/service layer or Audio recorder)
 done
 
 # ── Replace ContentView.swift with clean starter ───────────────────────────
@@ -86,20 +82,20 @@ echo "  Cleaning navigation references..."
 # Web: AdaptiveNavShell — remove showcase/demo tabs
 WEB_NAV="$TARGET_DIR/${APP_SLUG}-web/app/components/Adaptive/AdaptiveNavShell.tsx"
 if [ -f "$WEB_NAV" ]; then
-  perl -ni -e 'print unless /components-showcase|editor-demo|input-demo|showcase|ComponentsShowcase|EditorDemo|InputDemo|assistant/i' "$WEB_NAV"
+  perl -ni -e 'print unless /components-showcase|editor-demo|input-demo|showcase|ComponentsShowcase|EditorDemo|InputDemo/i' "$WEB_NAV"
 fi
 
 # iOS: ContentView or AdaptiveNavShell — remove showcase/demo tabs
 for IOS_NAV in "$TARGET_DIR/${APP_SLUG}-ios"/**/AdaptiveNavShell.swift; do
   if [ -f "$IOS_NAV" ]; then
-    perl -ni -e 'print unless /ComponentsShowcase|AIDemoView|ShowcaseView|EditorDemo|AssistantView/i' "$IOS_NAV"
+    perl -ni -e 'print unless /ComponentsShowcase|ShowcaseView|EditorDemo/i' "$IOS_NAV"
   fi
 done
 
 # Android: MainActivity or AdaptiveNavShell — remove showcase/demo references
 for ANDROID_NAV in "$TARGET_DIR/${APP_SLUG}-android"/**/AdaptiveNavShell.kt "$TARGET_DIR/${APP_SLUG}-android"/**/MainActivity.kt; do
   if [ -f "$ANDROID_NAV" ]; then
-    perl -ni -e 'print unless /ShowcaseScreen|EditorScreen|showcase|editor.*demo|AssistantScreen/i' "$ANDROID_NAV"
+    perl -ni -e 'print unless /ShowcaseScreen|EditorScreen|showcase|editor.*demo/i' "$ANDROID_NAV"
   fi
 done
 

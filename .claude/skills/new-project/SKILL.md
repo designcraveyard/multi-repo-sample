@@ -193,7 +193,7 @@ The template contains **infrastructure** layers (keep) and **demo content** (rem
 | Category | Examples | Action |
 |----------|----------|--------|
 | **Infrastructure** | OpenAI/, Audio/, Components/, DesignTokens.swift | KEEP — used by MarkdownEditor and other components |
-| **Demo views** | ComponentsShowcaseView, AIDemoView, AssistantView, editor-demo/ | REMOVE — showcase UI for template development only |
+| **Demo views** | ComponentsShowcaseView, AIDemoView, editor-demo/ | REMOVE — showcase UI for template development only |
 | **Demo tabs** | Tabs for Components, Editor, AI Demo in AdaptiveNavShell | REMOVE — navigation references stripped |
 | **ContentView.swift** | 93K-character component showcase | REPLACE with clean starter from `templates/ContentView.swift.template` |
 

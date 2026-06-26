@@ -1,5 +1,5 @@
--- Remove the ChatKit demo table and the unused RAG source-document table (owner decision 2026-06-10).
--- job_preferences: only consumer is /assistant-embed (ChatKit), which is being removed.
+-- Remove obsolete demo and unused source-document tables (owner decision 2026-06-10).
+-- job_preferences: no retained production consumer.
 -- insight_reports: zero code references; intelligence_embeddings keeps denormalized entity
 -- fields and the search_intel RPC reads embeddings only, so RAG over chunks still works.
 -- CASCADE drops the intelligence_embeddings.entity_id FK constraint.

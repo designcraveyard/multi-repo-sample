@@ -2,7 +2,7 @@
 
 ## Context
 
-The `multi-repo-sample` workspace contains three cross-platform sub-repos (Next.js, iOS, Android) with 19+ components, design tokens, Supabase auth, ChatKit, and extensive Claude automation. The goal is to turn this into a **living app template** that can spawn new projects via an orchestrated system of scripts, Claude skills, and specialized agents.
+The `multi-repo-sample` workspace contains three cross-platform sub-repos (Next.js, iOS, Android) with 19+ components, design tokens, Supabase auth, and extensive Claude automation. The goal is to turn this into a **living app template** that can spawn new projects via an orchestrated system of scripts, Claude skills, and specialized agents.
 
 This is not a one-time scaffold — it's a factory where:
 - New projects are created from the template with full parameterization
@@ -132,8 +132,7 @@ The single source of truth for all replaceable values. Lives at repo root.
       "SUPABASE_ANON_KEY": { "description": "Supabase anonymous key", "required": false }
     },
     "deployment": {
-      "VERCEL_URL": { "description": "Vercel deployment URL", "required": false },
-      "CHATKIT_WORKFLOW_ID": { "description": "ChatKit workflow ID", "required": false }
+      "VERCEL_URL": { "description": "Vercel deployment URL", "required": false }
     },
     "design": {
       "FIGMA_FILE_KEY": { "description": "Figma design file key", "required": false },

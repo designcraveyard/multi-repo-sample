@@ -24,8 +24,7 @@
       "SUPABASE_ANON_KEY": { "description": "Supabase anonymous key", "required": false }
     },
     "deployment": {
-      "VERCEL_URL": { "description": "Vercel deployment URL", "required": false },
-      "CHATKIT_WORKFLOW_ID": { "description": "ChatKit workflow ID", "required": false }
+      "VERCEL_URL": { "description": "Vercel deployment URL", "required": false }
     },
     "design": {
       "FIGMA_FILE_KEY": { "description": "Figma design file key", "required": false },
@@ -43,7 +42,6 @@
   "replacement_priority": [
     "com.abhishekverma.multi-repo-ios",
     "com.abhishekverma.multirepo",
-    "wf_69157991bfd081909cc0815050b47abf0f93481201224b4b",
     "kqxiugkmkvymoegzxoye",
     "ZtcCQT96M2dJZjU35X8uMQ",
     "225246924892-j8isof6kj43geg9j54651kt2hd5c62al",
@@ -61,7 +59,6 @@
   "replacement_map": {
     "com.abhishekverma.multi-repo-ios": "{{BUNDLE_ID}}",
     "com.abhishekverma.multirepo": "{{PACKAGE_NAME}}",
-    "wf_69157991bfd081909cc0815050b47abf0f93481201224b4b": "{{CHATKIT_WORKFLOW_ID}}",
     "kqxiugkmkvymoegzxoye": "{{SUPABASE_PROJECT_REF}}",
     "ZtcCQT96M2dJZjU35X8uMQ": "{{FIGMA_FILE_KEY}}",
     "225246924892-j8isof6kj43geg9j54651kt2hd5c62al": "{{GOOGLE_IOS_CLIENT_ID}}",
@@ -80,12 +77,7 @@
     "app/components-showcase/",
     "app/editor-demo/",
     "app/input-demo/",
-    "app/assistant/",
-    "app/assistant-embed/",
-    "app/api/chatkit/",
     "Views/ComponentsShowcaseView.swift",
-    "Views/AIDemoView.swift",
-    "Views/AssistantView.swift",
     "feature/showcase/",
     "feature/editor/"
   ],
@@ -103,8 +95,6 @@
     "scaffold.config.json",
     "docs/plans/",
     "docs/ScaffoldingStrategy.md",
-    "Untitled/",
-    "OpenAISecrets.swift",
-    "OpenAISecrets.swift.template"
+    "Untitled/"
   ]
 }

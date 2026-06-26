@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
 
 ## Repository Structure
 
@@ -98,14 +98,14 @@ cd multi-repo-android
 - Two-layer design token system matching iOS/web (`PrimitiveColors` internal, `SemanticColors` public)
 - `WindowWidthSizeClass` for adaptive layouts (Compact vs Medium/Expanded)
 
-See `multi-repo-android/CLAUDE.md` for full platform details.
+See `multi-repo-android/AGENTS.md` for full platform details.
 <!-- PLATFORM:ANDROID:END -->
 
 ---
 
-## Claude Skills (Workspace Automation)
+## Codex Skills (Workspace Automation)
 
-Invoke these in any Claude session opened at the workspace root:
+Invoke these in any Codex session opened at the workspace root:
 
 | Skill | Invocation | Purpose |
 |-------|-----------|---------|
@@ -122,7 +122,7 @@ Invoke these in any Claude session opened at the workspace root:
 | Schema Design | `/schema-design` | Full guided entity design wizard with cross-platform model generation |
 | Add Migration | `/add-migration [description]` | Quick migration with model sync |
 | New Screen | `/new-screen <description>` | UI-only screen scaffold on all platforms |
-| PRD Update | `/prd-update [feature\|all]` | Update PRDs and CLAUDE.md files |
+| PRD Update | `/prd-update [feature\|all]` | Update PRDs and AGENTS.md files |
 | Git Push | `/git-push` | Commit and push all repos from workspace root |
 | Post-Session Review | `/post-session-review` | Guided checklist to update docs, skills, agents |
 | **Competitor Research** | **`/competitor-research`** | **Full competitor intelligence: App Store + Play Store metadata, live website flows (desktop + mobile), Mobbin/pageflows UI captures, review sentiment (iTunes RSS, google-play-scraper, Reddit/X), feature matrix, gap analysis → HTML gallery or Figma board. Cowork-optimised (all questions upfront, runs autonomously).** |
@@ -160,17 +160,17 @@ Invoke these in any Claude session opened at the workspace root:
 | `supabase-schema-validator` | Validates Swift/Kotlin models and TS types match live Supabase schema |
 | `schema-reviewer` | Reviews schema for normalization, indexes, RLS gaps, naming conventions |
 | `screen-reviewer` | Reviews screens for state handling, navigation, accessibility, parity |
-| `automation-architect` | Generates CLAUDE.md, hooks, skills, agents for scaffolded projects |
+| `automation-architect` | Generates AGENTS.md, hooks, skills, agents for scaffolded projects |
 | `tracker-agent` | Scans project artifacts and updates tracker.md completion status |
 | `mcp-server-reviewer` | Reviews MCP server directories for SDK patterns, auth, Supabase safety, logging |
 
 ## Plugins
 
-**Supabase Schema Builder** (`.claude/plugins/supabase-schema-builder/`): `/supabase-onboard`, `/schema-design`, `/add-migration`. Uses Supabase MCP for all schema operations.
+**Supabase Schema Builder** (`.Codex/plugins/supabase-schema-builder/`): `/supabase-onboard`, `/schema-design`, `/add-migration`. Uses Supabase MCP for all schema operations.
 
-**MCP Server Builder** (`.claude/plugins/mcp-server-builder/`): `/new-mcp-server` (8-phase scaffold wizard). Includes `mcp-server-reviewer` agent. Advisory hooks: `console-log-guard`, `auth-middleware-reminder`, `mcp-json-reminder`. Working demo at `mcp-server/`.
+**MCP Server Builder** (`.Codex/plugins/mcp-server-builder/`): `/new-mcp-server` (8-phase scaffold wizard). Includes `mcp-server-reviewer` agent. Advisory hooks: `console-log-guard`, `auth-middleware-reminder`, `mcp-json-reminder`. Working demo at `mcp-server/`.
 
-**Asset Gen** (`.claude/plugins/asset-gen/`): `generate.js`, `iterate.js`. OpenAI `gpt-image-1` pipeline for app icons, illustrations, empty states. Requires `OPENAI_API_KEY` in `.env.local`.
+**Asset Gen** (`.Codex/plugins/asset-gen/`): `generate.js`, `iterate.js`. OpenAI `gpt-image-1` pipeline for app icons, illustrations, empty states. Requires `OPENAI_API_KEY` in `.env.local`.
 
 ## Shared Documentation
 
@@ -215,7 +215,7 @@ node src/index.js connect     # Connect to Figma Desktop (yolo mode)
 | Find nodes by name | `node src/index.js find "Name"` |
 | Recreate URL in Figma | `node src/index.js recreate-url "URL"` |
 
-**Key rule:** Use `render` (not `eval`) for frames — it has smart positioning. See `figma-cli/CLAUDE.md` for full JSX syntax and component creation patterns.
+**Key rule:** Use `render` (not `eval`) for frames — it has smart positioning. See `figma-cli/AGENTS.md` for full JSX syntax and component creation patterns.
 
 **Workflow integration:** After `/design-token-sync` or `/generate-theme`, use `tokens preset shadcn` to push updated tokens back to Figma. After implementing components, use `render` + `node to-component` to create matching Figma components.
 
@@ -361,7 +361,7 @@ Sizes: `xs`=12 `sm`=16 `md`=20 `lg`=24 `xl`=32. See `docs/design-tokens.md#icon-
 
 ## Hooks (Automatic)
 
-All hooks fire automatically via `.claude/settings.json`:
+All hooks fire automatically via `.Codex/settings.json`:
 
 **Blocking (PreToolUse):**
 - `credential-guard` — blocks Supabase URLs and JWT keys in source files

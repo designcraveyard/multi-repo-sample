@@ -127,7 +127,7 @@ Only compare these template-generic docs (NOT project-specific ones):
 - `docs/components.md` (structure only — component status is project-specific)
 - `docs/design-tokens.md` (format updates only)
 
-**Never sync:** `CLAUDE.md`, `tracker.md`, `chatkit.config.json`, `.mcp.json`,
+**Never sync:** `CLAUDE.md`, `tracker.md`, `.mcp.json`,
 `docs/PRDs/`, `docs/personas/`, `docs/design/`, credentials files.
 
 ## Phase 3: Present Changes

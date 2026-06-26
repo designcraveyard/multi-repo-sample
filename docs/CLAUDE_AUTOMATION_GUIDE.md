@@ -38,7 +38,7 @@ The Claude Code automation system is built on **four layers**:
 ```
 
 **Key Numbers:**
-- **2 Plugins** (OpenAI Agent Builder, Supabase Schema Builder)
+- **1 Plugin** (Supabase Schema Builder)
 - **7 Workspace Agents** (design-system-sync, screen-reviewer, schema-reviewer, etc.)
 - **18 Workspace Skills** (new-screen, cross-platform-feature, figma-component-sync, etc.)
 - **12+ Hook Points** (PreToolUse, PostToolUse, Stop, Notification)
@@ -306,68 +306,7 @@ File: app/components/Button/Button.tsx
 
 Plugins are **modular packages** that bundle skills, agents, hooks, and reference docs together. They appear as a submenu in the skills list.
 
-### 1. OpenAI Agent Builder Plugin
-
-**Location:** `.claude/plugins/openai-agent-builder/`
-
-**What It Does:**
-- Scaffolds OpenAI Agent SDK projects (Python & TypeScript)
-- Provides templates for text, voice, multi-agent, and ChatKit agents
-- Guard hooks for API key safety and error handling
-- Reference documentation for SDK patterns
-
-**Structure:**
-```
-openai-agent-builder/
-  ├── plugin.json                    # Manifest (name, version, skills/agents/hooks)
-  ├── skills/
-  │   ├── agent-help/
-  │   │   └── SKILL.md               # Show available agent skills
-  │   ├── new-text-agent/
-  │   │   └── SKILL.md               # Scaffold Python/TS chat agent
-  │   ├── new-voice-agent/
-  │   │   └── SKILL.md               # Scaffold voice agent (Python RealtimeAgent)
-  │   ├── new-multi-agent/
-  │   │   └── SKILL.md               # Multi-agent orchestrator with handoffs
-  │   └── new-chatkit-agent/
-  │       └── SKILL.md               # ChatKit embedded UI agent
-  ├── agents/
-  │   ├── agent-code-reviewer.md     # Reviews agent code for SDK patterns
-  │   └── agent-security-checker.md  # Audits credentials & auth
-  ├── hooks/
-  │   ├── api-key-guard.py           # Blocks hardcoded API keys
-  │   ├── agent-error-handling.py    # Reminds on error handling
-  │   ├── zod-v4-check.py            # Enforces Zod v4+ in TS agents
-  │   ├── tracing-reminder.py        # Reminds on tracing/observability
-  │   └── guardrails-reminder.py     # Reminds on LLM guardrails
-  └── references/                    # SDK docs, patterns, templates
-      ├── python-agents-sdk.md
-      ├── typescript-agents-sdk.md
-      ├── chatkit-patterns.md
-      ├── guardrails-patterns.md
-      ├── voice-patterns.md
-      └── project-templates/         # 6 templates (text, voice, multi, ChatKit × 2)
-```
-
-**4 User-Invokable Skills:**
-1. `/agent-help` — List all agent builder capabilities
-2. `/new-text-agent` — Python or TypeScript chat agent
-3. `/new-voice-agent` — Voice agent with RealtimeAgent/VoicePipeline
-4. `/new-multi-agent` — Multi-agent system with triage handoffs
-5. `/new-chatkit-agent` — ChatKit UI agent (basic/custom/full)
-
-**3 Plugin Hooks:**
-- **PreToolUse: api-key-guard** — Blocks hardcoded OpenAI API keys
-- **PreToolUse: agent-error-handling** — Reminds on error handling patterns
-- **PreToolUse: zod-v4-check** — Blocks Zod v3 (requires v4+)
-
-**2 Plugin Agents:**
-- **agent-code-reviewer** — Reviews generated agent code for SDK best practices
-- **agent-security-checker** — Audits for exposed credentials/auth issues
-
----
-
-### 2. Supabase Schema Builder Plugin
+### 1. Supabase Schema Builder Plugin
 
 **Location:** `.claude/plugins/supabase-schema-builder/`
 
@@ -523,20 +462,6 @@ Workspace skills are stored at `.claude/skills/` and appear in the skills menu. 
 - **Use Case:** Adding a new user-facing feature
 - **Output:** Full scaffold + documentation
 
-#### `/new-ai-agent <description>`
-- **File:** `.claude/skills/new-ai-agent/SKILL.md`
-- **Purpose:** Scaffold AI agent powered by OpenAI Transform/Transcribe service
-- **Workflow:**
-  1. Takes agent description (e.g., "voice transcription assistant")
-  2. Creates TransformConfig in Supabase
-  3. Generates tool handlers (serverless functions)
-  4. Scaffolds UI on Web, iOS, Android
-  5. Wires agent into AppWebView (iOS/Android) and ChatKit (Web)
-- **Use Case:** Adding OpenAI Transform/Transcribe features
-- **Output:** Agent config + handlers + 3-platform UI
-
----
-
 ### 4. **Authentication & Database Skills**
 
 #### `/supabase-setup [project-ref]`
@@ -605,18 +530,6 @@ Workspace skills are stored at `.claude/skills/` and appear in the skills menu. 
   5. Show summary (repos pushed, commits made)
 - **Use Case:** When you want to push all changes at once
 - **Output:** All repos synced to remote
-
-#### `/chatkit-setup`
-- **File:** `.claude/skills/chatkit-setup/SKILL.md`
-- **Purpose:** Configure OpenAI ChatKit integration interactively
-- **Workflow:**
-  1. Update workflow ID in `chatkit.config.json`
-  2. Set theme (light/dark)
-  3. Configure deployment URL (for WebView)
-  4. Update iOS `AssistantView.swift` with URL
-  5. Update Android `AssistantScreen.kt` with URL
-- **Use Case:** When deploying ChatKit or changing configuration
-- **Output:** `chatkit.config.json` updated across platforms
 
 ---
 
@@ -1049,7 +962,6 @@ From `.claude/settings.local.json`:
 | | Stop (session end) | 2 | `.claude/settings.json` | On session end |
 | | Notification | 1 | `.claude/settings.json` | On idle |
 | **Plugins** | Supabase Schema Builder | 1 | `.claude/plugins/supabase-schema-builder/` | Manual invoke |
-| | OpenAI Agent Builder | 1 | `.claude/plugins/openai-agent-builder/` | Manual invoke |
 | **Skills** | Workspace Skills | 18 | `.claude/skills/` | `/command` invoke |
 | | Plugin Skills | 8 | `.claude/plugins/*/skills/` | `/plugin-skill` invoke |
 | **Agents** | Workspace Agents | 7 | `.claude/agents/` | Automatic via Task tool |
@@ -1141,7 +1053,6 @@ From `.claude/settings.local.json`:
 
 # Cross-Platform
 /cross-platform-feature UserProfile
-/new-ai-agent "Voice Transcription Assistant"
 
 # Auth & Database
 /supabase-setup abcdef123456
@@ -1151,18 +1062,12 @@ From `.claude/settings.local.json`:
 /prd-update UserProfile
 /post-session-review
 /git-push
-/chatkit-setup
 
 # Reference
 /ios-native-components
 /android-native-components
 
 # Plugin Skills
-/agent-help
-/new-text-agent
-/new-voice-agent
-/new-multi-agent
-/new-chatkit-agent
 /supabase-onboard
 /schema-design
 /add-migration "users table"
