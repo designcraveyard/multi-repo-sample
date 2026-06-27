@@ -128,7 +128,7 @@ Then run `npm run dev` briefly to confirm the server starts (will fail on missin
 
 **If Google OAuth was selected:**
 
-1. Generate a `scripts/get-token.mjs` script (copy from the demo at `mcp-server/scripts/get-token.mjs` and update paths as needed). This script:
+1. Generate a `scripts/get-token.mjs` script. This script:
    - Reads `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` from `.env`
    - Opens Google sign-in in the browser
    - Catches the callback on `http://localhost:3002/callback`
@@ -151,4 +151,3 @@ Finally, invoke the `mcp-server-reviewer` agent on the new server directory to p
 
 - [mcp-patterns.md](../../references/mcp-patterns.md) — SDK imports, tool/resource/prompt patterns
 - [auth-patterns.md](../../references/auth-patterns.md) — Google OAuth + API key middleware
-- `mcp-server/` in the workspace — working demo implementation to reference

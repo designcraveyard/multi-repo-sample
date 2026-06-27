@@ -46,7 +46,7 @@ Scan the repo for folders containing HTML files:
 
 ```
 Glob: docs/**/*.html
-Glob: **/*.html (exclude node_modules, .next, .git, figma-cli, figma-plugin-html-import)
+Glob: **/*.html (exclude node_modules, .next, .git, figma-cli)
 ```
 
 Build a list of candidate folders (any folder with 2+ HTML files). Present to the user:

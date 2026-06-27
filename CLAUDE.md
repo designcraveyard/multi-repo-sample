@@ -168,7 +168,7 @@ Invoke these in any Claude session opened at the workspace root:
 
 **Supabase Schema Builder** (`.claude/plugins/supabase-schema-builder/`): `/supabase-onboard`, `/schema-design`, `/add-migration`. Uses Supabase MCP for all schema operations.
 
-**MCP Server Builder** (`.claude/plugins/mcp-server-builder/`): `/new-mcp-server` (8-phase scaffold wizard). Includes `mcp-server-reviewer` agent. Advisory hooks: `console-log-guard`, `auth-middleware-reminder`, `mcp-json-reminder`. Working demo at `mcp-server/`.
+**MCP Server Builder** (`.claude/plugins/mcp-server-builder/`): `/new-mcp-server` (8-phase scaffold wizard). Includes `mcp-server-reviewer` agent. Advisory hooks: `console-log-guard`, `auth-middleware-reminder`, `mcp-json-reminder`.
 
 **Asset Gen** (`.claude/plugins/asset-gen/`): `generate.js`, `iterate.js`. OpenAI `gpt-image-1` pipeline for app icons, illustrations, empty states. Requires `OPENAI_API_KEY` in `.env.local`.
 

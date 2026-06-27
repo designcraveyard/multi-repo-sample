@@ -231,7 +231,7 @@ Build custom MCP (Model Context Protocol) servers that expose Supabase data to C
 
 ### Overview
 
-The workspace includes an MCP Server Builder plugin (`.claude/plugins/mcp-server-builder/`) and a working demo server (`mcp-server/`). The builder scaffolds a fully-wired Express + TypeScript MCP server from your Supabase tables.
+The workspace includes an MCP Server Builder plugin (`.claude/plugins/mcp-server-builder/`). The builder scaffolds a fully-wired Express + TypeScript MCP server from your Supabase tables.
 
 ### Quick Start
 
@@ -252,17 +252,6 @@ This runs an 8-phase wizard:
 | 7. Wire .mcp.json | Add entry to workspace `.mcp.json` |
 | 8. Install & Test | npm install, start server, run reviewer agent |
 
-### Demo Server (mcp-server/)
-
-The `mcp-server/` directory is a working reference implementation exposing the `profiles` table. Use it as a reference when building new servers or debugging issues.
-
-Key files:
-- `src/index.ts` — Express server with session management
-- `src/auth.ts` — Google OAuth middleware
-- `src/tools/profiles.ts` — Tool implementations
-- `src/resources/profiles.ts` — Resource implementations
-- `scripts/get-token.mjs` — Browser-based OAuth token acquisition
-
 ### Google OAuth Setup
 
 MCP servers authenticate via Google ID tokens. Setup steps:
@@ -281,7 +270,7 @@ MCP servers authenticate via Google ID tokens. Setup steps:
 
 3. **Get a token for testing:**
    ```bash
-   cd mcp-server
+   cd <server-name>
    node scripts/get-token.mjs
    # Opens browser → Google sign-in → prints ID token
    export GOOGLE_ID_TOKEN="eyJhbG..."
@@ -291,7 +280,7 @@ MCP servers authenticate via Google ID tokens. Setup steps:
    ```json
    {
      "mcpServers": {
-       "mcp-server-profiles": {
+      "<server-name>": {
          "type": "http",
          "url": "http://localhost:3001/mcp",
          "headers": {

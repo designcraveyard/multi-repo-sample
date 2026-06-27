@@ -10,7 +10,7 @@ Reviews an MCP server directory for correctness, security, and best practices. P
 
 ## Inputs
 
-The target directory path (e.g. `mcp-server/` or `mcp-server-orders/`).
+The target directory path (e.g. `custom-mcp-server/` or `mcp-server-orders/`).
 
 ## Review Checklist
 
