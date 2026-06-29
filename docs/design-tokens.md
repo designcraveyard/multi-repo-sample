@@ -191,61 +191,6 @@ Primitive tokens are documented for implementation parity only. Do not use them 
 | `--color-zinc-900` | `Color.colorZinc900` | `PrimitiveColors.colorZinc900` | `#18181B` | `#18181B` |
 | `--color-zinc-950` | `Color.colorZinc950` | `PrimitiveColors.colorZinc950` | `#09090B` | `#09090B` |
 
-## Legacy Aliases
-
-These aliases remain for older call sites. New component code should prefer the semantic token names above.
-
-| CSS Variable | Swift Name | Kotlin Name | Resolves To |
-|--------------|------------|-------------|-------------|
-| `--icon-brand` | `Color.appIconBrand` | `SemanticColors.iconsBrand` | `var(--icons-brand)` |
-| `--icon-error` | `Color.appIconError` | `SemanticColors.iconsError` | `var(--icons-error)` |
-| `--icon-inverse-muted` | `Color.appIconInverseMuted` | `SemanticColors.iconsInverseMuted` | `var(--icons-inverse-muted)` |
-| `--icon-inverse-primary` | `Color.appIconInversePrimary` | `SemanticColors.iconsInversePrimary` | `var(--icons-inverse-primary)` |
-| `--icon-inverse-secondary` | `Color.appIconInverseSecondary` | `SemanticColors.iconsInverseSecondary` | `var(--icons-inverse-secondary)` |
-| `--icon-muted` | `Color.appIconMuted` | `SemanticColors.iconsMuted` | `var(--icons-muted)` |
-| `--icon-on-brand-primary` | `Color.appIconOnBrandPrimary` | `SemanticColors.iconsOnBrandPrimary` | `var(--icons-on-brand-primary)` |
-| `--icon-primary` | `Color.appIconPrimary` | `SemanticColors.iconsPrimary` | `var(--icons-primary)` |
-| `--icon-secondary` | `Color.appIconSecondary` | `SemanticColors.iconsSecondary` | `var(--icons-secondary)` |
-| `--icon-success` | `Color.appIconSuccess` | `SemanticColors.iconsSuccess` | `var(--icons-success)` |
-| `--icon-warning` | `Color.appIconWarning` | `SemanticColors.iconsWarning` | `var(--icons-warning)` |
-| `--surface-accent-high-contrast` | `Color.appSurfaceAccentHighContrast` | `SemanticColors.surfacesAccentHighContrast` | `var(--surfaces-accent-high-contrast)` |
-| `--surface-accent-low-contrast` | `Color.appSurfaceAccentLowContrast` | `SemanticColors.surfacesAccentLowContrast` | `var(--surfaces-accent-low-contrast)` |
-| `--surface-accent-primary` | `Color.appSurfaceAccentPrimary` | `SemanticColors.surfacesAccentPrimary` | `var(--surfaces-accent-primary)` |
-| `--surface-base-high-contrast` | `Color.appSurfaceBaseHighContrast` | `SemanticColors.surfacesBaseHighContrast` | `var(--surfaces-base-high-contrast)` |
-| `--surface-base-low-contrast` | `Color.appSurfaceBaseLowContrast` | `SemanticColors.surfacesBaseLowContrast` | `var(--surfaces-base-low-contrast)` |
-| `--surface-base-primary` | `Color.appSurfaceBasePrimary` | `SemanticColors.surfacesBasePrimary` | `var(--surfaces-base-primary)` |
-| `--surface-brand` | `Color.appSurfaceBrand` | `SemanticColors.surfacesBrand` | `var(--surfaces-brand-interactive)` |
-| `--surface-brand-high-contrast` | `Color.appSurfaceBrandHighContrast` | `SemanticColors.surfacesBrandHighContrast` | `var(--surfaces-brand-interactive-high-contrast)` |
-| `--surface-brand-hover` | `Color.appSurfaceBrandHover` | `SemanticColors.surfacesBrandHover` | `var(--surfaces-brand-interactive-hover)` |
-| `--surface-brand-low-contrast` | `Color.appSurfaceBrandLowContrast` | `SemanticColors.surfacesBrandLowContrast` | `var(--surfaces-brand-interactive-low-contrast)` |
-| `--surface-brand-pressed` | `Color.appSurfaceBrandPressed` | `SemanticColors.surfacesBrandPressed` | `var(--surfaces-brand-interactive-pressed)` |
-| `--surface-brand-secondary-pressed` | `Color.appSurfaceBrandSecondaryPressed` | `SemanticColors.surfacesBrandSecondaryPressed` | `var(--surfaces-brand-interactive-low-contrast-pressed)` |
-| `--surface-error-hover` | `Color.appSurfaceErrorHover` | `SemanticColors.surfacesErrorHover` | `var(--surfaces-error-solid-hover)` |
-| `--surface-error-pressed` | `Color.appSurfaceErrorPressed` | `SemanticColors.surfacesErrorPressed` | `var(--surfaces-error-solid-pressed)` |
-| `--surface-error-solid` | `Color.appSurfaceErrorSolid` | `SemanticColors.surfacesErrorSolid` | `var(--surfaces-error-solid)` |
-| `--surface-error-subtle` | `Color.appSurfaceErrorSubtle` | `SemanticColors.surfacesErrorSubtle` | `var(--surfaces-error-subtle)` |
-| `--surface-inverse-high-contrast` | `Color.appSurfaceInverseHighContrast` | `SemanticColors.surfacesInverseHighContrast` | `var(--surfaces-inverse-high-contrast)` |
-| `--surface-inverse-low-contrast` | `Color.appSurfaceInverseLowContrast` | `SemanticColors.surfacesInverseLowContrast` | `var(--surfaces-inverse-low-contrast)` |
-| `--surface-inverse-primary` | `Color.appSurfaceInversePrimary` | `SemanticColors.surfacesInversePrimary` | `var(--surfaces-inverse-primary)` |
-| `--surface-success-hover` | `Color.appSurfaceSuccessHover` | `SemanticColors.surfacesSuccessHover` | `var(--surfaces-success-solid-hover)` |
-| `--surface-success-pressed` | `Color.appSurfaceSuccessPressed` | `SemanticColors.surfacesSuccessPressed` | `var(--surfaces-success-solid-pressed)` |
-| `--surface-success-solid` | `Color.appSurfaceSuccessSolid` | `SemanticColors.surfacesSuccessSolid` | `var(--surfaces-success-solid)` |
-| `--surface-success-subtle` | `Color.appSurfaceSuccessSubtle` | `SemanticColors.surfacesSuccessSubtle` | `var(--surfaces-success-subtle)` |
-| `--surface-warning-solid` | `Color.appSurfaceWarningSolid` | `SemanticColors.surfacesWarningSolid` | `var(--surfaces-warning-solid)` |
-| `--surface-warning-subtle` | `Color.appSurfaceWarningSubtle` | `SemanticColors.surfacesWarningSubtle` | `var(--surfaces-warning-subtle)` |
-| `--text-accent` | `Color.appTextAccent` | `SemanticColors.typographyAccent` | `var(--typography-accent)` |
-| `--text-brand` | `Color.appTextBrand` | `SemanticColors.typographyBrand` | `var(--typography-brand)` |
-| `--text-error` | `Color.appTextError` | `SemanticColors.typographyError` | `var(--typography-error)` |
-| `--text-inverse-muted` | `Color.appTextInverseMuted` | `SemanticColors.typographyInverseMuted` | `var(--typography-inverse-muted)` |
-| `--text-inverse-primary` | `Color.appTextInversePrimary` | `SemanticColors.typographyInversePrimary` | `var(--typography-inverse-primary)` |
-| `--text-inverse-secondary` | `Color.appTextInverseSecondary` | `SemanticColors.typographyInverseSecondary` | `var(--typography-inverse-secondary)` |
-| `--text-muted` | `Color.appTextMuted` | `SemanticColors.typographyMuted` | `var(--typography-muted)` |
-| `--text-on-brand-primary` | `Color.appTextOnBrandPrimary` | `SemanticColors.typographyOnBrandPrimary` | `var(--typography-on-brand-primary)` |
-| `--text-primary` | `Color.appTextPrimary` | `SemanticColors.typographyPrimary` | `var(--typography-primary)` |
-| `--text-secondary` | `Color.appTextSecondary` | `SemanticColors.typographySecondary` | `var(--typography-secondary)` |
-| `--text-success` | `Color.appTextSuccess` | `SemanticColors.typographySuccess` | `var(--typography-success)` |
-| `--text-warning` | `Color.appTextWarning` | `SemanticColors.typographyWarning` | `var(--typography-warning)` |
-
 ## Radius Tokens
 
 Desktop web overrides apply at `min-width: 768px`; iOS and Android use the base tier unless a component intentionally adapts shape.
@@ -389,7 +334,6 @@ Font family is Inter on web, iOS, and Android. Each role exposes size, line-heig
 
 - `AppColorPicker` contains raw selectable swatch values. Those are user-facing color choices, not styling tokens.
 - Markdown inline code and code blocks may use a high-contrast surface because they are filled content areas, not dividers.
-- Legacy aliases may appear in older files but should not be introduced in new component code.
 
 ## Validation Checklist
 
