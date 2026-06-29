@@ -158,3 +158,20 @@ AppTextBlock(body = "Some description text here.", metadata = "3 days ago")
 - `ListItem` — central content area
 
 It has no interactions, no state, and no child component dependencies.
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/patterns/TextBlock/TextBlock.tsx` | Present | `overline?: string`, `title?: string`, `subtext?: string`, `body?: string`, `metadata?: string`, `className?: string` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Patterns/AppTextBlock.swift` | Present | `overline: String? = nil`, `title: String? = nil`, `subtext: String? = nil`, `body: String? = nil`, `metadata: String? = nil` |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/patterns/AppTextBlock.kt` | Present | `modifier: Modifier = Modifier`, `overline: String? = null`, `title: String? = null`, `subtext: String? = null`, `body: String? = null`, `metadata: String? = null` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

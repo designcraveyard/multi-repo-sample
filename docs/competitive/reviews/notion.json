@@ -1,0 +1,53 @@
+{
+  "name": "Notion",
+  "ios": {
+    "trackId": 1232780281,
+    "rating": 4.78,
+    "reviews": 79261,
+    "price": "Free",
+    "developer": "Notion Labs, Incorporated",
+    "genre": "Productivity"
+  },
+  "android": {
+    "bundleId": "notion.id",
+    "rating": 4.0,
+    "reviews": "~500K+",
+    "installs": "10M+",
+    "developer": "Notion Labs",
+    "price": "Free"
+  },
+  "description": "AI-powered all-in-one workspace: notes, tasks, wikis, databases, projects, calendar. For individuals and teams. 100M+ users.",
+  "pricing": {
+    "free": "Unlimited storage (individual), 10 external guests, 7-day history, 5MB file limit, basic AI trial",
+    "plus": "$10/member/mo (annual) — unlimited collaborative blocks, unlimited files, 30-day history, integrations",
+    "business": "$20/member/mo (annual) — SAML SSO, AI agents, enterprise search, AI meeting notes, 90-day history",
+    "enterprise": "Custom — zero LLM data retention, SCIM, audit logs, unlimited history"
+  },
+  "web": {
+    "url": "https://notion.so",
+    "headline": "Your wiki, docs, & projects. Together.",
+    "features": ["Notes & Docs", "Wikis", "Databases", "Project Management", "Calendar", "AI writing assistant", "Team collaboration", "API access"]
+  },
+  "sentiment": {
+    "ios_rating": 4.78,
+    "android_rating": 4.0,
+    "top_praise": [
+      "Unmatched flexibility and customization — can build almost any workflow",
+      "Cross-device sync is seamless",
+      "Comprehensive tool — replaces Evernote, Trello, Google Docs, spreadsheets",
+      "Template ecosystem is massive",
+      "AI assistance for writing and brainstorming"
+    ],
+    "top_complaints": [
+      "Mobile app is near unusable — 3.2s average load time (36x slower than Obsidian)",
+      "Forced AI integration — intrusive buttons users can't hide",
+      "Data loss risks — accidental deletion hard to recover",
+      "Years of unresolved mobile bugs — freezing, jitter, crashes",
+      "Steep learning curve — not beginner-friendly",
+      "Price feels high for teams"
+    ],
+    "one_star_issues": ["Mobile crashes with minimal text", "30-second load times on some devices", "Screen jittery for months with no fix"],
+    "web_themes": ["Obsidian switchers praise privacy and offline; Notion users envy speed", "AI push alienating non-power users"],
+    "positioning": "The all-in-one workspace for knowledge workers and teams. Dominant market share but vulnerable on mobile experience and complexity."
+  }
+}

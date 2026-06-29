@@ -189,3 +189,20 @@ AppChip(
 `Chip` is typically consumed by `SegmentControlBar` rather than used directly. Use `SegmentControlBar` when you need a row of chips with unified selection state. Use standalone `Chip` only for one-off single chips.
 
 See also: [`SegmentControlBar`](./SegmentControlBar.md)
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Chip/Chip.tsx` | Present | `variant?: ChipVariant`, `size?: ChipSize`, `label: string`, `isActive?: boolean`, `leadingIcon?: ReactNode`, `trailingIcon?: ReactNode` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Chip/AppChip.swift` | Present | `label: String`, `variant: AppChipVariant = .chipTabs`, `size: AppChipSize = .md`, `isActive: Bool = false`, `leadingIcon: AnyView? = nil`, `trailingIcon: AnyView? = nil`, `isDisabled: Bool = false`, `action: @escaping () -> Void` |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppChip.kt` | Present | `label: String`, `onClick: () -> Unit`, `modifier: Modifier = Modifier`, `variant: ChipVariant = ChipVariant.ChipTabs`, `size: ChipSize = ChipSize.Md`, `isActive: Boolean = false`, `leadingIcon: ImageVector? = null`, `trailingIcon: ImageVector? = null`, plus 1 more |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

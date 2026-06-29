@@ -242,3 +242,20 @@ AppSegmentControlBarMulti(
 | Toggle between views (e.g. Day/Week/Month) | `segmentControl` |
 | Content category selection (e.g. All/Photos/Videos) | `chips` |
 | Additive content filters (e.g. Recent + Starred) | `filters` |
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/SegmentControlBar/SegmentControlBar.tsx` | Present | `items: SegmentItem[]`, `type?: SegmentBarType`, `size?: SegmentBarSize`, `value?: string \| string[]`, `defaultValue?: string \| string[]`, `onChange?: (value: string \| string[]) => void`, `className?: string` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/SegmentControlBar/AppSegmentControlBar.swift` | Present | `id: String, label: String) {`, `let paddingH: CGFloat`, `let paddingV: CGFloat`, `let font: Font`, `var spec: SegmentSizeSpec {`, `case .sm: return SegmentSizeSpec(paddingH: .space2, paddingV: .space1, font: .appCTASmall)`, `case .md: return SegmentSizeSpec(paddingH: .space3, paddingV: CGFloat.space1 + 2, font: .appCTAMedium)`, `case .lg: return SegmentSizeSpec(paddingH: .space4, paddingV: .space2, font: .appCTALarge)`, plus 10 more |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppSegmentControlBar.kt` | Present | `items: List<AppSegmentItem>`, `selected: String`, `onSelected: (String) -> Unit`, `modifier: Modifier = Modifier`, `type: AppSegmentBarType = AppSegmentBarType.SegmentControl`, `size: AppSegmentBarSize = AppSegmentBarSize.Md` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

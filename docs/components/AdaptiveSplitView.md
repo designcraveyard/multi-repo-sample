@@ -93,3 +93,20 @@ AdaptiveSplitView(
 
 - **Android:** Compact transitions use `AnimatedContent` with `slideInHorizontally`/`slideOutHorizontally`, providing visual continuity for the navigation context. The list and detail panes inherit accessibility semantics from their content composables. The divider in the regular layout is a decorative `Box` and does not receive focus.
 - **Web/iOS:** Not yet implemented -- when built, should follow the same patterns as `AdaptiveNavShell` and `AdaptiveSheet` for focus management and screen reader support.
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | — | Missing / not applicable | No implementation file found. |
+| iOS | — | Missing / not applicable | No implementation file found. |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/adaptive/AdaptiveSplitView.kt` | Present | See source file for the public API. |
+
+**Parity status:** Partial implementation (1/3 platforms).
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

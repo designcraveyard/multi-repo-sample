@@ -144,3 +144,20 @@ AppBadge(size = BadgeSize.Tiny, type = BadgeType.Success)
 | Shape | `rounded-full` / `.clipShape(Capsule())` |
 | Background | `--surfaces-*` (variant × subtle) |
 | Text | `--typography-*` (variant × subtle) |
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Badge/Badge.tsx` | Present | `size?: BadgeSize`, `type?: BadgeType`, `subtle?: boolean`, `label?: string \| number`, `className?: string` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Badge/AppBadge.swift` | Present | `label: String? = nil`, `size: AppBadgeSize = .md`, `type: AppBadgeType = .brand`, `subtle: Bool = false` |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppBadge.kt` | Present | `label: String? = null`, `modifier: Modifier = Modifier`, `size: BadgeSize = BadgeSize.Md`, `type: BadgeType = BadgeType.Brand`, `subtle: Boolean = false` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

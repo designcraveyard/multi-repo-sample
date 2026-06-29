@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Competitive Analysis — Todoist & Habitify</title>
+<style>
+  :root {
+    --bg: #0f0f13;
+    --surface: #1a1a22;
+    --surface2: #22222e;
+    --border: #2e2e3e;
+    --text: #e8e8f0;
+    --muted: #888899;
+    --accent: #7c6af7;
+    --accent2: #4fc3a1;
+    --red: #f06060;
+    --green: #5cb87a;
+    --yellow: #f0c060;
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f4f4f8;
+      --surface: #ffffff;
+      --surface2: #f0f0f5;
+      --border: #dddde8;
+      --text: #1a1a2e;
+      --muted: #666677;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* Layout */
+  .layout { display: flex; min-height: 100vh; }
+  .sidebar { width: 220px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 24px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  .sidebar h2 { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 0 20px 12px; }
+  .sidebar a { display: block; padding: 9px 20px; color: var(--text); text-decoration: none; font-size: 14px; border-left: 3px solid transparent; transition: all .15s; }
+  .sidebar a:hover, .sidebar a.active { background: var(--surface2); border-left-color: var(--accent); color: var(--accent); }
+  .sidebar .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+  main { flex: 1; padding: 40px 48px; max-width: 1100px; }
+
+  /* Header */
+  .page-header { margin-bottom: 48px; }
+  .page-header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+  .page-header p { color: var(--muted); font-size: 15px; }
+  .meta-pills { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .pill { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--muted); }
+
+  /* Competitor card */
+  .competitor-section { margin-bottom: 72px; scroll-margin-top: 24px; }
+  .competitor-header { display: flex; align-items: center; gap: 20px; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .app-icon { width: 56px; height: 56px; border-radius: 14px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
+  .app-meta h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .app-meta .tagline { color: var(--muted); font-size: 14px; }
+  .rating-badges { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 500; }
+  .badge .star { color: var(--yellow); }
+  .badge.price { color: var(--accent2); border-color: var(--accent2); }
+  .badge.platform { color: var(--muted); }
+
+  /* Headlines */
+  .web-headline { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 24px; }
+  .web-headline .headline-text { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+  .web-headline .sub { color: var(--muted); font-size: 13px; line-height: 1.5; }
+  .web-headline .cta-chip { display: inline-block; background: var(--accent); color: #fff; border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 600; margin-top: 10px; }
+
+  /* Screenshots */
+  .screenshots-section { margin-bottom: 28px; }
+  .screenshots-section h3 { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 14px; }
+  .tab-bar { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; font-size: 12px; cursor: pointer; color: var(--muted); transition: all .15s; }
+  .tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .screenshot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .screenshot-item { border-radius: var(--radius); overflow: hidden; background: var(--surface2); border: 1px solid var(--border); }
+  .screenshot-item img { width: 100%; display: block; object-fit: cover; transition: transform .2s; cursor: zoom-in; }
+  .screenshot-item img:hover { transform: scale(1.02); }
+  .screenshot-item .cap { padding: 10px 12px; font-size: 12px; color: var(--muted); }
+  .no-screenshot { display: flex; align-items: center; justify-content: center; height: 160px; color: var(--muted); font-size: 13px; }
+
+  /* Sentiment */
+  .sentiment-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+  @media (max-width: 680px) { .sentiment-row { grid-template-columns: 1fr; } }
+  .sentiment-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+  .sentiment-card h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; }
+  .sentiment-card.praise h4 { color: var(--green); }
+  .sentiment-card.complaints h4 { color: var(--red); }
+  .sentiment-card ul { list-style: none; padding: 0; }
+  .sentiment-card ul li { font-size: 13px; color: var(--text); padding: 6px 0; border-bottom: 1px solid var(--border); line-height: 1.4; }
+  .sentiment-card ul li:last-child { border-bottom: none; }
+  .sentiment-card ul li::before { margin-right: 8px; }
+  .sentiment-card.praise ul li::before { content: "✓"; color: var(--green); }
+  .sentiment-card.complaints ul li::before { content: "✗"; color: var(--red); }
+  .critical-issues { background: #2a1515; border: 1px solid #5a2020; border-radius: var(--radius); padding: 14px 18px; margin-bottom: 28px; }
+  .critical-issues h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--red); letter-spacing: .06em; margin-bottom: 8px; }
+  .critical-issues ul { list-style: none; }
+  .critical-issues ul li { font-size: 13px; color: #f08080; padding: 4px 0; }
+  .critical-issues ul li::before { content: "🔴 "; }
+
+  /* Feature matrix */
+  .matrix-section { margin-bottom: 48px; }
+  .matrix-section h2 { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th { text-align: left; padding: 10px 14px; background: var(--surface); border-bottom: 2px solid var(--border); font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+  thead th:first-child { color: var(--text); }
+  tbody td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tbody tr:hover td { background: var(--surface2); }
+  .check { color: var(--green); font-size: 15px; }
+  .cross { color: var(--red); font-size: 15px; }
+  .partial { color: var(--yellow); font-size: 13px; }
+  .feature-name { font-weight: 500; color: var(--text); }
+  .feature-group { background: var(--surface2); font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+
+  /* Pricing */
+  .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 48px; }
+  @media (max-width: 680px) { .pricing-grid { grid-template-columns: 1fr; } }
+  .pricing-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+  .pricing-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 14px; }
+  .pricing-tier { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+  .pricing-tier:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .pricing-tier .name { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 4px; }
+  .pricing-tier .amount { font-size: 20px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+  .pricing-tier .desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* Gap opportunities */
+  .gaps-section { margin-bottom: 48px; }
+  .gaps-section h2 { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+  .gap-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 12px; display: flex; gap: 16px; align-items: flex-start; }
+  .gap-rank { font-size: 22px; font-weight: 800; color: var(--accent); min-width: 32px; }
+  .gap-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .gap-content p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* Positioning */
+  .positioning-box { background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%); border: 1px solid var(--accent); border-radius: var(--radius); padding: 28px; margin-bottom: 48px; }
+  .positioning-box h2 { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: var(--accent); }
+  .positioning-box p { font-size: 14px; line-height: 1.7; color: var(--text); }
+
+  /* Lightbox */
+  .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.92); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 8px; object-fit: contain; }
+  .lightbox-close { position: absolute; top: 20px; right: 24px; font-size: 28px; color: #fff; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <nav class="sidebar">
+    <h2>Competitors</h2>
+    <a href="#overview">Overview</a>
+    <a href="#todoist">Todoist</a>
+    <a href="#habitify">Habitify</a>
+    <div class="divider"></div>
+    <h2>Analysis</h2>
+    <a href="#matrix">Feature Matrix</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#gaps">Gap Opportunities</a>
+    <a href="#positioning">Positioning</a>
+  </nav>
+
+  <main>
+    <!-- Header -->
+    <div class="page-header" id="overview">
+      <h1>Competitive Analysis</h1>
+      <p>Todoist &amp; Habitify — US Market · March 2026</p>
+      <div class="meta-pills">
+        <span class="pill">2 competitors</span>
+        <span class="pill">iOS · Android · Web</span>
+        <span class="pill">App Store + Play Store + Web captures</span>
+        <span class="pill">In-app flows (Google auth)</span>
+      </div>
+    </div>
+
+    <!-- Market Overview -->
+    <div class="positioning-box" style="border-color: var(--border); margin-bottom: 48px;">
+      <h2 style="color: var(--text);">Market Overview</h2>
+      <p>The productivity and habit-tracking app market is dominated by feature-rich incumbents suffering from complexity creep, aggressive paywalls, and mobile performance issues. Todoist leads personal task management with 50M+ users but faces growing backlash from a December 2025 price hike (25–40%) and catastrophic update bugs causing data loss. Habitify is the analytics-first habit tracker with strong integrations, but a 3-habit free cap and notification overload are eroding new user conversion. Both markets show clear demand for apps that are reliable, fair in pricing, and work seamlessly on mobile.</p>
+    </div>
+
+    <!-- TODOIST -->
+    <section class="competitor-section" id="todoist">
+      <div class="competitor-header">
+        <div class="app-icon">✅</div>
+        <div class="app-meta">
+          <h2>Todoist</h2>
+          <div class="tagline">The world's #1 to-do list app · Doist Inc. · 50M+ users</div>
+          <div class="rating-badges">
+            <span class="badge"><span class="star">⭐</span> 4.80 iOS (124K reviews)</span>
+            <span class="badge"><span class="star">⭐</span> 4.6 Android (297K reviews) · Editors' Choice</span>
+            <span class="badge price">Free → $4/mo</span>
+            <span class="badge platform">iOS · Android · Web · macOS · Windows · 10M+ installs</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Web headline -->
+      <div class="web-headline">
+        <div class="headline-text">"Clarity, finally."</div>
+        <div class="sub">Join 50+ million professionals who simplify work and life with the world's #1 to-do list app.</div>
+        <span class="cta-chip">Start for free →</span>
+      </div>
+
+      <!-- Screenshots -->
+      <div class="screenshots-section">
+        <h3>Screenshots</h3>
+        <div class="tab-bar">
+          <div class="tab active" onclick="showTab('todoist', 'web', this)">Web</div>
+          <div class="tab" onclick="showTab('todoist', 'android', this)">Play Store</div>
+          <div class="tab" onclick="showTab('todoist', 'ios', this)">iOS</div>
+        </div>
+        <div id="todoist-web" class="screenshot-grid">
+          <div class="screenshot-item">
+            <img src="screenshots/todoist/web/desktop-home.png" alt="Todoist desktop homepage" loading="lazy" onclick="openLightbox(this.src)">
+            <div class="cap">Desktop — Homepage</div>
+          </div>
+          <div class="screenshot-item">
+            <img src="screenshots/todoist/web/desktop-features.png" alt="Todoist desktop features" loading="lazy" onclick="openLightbox(this.src)">
+            <div class="cap">Desktop — Features/Pricing</div>
+          </div>
+          <div class="screenshot-item">
+            <img src="screenshots/todoist/web/mobile-home.png" alt="Todoist mobile homepage" loading="lazy" onclick="openLightbox(this.src)">
+            <div class="cap">Mobile — Homepage</div>
+          </div>
+          <div class="screenshot-item" id="todoist-dashboard-web">
+            <div class="no-screenshot">Dashboard capture in progress...</div>
+          </div>
+        </div>
+        <div id="todoist-android" class="screenshot-grid" style="display:none">
+          <div class="screenshot-item">
+            <img src="screenshots/todoist/android/playstore-listing.png" alt="Todoist Play Store" loading="lazy" onclick="openLightbox(this.src)">
+            <div class="cap">Play Store — Listing</div>
+          </div>
+        </div>
+        <div id="todoist-ios" class="screenshot-grid" style="display:none">
+          <div class="no-screenshot">iOS App Store screenshots not available via API for this app.</div>
+        </div>
+      </div>
+
+      <!-- Sentiment -->
+      <div class="sentiment-row">
+        <div class="sentiment-card praise">
+          <h4>Top Praise</h4>
+          <ul>
+            <li>Powerful organization for GTD / power users</li>
+            <li>Natural language task entry ("every third Thursday")</li>
+            <li>Cross-platform sync — all devices seamlessly</li>
+            <li>ADHD-friendly — helps users with scattered brains</li>
+            <li>Voice input (Ramble) for hands-free capture</li>
+            <li>Multi-year loyalty — users describe it as "app of my life"</li>
+          </ul>
+        </div>
+        <div class="sentiment-card complaints">
+          <h4>Top Complaints</h4>
+          <ul>
+            <li>Data loss from forced updates — most severe recurring issue</li>
+            <li>UI redesign hides inbox; navigation confusing after update</li>
+            <li>Broken notifications, widgets, swipe gestures post-update</li>
+            <li>AI features added instead of fixing existing bugs</li>
+            <li>Reminders paywalled; subscription pressure escalating</li>
+            <li>Dec 2025 price hike (25–40%) driving users to TickTick</li>
+          </ul>
+        </div>
+      </div>
+      <div class="critical-issues">
+        <h4>1-Star Critical Issues</h4>
+        <ul>
+          <li>Complete task deletion after forced update — no recovery option</li>
+          <li>No login available after update for paid subscribers</li>
+          <li>Years of task history gone with zero customer support response</li>
+        </ul>
+      </div>
+
+      <!-- Flow map -->
+      <div class="web-headline" style="margin-bottom: 0;">
+        <div style="font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: .06em;">Web User Flow</div>
+        <div style="font-size: 13px; line-height: 1.8; color: var(--text);">
+          <strong>Landing</strong> → "Start for free" →
+          <strong>Signup</strong> (Email / Google / Apple) →
+          <strong>Onboarding</strong> (goals: personal / work / both) →
+          <strong>Inbox / Today view</strong> →
+          <strong>Add Task</strong> (natural language + due date) →
+          <strong>Projects</strong> → Calendar / Filters →
+          <strong>Upgrade prompt</strong> (hit 5-project limit)
+        </div>
+      </div>
+    </section>
+
+    <!-- HABITIFY -->
+    <section class="competitor-section" id="habitify">
+      <div class="competitor-header">
+        <div class="app-icon">🔄</div>
+        <div class="app-meta">
+          <h2>Habitify</h2>
+          <div class="tagline">Analytics-first habit tracker · Unstatic Ltd Co · 2M+ users</div>
+          <div class="rating-badges">
+            <span class="badge"><span class="star">⭐</span> 4.6 iOS (6.7K reviews)</span>
+            <span class="badge"><span class="star">⭐</span> 4.1 Android (6.14K reviews)</span>
+            <span class="badge price">Free → $4.99/mo · $64.99 lifetime</span>
+            <span class="badge platform">iOS · Android · macOS · Web · Apple Watch · 500K+ installs</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Web headline -->
+      <div class="web-headline">
+        <div class="headline-text">"Build Better Habits, Build a Better Life"</div>
+        <div class="sub">Harness the power of our personalized habit tracker app to streamline your everyday routines and achieve your goals.</div>
+        <span class="cta-chip">Try Habitify Free →</span>
+      </div>
+
+      <!-- Screenshots -->
+      <div class="screenshots-section">
+        <h3>Screenshots</h3>
+        <div class="tab-bar">
+          <div class="tab active" onclick="showTab('habitify', 'web', this)">Web</div>
+          <div class="tab" onclick="showTab('habitify', 'android', this)">Play Store</div>
+          <div class="tab" onclick="showTab('habitify', 'ios', this)">iOS</div>
+        </div>
+        <div id="habitify-web" class="screenshot-grid">
+          <div class="screenshot-item">
+            <img src="screenshots/habitify/web/desktop-home.png" alt="Habitify desktop homepage" loading="lazy" onclick="openLightbox(this.src)">
+            <div class="cap">Desktop — Homepage</div>
+          </div>
+          <div class="screenshot-item">
+            <img src="screenshots/habitify/web/desktop-features.png" alt="Habitify desktop features" loading="lazy" onclick="openLightbox(this.src)">
+            <div class="cap">Desktop — Features</div>
+          </div>
+          <div class="screenshot-item">
+            <img src="screenshots/habitify/web/mobile-home.png" alt="Habitify mobile homepage" loading="lazy" onclick="openLightbox(this.src)">
+            <div class="cap">Mobile — Homepage</div>
+          </div>
+          <div class="screenshot-item" id="habitify-dashboard-web">
+            <div class="no-screenshot">Dashboard capture in progress...</div>
+          </div>
+        </div>
+        <div id="habitify-android" class="screenshot-grid" style="display:none">
+          <div class="screenshot-item">
+            <img src="screenshots/habitify/android/playstore-listing.png" alt="Habitify Play Store" loading="lazy" onclick="openLightbox(this.src)">
+            <div class="cap">Play Store — Listing</div>
+          </div>
+        </div>
+        <div id="habitify-ios" class="screenshot-grid" style="display:none">
+          <div class="no-screenshot">iOS App Store screenshots not available via API for this app.</div>
+        </div>
+      </div>
+
+      <!-- Sentiment -->
+      <div class="sentiment-row">
+        <div class="sentiment-card praise">
+          <h4>Top Praise</h4>
+          <ul>
+            <li>Best-in-class analytics — trends, streaks, calendar heatmaps</li>
+            <li>Cross-platform with Apple Watch support</li>
+            <li>Health integrations — Apple Health, Google Fit sync</li>
+            <li>Automation depth — Zapier, IFTTT, API access</li>
+            <li>Social features — monthly challenges, leaderboards</li>
+            <li>Time-of-day habit grouping (Morning / Afternoon / Evening)</li>
+          </ul>
+        </div>
+        <div class="sentiment-card complaints">
+          <h4>Top Complaints</h4>
+          <ul>
+            <li>3-habit cap on free tier — feels like a bait-and-switch</li>
+            <li>Cannot disable push notifications per habit</li>
+            <li>Widget sync bugs — visual doesn't match actual completion data</li>
+            <li>Steep learning curve — UI not intuitive for new users</li>
+            <li>Apple Health integration removed in one update then restored</li>
+            <li>Annoying confirmation prompts with no way to disable</li>
+          </ul>
+        </div>
+      </div>
+      <div class="critical-issues">
+        <h4>1-Star Critical Issues</h4>
+        <ul>
+          <li>3-habit free limit discovered after setup — users feel deceived</li>
+          <li>Widgets showing wrong data even after reinstall</li>
+        </ul>
+      </div>
+
+      <!-- Flow map -->
+      <div class="web-headline" style="margin-bottom: 0;">
+        <div style="font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: .06em;">Web User Flow</div>
+        <div style="font-size: 13px; line-height: 1.8; color: var(--text);">
+          <strong>Landing</strong> → "Try Habitify Free" →
+          <strong>Signup</strong> (Email / Google / Apple) →
+          <strong>Onboarding</strong> (habit suggestions by category) →
+          <strong>Dashboard</strong> (Morning / Afternoon / Evening groupings) →
+          <strong>Log habit</strong> (checkbox / timer) →
+          <strong>Analytics</strong> (streak calendar, weekly trends) →
+          <strong>Upgrade prompt</strong> (4th habit added)
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature Matrix -->
+    <section class="matrix-section" id="matrix">
+      <h2>Feature Matrix</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Todoist</th>
+            <th>Habitify</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="3" class="feature-group">Platforms</td></tr>
+          <tr><td class="feature-name">iOS app</td><td><span class="check">✅</span></td><td><span class="check">✅</span></td></tr>
+          <tr><td class="feature-name">Android app</td><td><span class="check">✅</span></td><td><span class="check">✅</span></td></tr>
+          <tr><td class="feature-name">Web app</td><td><span class="check">✅</span></td><td><span class="check">✅</span></td></tr>
+          <tr><td class="feature-name">macOS app</td><td><span class="check">✅</span></td><td><span class="check">✅</span></td></tr>
+          <tr><td class="feature-name">Apple Watch</td><td><span class="check">✅</span></td><td><span class="check">✅</span></td></tr>
+          <tr><td class="feature-name">Windows / Linux</td><td><span class="check">✅</span></td><td><span class="cross">❌</span></td></tr>
+
+          <tr><td colspan="3" class="feature-group">Core Functionality</td></tr>
+          <tr><td class="feature-name">Natural language input</td><td><span class="check">✅</span></td><td><span class="cross">❌</span></td></tr>
+          <tr><td class="feature-name">Recurring tasks / habits</td><td><span class="check">✅</span></td><td><span class="check">✅</span></td></tr>
+          <tr><td class="feature-name">Subtasks / checklists</td><td><span class="check">✅</span></td><td><span class="cross">❌</span></td></tr>
+          <tr><td class="feature-name">Habit streaks</td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
+          <tr><td class="feature-name">Time-of-day grouping</td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
+          <tr><td class="feature-name">Calendar view</td><td><span class="check">✅ (Pro)</span></td><td><span class="check">✅</span></td></tr>
+          <tr><td class="feature-name">Offline mode</td><td><span class="check">✅</span></td><td><span class="partial">Partial</span></td></tr>
+          <tr><td class="feature-name">Voice input</td><td><span class="check">✅ (Ramble)</span></td><td><span class="cross">❌</span></td></tr>
+
+          <tr><td colspan="3" class="feature-group">Analytics & Tracking</td></tr>
+          <tr><td class="feature-name">Progress analytics / trends</td><td><span class="partial">Basic</span></td><td><span class="check">✅ Advanced</span></td></tr>
+          <tr><td class="feature-name">Mood tracking</td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
+          <tr><td class="feature-name">Activity history</td><td><span class="partial">1 week (free)</span></td><td><span class="check">✅</span></td></tr>
+          <tr><td class="feature-name">Heatmap / calendar view</td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
+
+          <tr><td colspan="3" class="feature-group">Integrations</td></tr>
+          <tr><td class="feature-name">Apple Health sync</td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
+          <tr><td class="feature-name">Google Fit sync</td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
+          <tr><td class="feature-name">Calendar integration</td><td><span class="check">✅ (Google + Outlook)</span></td><td><span class="check">✅ (Apple Cal)</span></td></tr>
+          <tr><td class="feature-name">Zapier / IFTTT</td><td><span class="check">✅</span></td><td><span class="check">✅</span></td></tr>
+          <tr><td class="feature-name">API access</td><td><span class="check">✅</span></td><td><span class="check">✅</span></td></tr>
+
+          <tr><td colspan="3" class="feature-group">Social & Collaboration</td></tr>
+          <tr><td class="feature-name">Team collaboration</td><td><span class="check">✅ (Business plan)</span></td><td><span class="cross">❌</span></td></tr>
+          <tr><td class="feature-name">Social challenges</td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
+          <tr><td class="feature-name">Leaderboards</td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
+
+          <tr><td colspan="3" class="feature-group">Monetization</td></tr>
+          <tr><td class="feature-name">Free tier generosity</td><td><span class="partial">5 projects</span></td><td><span class="partial">3 habits (stingy)</span></td></tr>
+          <tr><td class="feature-name">Lifetime purchase</td><td><span class="cross">❌</span></td><td><span class="check">✅ $64.99</span></td></tr>
+          <tr><td class="feature-name">AI features</td><td><span class="check">✅ (Task Assist)</span></td><td><span class="cross">❌</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" style="margin-bottom: 48px;">
+      <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 20px;">Pricing Comparison</h2>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3>Todoist</h3>
+          <div class="pricing-tier">
+            <div class="name">Free</div>
+            <div class="amount">$0</div>
+            <div class="desc">5 projects · Basic reminders · 1 week activity history · 3 filter views</div>
+          </div>
+          <div class="pricing-tier">
+            <div class="name">Pro</div>
+            <div class="amount">$4/mo <span style="font-size: 13px; color: var(--muted);">annual ($48/yr)</span></div>
+            <div class="desc">300 projects · Calendar layout · Custom reminders · Unlimited history · Task Assist AI · Deadlines</div>
+          </div>
+          <div class="pricing-tier">
+            <div class="name">Business</div>
+            <div class="amount">$6/user/mo <span style="font-size: 13px; color: var(--muted);">annual</span></div>
+            <div class="desc">Team workspaces · 500 team projects · Roles & permissions · Centralized billing</div>
+          </div>
+          <div style="margin-top: 14px; padding: 10px; background: #2a1515; border-radius: 6px; font-size: 12px; color: #f08080;">
+            ⚠️ Price raised 25–40% in Dec 2025 — fueling competitor migration
+          </div>
+        </div>
+        <div class="pricing-card">
+          <h3>Habitify</h3>
+          <div class="pricing-tier">
+            <div class="name">Free</div>
+            <div class="amount">$0</div>
+            <div class="desc">Up to 3 habits only · Basic tracking · Limited analytics</div>
+          </div>
+          <div class="pricing-tier">
+            <div class="name">Premium Monthly</div>
+            <div class="amount">$4.99/mo</div>
+            <div class="desc">Unlimited habits · Full analytics · All integrations · Social challenges · Mood tracking</div>
+          </div>
+          <div class="pricing-tier">
+            <div class="name">Premium Annual</div>
+            <div class="amount">~$29.99/yr</div>
+            <div class="desc">Everything in monthly, billed annually</div>
+          </div>
+          <div class="pricing-tier">
+            <div class="name">Lifetime</div>
+            <div class="amount">$64.99</div>
+            <div class="desc">One-time purchase · All current and future features · No recurring billing</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gap Opportunities -->
+    <section class="gaps-section" id="gaps">
+      <h2>Gap Opportunities</h2>
+
+      <div class="gap-item">
+        <div class="gap-rank">#1</div>
+        <div class="gap-content">
+          <h4>Bulletproof sync — zero data loss</h4>
+          <p>Todoist's single biggest vulnerability. 15%+ of 1-star reviews cite complete data deletion after a forced update. No competitor currently markets "guaranteed data integrity" as a first-class feature. A local-first or conflict-free CRDT sync story wins trust immediately.</p>
+        </div>
+      </div>
+
+      <div class="gap-item">
+        <div class="gap-rank">#2</div>
+        <div class="gap-content">
+          <h4>Generous free tier</h4>
+          <p>Both competitors aggressively gate (5 projects / 3 habits). Users call it a bait-and-switch. A free tier with 15+ items or habits converts and retains better — users who actually get value upgrade. TickTick is already eating Todoist's lunch here.</p>
+        </div>
+      </div>
+
+      <div class="gap-item">
+        <div class="gap-rank">#3</div>
+        <div class="gap-content">
+          <h4>Tasks + Habits in one app</h4>
+          <p>Neither competitor bridges task management (Todoist's domain) with habit formation (Habitify's domain). Many users run both apps simultaneously. A combined "do your 3 most important tasks + track your key habits" offering addresses a real dual-app fatigue.</p>
+        </div>
+      </div>
+
+      <div class="gap-item">
+        <div class="gap-rank">#4</div>
+        <div class="gap-content">
+          <h4>Mobile-first native experience</h4>
+          <p>Todoist mobile feels like a port. Habitify widgets are buggy. Both apps are web-first. A truly native mobile experience (fast, beautiful, gesture-native) is a clear differentiator in a space where most usage is on-the-go.</p>
+        </div>
+      </div>
+
+      <div class="gap-item">
+        <div class="gap-rank">#5</div>
+        <div class="gap-content">
+          <h4>Granular notification control</h4>
+          <p>Habitify users specifically cannot disable push notifications per habit. Todoist notification bugs are recurring. Precise, per-item notification settings are a small but high-signal win that reduces churn for power users.</p>
+        </div>
+      </div>
+
+      <div class="gap-item">
+        <div class="gap-rank">#6</div>
+        <div class="gap-content">
+          <h4>Opt-in AI (not forced)</h4>
+          <p>Both Todoist and Notion users complain about intrusive AI. Todoist added "Task Assist" while leaving core bugs unfixed. An AI-optional approach with clear value (when enabled) is strongly preferred and growing as a differentiator.</p>
+        </div>
+      </div>
+
+      <div class="gap-item">
+        <div class="gap-rank">#7</div>
+        <div class="gap-content">
+          <h4>Lifetime pricing option</h4>
+          <p>Habitify's $64.99 lifetime is praised. Todoist offers no lifetime option. Subscription fatigue is real — a one-time purchase option attracts price-conscious users who would otherwise churn.</p>
+        </div>
+      </div>
+
+      <div class="gap-item">
+        <div class="gap-rank">#8</div>
+        <div class="gap-content">
+          <h4>Transparent, stable pricing</h4>
+          <p>Todoist's December 2025 price hike drove major community backlash and migration to TickTick. A public pricing commitment ("no surprise increases") is a trust signal that costs nothing but builds long-term loyalty.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Positioning -->
+    <section id="positioning">
+      <div class="positioning-box">
+        <h2>Positioning Recommendation</h2>
+        <p>The market gap is a <strong>cross-category app combining lightweight task management with habit tracking</strong>, optimized for mobile, with a generous free tier, no surprise pricing changes, and bulletproof data reliability. Both Todoist and Habitify have strong brand loyalty but share the same vulnerability: users trust them until one bad update destroys that trust completely.</p>
+        <br>
+        <p>A new entrant with transparent versioning, local-first or conflict-free sync, and a clear <strong>"tasks + habits"</strong> value proposition can carve meaningful share from users who currently use both apps. The Ivy Lee Method (3-most-important things per day) combined with habit streaks is an underserved positioning not owned by either competitor — and 3 Things (Google Play, 100K+ installs) proves there is demand for the minimalist angle.</p>
+      </div>
+    </section>
+
+    <div style="padding: 24px 0; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px;">
+      Generated 2026-03-13 · Sources: iTunes Search API, Play Store, Web Playwright captures, App Store reviews, G2/Capterra
+    </div>
+  </main>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <span class="lightbox-close" onclick="closeLightbox()">✕</span>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+function showTab(competitor, tab, el) {
+  // Hide all tabs for this competitor
+  document.getElementById(competitor + '-web').style.display = 'none';
+  document.getElementById(competitor + '-android').style.display = 'none';
+  document.getElementById(competitor + '-ios').style.display = 'none';
+  // Remove active from all tabs in this bar
+  el.closest('.tab-bar').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  // Show selected
+  document.getElementById(competitor + '-' + tab).style.display = 'grid';
+  el.classList.add('active');
+}
+
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// Highlight sidebar based on scroll
+const sections = document.querySelectorAll('section[id], div[id]');
+const sidebarLinks = document.querySelectorAll('.sidebar a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+  sidebarLinks.forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

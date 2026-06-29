@@ -144,3 +144,20 @@ AppThumbnail(size = AppThumbnailSize.Xl, rounded = true) {
 // Generic silhouette (no image, no fallback)
 AppThumbnail(size = AppThumbnailSize.Sm, rounded = true)
 ```
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Thumbnail/Thumbnail.tsx` | Present | `src?: string`, `alt: string`, `size?: ThumbnailSize`, `rounded?: boolean`, `children?: React.ReactNode`, `className?: string` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Thumbnail/AppThumbnail.swift` | Present | `url: URL? = nil`, `image: Image? = nil`, `size: AppThumbnailSize = .md`, `rounded: Bool = false`, `accessibilityLabel: String = ""` |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppThumbnail.kt` | Present | `modifier: Modifier = Modifier`, `imageUrl: String? = null`, `size: AppThumbnailSize = AppThumbnailSize.Md`, `rounded: Boolean = false`, `contentDescription: String = ""`, `fallback: (@Composable () -> Unit)? = null` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

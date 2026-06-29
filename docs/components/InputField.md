@@ -13,7 +13,7 @@ A styled form input with a floating label, hint text, validation states, and a f
 
 The slot layout (left→right):
 ```
-[leadingLabel?] [leadingSeparator?] [leadingIcon?] | text input | [trailingIcon?] [trailingSeparator?] [trailingLabel?]
+[leadingLabel?/leadingSlot?] [leadingSeparator?] [leadingIcon?] | text input | [trailingIcon?] [trailingSeparator?] [trailingLabel?/trailingSlot?]
 ```
 
 Validation state icons are auto-injected into the trailing position when a non-default `state` is set and no explicit trailing slot is occupied.
@@ -78,6 +78,12 @@ Same as InputField except no slot props. Adds:
 | `hint` | `String?` | `null` | Helper / error text below |
 | `leadingIcon` | `ImageVector?` | `null` | Icon left of input |
 | `trailingIcon` | `ImageVector?` | `null` | Icon right of input |
+| `leadingSlot` | `@Composable (() -> Unit)?` | `null` | Embedded accessory before the text input, such as `AppNativePicker` or `AppLabel` |
+| `trailingSlot` | `@Composable (() -> Unit)?` | `null` | Embedded accessory after the text input |
+| `leadingSeparator` | `Boolean` | `false` | 1dp divider after leadingSlot |
+| `trailingSeparator` | `Boolean` | `false` | 1dp divider before trailingSlot |
+| `keyboardOptions` | `KeyboardOptions` | `KeyboardOptions.Default` | Keyboard/input type configuration |
+| `variant` | `AppInputFieldVariant` | `Default` | `Default` or `Bare` divider-only mode |
 | `isDisabled` | `Boolean` | `false` | Disable interaction |
 
 ### Android — `AppTextField` (multiline)
@@ -290,3 +296,20 @@ AppTextField(
 - State icons are `aria-hidden` (conveyed via `hint` text)
 - iOS: label tied to `TextField` via `.accessibilityLabel`
 - Android: `label` maps to Material 3 `OutlinedTextField` label with built-in TalkBack support; `hint` is announced as supporting text; error state sets `isError` for proper semantics
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/InputField/InputField.tsx` | Present | `label?: string`, `hint?: string`, `state?: InputFieldState`, `leadingLabel?: ReactNode`, `trailingLabel?: ReactNode`, `leadingPicker?: ReactNode`, `trailingPicker?: ReactNode`, `leadingIcon?: ReactNode`, plus 5 more |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/InputField/AppInputField.swift` | Present | `text: Binding<String>`, `label: String? = nil`, `placeholder: String = ""`, `state: AppInputFieldState = .default`, `hint: String? = nil`, `leadingIcon: AnyView? = nil`, `trailingIcon: AnyView? = nil`, `leadingLabel: AnyView? = nil`, plus 7 more |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppInputField.kt` | Present | `text: String`, `onTextChange: (String) -> Unit`, `modifier: Modifier = Modifier`, `label: String? = null`, `placeholder: String = ""`, `state: AppInputFieldState = AppInputFieldState.Default`, `hint: String? = null`, `leadingIcon: ImageVector? = null`, plus 8 more |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

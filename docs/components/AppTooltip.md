@@ -126,3 +126,20 @@ AppTooltip(
 - **Web:** Radix Tooltip provides keyboard focus trigger and ARIA tooltip role; `TooltipProvider` with delay prevents accidental triggers; content announced by screen readers.
 - **iOS:** `.popover()` content is announced by VoiceOver; `.presentationCompactAdaptation(.popover)` ensures the bubble stays compact on iPhone rather than expanding to a sheet.
 - **Android:** `PlainTooltip` is announced by TalkBack on long-press; programmatic mode uses `LaunchedEffect` to sync visibility with `TooltipState`.
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Native/AppTooltip.tsx` | Present | `children: ReactNode`, `tipText?: string`, `tipContent?: ReactNode`, `side?: "top" \| "bottom" \| "left" \| "right"`, `open?: boolean`, `onOpenChange?: (open: boolean) => void`, `className?: string` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Native/AppTooltip.swift` | Present | See source file for the public API. |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/native/AppTooltip.kt` | Present | `text: String`, `modifier: Modifier = Modifier`, `isVisible: Boolean? = null`, `onDismiss: (() -> Unit)? = null`, `content: @Composable () -> Unit` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

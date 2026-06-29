@@ -165,3 +165,20 @@ AppRadioButton(
 - **Web:** Hidden native `<input type="radio">`; RadioGroup has `role="radiogroup"`; keyboard navigation with arrow keys within group
 - **iOS:** Button with `.accessibilityValue("Selected"/"Not selected")`; haptic feedback on tap; group uses environment keys for coordination
 - **Android:** Material 3 RadioButton with built-in TalkBack support; role and selection state announced automatically
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/RadioButton/RadioButton.tsx` | Present | `checked?: boolean`, `onChange?: (checked: boolean) => void`, `label?: string`, `value?: string` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/RadioButton/AppRadioButton.swift` | Present | `checked: Bool = false`, `label: String? = nil`, `value: String? = nil`, `disabled: Bool = false`, `onChange: ((Bool) -> Void)? = nil` |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppRadioButton.kt` | Present | `selected: Boolean`, `onClick: () -> Unit`, `modifier: Modifier = Modifier`, `label: String? = null`, `enabled: Boolean = true` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

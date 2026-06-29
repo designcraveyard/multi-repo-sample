@@ -105,3 +105,20 @@ AppProgressLoader(
 - **Web:** Indefinite spinner has `role="status"` and `aria-label` (defaults to "Loading"); definite bar has `role="progressbar"` with `aria-valuenow`, `aria-valuemin`, and `aria-valuemax`.
 - **iOS:** SwiftUI `ProgressView` provides VoiceOver announcements natively for both circular and linear styles.
 - **Android:** Material 3 `CircularProgressIndicator` and `LinearProgressIndicator` include built-in semantics for TalkBack.
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Native/AppProgressLoader.tsx` | Present | `label?: string`, `className?: string` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Native/AppProgressLoader.swift` | Present | See source file for the public API. |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/native/AppProgressLoader.kt` | Present | `modifier: Modifier = Modifier`, `variant: ProgressVariant = ProgressVariant.Indefinite`, `label: String? = null` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

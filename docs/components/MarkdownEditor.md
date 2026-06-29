@@ -270,3 +270,20 @@ The iOS implementation is a full custom UITextView stack with the following help
 - **Web:** `role="textbox"` with `aria-multiline="true"`; `aria-invalid` set to `"true"` on error state; `aria-describedby` links to hint text element; `aria-label` falls back to the `label` prop or `"Markdown editor"`; BubbleMenu and toolbar buttons have `title` attributes for tooltips.
 - **iOS:** Built on `UITextView` which provides native VoiceOver support; label and hint are announced via accessibility properties; toolbar buttons are accessible as standard UI elements.
 - **Android:** Built on `RichTextEditor` from compose-rich-editor which provides built-in Compose semantics; label and hint are linked via content description; toolbar buttons have `contentDescription` set for TalkBack.
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/MarkdownEditor/MarkdownEditor.tsx` | Present | `value: string`, `onChange: (markdown: string) => void`, `label?: string`, `hint?: string`, `state?: InputFieldState`, `placeholder?: string`, `minHeight?: number`, `maxHeight?: number`, plus 5 more |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/MarkdownEditor/AppMarkdownEditor.swift` | Present | `text: Binding<String>`, `label: String? = nil`, `placeholder: String = ""`, `state: AppInputFieldState = .default`, `hint: String? = nil`, `minHeight: CGFloat = 200`, `maxHeight: CGFloat? = nil`, `isDisabled: Bool = false`, plus 1 more |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppMarkdownEditor.kt` | Present | `value: String`, `onValueChange: (String) -> Unit`, `modifier: Modifier = Modifier`, `placeholder: String = ""`, `label: String? = null`, `hint: String? = null`, `state: MarkdownEditorState = MarkdownEditorState.Default`, `enabled: Boolean = true` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

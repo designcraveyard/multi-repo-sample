@@ -90,3 +90,20 @@ AppPageHeader(
 
 - **iOS:** `.navigationTitle` is announced by VoiceOver; trailing toolbar items are reachable via VoiceOver navigation; tint color applied to back chevron and action buttons.
 - **Android:** `TopAppBar` provides TalkBack support; navigation icon has "Navigate back" content description; action icons use their `contentDescription` field for TalkBack announcements.
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Native/AppPageHeader.tsx` | Present | `title: string`, `navigationIcon?: IconProps["name"]`, `onNavigationClick?: () => void`, `actions?: HeaderAction[]` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Native/AppPageHeader.swift` | Present | See source file for the public API. |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/native/AppPageHeader.kt` | Present | `title: String`, `navigationIcon: ImageVector? = null`, `onNavigationClick: (() -> Unit)? = null`, `actions: List<HeaderAction> = emptyList()` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

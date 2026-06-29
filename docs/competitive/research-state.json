@@ -1,0 +1,10 @@
+{
+  "competitors": ["Todoist", "Habitify", "3 Things", "Notion", "ChatGPT"],
+  "region": "us",
+  "output_mode": "gallery",
+  "credentials": {
+    "Todoist": { "method": "google", "email": "verma.ab23694@gmail.com" },
+    "Habitify": { "method": "google", "email": "verma.ab23694@gmail.com" }
+  },
+  "phases_complete": []
+}

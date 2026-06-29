@@ -46,9 +46,8 @@ A custom-styled checkbox with three states: unchecked, checked (checkmark), and 
 | `onCheckedChange` | `(Boolean) -> Unit` | — | **Required.** Change handler |
 | `modifier` | `Modifier` | `Modifier` | Compose modifier |
 | `label` | `String?` | `null` | Optional text label |
+| `indeterminate` | `Boolean` | `false` | Shows horizontal dash instead of checkmark |
 | `enabled` | `Boolean` | `true` | Interactive; false = 0.5 opacity |
-
-> **Note:** Android does not support the indeterminate state.
 
 ---
 
@@ -58,7 +57,7 @@ A custom-styled checkbox with three states: unchecked, checked (checkmark), and 
 |-------|--------|
 | Unchecked | Border only, empty interior |
 | Checked | Brand fill + white checkmark icon |
-| Indeterminate | Brand fill + white horizontal dash (web/iOS only) |
+| Indeterminate | Brand fill + white horizontal dash |
 | Disabled | 0.5 opacity, non-interactive |
 
 ---
@@ -142,3 +141,20 @@ AppCheckbox(
 - **Web:** Hidden native `<input type="checkbox">` with `sr-only` class; `aria-checked="mixed"` for indeterminate state; keyboard activation via `Space`
 - **iOS:** Button with `.accessibilityValue("Mixed"/"Checked"/"Unchecked")`; haptic feedback on tap
 - **Android:** Material 3 Checkbox with built-in TalkBack support; `role = Checkbox` in semantics
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Checkbox/Checkbox.tsx` | Present | `checked?: boolean`, `onChange?: (checked: boolean) => void`, `label?: string`, `indeterminate?: boolean` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Checkbox/AppCheckbox.swift` | Present | `checked: Bool = false`, `indeterminate: Bool = false`, `label: String? = nil`, `disabled: Bool = false`, `onChange: ((Bool) -> Void)? = nil` |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppCheckbox.kt` | Present | `checked: Boolean`, `onCheckedChange: (Boolean) -> Unit`, `modifier: Modifier = Modifier`, `label: String? = null`, `indeterminate: Boolean = false`, `enabled: Boolean = true` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

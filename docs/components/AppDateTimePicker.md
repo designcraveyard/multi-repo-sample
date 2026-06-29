@@ -118,3 +118,20 @@ AppDateTimePicker(
 - **Web:** Trigger button includes a CalendarBlank Phosphor icon with `aria-hidden`; calendar grid from react-day-picker has built-in keyboard navigation and ARIA roles.
 - **iOS:** SwiftUI `DatePicker` provides full VoiceOver support natively; haptic feedback on value changes.
 - **Android:** Material 3 `DatePickerDialog` and `TimePicker` have built-in TalkBack support with labeled confirm/cancel actions.
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Native/AppDateTimePicker.tsx` | Present | `min?: Date`, `disabled?: boolean`, `className?: string` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Native/AppDateTimePicker.swift` | Present | See source file for the public API. |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/native/AppDateTimePicker.kt` | Present | `value: Long?`, `onValueChange: (Long) -> Unit`, `modifier: Modifier = Modifier`, `mode: DateTimeMode = DateTimeMode.Date`, `label: String? = null` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

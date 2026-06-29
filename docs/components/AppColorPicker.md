@@ -94,3 +94,20 @@ AppColorPicker(
 - **Web:** `aria-label` on the color input (defaults to "Color picker" or the label text); `<label>` is linked to the input via `useId()` for click-to-focus.
 - **iOS:** SwiftUI `ColorPicker` provides full VoiceOver support for the swatch and the system color wheel; haptic feedback on color changes.
 - **Android:** Each swatch circle is clickable with implicit semantics; selected swatch is visually distinguished by a brand-colored border. No dedicated content descriptions on individual swatches.
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Native/AppColorPicker.tsx` | Present | `value: string`, `onChange: (value: string) => void`, `label?: string`, `disabled?: boolean`, `className?: string` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Native/AppColorPicker.swift` | Present | See source file for the public API. |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/native/AppColorPicker.kt` | Present | `value: Color`, `onValueChange: (Color) -> Unit`, `modifier: Modifier = Modifier`, `label: String? = null`, `showOpacity: Boolean = false` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

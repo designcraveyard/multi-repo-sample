@@ -149,3 +149,20 @@ AdaptiveNavShell(
 - **Web:** `role="navigation"` with `aria-label="Main"` on both sidebar and bottom nav; `aria-current="page"` on active tab; `aria-label` on collapse/expand toggle
 - **iOS:** `.accessibilityLabel` on each sidebar item; `.accessibilityAddTraits(.isSelected)` on active tab; collapse button has `accessibilityLabel("Collapse sidebar")` / `accessibilityLabel("Expand sidebar")`
 - **Android:** `semantics { role = Role.Tab; selected = isActive; contentDescription = tab.label }` on each sidebar item; `contentDescription` on collapse/expand toggle
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Adaptive/AdaptiveNavShell.tsx` | Present | `tabs: NavTab[]`, `selectedTab: number`, `onTabChange: (tabId: number) => void`, `children: ReactNode` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Adaptive/AdaptiveNavShell.swift` | Present | `selectedTab: Binding<Int>`, `tabs: [AppNavTab]` |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/adaptive/AdaptiveNavShell.kt` | Present | See source file for the public API. |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

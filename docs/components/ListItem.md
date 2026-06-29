@@ -265,3 +265,20 @@ AppListItem(
 - Badge is decorative but readable by screen reader via its text content
 - Consider wrapping a list of `ListItem`s in a `<ul>`/`<li>` structure on web for proper list semantics
 - Android: TalkBack reads title + subtitle as a combined row; trailing actions have independent semantics via Material 3 built-in support
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/patterns/ListItem/ListItem.tsx` | Present | `src: string`, `trailing?: ListItemTrailing`, `divider?: boolean`, `className?: string` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Patterns/AppListItem.swift` | Present | `url: URL? = nil`, `accessibilityLabel: String? = nil`, `size: AppThumbnailSize = .sm`, `rounded: Bool = false` |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/patterns/AppListItem.kt` | Present | `title: String`, `modifier: Modifier = Modifier`, `subtitle: String? = null`, `body: String? = null`, `metadata: String? = null`, `thumbnail: AppThumbnailConfig? = null`, `trailing: AppListItemTrailing? = null`, `divider: Boolean = false` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

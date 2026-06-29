@@ -105,3 +105,20 @@ AppCarousel(itemCount = 3, style = CarouselStyle.ScrollSnap, showDots = false) {
 - **Web:** Dot indicators have `role="tablist"` and `role="tab"` with `aria-selected` and `aria-label`; prev/next buttons have accessible labels; current slide announced as "Slide X of Y".
 - **iOS:** `TabView` provides VoiceOver page navigation; haptic feedback fires on each page change; dot taps jump to the target page.
 - **Android:** `HorizontalPager` supports TalkBack swipe navigation; haptic feedback fires on page changes; dots are clickable with no explicit content descriptions (position communicated via visual state).
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Native/AppCarousel.tsx` | Present | `items: ReactNode[]`, `style?: "paged" \| "scrollSnap"`, `showDots?: boolean`, `showNavButtons?: boolean`, `prevLabel?: string`, `nextLabel?: string`, `className?: string` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Native/AppCarousel.swift` | Present | See source file for the public API. |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/native/AppCarousel.kt` | Present | `itemCount: Int`, `modifier: Modifier = Modifier`, `style: CarouselStyle = CarouselStyle.Paged`, `showDots: Boolean = true`, `content: @Composable (page: Int) -> Unit` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

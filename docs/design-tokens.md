@@ -1,398 +1,400 @@
 # Design Token Specification
 
-Canonical reference for all shared design tokens.
-Sourced from **Figma "bubbles-kit" › Semantic collection** (NeutralLight = light mode | NeutralDark = dark mode).
+Canonical cross-platform reference for the shared design system. Last refreshed: **2026-06-29**.
 
-**Source of truth:** `multi-repo-nextjs/app/globals.css` (CSS custom properties)
-**iOS output:** `multi-repo-ios/multi-repo-ios/DesignTokens.swift`
-**Android output:** `multi-repo-android/app/src/main/java/.../ui/theme/DesignTokens.kt`
-**Figma file:** `bubbles-kit` (key: `ZtcCQT96M2dJZjU35X8uMQ`) › Semantic collection
+**Source of truth:** `multi-repo-nextjs/app/globals.css`  
+**iOS mirror:** `multi-repo-ios/multi-repo-ios/DesignTokens.swift`  
+**Android mirror:** `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/theme/DesignTokens.kt`  
+**Figma file:** `bubbles-kit` (`ZtcCQT96M2dJZjU35X8uMQ`)
 
-_Run `/design-token-sync` after any change to `globals.css` to regenerate the Swift file and update this table._
+## Architecture
 
----
+The system uses a two-layer model across all platforms. Primitive tokens are raw palette values and belong only in token definition files. Semantic tokens describe product intent and are the only color tokens allowed in component and screen code.
 
-## Surfaces
+| Layer | Web | iOS | Android | Use |
+|------|-----|-----|---------|-----|
+| Primitive | `--color-*` | `Color.color*` | `PrimitiveColors.*` | Token files only |
+| Semantic color | `--surfaces-*`, `--typography-*`, `--icons-*`, `--border-*` | `Color.surfaces*`, `Color.typography*`, `Color.icons*`, `Color.border*` | `SemanticColors.*` | Components and screens |
+| Dimensions | `--space-*`, `--radius-*` | `CGFloat.space*`, `CGFloat.radius*` | `Spacing.*`, `Radius.*` | Layout, sizing, shape |
+| Typography | `--typography-*-size/leading/weight` | `Font.app*` | `AppTypography.*` | Text styles |
 
-| CSS Variable | Swift Name | Kotlin Name | Light Value | Dark Value | Semantic Meaning |
-|-------------|-----------|-------------|-------------|------------|------------------|
-| `--surface-base-primary` | `Color.appSurfaceBasePrimary` | `SemanticColors.surfacesBasePrimary` | `#FFFFFF` | `#000000` | Primary background |
-| `--surface-base-low-contrast` | `Color.appSurfaceBaseLowContrast` | `SemanticColors.surfacesBaseLowContrast` | `#F5F5F5` | `#171717` | Subtle background (slightly different from primary) |
-| `--surface-base-high-contrast` | `Color.appSurfaceBaseHighContrast` | `SemanticColors.surfacesBaseHighContrast` | `#E5E5E5` | `#262626` | **DEPRECATED: Use border tokens instead.** Higher contrast surface (see note below) |
-| `--surface-inverse-primary` | `Color.appSurfaceInversePrimary` | `SemanticColors.surfacesInversePrimary` | `#000000` | `#FFFFFF` |
-| `--surface-inverse-low-contrast` | `Color.appSurfaceInverseLowContrast` | `SemanticColors.surfacesInverseLowContrast` | `#171717` | `#F5F5F5` |
-| `--surface-inverse-high-contrast` | `Color.appSurfaceInverseHighContrast` | `SemanticColors.surfacesInverseHighContrast` | `#262626` | `#E5E5E5` |
-| `--surface-brand` | `Color.appSurfaceBrand` | `SemanticColors.surfacesBrand` | `#09090B` | `#FAFAFA` |
-| `--surface-brand-low-contrast` | `Color.appSurfaceBrandLowContrast` | `SemanticColors.surfacesBrandLowContrast` | `#E4E4E7` | `#27272A` |
-| `--surface-brand-high-contrast` | `Color.appSurfaceBrandHighContrast` | `SemanticColors.surfacesBrandHighContrast` | `#D4D4D8` | `#3F3F46` |
-| `--surface-brand-hover` | `Color.appSurfaceBrandHover` | `SemanticColors.surfacesBrandHover` | `#27272A` | `#E4E4E7` |
-| `--surface-brand-pressed` | `Color.appSurfaceBrandPressed` | `SemanticColors.surfacesBrandPressed` | `#3F3F46` | `#A1A1AA` |
-| `--surface-accent-primary` | `Color.appSurfaceAccentPrimary` | `SemanticColors.surfacesAccentPrimary` | `#4F46E5` | `#818CF8` |
-| `--surface-accent-low-contrast` | `Color.appSurfaceAccentLowContrast` | `SemanticColors.surfacesAccentLowContrast` | `#C7D2FE` | `#3730A3` |
-| `--surface-accent-high-contrast` | `Color.appSurfaceAccentHighContrast` | `SemanticColors.surfacesAccentHighContrast` | `#A5B4FC` | `#4338CA` |
-| `--surface-success-solid` | `Color.appSurfaceSuccessSolid` | `SemanticColors.surfacesSuccessSolid` | `#16A34A` | `#86EFAC` |
-| `--surface-success-subtle` | `Color.appSurfaceSuccessSubtle` | `SemanticColors.surfacesSuccessSubtle` | `#DCFCE7` | `#052E16` |
-| `--surface-warning-solid` | `Color.appSurfaceWarningSolid` | `SemanticColors.surfacesWarningSolid` | `#D97706` | `#FCD34D` |
-| `--surface-warning-subtle` | `Color.appSurfaceWarningSubtle` | `SemanticColors.surfacesWarningSubtle` | `#FEF3C7` | `#431407` |
-| `--surface-error-solid` | `Color.appSurfaceErrorSolid` | `SemanticColors.surfacesErrorSolid` | `#DC2626` | `#FCA5A5` |
-| `--surface-error-subtle` | `Color.appSurfaceErrorSubtle` | `SemanticColors.surfacesErrorSubtle` | `#FEE2E2` | `#450A0A` |
+## Semantic Color Tokens
 
-### Important: Semantic Token Guidelines
+Resolved values show the effective primitive hex in light and dark modes.
 
-**DO NOT** use `Surfaces/BaseHighContrast` and `Surfaces/BaseLowContrastPressed` interchangeably, even if they share the same hex value. They have distinct semantic meanings:
+| CSS Variable | Swift Name | Kotlin Name | Light | Dark |
+|--------------|------------|-------------|-------|------|
+| `--border-active` | `Color.borderActive` | `SemanticColors.borderActive` | `#0A0A0A` | `#FAFAFA` |
+| `--border-brand` | `Color.borderBrand` | `SemanticColors.borderBrand` | `#09090B` | `#FAFAFA` |
+| `--border-default` | `Color.borderDefault` | `SemanticColors.borderDefault` | `#E5E5E5` | `#262626` |
+| `--border-error` | `Color.borderError` | `SemanticColors.borderError` | `#DC2626` | `#FCA5A5` |
+| `--border-muted` | `Color.borderMuted` | `SemanticColors.borderMuted` | `#F5F5F5` | `#171717` |
+| `--border-success` | `Color.borderSuccess` | `SemanticColors.borderSuccess` | `#16A34A` | `#86EFAC` |
+| `--border-warning` | `Color.borderWarning` | `SemanticColors.borderWarning` | `#D97706` | `#FCD34D` |
+| `--icons-accent` | `Color.iconsAccent` | `SemanticColors.iconsAccent` | `#4338CA` | `#A5B4FC` |
+| `--icons-black` | `Color.iconsBlack` | `SemanticColors.iconsBlack` | `#000000` | `#000000` |
+| `--icons-brand` | `Color.iconsBrand` | `SemanticColors.iconsBrand` | `#09090B` | `#FAFAFA` |
+| `--icons-error` | `Color.iconsError` | `SemanticColors.iconsError` | `#EF4444` | `#F87171` |
+| `--icons-inverse-muted` | `Color.iconsInverseMuted` | `SemanticColors.iconsInverseMuted` | `#262626` | `#A3A3A3` |
+| `--icons-inverse-primary` | `Color.iconsInversePrimary` | `SemanticColors.iconsInversePrimary` | `#FAFAFA` | `#0A0A0A` |
+| `--icons-inverse-secondary` | `Color.iconsInverseSecondary` | `SemanticColors.iconsInverseSecondary` | `#A3A3A3` | `#525252` |
+| `--icons-muted` | `Color.iconsMuted` | `SemanticColors.iconsMuted` | `#A3A3A3` | `#404040` |
+| `--icons-on-brand-primary` | `Color.iconsOnBrandPrimary` | `SemanticColors.iconsOnBrandPrimary` | `#FAFAFA` | `#0A0A0A` |
+| `--icons-primary` | `Color.iconsPrimary` | `SemanticColors.iconsPrimary` | `#0A0A0A` | `#FAFAFA` |
+| `--icons-secondary` | `Color.iconsSecondary` | `SemanticColors.iconsSecondary` | `#525252` | `#A3A3A3` |
+| `--icons-success` | `Color.iconsSuccess` | `SemanticColors.iconsSuccess` | `#16A34A` | `#4ADE80` |
+| `--icons-warning` | `Color.iconsWarning` | `SemanticColors.iconsWarning` | `#F59E0B` | `#FBBF24` |
+| `--icons-white` | `Color.iconsWhite` | `SemanticColors.iconsWhite` | `#FFFFFF` | `#FFFFFF` |
+| `--surfaces-accent-high-contrast` | `Color.surfacesAccentHighContrast` | `SemanticColors.surfacesAccentHighContrast` | `#A5B4FC` | `#4338CA` |
+| `--surfaces-accent-high-contrast-hover` | `Color.surfacesAccentHighContrastHover` | `SemanticColors.surfacesAccentHighContrastHover` | `#818CF8` | `#4F46E5` |
+| `--surfaces-accent-high-contrast-pressed` | `Color.surfacesAccentHighContrastPressed` | `SemanticColors.surfacesAccentHighContrastPressed` | `#6366F1` | `#6366F1` |
+| `--surfaces-accent-low-contrast` | `Color.surfacesAccentLowContrast` | `SemanticColors.surfacesAccentLowContrast` | `#C7D2FE` | `#3730A3` |
+| `--surfaces-accent-low-contrast-hover` | `Color.surfacesAccentLowContrastHover` | `SemanticColors.surfacesAccentLowContrastHover` | `#A5B4FC` | `#4338CA` |
+| `--surfaces-accent-low-contrast-pressed` | `Color.surfacesAccentLowContrastPressed` | `SemanticColors.surfacesAccentLowContrastPressed` | `#818CF8` | `#4F46E5` |
+| `--surfaces-accent-primary` | `Color.surfacesAccentPrimary` | `SemanticColors.surfacesAccentPrimary` | `#4F46E5` | `#818CF8` |
+| `--surfaces-accent-primary-hover` | `Color.surfacesAccentPrimaryHover` | `SemanticColors.surfacesAccentPrimaryHover` | `#4338CA` | `#A5B4FC` |
+| `--surfaces-accent-primary-pressed` | `Color.surfacesAccentPrimaryPressed` | `SemanticColors.surfacesAccentPrimaryPressed` | `#3730A3` | `#C7D2FE` |
+| `--surfaces-base-high-contrast` | `Color.surfacesBaseHighContrast` | `SemanticColors.surfacesBaseHighContrast` | `#E5E5E5` | `#262626` |
+| `--surfaces-base-high-contrast-hover` | `Color.surfacesBaseHighContrastHover` | `SemanticColors.surfacesBaseHighContrastHover` | `#D4D4D4` | `#525252` |
+| `--surfaces-base-high-contrast-pressed` | `Color.surfacesBaseHighContrastPressed` | `SemanticColors.surfacesBaseHighContrastPressed` | `#A3A3A3` | `#737373` |
+| `--surfaces-base-low-contrast` | `Color.surfacesBaseLowContrast` | `SemanticColors.surfacesBaseLowContrast` | `#F5F5F5` | `#171717` |
+| `--surfaces-base-low-contrast-hover` | `Color.surfacesBaseLowContrastHover` | `SemanticColors.surfacesBaseLowContrastHover` | `#E5E5E5` | `#262626` |
+| `--surfaces-base-low-contrast-pressed` | `Color.surfacesBaseLowContrastPressed` | `SemanticColors.surfacesBaseLowContrastPressed` | `#D4D4D4` | `#525252` |
+| `--surfaces-base-primary` | `Color.surfacesBasePrimary` | `SemanticColors.surfacesBasePrimary` | `#FFFFFF` | `#000000` |
+| `--surfaces-base-primary-hover` | `Color.surfacesBasePrimaryHover` | `SemanticColors.surfacesBasePrimaryHover` | `#F5F5F5` | `#262626` |
+| `--surfaces-base-primary-pressed` | `Color.surfacesBasePrimaryPressed` | `SemanticColors.surfacesBasePrimaryPressed` | `#E5E5E5` | `#404040` |
+| `--surfaces-brand-interactive` | `Color.surfacesBrandInteractive` | `SemanticColors.surfacesBrandInteractive` | `#09090B` | `#FAFAFA` |
+| `--surfaces-brand-interactive-high-contrast` | `Color.surfacesBrandInteractiveHighContrast` | `SemanticColors.surfacesBrandInteractiveHighContrast` | `#D4D4D8` | `#3F3F46` |
+| `--surfaces-brand-interactive-high-contrast-hover` | `Color.surfacesBrandInteractiveHighContrastHover` | `SemanticColors.surfacesBrandInteractiveHighContrastHover` | `#A1A1AA` | `#52525B` |
+| `--surfaces-brand-interactive-high-contrast-pressed` | `Color.surfacesBrandInteractiveHighContrastPressed` | `SemanticColors.surfacesBrandInteractiveHighContrastPressed` | `#71717A` | `#71717A` |
+| `--surfaces-brand-interactive-hover` | `Color.surfacesBrandInteractiveHover` | `SemanticColors.surfacesBrandInteractiveHover` | `#27272A` | `#E4E4E7` |
+| `--surfaces-brand-interactive-low-contrast` | `Color.surfacesBrandInteractiveLowContrast` | `SemanticColors.surfacesBrandInteractiveLowContrast` | `#E4E4E7` | `#27272A` |
+| `--surfaces-brand-interactive-low-contrast-hover` | `Color.surfacesBrandInteractiveLowContrastHover` | `SemanticColors.surfacesBrandInteractiveLowContrastHover` | `#D4D4D8` | `#3F3F46` |
+| `--surfaces-brand-interactive-low-contrast-pressed` | `Color.surfacesBrandInteractiveLowContrastPressed` | `SemanticColors.surfacesBrandInteractiveLowContrastPressed` | `#A1A1AA` | `#52525B` |
+| `--surfaces-brand-interactive-pressed` | `Color.surfacesBrandInteractivePressed` | `SemanticColors.surfacesBrandInteractivePressed` | `#3F3F46` | `#A1A1AA` |
+| `--surfaces-elevated-overlay` | `Color.surfacesElevatedOverlay` | `SemanticColors.surfacesElevatedOverlay` | `#FFFFFF` | `#262626` |
+| `--surfaces-error-solid` | `Color.surfacesErrorSolid` | `SemanticColors.surfacesErrorSolid` | `#DC2626` | `#FCA5A5` |
+| `--surfaces-error-solid-hover` | `Color.surfacesErrorSolidHover` | `SemanticColors.surfacesErrorSolidHover` | `#B91C1C` | `#FECACA` |
+| `--surfaces-error-solid-pressed` | `Color.surfacesErrorSolidPressed` | `SemanticColors.surfacesErrorSolidPressed` | `#991B1B` | `#FEE2E2` |
+| `--surfaces-error-subtle` | `Color.surfacesErrorSubtle` | `SemanticColors.surfacesErrorSubtle` | `#FEE2E2` | `#450A0A` |
+| `--surfaces-error-subtle-hover` | `Color.surfacesErrorSubtleHover` | `SemanticColors.surfacesErrorSubtleHover` | `#FECACA` | `#7F1D1D` |
+| `--surfaces-error-subtle-pressed` | `Color.surfacesErrorSubtlePressed` | `SemanticColors.surfacesErrorSubtlePressed` | `#FCA5A5` | `#991B1B` |
+| `--surfaces-inverse-high-contrast` | `Color.surfacesInverseHighContrast` | `SemanticColors.surfacesInverseHighContrast` | `#262626` | `#E5E5E5` |
+| `--surfaces-inverse-high-contrast-hover` | `Color.surfacesInverseHighContrastHover` | `SemanticColors.surfacesInverseHighContrastHover` | `#404040` | `#D4D4D4` |
+| `--surfaces-inverse-high-contrast-pressed` | `Color.surfacesInverseHighContrastPressed` | `SemanticColors.surfacesInverseHighContrastPressed` | `#525252` | `#E5E5E5` |
+| `--surfaces-inverse-low-contrast` | `Color.surfacesInverseLowContrast` | `SemanticColors.surfacesInverseLowContrast` | `#171717` | `#F5F5F5` |
+| `--surfaces-inverse-low-contrast-hover` | `Color.surfacesInverseLowContrastHover` | `SemanticColors.surfacesInverseLowContrastHover` | `#262626` | `#E5E5E5` |
+| `--surfaces-inverse-low-contrast-pressed` | `Color.surfacesInverseLowContrastPressed` | `SemanticColors.surfacesInverseLowContrastPressed` | `#404040` | `#D4D4D4` |
+| `--surfaces-inverse-primary` | `Color.surfacesInversePrimary` | `SemanticColors.surfacesInversePrimary` | `#000000` | `#FFFFFF` |
+| `--surfaces-inverse-primary-hover` | `Color.surfacesInversePrimaryHover` | `SemanticColors.surfacesInversePrimaryHover` | `#27272A` | `#E4E4E7` |
+| `--surfaces-inverse-primary-pressed` | `Color.surfacesInversePrimaryPressed` | `SemanticColors.surfacesInversePrimaryPressed` | `#52525B` | `#A1A1AA` |
+| `--surfaces-raised-selected` | `Color.surfacesRaisedSelected` | `SemanticColors.surfacesRaisedSelected` | `#FFFFFF` | `#404040` |
+| `--surfaces-success-solid` | `Color.surfacesSuccessSolid` | `SemanticColors.surfacesSuccessSolid` | `#16A34A` | `#86EFAC` |
+| `--surfaces-success-solid-hover` | `Color.surfacesSuccessSolidHover` | `SemanticColors.surfacesSuccessSolidHover` | `#15803D` | `#BBF7D0` |
+| `--surfaces-success-solid-pressed` | `Color.surfacesSuccessSolidPressed` | `SemanticColors.surfacesSuccessSolidPressed` | `#166534` | `#DCFCE7` |
+| `--surfaces-success-subtle` | `Color.surfacesSuccessSubtle` | `SemanticColors.surfacesSuccessSubtle` | `#DCFCE7` | `#052E16` |
+| `--surfaces-success-subtle-hover` | `Color.surfacesSuccessSubtleHover` | `SemanticColors.surfacesSuccessSubtleHover` | `#BBF7D0` | `#14532D` |
+| `--surfaces-success-subtle-pressed` | `Color.surfacesSuccessSubtlePressed` | `SemanticColors.surfacesSuccessSubtlePressed` | `#86EFAC` | `#166534` |
+| `--surfaces-warning-solid` | `Color.surfacesWarningSolid` | `SemanticColors.surfacesWarningSolid` | `#D97706` | `#FCD34D` |
+| `--surfaces-warning-solid-hover` | `Color.surfacesWarningSolidHover` | `SemanticColors.surfacesWarningSolidHover` | `#B45309` | `#FDE68A` |
+| `--surfaces-warning-solid-pressed` | `Color.surfacesWarningSolidPressed` | `SemanticColors.surfacesWarningSolidPressed` | `#92400E` | `#FEF3C7` |
+| `--surfaces-warning-subtle` | `Color.surfacesWarningSubtle` | `SemanticColors.surfacesWarningSubtle` | `#FEF3C7` | `#431407` |
+| `--surfaces-warning-subtle-hover` | `Color.surfacesWarningSubtleHover` | `SemanticColors.surfacesWarningSubtleHover` | `#FDE68A` | `#78350F` |
+| `--surfaces-warning-subtle-pressed` | `Color.surfacesWarningSubtlePressed` | `SemanticColors.surfacesWarningSubtlePressed` | `#FCD34D` | `#92400E` |
+| `--typography-accent` | `Color.typographyAccent` | `SemanticColors.typographyAccent` | `#4338CA` | `#A5B4FC` |
+| `--typography-black` | `Color.typographyBlack` | `SemanticColors.typographyBlack` | `#000000` | `#000000` |
+| `--typography-brand` | `Color.typographyBrand` | `SemanticColors.typographyBrand` | `#09090B` | `#FAFAFA` |
+| `--typography-error` | `Color.typographyError` | `SemanticColors.typographyError` | `#B91C1C` | `#F87171` |
+| `--typography-inverse-muted` | `Color.typographyInverseMuted` | `SemanticColors.typographyInverseMuted` | `#737373` | `#737373` |
+| `--typography-inverse-primary` | `Color.typographyInversePrimary` | `SemanticColors.typographyInversePrimary` | `#FAFAFA` | `#0A0A0A` |
+| `--typography-inverse-secondary` | `Color.typographyInverseSecondary` | `SemanticColors.typographyInverseSecondary` | `#D4D4D4` | `#404040` |
+| `--typography-muted` | `Color.typographyMuted` | `SemanticColors.typographyMuted` | `#737373` | `#A3A3A3` |
+| `--typography-on-brand-primary` | `Color.typographyOnBrandPrimary` | `SemanticColors.typographyOnBrandPrimary` | `#FFFFFF` | `#000000` |
+| `--typography-primary` | `Color.typographyPrimary` | `SemanticColors.typographyPrimary` | `#171717` | `#FAFAFA` |
+| `--typography-secondary` | `Color.typographySecondary` | `SemanticColors.typographySecondary` | `#404040` | `#D4D4D4` |
+| `--typography-success` | `Color.typographySuccess` | `SemanticColors.typographySuccess` | `#15803D` | `#4ADE80` |
+| `--typography-warning` | `Color.typographyWarning` | `SemanticColors.typographyWarning` | `#B45309` | `#FBBF24` |
+| `--typography-white` | `Color.typographyWhite` | `SemanticColors.typographyWhite` | `#FFFFFF` | `#FFFFFF` |
 
-| Token | Semantic Meaning | Use Cases | Do NOT Use For |
-|-------|-----------------|-----------|----------------|
-| `BaseLowContrastPressed` | State after user interaction; indicates a "pressed" or activated state | Chip active state, button press feedback | Borders, dividers, structural lines |
-| `BaseHighContrast` | Higher visual prominence / more distinguishable from primary surface | ~~Borders~~ (use `Border/*` tokens instead) | Structural elements — use `Border/Default` or `Border/Muted` |
+## Primitive Color Tokens
 
-**Rule:** For dividers, borders, and separators → always use `Border/Default` or `Border/Muted`, never `BaseHighContrast` or `BaseLowContrastPressed`.
+Primitive tokens are documented for implementation parity only. Do not use them directly in UI code.
 
----
-
-## Typography Colors
-
-| CSS Variable | Swift Name | Kotlin Name | Light Value | Dark Value |
-|-------------|-----------|-------------|-------------|------------|
-| `--text-primary` | `Color.appTextPrimary` | `SemanticColors.typographyPrimary` | `#0F172A` | `#F8FAFC` |
-| `--text-secondary` | `Color.appTextSecondary` | `SemanticColors.typographySecondary` | `#334155` | `#CBD5E1` |
-| `--text-muted` | `Color.appTextMuted` | `SemanticColors.typographyMuted` | `#64748B` | `#94A3B8` |
-| `--text-inverse-primary` | `Color.appTextInversePrimary` | `SemanticColors.typographyInversePrimary` | `#F8FAFC` | `#020617` |
-| `--text-inverse-secondary` | `Color.appTextInverseSecondary` | `SemanticColors.typographyInverseSecondary` | `#CBD5E1` | `#334155` |
-| `--text-inverse-muted` | `Color.appTextInverseMuted` | `SemanticColors.typographyInverseMuted` | `#64748B` | `#64748B` |
-| `--text-brand` | `Color.appTextBrand` | `SemanticColors.typographyBrand` | `#09090B` | `#FAFAFA` |
-| `--text-on-brand-primary` | `Color.appTextOnBrandPrimary` | `SemanticColors.typographyOnBrandPrimary` | `#FFFFFF` | `#000000` |
-| `--text-accent` | `Color.appTextAccent` | `SemanticColors.typographyAccent` | `#4F46E5` | `#818CF8` |
-| `--text-success` | `Color.appTextSuccess` | `SemanticColors.typographySuccess` | `#15803D` | `#4ADE80` |
-| `--text-warning` | `Color.appTextWarning` | `SemanticColors.typographyWarning` | `#B45309` | `#FBBF24` |
-| `--text-error` | `Color.appTextError` | `SemanticColors.typographyError` | `#B91C1C` | `#F87171` |
-
----
-
-## Icon Colors
-
-| CSS Variable | Swift Name | Kotlin Name | Light Value | Dark Value |
-|-------------|-----------|-------------|-------------|------------|
-| `--icon-primary` | `Color.appIconPrimary` | `SemanticColors.iconsPrimary` | `#020617` | `#F8FAFC` |
-| `--icon-secondary` | `Color.appIconSecondary` | `SemanticColors.iconsSecondary` | `#475569` | `#94A3B8` |
-| `--icon-muted` | `Color.appIconMuted` | `SemanticColors.iconsMuted` | `#94A3B8` | `#334155` |
-| `--icon-inverse-primary` | `Color.appIconInversePrimary` | `SemanticColors.iconsInversePrimary` | `#F8FAFC` | `#020617` |
-| `--icon-inverse-secondary` | `Color.appIconInverseSecondary` | `SemanticColors.iconsInverseSecondary` | `#94A3B8` | `#475569` |
-| `--icon-inverse-muted` | `Color.appIconInverseMuted` | `SemanticColors.iconsInverseMuted` | `#1E293B` | `#94A3B8` |
-| `--icon-brand` | `Color.appIconBrand` | `SemanticColors.iconsBrand` | `#09090B` | `#FAFAFA` |
-| `--icon-on-brand-primary` | `Color.appIconOnBrandPrimary` | `SemanticColors.iconsOnBrandPrimary` | `#F8FAFC` | `#020617` |
-| `--icon-success` | `Color.appIconSuccess` | `SemanticColors.iconsSuccess` | `#16A34A` | `#4ADE80` |
-| `--icon-warning` | `Color.appIconWarning` | `SemanticColors.iconsWarning` | `#F59E0B` | `#FBBF24` |
-| `--icon-error` | `Color.appIconError` | `SemanticColors.iconsError` | `#EF4444` | `#F87171` |
-
----
-
-## Border Colors
-
-| CSS Variable | Swift Name | Kotlin Name | Light Value | Dark Value |
-|-------------|-----------|-------------|-------------|------------|
-| `--border-default` | `Color.appBorderDefault` | `SemanticColors.borderDefault` | `#E5E5E5` | `#1E293B` |
-| `--border-muted` | `Color.appBorderMuted` | `SemanticColors.borderMuted` | `#F5F5F5` | `#0F172A` |
-| `--border-active` | `Color.appBorderActive` | `SemanticColors.borderActive` | `#020617` | `#F8FAFC` |
-| `--border-brand` | `Color.appBorderBrand` | `SemanticColors.borderBrand` | `#09090B` | `#FAFAFA` |
-| `--border-success` | `Color.appBorderSuccess` | `SemanticColors.borderSuccess` | `#16A34A` | `#86EFAC` |
-| `--border-warning` | `Color.appBorderWarning` | `SemanticColors.borderWarning` | `#D97706` | `#FCD34D` |
-| `--border-error` | `Color.appBorderError` | `SemanticColors.borderError` | `#DC2626` | `#FCA5A5` |
-
----
+| CSS Variable | Swift Name | Kotlin Name | Value | Dark Value |
+|--------------|------------|-------------|-------|------------|
+| `--color-amber-100` | `Color.colorAmber100` | `PrimitiveColors.colorAmber100` | `#FEF3C7` | `#FEF3C7` |
+| `--color-amber-200` | `Color.colorAmber200` | `PrimitiveColors.colorAmber200` | `#FDE68A` | `#FDE68A` |
+| `--color-amber-300` | `Color.colorAmber300` | `PrimitiveColors.colorAmber300` | `#FCD34D` | `#FCD34D` |
+| `--color-amber-400` | `Color.colorAmber400` | `PrimitiveColors.colorAmber400` | `#FBBF24` | `#FBBF24` |
+| `--color-amber-50` | `Color.colorAmber50` | `PrimitiveColors.colorAmber50` | `#FFFBEB` | `#FFFBEB` |
+| `--color-amber-500` | `Color.colorAmber500` | `PrimitiveColors.colorAmber500` | `#F59E0B` | `#F59E0B` |
+| `--color-amber-600` | `Color.colorAmber600` | `PrimitiveColors.colorAmber600` | `#D97706` | `#D97706` |
+| `--color-amber-700` | `Color.colorAmber700` | `PrimitiveColors.colorAmber700` | `#B45309` | `#B45309` |
+| `--color-amber-800` | `Color.colorAmber800` | `PrimitiveColors.colorAmber800` | `#92400E` | `#92400E` |
+| `--color-amber-900` | `Color.colorAmber900` | `PrimitiveColors.colorAmber900` | `#78350F` | `#78350F` |
+| `--color-amber-950` | `Color.colorAmber950` | `PrimitiveColors.colorAmber950` | `#431407` | `#431407` |
+| `--color-base-black` | `Color.colorBaseBlack` | `PrimitiveColors.colorBaseBlack` | `#000000` | `#000000` |
+| `--color-base-white` | `Color.colorBaseWhite` | `PrimitiveColors.colorBaseWhite` | `#FFFFFF` | `#FFFFFF` |
+| `--color-green-100` | `Color.colorGreen100` | `PrimitiveColors.colorGreen100` | `#DCFCE7` | `#DCFCE7` |
+| `--color-green-200` | `Color.colorGreen200` | `PrimitiveColors.colorGreen200` | `#BBF7D0` | `#BBF7D0` |
+| `--color-green-300` | `Color.colorGreen300` | `PrimitiveColors.colorGreen300` | `#86EFAC` | `#86EFAC` |
+| `--color-green-400` | `Color.colorGreen400` | `PrimitiveColors.colorGreen400` | `#4ADE80` | `#4ADE80` |
+| `--color-green-50` | `Color.colorGreen50` | `PrimitiveColors.colorGreen50` | `#F0FDF4` | `#F0FDF4` |
+| `--color-green-500` | `Color.colorGreen500` | `PrimitiveColors.colorGreen500` | `#22C55E` | `#22C55E` |
+| `--color-green-600` | `Color.colorGreen600` | `PrimitiveColors.colorGreen600` | `#16A34A` | `#16A34A` |
+| `--color-green-700` | `Color.colorGreen700` | `PrimitiveColors.colorGreen700` | `#15803D` | `#15803D` |
+| `--color-green-800` | `Color.colorGreen800` | `PrimitiveColors.colorGreen800` | `#166534` | `#166534` |
+| `--color-green-900` | `Color.colorGreen900` | `PrimitiveColors.colorGreen900` | `#14532D` | `#14532D` |
+| `--color-green-950` | `Color.colorGreen950` | `PrimitiveColors.colorGreen950` | `#052E16` | `#052E16` |
+| `--color-indigo-100` | `Color.colorIndigo100` | `PrimitiveColors.colorIndigo100` | `#E0E7FF` | `#E0E7FF` |
+| `--color-indigo-200` | `Color.colorIndigo200` | `PrimitiveColors.colorIndigo200` | `#C7D2FE` | `#C7D2FE` |
+| `--color-indigo-300` | `Color.colorIndigo300` | `PrimitiveColors.colorIndigo300` | `#A5B4FC` | `#A5B4FC` |
+| `--color-indigo-400` | `Color.colorIndigo400` | `PrimitiveColors.colorIndigo400` | `#818CF8` | `#818CF8` |
+| `--color-indigo-50` | `Color.colorIndigo50` | `PrimitiveColors.colorIndigo50` | `#EEF2FF` | `#EEF2FF` |
+| `--color-indigo-500` | `Color.colorIndigo500` | `PrimitiveColors.colorIndigo500` | `#6366F1` | `#6366F1` |
+| `--color-indigo-600` | `Color.colorIndigo600` | `PrimitiveColors.colorIndigo600` | `#4F46E5` | `#4F46E5` |
+| `--color-indigo-700` | `Color.colorIndigo700` | `PrimitiveColors.colorIndigo700` | `#4338CA` | `#4338CA` |
+| `--color-indigo-800` | `Color.colorIndigo800` | `PrimitiveColors.colorIndigo800` | `#3730A3` | `#3730A3` |
+| `--color-indigo-900` | `Color.colorIndigo900` | `PrimitiveColors.colorIndigo900` | `#312E81` | `#312E81` |
+| `--color-indigo-950` | `Color.colorIndigo950` | `PrimitiveColors.colorIndigo950` | `#1E1B4B` | `#1E1B4B` |
+| `--color-neutral-100` | `Color.colorNeutral100` | `PrimitiveColors.colorNeutral100` | `#F5F5F5` | `#F5F5F5` |
+| `--color-neutral-200` | `Color.colorNeutral200` | `PrimitiveColors.colorNeutral200` | `#E5E5E5` | `#E5E5E5` |
+| `--color-neutral-300` | `Color.colorNeutral300` | `PrimitiveColors.colorNeutral300` | `#D4D4D4` | `#D4D4D4` |
+| `--color-neutral-400` | `Color.colorNeutral400` | `PrimitiveColors.colorNeutral400` | `#A3A3A3` | `#A3A3A3` |
+| `--color-neutral-50` | `Color.colorNeutral50` | `PrimitiveColors.colorNeutral50` | `#FAFAFA` | `#FAFAFA` |
+| `--color-neutral-500` | `Color.colorNeutral500` | `PrimitiveColors.colorNeutral500` | `#737373` | `#737373` |
+| `--color-neutral-600` | `Color.colorNeutral600` | `PrimitiveColors.colorNeutral600` | `#525252` | `#525252` |
+| `--color-neutral-700` | `Color.colorNeutral700` | `PrimitiveColors.colorNeutral700` | `#404040` | `#404040` |
+| `--color-neutral-800` | `Color.colorNeutral800` | `PrimitiveColors.colorNeutral800` | `#262626` | `#262626` |
+| `--color-neutral-900` | `Color.colorNeutral900` | `PrimitiveColors.colorNeutral900` | `#171717` | `#171717` |
+| `--color-neutral-950` | `Color.colorNeutral950` | `PrimitiveColors.colorNeutral950` | `#0A0A0A` | `#0A0A0A` |
+| `--color-red-100` | `Color.colorRed100` | `PrimitiveColors.colorRed100` | `#FEE2E2` | `#FEE2E2` |
+| `--color-red-200` | `Color.colorRed200` | `PrimitiveColors.colorRed200` | `#FECACA` | `#FECACA` |
+| `--color-red-300` | `Color.colorRed300` | `PrimitiveColors.colorRed300` | `#FCA5A5` | `#FCA5A5` |
+| `--color-red-400` | `Color.colorRed400` | `PrimitiveColors.colorRed400` | `#F87171` | `#F87171` |
+| `--color-red-50` | `Color.colorRed50` | `PrimitiveColors.colorRed50` | `#FEF2F2` | `#FEF2F2` |
+| `--color-red-500` | `Color.colorRed500` | `PrimitiveColors.colorRed500` | `#EF4444` | `#EF4444` |
+| `--color-red-600` | `Color.colorRed600` | `PrimitiveColors.colorRed600` | `#DC2626` | `#DC2626` |
+| `--color-red-700` | `Color.colorRed700` | `PrimitiveColors.colorRed700` | `#B91C1C` | `#B91C1C` |
+| `--color-red-800` | `Color.colorRed800` | `PrimitiveColors.colorRed800` | `#991B1B` | `#991B1B` |
+| `--color-red-900` | `Color.colorRed900` | `PrimitiveColors.colorRed900` | `#7F1D1D` | `#7F1D1D` |
+| `--color-red-950` | `Color.colorRed950` | `PrimitiveColors.colorRed950` | `#450A0A` | `#450A0A` |
+| `--color-zinc-100` | `Color.colorZinc100` | `PrimitiveColors.colorZinc100` | `#F4F4F5` | `#F4F4F5` |
+| `--color-zinc-200` | `Color.colorZinc200` | `PrimitiveColors.colorZinc200` | `#E4E4E7` | `#E4E4E7` |
+| `--color-zinc-300` | `Color.colorZinc300` | `PrimitiveColors.colorZinc300` | `#D4D4D8` | `#D4D4D8` |
+| `--color-zinc-400` | `Color.colorZinc400` | `PrimitiveColors.colorZinc400` | `#A1A1AA` | `#A1A1AA` |
+| `--color-zinc-50` | `Color.colorZinc50` | `PrimitiveColors.colorZinc50` | `#FAFAFA` | `#FAFAFA` |
+| `--color-zinc-500` | `Color.colorZinc500` | `PrimitiveColors.colorZinc500` | `#71717A` | `#71717A` |
+| `--color-zinc-600` | `Color.colorZinc600` | `PrimitiveColors.colorZinc600` | `#52525B` | `#52525B` |
+| `--color-zinc-700` | `Color.colorZinc700` | `PrimitiveColors.colorZinc700` | `#3F3F46` | `#3F3F46` |
+| `--color-zinc-800` | `Color.colorZinc800` | `PrimitiveColors.colorZinc800` | `#27272A` | `#27272A` |
+| `--color-zinc-900` | `Color.colorZinc900` | `PrimitiveColors.colorZinc900` | `#18181B` | `#18181B` |
+| `--color-zinc-950` | `Color.colorZinc950` | `PrimitiveColors.colorZinc950` | `#09090B` | `#09090B` |
 
 ## Legacy Aliases
 
-These CSS variables are kept for backwards compatibility. They resolve to the semantic tokens above.
+These aliases remain for older call sites. New component code should prefer the semantic token names above.
 
-| CSS Variable | Resolves To | Swift Alias |
-|-------------|------------|------------|
-| `--background` | `--surface-base-primary` | `Color.appBackground` |
-| `--foreground` | `--text-primary` | `Color.appForeground` |
-
----
+| CSS Variable | Swift Name | Kotlin Name | Resolves To |
+|--------------|------------|-------------|-------------|
+| `--icon-brand` | `Color.appIconBrand` | `SemanticColors.iconsBrand` | `var(--icons-brand)` |
+| `--icon-error` | `Color.appIconError` | `SemanticColors.iconsError` | `var(--icons-error)` |
+| `--icon-inverse-muted` | `Color.appIconInverseMuted` | `SemanticColors.iconsInverseMuted` | `var(--icons-inverse-muted)` |
+| `--icon-inverse-primary` | `Color.appIconInversePrimary` | `SemanticColors.iconsInversePrimary` | `var(--icons-inverse-primary)` |
+| `--icon-inverse-secondary` | `Color.appIconInverseSecondary` | `SemanticColors.iconsInverseSecondary` | `var(--icons-inverse-secondary)` |
+| `--icon-muted` | `Color.appIconMuted` | `SemanticColors.iconsMuted` | `var(--icons-muted)` |
+| `--icon-on-brand-primary` | `Color.appIconOnBrandPrimary` | `SemanticColors.iconsOnBrandPrimary` | `var(--icons-on-brand-primary)` |
+| `--icon-primary` | `Color.appIconPrimary` | `SemanticColors.iconsPrimary` | `var(--icons-primary)` |
+| `--icon-secondary` | `Color.appIconSecondary` | `SemanticColors.iconsSecondary` | `var(--icons-secondary)` |
+| `--icon-success` | `Color.appIconSuccess` | `SemanticColors.iconsSuccess` | `var(--icons-success)` |
+| `--icon-warning` | `Color.appIconWarning` | `SemanticColors.iconsWarning` | `var(--icons-warning)` |
+| `--surface-accent-high-contrast` | `Color.appSurfaceAccentHighContrast` | `SemanticColors.surfacesAccentHighContrast` | `var(--surfaces-accent-high-contrast)` |
+| `--surface-accent-low-contrast` | `Color.appSurfaceAccentLowContrast` | `SemanticColors.surfacesAccentLowContrast` | `var(--surfaces-accent-low-contrast)` |
+| `--surface-accent-primary` | `Color.appSurfaceAccentPrimary` | `SemanticColors.surfacesAccentPrimary` | `var(--surfaces-accent-primary)` |
+| `--surface-base-high-contrast` | `Color.appSurfaceBaseHighContrast` | `SemanticColors.surfacesBaseHighContrast` | `var(--surfaces-base-high-contrast)` |
+| `--surface-base-low-contrast` | `Color.appSurfaceBaseLowContrast` | `SemanticColors.surfacesBaseLowContrast` | `var(--surfaces-base-low-contrast)` |
+| `--surface-base-primary` | `Color.appSurfaceBasePrimary` | `SemanticColors.surfacesBasePrimary` | `var(--surfaces-base-primary)` |
+| `--surface-brand` | `Color.appSurfaceBrand` | `SemanticColors.surfacesBrand` | `var(--surfaces-brand-interactive)` |
+| `--surface-brand-high-contrast` | `Color.appSurfaceBrandHighContrast` | `SemanticColors.surfacesBrandHighContrast` | `var(--surfaces-brand-interactive-high-contrast)` |
+| `--surface-brand-hover` | `Color.appSurfaceBrandHover` | `SemanticColors.surfacesBrandHover` | `var(--surfaces-brand-interactive-hover)` |
+| `--surface-brand-low-contrast` | `Color.appSurfaceBrandLowContrast` | `SemanticColors.surfacesBrandLowContrast` | `var(--surfaces-brand-interactive-low-contrast)` |
+| `--surface-brand-pressed` | `Color.appSurfaceBrandPressed` | `SemanticColors.surfacesBrandPressed` | `var(--surfaces-brand-interactive-pressed)` |
+| `--surface-brand-secondary-pressed` | `Color.appSurfaceBrandSecondaryPressed` | `SemanticColors.surfacesBrandSecondaryPressed` | `var(--surfaces-brand-interactive-low-contrast-pressed)` |
+| `--surface-error-hover` | `Color.appSurfaceErrorHover` | `SemanticColors.surfacesErrorHover` | `var(--surfaces-error-solid-hover)` |
+| `--surface-error-pressed` | `Color.appSurfaceErrorPressed` | `SemanticColors.surfacesErrorPressed` | `var(--surfaces-error-solid-pressed)` |
+| `--surface-error-solid` | `Color.appSurfaceErrorSolid` | `SemanticColors.surfacesErrorSolid` | `var(--surfaces-error-solid)` |
+| `--surface-error-subtle` | `Color.appSurfaceErrorSubtle` | `SemanticColors.surfacesErrorSubtle` | `var(--surfaces-error-subtle)` |
+| `--surface-inverse-high-contrast` | `Color.appSurfaceInverseHighContrast` | `SemanticColors.surfacesInverseHighContrast` | `var(--surfaces-inverse-high-contrast)` |
+| `--surface-inverse-low-contrast` | `Color.appSurfaceInverseLowContrast` | `SemanticColors.surfacesInverseLowContrast` | `var(--surfaces-inverse-low-contrast)` |
+| `--surface-inverse-primary` | `Color.appSurfaceInversePrimary` | `SemanticColors.surfacesInversePrimary` | `var(--surfaces-inverse-primary)` |
+| `--surface-success-hover` | `Color.appSurfaceSuccessHover` | `SemanticColors.surfacesSuccessHover` | `var(--surfaces-success-solid-hover)` |
+| `--surface-success-pressed` | `Color.appSurfaceSuccessPressed` | `SemanticColors.surfacesSuccessPressed` | `var(--surfaces-success-solid-pressed)` |
+| `--surface-success-solid` | `Color.appSurfaceSuccessSolid` | `SemanticColors.surfacesSuccessSolid` | `var(--surfaces-success-solid)` |
+| `--surface-success-subtle` | `Color.appSurfaceSuccessSubtle` | `SemanticColors.surfacesSuccessSubtle` | `var(--surfaces-success-subtle)` |
+| `--surface-warning-solid` | `Color.appSurfaceWarningSolid` | `SemanticColors.surfacesWarningSolid` | `var(--surfaces-warning-solid)` |
+| `--surface-warning-subtle` | `Color.appSurfaceWarningSubtle` | `SemanticColors.surfacesWarningSubtle` | `var(--surfaces-warning-subtle)` |
+| `--text-accent` | `Color.appTextAccent` | `SemanticColors.typographyAccent` | `var(--typography-accent)` |
+| `--text-brand` | `Color.appTextBrand` | `SemanticColors.typographyBrand` | `var(--typography-brand)` |
+| `--text-error` | `Color.appTextError` | `SemanticColors.typographyError` | `var(--typography-error)` |
+| `--text-inverse-muted` | `Color.appTextInverseMuted` | `SemanticColors.typographyInverseMuted` | `var(--typography-inverse-muted)` |
+| `--text-inverse-primary` | `Color.appTextInversePrimary` | `SemanticColors.typographyInversePrimary` | `var(--typography-inverse-primary)` |
+| `--text-inverse-secondary` | `Color.appTextInverseSecondary` | `SemanticColors.typographyInverseSecondary` | `var(--typography-inverse-secondary)` |
+| `--text-muted` | `Color.appTextMuted` | `SemanticColors.typographyMuted` | `var(--typography-muted)` |
+| `--text-on-brand-primary` | `Color.appTextOnBrandPrimary` | `SemanticColors.typographyOnBrandPrimary` | `var(--typography-on-brand-primary)` |
+| `--text-primary` | `Color.appTextPrimary` | `SemanticColors.typographyPrimary` | `var(--typography-primary)` |
+| `--text-secondary` | `Color.appTextSecondary` | `SemanticColors.typographySecondary` | `var(--typography-secondary)` |
+| `--text-success` | `Color.appTextSuccess` | `SemanticColors.typographySuccess` | `var(--typography-success)` |
+| `--text-warning` | `Color.appTextWarning` | `SemanticColors.typographyWarning` | `var(--typography-warning)` |
 
 ## Radius Tokens
 
-Sourced from Figma **Simantic-Dimensions** collection. Mobile values are the CSS default; Desktop values apply at `min-width: 768px`. iOS always uses the Mobile tier.
+Desktop web overrides apply at `min-width: 768px`; iOS and Android use the base tier unless a component intentionally adapts shape.
 
-| CSS Variable | Swift Name | Kotlin Name | Mobile | Desktop |
-|-------------|-----------|-------------|--------|---------|
-| `--radius-none` | `CGFloat.radiusNone` | `Radius.none` | `0px`    | `0px`    |
-| `--radius-xs`   | `CGFloat.radiusXS`   | `Radius.xs`   | `4px`    | `8px`    |
-| `--radius-sm`   | `CGFloat.radiusSM`   | `Radius.sm`   | `8px`    | `12px`   |
-| `--radius-md`   | `CGFloat.radiusMD`   | `Radius.md`   | `12px`   | `16px`   |
-| `--radius-lg`   | `CGFloat.radiusLG`   | `Radius.lg`   | `16px`   | `24px`   |
-| `--radius-xl`   | `CGFloat.radiusXL`   | `Radius.xl`   | `24px`   | `32px`   |
-| `--radius-2xl`  | `CGFloat.radius2XL`  | `Radius.xl2`  | `32px`   | `48px`   |
-| `--radius-full` | `.clipShape(Capsule())` | `Radius.full` | `9999px` | `9999px` |
-
-**Web:** `rounded-md` (Tailwind `@theme`) or `rounded-[var(--radius-md)]`
-**iOS:** `.cornerRadius(CGFloat.radiusMD)` or `.clipShape(RoundedRectangle(cornerRadius: .radiusLG))`
-
----
+| CSS Variable | Swift Name | Kotlin Name | Base Value |
+|--------------|------------|-------------|------------|
+| `--radius-2xl` | `CGFloat.radius2XL` | `Radius.xl2` | `48px` |
+| `--radius-full` | `CGFloat.radiusFull` | `Radius.full` | `9999px` |
+| `--radius-lg` | `CGFloat.radiusLG` | `Radius.lg` | `24px` |
+| `--radius-md` | `CGFloat.radiusMD` | `Radius.md` | `16px` |
+| `--radius-none` | `CGFloat.radiusNone` | `Radius.none` | `0px` |
+| `--radius-sm` | `CGFloat.radiusSM` | `Radius.sm` | `12px` |
+| `--radius-xl` | `CGFloat.radiusXL` | `Radius.xl` | `32px` |
+| `--radius-xs` | `CGFloat.radiusXS` | `Radius.xs` | `8px` |
 
 ## Spacing Tokens
 
-Sourced from Figma **Primitives/Dimensions** 4px grid. Naming mirrors Tailwind's numeric scale: `--space-N = N × 4px`.
-
-| CSS Variable | Tailwind Utility | iOS `CGFloat` | Android Kotlin | Value |
-|-------------|-----------------|--------------|----------------|-------|
-| `--space-1`  | `p-1`, `gap-1`   | `CGFloat.space1`  | `Spacing.space1`  | 4px  |
-| `--space-2`  | `p-2`, `gap-2`   | `CGFloat.space2`  | `Spacing.space2`  | 8px  |
-| `--space-3`  | `p-3`, `gap-3`   | `CGFloat.space3`  | `Spacing.space3`  | 12px |
-| `--space-4`  | `p-4`, `gap-4`   | `CGFloat.space4`  | `Spacing.space4`  | 16px |
-| `--space-5`  | `p-5`, `gap-5`   | `CGFloat.space5`  | `Spacing.space5`  | 20px |
-| `--space-6`  | `p-6`, `gap-6`   | `CGFloat.space6`  | `Spacing.space6`  | 24px |
-| `--space-8`  | `p-8`, `gap-8`   | `CGFloat.space8`  | `Spacing.space8`  | 32px |
-| `--space-10` | `p-10`, `gap-10` | `CGFloat.space10` | `Spacing.space10` | 40px |
-| `--space-12` | `p-12`, `gap-12` | `CGFloat.space12` | `Spacing.space12` | 48px |
-| `--space-16` | `p-16`, `gap-16` | `CGFloat.space16` | `Spacing.space16` | 64px |
-| `--space-20` | `p-20`, `gap-20` | `CGFloat.space20` | `Spacing.space20` | 80px |
-| `--space-24` | `p-24`, `gap-24` | `CGFloat.space24` | `Spacing.space24` | 96px |
-
-**Legacy aliases** (still valid): `spaceXS`=4 · `spaceSM`=8 · `spaceMD`=16 · `spaceLG`=24 · `spaceXL`=32 · `space2XL`=48
-
-**Web:** Prefer Tailwind utilities (`p-4`, `gap-6`). Use `var(--space-4)` in custom CSS when explicit token reference is needed.
-**iOS:** `.padding(CGFloat.space4)`, `VStack(spacing: CGFloat.space3)`, `.frame(width: CGFloat.space16)`
-
----
-
-## Typography Tokens
-
-Sourced from Figma **"🎨 Tokens & Styles"** page (node `18:577`). Font family: **Inter** (Figma) → **Geist Sans** on web → **System font** on iOS.
-
-Each role exposes three CSS vars: `--typography-{role}-size`, `--typography-{role}-leading`, `--typography-{role}-weight`. Overline roles also expose `--typography-{role}-tracking`.
-
-**Web:** Use Tailwind size utilities via `@theme` (e.g. `text-title-lg`) or compose from individual vars.
-**iOS:** `.font(.appTitleLarge)`. Overline needs `.tracking(1)` or `.tracking(2)` modifier.
-
-### Display
-
-| Role | Size | Line-height | Weight | CSS Var Suffix | Swift Name | Kotlin Name |
-|------|------|-------------|--------|---------------|-----------|-------------|
-| DisplayText/Large  | 96px | 128px | 400 | `display-lg` | `Font.appDisplayLarge` | `AppTypography.displayLarge` |
-| DisplayText/Medium | 80px | 96px  | 400 | `display-md` | `Font.appDisplayMedium` | `AppTypography.displayMedium` |
-| DisplayText/Small  | 64px | 96px  | 400 | `display-sm` | `Font.appDisplaySmall` | `AppTypography.displaySmall` |
-
-### Heading
-
-| Role | Size | Line-height | Weight | CSS Var Suffix | Swift Name | Kotlin Name |
-|------|------|-------------|--------|---------------|-----------|-------------|
-| Heading/Large  | 56px | 64px | 700 Bold | `heading-lg` | `Font.appHeadingLarge` | `AppTypography.headingLarge` |
-| Heading/Medium | 48px | 56px | 700 Bold | `heading-md` | `Font.appHeadingMedium` | `AppTypography.headingMedium` |
-| Heading/Small  | 40px | 44px | 700 Bold | `heading-sm` | `Font.appHeadingSmall` | `AppTypography.headingSmall` |
-
-### Title
-
-| Role | Size | Line-height | Weight | CSS Var Suffix | Swift Name | Kotlin Name |
-|------|------|-------------|--------|---------------|-----------|-------------|
-| Title/Large  | 28px | 32px | 700 Bold | `title-lg` | `Font.appTitleLarge` | `AppTypography.titleLarge` |
-| Title/Medium | 24px | 28px | 700 Bold | `title-md` | `Font.appTitleMedium` | `AppTypography.titleMedium` |
-| Title/Small  | 20px | 24px | 700 Bold | `title-sm` | `Font.appTitleSmall` | `AppTypography.titleSmall` |
-
-### Body
-
-| Role | Size | Line-height | Weight | CSS Var Suffix | Swift Name | Kotlin Name |
-|------|------|-------------|--------|---------------|-----------|-------------|
-| Body/Large            | 16px | 24px | 400 Regular | `body-lg`    | `Font.appBodyLarge` | `AppTypography.bodyLarge` |
-| Body/Medium           | 14px | 20px | 400 Regular | `body-md`    | `Font.appBodyMedium` | `AppTypography.bodyMedium` |
-| Body/Small            | 12px | 16px | 400 Regular | `body-sm`    | `Font.appBodySmall` | `AppTypography.bodySmall` |
-| Body/LargeEmphasized  | 16px | 24px | 500 Medium  | `body-lg-em` | `Font.appBodyLargeEm` | `AppTypography.bodyLargeEm` |
-| Body/MediumEmphasized | 14px | 20px | 500 Medium  | `body-md-em` | `Font.appBodyMediumEm` | `AppTypography.bodyMediumEm` |
-| Body/SmallEmphasized  | 12px | 16px | 500 Medium  | `body-sm-em` | `Font.appBodySmallEm` | `AppTypography.bodySmallEm` |
-
-### CTA / Link
-
-| Role | Size | Line-height | Weight | CSS Var Suffix | Swift Name | Kotlin Name |
-|------|------|-------------|--------|---------------|-----------|-------------|
-| CTA/Large   | 16px | 24px | 600 SemiBold | `cta-lg`  | `Font.appCTALarge` | `AppTypography.ctaLarge` |
-| CTA/Medium  | 14px | 20px | 600 SemiBold | `cta-md`  | `Font.appCTAMedium` | `AppTypography.ctaMedium` |
-| CTA/Small   | 12px | 16px | 600 SemiBold | `cta-sm`  | `Font.appCTASmall` | `AppTypography.ctaSmall` |
-| Link/Large  | 16px | 24px | 500 Medium   | `link-lg` | `Font.appLinkLarge` | `AppTypography.linkLarge` |
-| Link/Medium | 14px | 20px | 500 Medium   | `link-md` | `Font.appLinkMedium` | `AppTypography.linkMedium` |
-| Link/Small  | 12px | 16px | 500 Medium   | `link-sm` | `Font.appLinkSmall` | `AppTypography.linkSmall` |
-
-### Caption / Badge / Overline
-
-| Role | Size | Line-height | Weight | Tracking | CSS Var Suffix | Swift Name | Kotlin Name |
-|------|------|-------------|--------|---------|---------------|-----------|-------------|
-| Caption/Medium  | 12px | 16px | 400 Regular  | —    | `caption-md`   | `Font.appCaptionMedium` | `AppTypography.captionMedium` |
-| Caption/Small   | 10px | 12px | 400 Regular  | —    | `caption-sm`   | `Font.appCaptionSmall` | `AppTypography.captionSmall` |
-| Badge/Medium    | 10px | 12px | 600 SemiBold | —    | `badge-md`     | `Font.appBadgeMedium` | `AppTypography.badgeMedium` |
-| Badge/Small     |  8px | 10px | 600 SemiBold | —    | `badge-sm`     | `Font.appBadgeSmall` | `AppTypography.badgeSmall` |
-| Overline/Small  |  8px | 12px | 700 Bold     | 1px  | `overline-sm`  | `Font.appOverlineSmall` | `AppTypography.overlineSmall` |
-| Overline/Medium | 10px | 12px | 700 Bold     | 1px  | `overline-md`  | `Font.appOverlineMedium` | `AppTypography.overlineMedium` |
-| Overline/Large  | 12px | 16px | 700 Bold     | 2px  | `overline-lg`  | `Font.appOverlineLarge` | `AppTypography.overlineLarge` |
-
-_Web uses Geist Sans (loaded via `next/font`). iOS uses system default — closest visual match._
-
-**Legacy Font aliases:** `Font.appTitle` → `appTitleLarge` · `Font.appBody` → `appBodyLarge` · `Font.appCaption` → `appCaptionMedium`
-
----
-
-## Naming Convention
-
-| CSS Variable Pattern | Swift Name Pattern | Kotlin Pattern | Example |
-|---------------------|-------------------|----------------|---------|
-| `--surface-base-primary` | `Color.appSurfaceBasePrimary` | `SemanticColors.surfacesBasePrimary` | Page background |
-| `--surface-brand` | `Color.appSurfaceBrand` | `SemanticColors.surfacesBrand` | Brand-coloured elements |
-| `--surface-accent-primary` | `Color.appSurfaceAccentPrimary` | `SemanticColors.surfacesAccentPrimary` | CTA buttons |
-| `--text-primary` | `Color.appTextPrimary` | `SemanticColors.typographyPrimary` | Body copy |
-| `--text-accent` | `Color.appTextAccent` | `SemanticColors.typographyAccent` | Links, highlights |
-| `--icon-primary` | `Color.appIconPrimary` | `SemanticColors.iconsPrimary` | Default icons |
-| `--border-default` | `Color.appBorderDefault` | `SemanticColors.borderDefault` | Cards, dividers |
-| `--border-error` | `Color.appBorderError` | `SemanticColors.borderError` | Error states |
-| `--radius-md` | `CGFloat.radiusMD` | `Radius.md` | Card corner radius |
-| `--space-4` | `CGFloat.space4` | `Spacing.space4` | Standard component padding |
-| `--typography-title-lg-size` | `Font.appTitleLarge` | `AppTypography.titleLarge` | Page title |
-
----
-
-## Icon System
-
-**Library:** [Phosphor Icons](https://phosphoricons.com/) — open-source, 6 weights, 1000+ icons. Used on web and Android. iOS uses Phosphor by default but can use **SF Symbols** if chosen at scaffold time (`--ios-icons sf-symbols`).
-
-### Icon Size Tokens
-
-Both platforms use the same 5 named sizes:
-
-| Token | px / pt | Web (`IconSize`) | iOS Phosphor (`PhosphorIconSize`) | iOS SF Symbols (`IconSize`) | Android |
-|-------|---------|-----------------|-----------------------------------|-----------------------------|---------|
-| `xs`  | 12      | `"xs"`          | `.xs`                    | `.xs`                       | `IconSize.xs` |
-| `sm`  | 16      | `"sm"`          | `.sm`                    | `.sm`                       | `IconSize.sm` |
-| `md`  | 20 _(default)_ | `"md"` | `.md`              | `.md`                       | `IconSize.md` _(default)_ |
-| `lg`  | 24      | `"lg"`          | `.lg`                    | `.lg`                       | `IconSize.lg` |
-| `xl`  | 32      | `"xl"`          | `.xl`                    | `.xl`                       | `IconSize.xl` |
-
-**Android usage:** `AppIcon(name = "House", size = IconSize.Md)` (Phosphor Compose package — placeholder until library is wired)
-
-### Icon Weight Tokens
-
-| Weight     | Web (`IconWeight`)  | iOS (`Ph.IconWeight`) | Android | Notes              |
-|------------|--------------------|-----------------------|---------|--------------------|
-| `thin`     | `"thin"`           | `.thin`               | `Thin` (Material Icons fallback) | Lightest stroke    |
-| `light`    | `"light"`          | `.light`              | `Outlined` (Material Icons fallback) |                    |
-| `regular`  | `"regular"` _(default)_ | `.regular` _(default)_ | `Default` _(default)_ | Use for most UI |
-| `bold`     | `"bold"`           | `.bold`               | `Rounded` (Material Icons fallback) | Emphasis           |
-| `fill`     | `"fill"`           | `.fill`               | `Filled` (Material Icons fallback) | Active/selected state |
-| `duotone`  | `"duotone"`        | `.duotone`            | `TwoTone` (Material Icons fallback) | Two-tone (accent + base) |
-
-_Android weight mapping is a placeholder using Material Icons until the Phosphor Compose package is integrated._
-
-### Package Setup
-
-**Web** (`multi-repo-nextjs`):
-```bash
-npm install @phosphor-icons/react
-```
-```typescript
-// next.config.ts — prevents compiling all ~9000 icons in dev
-experimental: { optimizePackageImports: ["@phosphor-icons/react"] }
-```
-
-**iOS** (`multi-repo-ios`):
-SPM: `https://github.com/phosphor-icons/swift` · upToNextMajorVersion `2.0.0`
-
-### Web Usage
-
-Always use the typed `<Icon />` wrapper — **never** import Phosphor icons directly:
-
-```tsx
-import { Icon } from "@/app/components/icons";
-
-// Basic — defaults: weight="regular", size="md" (20px), color="currentColor"
-<Icon name="House" />
-
-// With tokens
-<Icon name="Heart" weight="fill" size="lg" color="var(--icon-error)" />
-
-// Accessible icon (adds aria-label; icon is visible to screen readers)
-<Icon name="Bell" label="Notifications" />
-
-// Raw px size (use sparingly)
-<Icon name="ArrowRight" size={18} />
-```
-
-Accepted color values: CSS custom properties (`var(--icon-primary)`), hex, or any CSS color string.
-
-### iOS Usage
-
-Icons are accessed as `Ph.<name>.<weight>` — each returns a SwiftUI `View`. Chain the token helpers from `PhosphorIconHelper.swift`:
-
-```swift
-// No import needed — PhosphorSlim.swift is compiled directly into the target
-
-// Basic — regular weight, md size (20pt), inherits foreground color
-Ph.house.regular.iconSize(.md)
-
-// With size and color tokens
-Ph.heart.fill.iconSize(.lg).iconColor(.appError)
-
-// Bold weight, small size
-Ph.arrowRight.bold.iconSize(.sm)
-
-// Accessible (adds VoiceOver label; decorative when nil)
-Ph.bell.regular.iconSize(.md).iconAccessibility(label: "Notifications")
-
-// Raw pt size (use sparingly)
-Ph.star.regular.iconSize(18)
-
-// Raw Phosphor API (advanced — when token helpers don't fit)
-Ph.house.regular.color(.appIconPrimary).frame(width: 24, height: 24)
-```
-
-**Overline + icon letter-spacing:** SwiftUI `Font` cannot bake in tracking. Apply `.tracking(1)` or `.tracking(2)` on adjacent `Text` nodes when pairing overline type with icons.
-
-### iOS Usage (SF Symbols)
-
-If `--ios-icons sf-symbols` was chosen at scaffold time, iOS uses native SF Symbols instead of PhosphorSlim. The helper is `SFSymbolIconHelper.swift` with an `IconSize` enum (same values as `PhosphorIconSize`).
-
-```swift
-// Basic — default weight, md size (20pt), inherits foreground color
-Image(systemName: "house").iconSize(.md)
-
-// With size and color tokens
-Image(systemName: "heart.fill").iconSize(.lg).iconColor(.appTextError)
-
-// Bold weight
-Image(systemName: "arrow.right").iconSize(.sm).fontWeight(.bold)
-
-// Accessible (adds VoiceOver label; decorative when nil)
-Image(systemName: "bell").iconSize(.md).iconAccessibility(label: "Notifications")
-
-// Hierarchical rendering (closest to Phosphor duotone)
-Image(systemName: "heart").iconSize(.lg).symbolRenderingMode(.hierarchical)
-```
-
-**Weight mapping from Phosphor:**
-| Phosphor | SF Symbols |
-|----------|-----------|
-| `.regular` | _(default, no modifier)_ |
-| `.bold` | `.fontWeight(.bold)` |
-| `.thin` | `.fontWeight(.thin)` |
-| `.light` | `.fontWeight(.light)` |
-| `.fill` | Append `.fill` to symbol name |
-| `.duotone` | `.symbolRenderingMode(.hierarchical)` |
-
-### Color Token Integration
-
-Use icon color tokens from `DesignTokens.swift` / `globals.css` / `DesignTokens.kt`:
-
-| Semantic role | Web CSS var | iOS Swift | Android |
-|---------------|------------|-----------|---------|
-| Default icon  | `var(--icon-primary)` | `Color.appIconPrimary` | `SemanticColors.iconsPrimary` |
-| Secondary     | `var(--icon-secondary)` | `Color.appIconSecondary` | `SemanticColors.iconsSecondary` |
-| Muted         | `var(--icon-muted)` | `Color.appIconMuted` | `SemanticColors.iconsMuted` |
-| Error         | `var(--icon-error)` | `Color.appIconError` | `SemanticColors.iconsError` |
-| Success       | `var(--icon-success)` | `Color.appIconSuccess` | `SemanticColors.iconsSuccess` |
-| Warning       | `var(--icon-warning)` | `Color.appIconWarning` | `SemanticColors.iconsWarning` |
-| On-brand      | `var(--icon-on-brand-primary)` | `Color.appIconOnBrandPrimary` | `SemanticColors.iconsOnBrandPrimary` |
-
-### Figma → Code Mapping
-
-When implementing icons from Figma:
-1. Note the **icon name** (PascalCase in Figma sidebar, e.g. `House`, `ArrowRight`)
-2. Note the **weight** layer in Figma (Regular / Fill / Bold etc.)
-3. Note the **size** from Figma Dimensions — map to nearest token (`xs`/`sm`/`md`/`lg`/`xl`)
-4. Use the color variable from the Figma token, not a hardcoded hex
+Spacing follows a 4px grid. Use platform helpers instead of raw dimensions in component code.
+
+| CSS Variable | Swift Name | Kotlin Name | Value |
+|--------------|------------|-------------|-------|
+| `--space-1` | `CGFloat.space1` | `Spacing.space1` | `4px` |
+| `--space-2` | `CGFloat.space2` | `Spacing.space2` | `8px` |
+| `--space-3` | `CGFloat.space3` | `Spacing.space3` | `12px` |
+| `--space-4` | `CGFloat.space4` | `Spacing.space4` | `16px` |
+| `--space-5` | `CGFloat.space5` | `Spacing.space5` | `20px` |
+| `--space-6` | `CGFloat.space6` | `Spacing.space6` | `24px` |
+| `--space-8` | `CGFloat.space8` | `Spacing.space8` | `32px` |
+| `--space-10` | `CGFloat.space10` | `Spacing.space10` | `40px` |
+| `--space-12` | `CGFloat.space12` | `Spacing.space12` | `48px` |
+| `--space-16` | `CGFloat.space16` | `Spacing.space16` | `64px` |
+| `--space-20` | `CGFloat.space20` | `Spacing.space20` | `80px` |
+| `--space-24` | `CGFloat.space24` | `Spacing.space24` | `96px` |
+
+## Typography Variables
+
+Font family is Inter on web, iOS, and Android. Each role exposes size, line-height, weight, and optional tracking variables.
+
+| CSS Variable | Value |
+|--------------|-------|
+| `--typography-badge-md-leading` | `12px` |
+| `--typography-badge-md-size` | `10px` |
+| `--typography-badge-md-weight` | `600` |
+| `--typography-badge-sm-leading` | `10px` |
+| `--typography-badge-sm-size` | `8px` |
+| `--typography-badge-sm-weight` | `600` |
+| `--typography-body-lg-em-leading` | `24px` |
+| `--typography-body-lg-em-size` | `16px` |
+| `--typography-body-lg-em-weight` | `500` |
+| `--typography-body-lg-leading` | `24px` |
+| `--typography-body-lg-size` | `16px` |
+| `--typography-body-lg-weight` | `400` |
+| `--typography-body-md-em-leading` | `20px` |
+| `--typography-body-md-em-size` | `14px` |
+| `--typography-body-md-em-weight` | `500` |
+| `--typography-body-md-leading` | `20px` |
+| `--typography-body-md-size` | `14px` |
+| `--typography-body-md-weight` | `400` |
+| `--typography-body-sm-em-leading` | `16px` |
+| `--typography-body-sm-em-size` | `12px` |
+| `--typography-body-sm-em-weight` | `500` |
+| `--typography-body-sm-leading` | `16px` |
+| `--typography-body-sm-size` | `12px` |
+| `--typography-body-sm-weight` | `400` |
+| `--typography-caption-md-leading` | `16px` |
+| `--typography-caption-md-size` | `12px` |
+| `--typography-caption-md-weight` | `400` |
+| `--typography-caption-sm-leading` | `12px` |
+| `--typography-caption-sm-size` | `10px` |
+| `--typography-caption-sm-weight` | `400` |
+| `--typography-cta-lg-leading` | `24px` |
+| `--typography-cta-lg-size` | `16px` |
+| `--typography-cta-lg-weight` | `600` |
+| `--typography-cta-md-leading` | `20px` |
+| `--typography-cta-md-size` | `14px` |
+| `--typography-cta-md-weight` | `600` |
+| `--typography-cta-sm-leading` | `16px` |
+| `--typography-cta-sm-size` | `12px` |
+| `--typography-cta-sm-weight` | `600` |
+| `--typography-display-lg-leading` | `128px` |
+| `--typography-display-lg-size` | `96px` |
+| `--typography-display-lg-weight` | `400` |
+| `--typography-display-md-leading` | `96px` |
+| `--typography-display-md-size` | `80px` |
+| `--typography-display-md-weight` | `400` |
+| `--typography-display-sm-leading` | `96px` |
+| `--typography-display-sm-size` | `64px` |
+| `--typography-display-sm-weight` | `400` |
+| `--typography-heading-lg-leading` | `64px` |
+| `--typography-heading-lg-size` | `56px` |
+| `--typography-heading-lg-weight` | `700` |
+| `--typography-heading-md-leading` | `56px` |
+| `--typography-heading-md-size` | `48px` |
+| `--typography-heading-md-weight` | `700` |
+| `--typography-heading-sm-leading` | `44px` |
+| `--typography-heading-sm-size` | `40px` |
+| `--typography-heading-sm-weight` | `700` |
+| `--typography-link-lg-leading` | `24px` |
+| `--typography-link-lg-size` | `16px` |
+| `--typography-link-lg-weight` | `500` |
+| `--typography-link-md-leading` | `20px` |
+| `--typography-link-md-size` | `14px` |
+| `--typography-link-md-weight` | `500` |
+| `--typography-link-sm-leading` | `16px` |
+| `--typography-link-sm-size` | `12px` |
+| `--typography-link-sm-weight` | `500` |
+| `--typography-overline-lg-leading` | `16px` |
+| `--typography-overline-lg-size` | `12px` |
+| `--typography-overline-lg-tracking` | `2px` |
+| `--typography-overline-lg-weight` | `700` |
+| `--typography-overline-md-leading` | `12px` |
+| `--typography-overline-md-size` | `10px` |
+| `--typography-overline-md-tracking` | `1px` |
+| `--typography-overline-md-weight` | `700` |
+| `--typography-overline-sm-leading` | `12px` |
+| `--typography-overline-sm-size` | `8px` |
+| `--typography-overline-sm-tracking` | `1px` |
+| `--typography-overline-sm-weight` | `700` |
+| `--typography-title-lg-leading` | `32px` |
+| `--typography-title-lg-size` | `28px` |
+| `--typography-title-lg-weight` | `700` |
+| `--typography-title-md-leading` | `28px` |
+| `--typography-title-md-size` | `24px` |
+| `--typography-title-md-weight` | `700` |
+| `--typography-title-sm-leading` | `24px` |
+| `--typography-title-sm-size` | `20px` |
+| `--typography-title-sm-weight` | `700` |
+
+## Semantic Usage Rules
+
+| Need | Use | Avoid |
+|------|-----|-------|
+| Page and component fills | `Surfaces/*` | Primitive colors |
+| Text | `Typography/*` | Surface or icon tokens |
+| Icons | `Icons/*` | Typography tokens unless inheriting text intentionally |
+| Borders, dividers, separators, connector lines | `Border/Default`, `Border/Muted`, `Border/Active` | `Surfaces/BaseHighContrast`, `Surfaces/BaseLowContrastPressed` |
+| Pressed or active chip/button states | Matching `*-Pressed` semantic surface | Border tokens |
+| Disabled state | Opacity 0.5 | Dedicated disabled color tokens |
+
+## Intentional Exceptions
+
+- `AppColorPicker` contains raw selectable swatch values. Those are user-facing color choices, not styling tokens.
+- Markdown inline code and code blocks may use a high-contrast surface because they are filled content areas, not dividers.
+- Legacy aliases may appear in older files but should not be introduced in new component code.
+
+## Validation Checklist
+
+1. Component files use only semantic colors.
+2. Web styling uses `var(--surfaces-*)`, `var(--typography-*)`, `var(--icons-*)`, and `var(--border-*)`.
+3. iOS styling uses `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`.
+4. Android styling uses `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`.
+5. Any token change starts in `globals.css` and is mirrored to Swift, Kotlin, and this document.

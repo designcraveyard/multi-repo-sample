@@ -67,3 +67,20 @@ AppWebView(
 ## Accessibility
 
 - **iOS:** `WKWebView` provides VoiceOver support for web content natively; the web page's own ARIA attributes and semantic HTML are respected by VoiceOver.
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | — | Missing / not applicable | No implementation file found. |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Native/AppWebView.swift` | Present | `url: URL`, `isLoading: Binding<Bool> = .constant(false)`, `allowsRefresh: Bool = false`, `onError: ((Error) -> Void)? = nil` |
+| Android | — | Missing / not applicable | No implementation file found. |
+
+**Parity status:** Partial implementation (1/3 platforms).
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

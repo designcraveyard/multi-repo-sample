@@ -5,6 +5,15 @@ This is the single source of truth mapping Figma design system components to the
 > **Auto-maintained** — run `/figma-component-sync` after adding or modifying atomic components to keep this file current.
 > For complex components (composing 2+ atoms), run `/complex-component <name>` to start and `/component-audit <name>` before marking Done.
 
+**Last full cross-platform documentation refresh:** 2026-06-29
+
+| Reference | Purpose |
+|-----------|---------|
+| [Cross-Platform Design System](design-system.md) | Operating guide for tokens, components, platform parity, and maintenance rules |
+| [Design Token Specification](design-tokens.md) | Canonical CSS ↔ Swift ↔ Kotlin token map |
+| [Full Audit — 2026-06-29](audit/design-system-audit-2026-06-29.md) | Current implementation coverage for every documented component |
+| [Component Docs](components/) | Per-component props, states, usage examples, token contracts, and accessibility notes |
+
 ## Figma File
 
 **bubbles-kit** — `ZtcCQT96M2dJZjU35X8uMQ`
@@ -170,6 +179,25 @@ Thin wrappers around Material 3 / Compose APIs, styled via `NativeComponentStyli
 - **AppCarousel** dot indicators use `CarouselApi` via `setApi` prop — no secondary `useEmblaCarousel` instance
 - **AppContextMenu** `mode="context"` = right-click/long-press; `mode="dropdown"` = click-triggered popover
 - **AppBottomSheet** snap points are fractions of screen height (e.g. `[0.5, 1]` = half + full)
+
+### Cross-Platform Audit Notes — 2026-06-27
+
+- Typography foundation now uses Inter on web, iOS, and Android. Web loads Inter through `next/font`; iOS and Android bundle `Inter.ttf`.
+- Android icon examples and visible shell/showcase icon call sites now use the local Phosphor `Ph.*` ImageVector subset instead of Material Icons.
+- Android `AppButton` and `AppIconButton` now fire tap haptics. `AppButton` sizes use fixed token heights so loading state does not resize the button.
+- Badge examples are sentence case on web, Android badge text is center-aligned without extra font padding, and the green number badge example exists on web and Android.
+- DateGrid fixes in this pass: Android swipes preserve selected weekday across weeks; web individual cells have stable dimensions and a clearer selected treatment.
+- Web hook-dependency warnings in `Tabs` and `SegmentControlBar` were resolved by memoizing their measurement callbacks.
+- Bare input parity: web and Android now expose a true bare input mode that renders transparent text entry with a bottom divider, matching the iOS `AppTextOnlyField` reference.
+- Android `AppSegmentControlBar` thumb sizing now tracks only the selected segment instead of filling the whole parent; selected/inactive text colors remain semantic.
+- Android `AppRadioButton` and `AppCheckbox` now use token-drawn controls instead of default Material controls, with 20dp indicators, brand fill, on-brand marks, disabled opacity, and haptics.
+- Web showcase now includes disabled-selected radio and normal toggled-on switch examples.
+- Toast parity now matches the iOS/Web reference across all platforms: inverse capsule surface, semantic variant icons, optional description text, action pill, dismiss button, and live trigger examples.
+- Android `AppInputField` now supports leading/trailing composable slots with separators, so picker slots and static label slots render inside the input like iOS and web.
+- Android `AppNativePicker` now has `embedded = true` for compact InputField slot usage; Android and web picker action buttons now update the selected value instead of being inert.
+- Label-with-icons examples now use the same large-left, medium-right, and small-both combinations across web, iOS, and Android.
+- Android checkbox standalone examples now include indeterminate state, matching web and iOS.
+- Remaining audit areas: Android/iOS tooltip visual matching to web, carousel spacing/treatment, range slider visual matching, sheet/list-sheet trigger parity, web list item completeness, navigation shell placement cleanup, and full screenshot scoring across all three platforms.
 
 ---
 

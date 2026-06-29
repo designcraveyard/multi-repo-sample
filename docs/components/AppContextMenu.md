@@ -141,3 +141,20 @@ Box {
 - **Web:** Radix ContextMenu/DropdownMenu provides keyboard navigation (arrow keys, Enter, Escape), focus management, and ARIA menu roles.
 - **iOS:** `.contextMenu` provides VoiceOver support and haptic preview; `AppPopoverMenu` uses `.popover()` with automatic focus management.
 - **Android:** Material 3 `DropdownMenu` provides TalkBack navigation and dismiss-on-back; icon `contentDescription` is set to null (label text provides the semantics).
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Native/AppContextMenu.tsx` | Present | `mode?: "context" \| "dropdown"`, `children: ReactNode`, `items: AppContextMenuItem[]`, `className?: string` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Native/AppContextMenu.swift` | Present | See source file for the public API. |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/native/AppContextMenu.kt` | Present | `expanded: Boolean`, `onDismiss: () -> Unit`, `items: List<ContextMenuItem>` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

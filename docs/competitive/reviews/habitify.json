@@ -1,0 +1,54 @@
+{
+  "name": "Habitify",
+  "ios": {
+    "trackId": 1111447047,
+    "rating": 4.6,
+    "reviews": 6710,
+    "price": "Free",
+    "developer": "Unstatic Ltd Co",
+    "genre": "Health & Fitness"
+  },
+  "android": {
+    "bundleId": "co.unstatic.habitify",
+    "rating": 4.1,
+    "reviews": "6.14K",
+    "installs": "500K+",
+    "developer": "Unstatic Ltd Co",
+    "price": "Free (In-app purchases)",
+    "lastUpdate": "Mar 3, 2026"
+  },
+  "description": "Multi-platform habit tracker with analytics, mood tracking, Apple Health/Google Fit sync, social challenges. 2M+ users. App of the Day by Apple.",
+  "pricing": {
+    "free": "Up to 3 habits, basic tracking",
+    "monthly": "$4.99/mo",
+    "annual": "~$29.99/yr",
+    "lifetime": "$64.99 one-time"
+  },
+  "web": {
+    "url": "https://habitify.me",
+    "headline": "Build Better Habits, Build a Better Life",
+    "subheadline": "Harness the power of our personalized habit tracker app to streamline your everyday routines and achieve your goals.",
+    "primaryCta": "Try Habitify Free",
+    "features": ["Built-in Timer", "Built-in Notes", "Mood Tracking", "Privacy Lock", "Apple Health Sync", "Google Fit Sync", "API Access", "Zapier & IFTTT Integration", "Apple Calendar Sync", "Monthly challenges & leaderboards", "Friend competitions"]
+  },
+  "sentiment": {
+    "ios_rating": 4.6,
+    "android_rating": 4.4,
+    "top_praise": [
+      "Habit tracking effectiveness — keeps users motivated and accountable",
+      "Cross-platform (iOS, Android, macOS, Web, Apple Watch)",
+      "Comprehensive analytics and progress visualization",
+      "Social features — challenges, leaderboards, friends",
+      "Integration richness — Apple Health, Zapier, Google Fit"
+    ],
+    "top_complaints": [
+      "Aggressive paywall — 3-habit cap on free tier pushes early monetization",
+      "UX friction — annoying confirmation prompts, excessive notifications",
+      "Technical bugs — widget sync failures, data inconsistencies",
+      "Confusing interface — steep learning curve for new users",
+      "Notification overload — cannot disable push notifications per habit"
+    ],
+    "one_star_issues": ["3 habit limit on free tier feels like a bait-and-switch", "Lost Apple Health integration in one update"],
+    "positioning": "Data-driven habit tracker for analytics lovers. Best-in-class integrations. Weak free tier limits growth."
+  }
+}

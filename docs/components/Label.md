@@ -167,3 +167,20 @@ AppInputField(
     trailingSeparator: true
 )
 ```
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Label/Label.tsx` | Present | `label?: string`, `size?: LabelSize`, `type?: LabelType`, `leadingIcon?: ReactNode`, `trailingIcon?: ReactNode`, `showLeadingIcon?: boolean`, `showTrailingIcon?: boolean`, `className?: string` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Label/AppLabel.swift` | Present | `label: String = "Label"`, `size: AppLabelSize = .md`, `type: AppLabelType = .secondaryAction`, `leadingIcon: AnyView? = nil`, `trailingIcon: AnyView? = nil`, `showLeadingIcon: Bool = true`, `showTrailingIcon: Bool = true` |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppLabel.kt` | Present | `label: String`, `modifier: Modifier = Modifier`, `size: LabelSize = LabelSize.Md`, `type: LabelType = LabelType.SecondaryAction`, `leadingIcon: ImageVector? = null`, `trailingIcon: ImageVector? = null`, `showLeadingIcon: Boolean = true`, `showTrailingIcon: Boolean = true` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

@@ -136,3 +136,20 @@ AppDateGrid(
 - **Web:** `role="grid"` on container + `role="gridcell"` on each cell; `aria-selected` for active state; `aria-label` includes full day name, date, and selected/today status
 - **iOS:** `.accessibilityElement(children: .ignore)` with merged label on each cell; haptic feedback on selection
 - **Android:** `semantics { role = Button; selected; contentDescription }` on each cell; TalkBack announces day, date, and selection state
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/DateGrid/DateGrid.tsx` | Present | `date: Date`, `isActive?: boolean`, `isToday?: boolean`, `onSelect?: (date: Date) => void` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/DateGrid/AppDateGrid.swift` | Present | `date: Date`, `isActive: Bool = false`, `isDisabled: Bool = false`, `onSelect: @escaping (Date) -> Void` |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppDateGrid.kt` | Present | `date: Date`, `isActive: Boolean = false`, `isDisabled: Boolean = false`, `modifier: Modifier = Modifier`, `onClick: (Date) -> Unit` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

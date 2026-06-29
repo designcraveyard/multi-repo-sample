@@ -105,3 +105,20 @@ AppRangeSlider(
 - **Web:** Radix Slider provides keyboard support (arrow keys to adjust) and ARIA slider role for both thumbs; `pointerdown` handler sets grab cursor during drag.
 - **iOS:** Custom `DragGesture` implementation with `UIImpactFeedbackGenerator` on grab and `UISelectionFeedbackGenerator` on step changes; minimum distance between thumbs prevents overlap.
 - **Android:** Material 3 `RangeSlider` provides TalkBack support with value announcements; haptic feedback on grab (LongPress) and step changes (TextHandleMove).
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Native/AppRangeSlider.tsx` | Present | `lowerValue: number`, `upperValue: number`, `onChange: (values: [number, number]) => void`, `range?: [number, number]`, `step?: number`, `showLabels?: boolean`, `className?: string` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Native/AppRangeSlider.swift` | Present | See source file for the public API. |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/native/AppRangeSlider.kt` | Present | `lowerValue: Float`, `upperValue: Float`, `onValueChange: (lower: Float, upper: Float) -> Unit`, `range: ClosedFloatingPointRange<Float>`, `modifier: Modifier = Modifier`, `step: Float = 0f`, `showLabels: Boolean = false` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

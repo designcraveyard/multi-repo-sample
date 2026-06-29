@@ -1,0 +1,47 @@
+{
+  "name": "3 Things",
+  "ios": {
+    "trackId": 6747833750,
+    "rating": null,
+    "reviews": 0,
+    "price": "Free",
+    "developer": "Kaustav Halder",
+    "genre": "Productivity",
+    "note": "Very new app (Jul 2025). No reviews yet on iOS."
+  },
+  "android": {
+    "bundleId": "com.compscieddy.threethings",
+    "rating": "~4.3",
+    "reviews": "~1K",
+    "installs": "100K+",
+    "developer": "Eddie Jaoude / compscieddy",
+    "price": "Free"
+  },
+  "description": "Minimalist daily focus app inspired by the Ivy Lee Method. Pick 3 tasks, focus on them until done. No account required. Local-first. Includes mood tracking, mind dump, motivation boosts.",
+  "pricing": {
+    "free": "Full app — no paid tier announced"
+  },
+  "web": {
+    "url": "https://play.google.com/store/apps/details?id=com.compscieddy.threethings",
+    "headline": "3 Things — Focus on what matters",
+    "subheadline": "Ivy Lee Method: identify your 3 most important daily tasks and complete them",
+    "features": ["Pick 3 daily tasks", "Mood tracking", "Mind dump", "Motivation boosts", "No account needed", "Local-first data", "Distraction-free interface"]
+  },
+  "sentiment": {
+    "ios_rating": null,
+    "android_rating": 4.3,
+    "top_praise": [
+      "Radical simplicity — just 3 tasks per day reduces overwhelm",
+      "No account/privacy-first approach",
+      "Local data storage",
+      "Mind dump feature for brain clearing"
+    ],
+    "top_complaints": [
+      "Very limited feature set — no recurring tasks, reminders, or sync",
+      "No cross-platform support",
+      "No backup/cloud sync means data loss risk on device change"
+    ],
+    "one_star_issues": ["No data export", "No reminders"],
+    "positioning": "Ultra-minimalist anti-productivity-app. Niche appeal. Growing audience fatigued by feature-bloated alternatives."
+  }
+}

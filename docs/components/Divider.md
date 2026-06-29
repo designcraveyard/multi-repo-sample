@@ -42,8 +42,8 @@ A horizontal (or vertical) separator line. Two weights: `section` for between pa
 
 | Type | Height (web) | Fill token | Use case |
 |------|-------------|-----------|----------|
-| `row` | 1 px | `--surfaces-base-low-contrast-pressed` | Between list rows, table rows |
-| `section` | 8 px (solid block) | `--surfaces-base-low-contrast` | Between page sections / content groups |
+| `row` | 1 px | `--border-muted` | Between list rows, table rows |
+| `section` | 8 px (solid block) | `--border-default` | Between page sections / content groups |
 
 The `section` divider is a **filled block** (not a line), giving it heavier visual weight.
 
@@ -54,7 +54,7 @@ The `section` divider is a **filled block** (not a line), giving it heavier visu
 | Orientation | Element | Notes |
 |-------------|---------|-------|
 | `horizontal` | `<hr>` or labeled `<div>` | Default; stretches full width |
-| `vertical` | Inline `<span>` | 1 px wide, `self-stretch` height; use inside `flex` rows |
+| `vertical` | Inline `<span>` | 2 px wide, `self-stretch` height; use inside `flex` rows |
 
 ---
 
@@ -67,7 +67,7 @@ When `label` is set (horizontal + section only), the divider renders two lines f
 ```
 
 - Label text uses `caption-sm` typography + `--typography-muted` color
-- Line fill uses `--surfaces-base-low-contrast` (section) or `--surfaces-base-low-contrast-pressed` (row)
+- Line fill uses `--border-default` (section) or `--border-muted` (row)
 
 ---
 
@@ -75,11 +75,10 @@ When `label` is set (horizontal + section only), the divider renders two lines f
 
 | Property | Token |
 |----------|-------|
-| Row line | `--surfaces-base-low-contrast-pressed` / `Color.surfacesBaseLowContrastPressed` |
-| Section block | `--surfaces-base-low-contrast` / `Color.surfacesBaseLowContrast` |
-| Vertical (section) | `--border-default` / `Color.borderDefault` |
-| Vertical (row) | `--border-muted` / `Color.borderMuted` |
-| Label text | `--typography-muted` / `Color.typographyMuted` |
+| Row line | `--border-muted` / `Color.borderMuted` / `SemanticColors.borderMuted` |
+| Section block | `--border-default` / `Color.borderDefault` / `SemanticColors.borderDefault` |
+| Vertical line | `--border-default` / `Color.borderDefault` / `SemanticColors.borderDefault` |
+| Label text | `--typography-muted` / `Color.typographyMuted` / `SemanticColors.typographyMuted` |
 
 ---
 
@@ -109,7 +108,7 @@ import { Divider } from "@/app/components/Divider";
 // Labeled section divider
 <Divider type="section" label="OR TODAY" />
 
-// Vertical divider (inside a flex row)
+// Vertical divider (2 px, border-default)
 <div className="flex items-center gap-2">
   <span>Home</span>
   <Divider orientation="vertical" />
@@ -129,7 +128,7 @@ AppDivider(type: .section)
 // Labeled divider
 AppDivider(type: .section, label: "OR TODAY")
 
-// Vertical divider
+// Vertical divider (2 pt, border-default)
 AppDivider(orientation: .vertical)
 ```
 
@@ -144,6 +143,9 @@ AppDivider(type = AppDividerType.Section)
 
 // Labeled section divider
 AppDivider(type = AppDividerType.Section, label = "or")
+
+// Vertical divider (2 dp, border-default)
+AppDivider(orientation = AppDividerOrientation.Vertical)
 ```
 
 ---
@@ -151,3 +153,20 @@ AppDivider(type = AppDividerType.Section, label = "or")
 ## Usage in ListItem
 
 `AppListItem` and `ListItem` both accept a `divider: Bool` / `divider` prop that renders an `AppDivider()` / `<Divider />` below the row automatically — prefer that over inserting a standalone `Divider` between list items.
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Divider/Divider.tsx` | Present | `type?: DividerType`, `orientation?: DividerOrientation`, `label?: string`, `className?: string` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Divider/AppDivider.swift` | Present | `type: AppDividerType = .row`, `orientation: AppDividerOrientation = .horizontal`, `label: String? = nil` |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppDivider.kt` | Present | `modifier: Modifier = Modifier`, `type: AppDividerType = AppDividerType.Row`, `orientation: AppDividerOrientation = AppDividerOrientation.Horizontal`, `label: String? = null` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

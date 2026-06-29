@@ -186,3 +186,20 @@ AppButton(label = "Continue", enabled = false, onClick = {})
 - `disabled` modifier on iOS prevents interaction; `.allowsHitTesting(false)` when disabled
 - Keyboard: `Enter`/`Space` activate on web
 - Focus ring: 2px ring using variant's semantic color token
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Button/Button.tsx` | Present | `variant?: ButtonVariant`, `size?: ButtonSize`, `label: string`, `leadingIcon?: ReactNode`, `trailingIcon?: ReactNode`, `isLoading?: boolean` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Button/AppButton.swift` | Present | `label: String`, `variant: AppButtonVariant = .primary`, `size: AppButtonSize = .lg`, `leadingIcon: AnyView? = nil`, `trailingIcon: AnyView? = nil`, `isLoading: Bool = false`, `isDisabled: Bool = false`, `action: @escaping () -> Void` |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppButton.kt` | Present | `label: String`, `onClick: () -> Unit`, `modifier: Modifier = Modifier`, `variant: ButtonVariant = ButtonVariant.Primary`, `size: ButtonSize = ButtonSize.Lg`, `enabled: Boolean = true`, `isLoading: Boolean = false`, `leadingIcon: ImageVector? = null`, plus 1 more |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

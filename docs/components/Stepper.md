@@ -191,3 +191,20 @@ AppStepper(
 - The connecting line is decorative — `aria-hidden` on web
 - Consider wrapping in a `<section aria-label="Order status">` or similar on web for screen reader context
 - Android: Each `AppStepIndicator` has a `contentDescription` for TalkBack; connector lines are decorative with no semantics
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/patterns/Stepper/Stepper.tsx` | Present | `steps: StepperStep[]` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Patterns/AppStepper.swift` | Present | See source file for the public API. |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/patterns/AppStepper.kt` | Present | `steps: List<AppStepperStep>`, `modifier: Modifier = Modifier` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

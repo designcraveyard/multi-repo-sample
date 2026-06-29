@@ -9,7 +9,7 @@
 
 ## Overview
 
-An ephemeral notification banner shown at the edge of the screen. The `default` variant is a pill-shaped dark/light banner; other variants are card-shaped with a coloured border and icon.
+An ephemeral notification banner shown at the edge of the screen. All variants use the same pill-shaped inverse surface treatment, with the semantic variant communicated through the leading status icon color.
 
 Supports an optional action button and a dismiss (×) button. Can auto-dismiss after a configurable duration.
 
@@ -49,6 +49,8 @@ Supports an optional action button and a dismiss (×) button. Can auto-dismiss a
 |-------|------|---------|-------------|
 | `message` | `String` | — | **Required.** Toast message text (up to 2 lines) |
 | `modifier` | `Modifier` | `Modifier` | Compose modifier |
+| `variant` | `AppToastVariant` | `AppToastVariant.Default` | Visual variant (`Default`/`Success`/`Warning`/`Error`) |
+| `description` | `String?` | `null` | Secondary detail line |
 | `actionLabel` | `String?` | `null` | Optional action button text (e.g. "Undo", "View") |
 | `onAction` | `(() -> Unit)?` | `null` | Callback when action button is tapped |
 | `dismissible` | `Boolean` | `false` | Whether to show the dismiss (X) button |
@@ -71,15 +73,14 @@ Supports an optional action button and a dismiss (×) button. Can auto-dismiss a
 | Value | Background | Border | Icon |
 |-------|-----------|--------|------|
 | `default` | `--surfaces-inverse-primary` | transparent | `Info` |
-| `success` | `--surfaces-success-subtle` | `--border-success` | `CheckCircle` |
-| `warning` | `--surfaces-warning-subtle` | `--border-warning` | `Warning` |
-| `error` | `--surfaces-error-subtle` | `--border-error` | `XCircle` |
-| `info` | `--surfaces-accent-low-contrast` | `--surfaces-accent-primary` | `Info` |
+| `success` | `--surfaces-inverse-primary` | transparent | `CheckCircle` in success color |
+| `warning` | `--surfaces-inverse-primary` | transparent | `Warning` in warning color |
+| `error` | `--surfaces-inverse-primary` | transparent | `X` / `XCircle` in error color |
+| `info` | `--surfaces-inverse-primary` | transparent | `Info` |
 
 ### Shape
 
-- **`default`** — pill shape (`rounded-full`), no shadow
-- **All other variants** — card shape (`--radius-md`), `shadow-md`, `max-w-sm`
+- Pill shape (`rounded-full` / capsule), no shadow, full-width in the showcase container.
 
 ---
 
@@ -178,6 +179,8 @@ AppToast(
 // With action button
 AppToast(
     message = "Upload complete!",
+    variant = AppToastVariant.Success,
+    description = "Your file is ready to share.",
     actionLabel = "View",
     onAction = { viewDetails() },
 )
@@ -199,3 +202,20 @@ Box {
 - iOS uses `.accessibilityAddTraits(.isStaticText)` and announces via VoiceOver
 - Dismiss button has `aria-label="Dismiss notification"`
 - Android: TalkBack announces toast message when it appears; dismiss and action buttons have `contentDescription` for accessibility; `ToastOverlay` manages focus announcement on show
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Toast/Toast.tsx` | Present | `message: string`, `variant?: "default" \| "success" \| "warning" \| "error" \| "info"`, `description?: string`, `actionLabel?: string`, `onAction?: () => void`, `dismissible?: boolean`, `onDismiss?: () => void`, `duration?: number`, plus 1 more |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Toast/AppToast.swift` | Present | `icon: AnyView, action: @escaping () -> Void) {`, `let background: Color`, `let borderColor: Color`, `let iconName: String // SF Symbol fallback -- in production swap for Ph icon`, `let iconColor: Color`, `let textColor: Color`, `let descColor: Color`, `let descOpacity: Double`, plus 50 more |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppToast.kt` | Present | `message: String`, `modifier: Modifier = Modifier`, `variant: AppToastVariant = AppToastVariant.Default`, `description: String? = null`, `actionLabel: String? = null`, `onAction: (() -> Unit)? = null`, `dismissible: Boolean = false`, `onDismiss: (() -> Unit)? = null` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

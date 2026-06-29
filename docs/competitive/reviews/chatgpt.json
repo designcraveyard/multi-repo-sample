@@ -1,0 +1,51 @@
+{
+  "name": "ChatGPT",
+  "ios": {
+    "trackId": 6448311069,
+    "rating": 4.84,
+    "reviews": 6084649,
+    "price": "Free",
+    "developer": "OpenAI OpCo, LLC",
+    "genre": "Productivity"
+  },
+  "android": {
+    "bundleId": "com.openai.chatgpt",
+    "rating": 4.5,
+    "reviews": "~5M+",
+    "installs": "500M+",
+    "developer": "OpenAI",
+    "price": "Free"
+  },
+  "description": "Official ChatGPT app by OpenAI. Conversational AI for writing, coding, analysis, image generation, voice mode. Syncs history across devices.",
+  "pricing": {
+    "free": "GPT-4o (limited), voice mode, image uploads, DALL·E limited",
+    "plus": "$20/mo — GPT-4o priority, extended context, advanced data analysis, DALL·E full access",
+    "pro": "$200/mo — o1 Pro mode, unlimited access to all tools, extended thinking"
+  },
+  "web": {
+    "url": "https://openai.com/chatgpt",
+    "headline": "Get answers. Find inspiration. Be more productive.",
+    "features": ["Conversational AI", "Voice mode", "Image generation (DALL·E)", "Code interpreter", "File analysis", "Memory", "Custom GPTs", "Web browsing", "Advanced data analysis"]
+  },
+  "sentiment": {
+    "ios_rating": 4.84,
+    "android_rating": 4.5,
+    "top_praise": [
+      "Versatility — handles everything from creative writing to technical analysis",
+      "Productivity impact — users report significant time savings",
+      "Reliability — consistently helpful across diverse use cases",
+      "Voice mode — natural conversational interface praised",
+      "Emotional connection — users describe it as a 'personal assistant' or 'friend'"
+    ],
+    "top_complaints": [
+      "Model downgrade — repeated user anger over GPT-4o replaced by worse models",
+      "Personality changes — AI described as 'lobotomized', dismissive, argumentative",
+      "Privacy/ethics concerns — government data sharing concerns driving churn",
+      "Plus subscription value — $20/mo feels too expensive for casual users",
+      "Memory inconsistency — context not retained as expected"
+    ],
+    "one_star_issues": ["Preferred models removed without notice", "Sycophantic responses replacing genuine helpfulness"],
+    "web_themes": ["Massive community but fragmented across GPT model debates", "Strong challenger from Claude, Gemini pulling users away"],
+    "positioning": "The AI assistant category leader. Consumer brand recognition unmatched. Vulnerable to model quality perception and trust issues."
+  }
+}

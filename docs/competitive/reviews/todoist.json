@@ -1,0 +1,56 @@
+{
+  "name": "Todoist",
+  "ios": {
+    "trackId": 572688855,
+    "rating": 4.80,
+    "reviews": 124188,
+    "price": "Free",
+    "developer": "Doist Inc.",
+    "genre": "Productivity"
+  },
+  "android": {
+    "bundleId": "com.todoist",
+    "rating": 4.6,
+    "reviews": "297K",
+    "installs": "10M+",
+    "developer": "Doist Inc.",
+    "price": "Free (In-app purchases)",
+    "badge": "Editors' Choice",
+    "lastUpdate": "Mar 11, 2026"
+  },
+  "description": "The task manager that bridges personal and professional. 50M+ users. Natural language task entry, projects, subtasks, labels, calendar view, team collaboration.",
+  "pricing": {
+    "free": "5 projects, basic reminders",
+    "pro": "$4/mo (annual) or $5/mo — 300 projects, calendar layout, custom reminders, unlimited activity history",
+    "business": "$6/user/mo (annual) — shared workspaces, team projects, roles & permissions"
+  },
+  "web": {
+    "url": "https://todoist.com",
+    "headline": "Clarity, finally.",
+    "subheadline": "Join 50+ million professionals who simplify work and life with the world's #1 to-do list app.",
+    "primaryCta": "Start for free",
+    "features": ["Natural language task entry", "Today/Upcoming/Custom filters", "Calendar view", "Recurring tasks", "Team collaboration", "SOC2 Type II security"]
+  },
+  "sentiment": {
+    "ios_rating": 4.80,
+    "android_rating": 4.5,
+    "top_praise": [
+      "Organizational power — multi-year users credit it for transforming productivity",
+      "Flexibility & customization — projects, labels, sections, folders",
+      "Cross-platform sync across all devices",
+      "ADHD-friendly design",
+      "Voice input (Ramble) for hands-free task capture",
+      "GTD methodology support"
+    ],
+    "top_complaints": [
+      "Data loss during forced updates — most severe recurring issue",
+      "UI changes & navigation — redesign hides common features like inbox",
+      "Broken functionality — notifications, widgets, swipe gestures fail post-update",
+      "Subscription friction — legacy vs new tiers confuse users; paywalled reminders",
+      "AI feature bloat — users want bug fixes, not new AI features"
+    ],
+    "one_star_issues": ["Complete task deletion after forced update", "No login recovery after update", "Years of data gone with no restore option"],
+    "web_themes": ["Price hike of 25-40% in Dec 2025 driving users to TickTick and others", "5-project cap on free tier frustrates former power users"],
+    "positioning": "Market leader in personal task management. GTD-focused power users. Strong brand trust but recent update debacles and price hike creating vulnerability."
+  }
+}

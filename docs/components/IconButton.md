@@ -229,3 +229,20 @@ AppIconButton(
 | Space is very limited (toolbars, list rows) | There is room for a text label |
 | The icon alone communicates intent clearly | The action needs text for clarity |
 | Part of a dense control group | Standalone CTA |
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/IconButton/IconButton.tsx` | Present | `icon: ReactNode`, `variant?: IconButtonVariant`, `size?: IconButtonSize`, `label: string`, `isLoading?: boolean` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/IconButton/AppIconButton.swift` | Present | `icon: AnyView`, `label: String`, `variant: AppIconButtonVariant = .primary`, `size: AppIconButtonSize = .lg`, `isLoading: Bool = false`, `isDisabled: Bool = false`, `action: @escaping () -> Void` |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/components/AppIconButton.kt` | Present | `icon: ImageVector`, `contentDescription: String`, `onClick: () -> Unit`, `modifier: Modifier = Modifier`, `variant: IconButtonVariant = IconButtonVariant.Primary`, `size: IconButtonSize = IconButtonSize.Lg`, `enabled: Boolean = true`, `isLoading: Boolean = false` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

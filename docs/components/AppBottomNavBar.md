@@ -112,3 +112,20 @@ AppBottomNavBar(
 
 - **iOS:** `TabView` provides full VoiceOver tab navigation; `.badge()` count is announced; in `.iconOnly` mode, `accessibilityLabel` is set from the tab label for VoiceOver.
 - **Android:** `NavigationBarItem` provides TalkBack support with label text and icon content descriptions; `Badge` text is announced when present.
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Native/AppBottomNavBar.tsx` | Present | `selectedTab: number`, `onTabSelect: (index: number) => void`, `tabs: BottomNavTab[]` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Native/AppBottomNavBar.swift` | Present | `id: Int`, `label: String`, `icon: String`, `iconFill: String? = nil`, `badge: Int = 0` |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/native/AppBottomNavBar.kt` | Present | `selectedTab: Int`, `onTabSelect: (Int) -> Unit`, `tabs: List<NavTab>` |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.

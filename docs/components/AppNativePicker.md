@@ -54,6 +54,7 @@ A chip-styled select dropdown for picking a single option from a list. Web wraps
 | `showError` | `Boolean` | `false` | Error border and errorMessage display |
 | `errorMessage` | `String?` | `null` | Helper text below in error state |
 | `enabled` | `Boolean` | `true` | When false, dimmed to 50% opacity |
+| `embedded` | `Boolean` | `false` | Renders a compact chip trigger for InputField slot embedding |
 
 ---
 
@@ -123,6 +124,22 @@ AppNativePicker(
     onSelect = { selected = it.id },
     label = "Country"
 )
+
+// Embedded inside AppInputField:
+AppInputField(
+    text = amount,
+    onTextChange = { amount = it },
+    label = "Amount",
+    leadingSlot = {
+        AppNativePicker(
+            value = currency,
+            options = currencies,
+            onSelect = { currency = it.id },
+            embedded = true,
+        )
+    },
+    leadingSeparator = true,
+)
 ```
 
 ---
@@ -132,3 +149,20 @@ AppNativePicker(
 - **Web:** `aria-label` on the trigger from the `label` prop; `SelectValue` renders placeholder text for screen readers; focus ring styling in standalone mode.
 - **iOS:** SwiftUI `Menu` provides VoiceOver support natively; selected item shown with a checkmark in the menu.
 - **Android:** `ExposedDropdownMenuBox` with `menuAnchor` provides TalkBack support; trailing icon indicates expandable state.
+---
+
+## Cross-Platform Audit
+
+_Last refreshed: 2026-06-29_
+
+| Platform | Source | Status | API snapshot |
+|----------|--------|--------|--------------|
+| Web | `multi-repo-nextjs/app/components/Native/AppNativePicker.tsx` | Present | `embedded?: boolean`, `size?: "sm" \| "md" \| "lg"`, `variant?: "chipTabs" \| "filters"`, `className?: string` |
+| iOS | `multi-repo-ios/multi-repo-ios/Components/Native/AppNativePicker.swift` | Present | See source file for the public API. |
+| Android | `multi-repo-android/app/src/main/java/com/abhishekverma/multirepo/ui/native/AppNativePicker.kt` | Present | `value: String`, `options: List<PickerOption>`, `onSelect: (PickerOption) -> Unit`, `modifier: Modifier = Modifier`, `label: String? = null`, `showError: Boolean = false`, `errorMessage: String? = null`, `enabled: Boolean = true`, plus 3 more |
+
+**Parity status:** Implemented on all three platforms.
+
+**Token contract:** component code must use semantic tokens only: CSS `--surfaces-*`, `--typography-*`, `--icons-*`, and `--border-*`; Swift `Color.surfaces*`, `Color.typography*`, `Color.icons*`, and `Color.border*`; Kotlin `SemanticColors.*`, `Spacing.*`, `Radius.*`, `IconSize.*`, and `AppTypography.*`. Disabled state remains opacity 0.5 across platforms.
+
+**Accessibility contract:** preserve semantic roles/labels, visible keyboard focus on web, VoiceOver labels/traits on iOS, and TalkBack semantics on Android when changing the component.
